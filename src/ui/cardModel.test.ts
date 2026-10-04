@@ -3,7 +3,7 @@ import { catalogue } from '../data/catalogue';
 import { cards } from '../data/content/cards';
 import { concepts } from '../data/content/concepts';
 import { bodyRadiusKm } from '../sim/layout';
-import { cardModel } from './cardModel';
+import { cardModel, isDeepSky } from './cardModel';
 import { displayName } from './names';
 import { en } from './strings/en';
 
@@ -115,9 +115,49 @@ describe('cardModel', () => {
   });
 });
 
+describe('deep-sky cards', () => {
+  it('say how far the thing is and how old its light is', () => {
+    const orion = cardModel('orion-nebula', catalogue);
+    expect(orion.name).toBe('The Orion Nebula');
+    expect(orion.eyebrow).toBe('Nebula · 1,500 light-years away');
+    expect(orion.stats).toEqual([
+      { label: 'How far away', value: '1,500 light-years' },
+      { label: 'The light you see left it', value: '1,500 years ago' },
+    ]);
+    expect(cardModel('andromeda', catalogue).stats[0]?.value).toBe('2.5 million light-years');
+    expect(cardModel('crab-nebula', catalogue).stats[2]).toEqual({
+      label: 'Width',
+      value: '6 light-years',
+    });
+  });
+
+  it('show a picture with its credit and say what kind of picture it is', () => {
+    const crab = cardModel('crab-nebula', catalogue);
+    expect(crab.picture?.url).toMatch(/media\/deep\/crab-nebula\.webp$/);
+    expect(crab.picture?.alt).toMatch(/\S/);
+    expect(crab.picture?.credit).toBe(
+      'Picture: NASA, ESA, J. Hester and A. Loll (Arizona State University)',
+    );
+    expect(crab.note).toBe(en.mediaKindFalseColour);
+    expect(cardModel('saturn', catalogue).picture).toBeNull();
+  });
+
+  it('exist for every deep-sky object, each with three facts', () => {
+    const deep = catalogue.filter(isDeepSky);
+    expect(deep.length).toBeGreaterThanOrEqual(5);
+    for (const object of deep) {
+      const card = cardModel(object.id, catalogue);
+      expect(card.facts).toHaveLength(3);
+      expect(card.picture).not.toBeNull();
+    }
+  });
+});
+
 describe('concepts', () => {
   const strings: Readonly<Record<string, string>> = en;
-  const places = catalogue.filter((o) => bodyRadiusKm(o) !== null || o.kind === 'belt');
+  const places = catalogue.filter(
+    (o) => bodyRadiusKm(o) !== null || o.kind === 'belt' || isDeepSky(o),
+  );
 
   it('says what kind of thing every place is', () => {
     for (const place of places) {

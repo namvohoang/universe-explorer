@@ -15,6 +15,11 @@ import {
   NASA_FACTS_SUN,
   NASA_FACTS_URANUS,
   NASA_FACTS_VENUS,
+  NASA_HUBBLE_M1,
+  NASA_HUBBLE_M31,
+  NASA_HUBBLE_M42,
+  NASA_HUBBLE_M45,
+  NASA_HUBBLE_M87,
 } from '../catalogue/sources';
 import type { CardContent } from '../types';
 
@@ -442,5 +447,152 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_FACTS_COMETS],
+  },
+  {
+    id: 'pleiades',
+    hello: {
+      key: 'cardPleiadesHello',
+      sourceId: 'nasa-hubble-m45',
+      quote:
+        'This bright open cluster of stars, more commonly called the Pleiades or Seven Sisters, is easy to see with the unaided eye.',
+    },
+    facts: [
+      {
+        key: 'cardPleiadesFact1',
+        sourceId: 'nasa-hubble-m45',
+        quote: 'It contains over a thousand stars that are loosely bound by gravity',
+      },
+      {
+        key: 'cardPleiadesFact2',
+        sourceId: 'nasa-hubble-m45',
+        quote: 'more commonly called the Pleiades or Seven Sisters',
+      },
+      {
+        key: 'cardPleiadesFact3',
+        sourceId: 'nasa-hubble-m45',
+        quote:
+          'M45 is located roughly 445 light-years from Earth in the constellation Taurus, though this number is not universally agreed upon.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M45],
+  },
+  {
+    id: 'orion-nebula',
+    hello: {
+      key: 'cardOrionNebulaHello',
+      sourceId: 'nasa-hubble-m42',
+      quote:
+        'The nebula is an enormous cloud of dust and gas where vast numbers of new stars are being forged.',
+    },
+    facts: [
+      {
+        key: 'cardOrionNebulaFact1',
+        sourceId: 'nasa-hubble-m42',
+        quote:
+          'You can spot Messier 42, better known as the Orion Nebula, with the unaided eye from a dark sky site.',
+      },
+      {
+        key: 'cardOrionNebulaFact2',
+        sourceId: 'nasa-hubble-m42',
+        quote: 'making it the closest large star-forming region to Earth',
+      },
+      {
+        key: 'cardOrionNebulaFact3',
+        sourceId: 'nasa-hubble-m42',
+        quote:
+          'Its bright, central region is the home of four massive, young stars that shape the nebula.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M42],
+  },
+  {
+    id: 'crab-nebula',
+    hello: {
+      key: 'cardCrabNebulaHello',
+      sourceId: 'nasa-hubble-m1',
+      quote: 'supernova explosion, which gave rise to the Crab Nebula',
+    },
+    facts: [
+      {
+        key: 'cardCrabNebulaFact1',
+        sourceId: 'nasa-hubble-m1',
+        quote:
+          'In 1054, Chinese astronomers took notice of a "guest star" that was, for nearly a month, visible in the daytime sky.',
+      },
+      {
+        key: 'cardCrabNebulaFact2',
+        sourceId: 'nasa-hubble-m1',
+        quote: 'a six-light-year-wide remnant',
+      },
+      {
+        key: 'cardCrabNebulaFact3',
+        sourceId: 'nasa-hubble-m1',
+        quote:
+          'A rapidly spinning neutron star (the ultra-dense core of the exploded star) is embedded in the center of the Crab Nebula.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M1],
+  },
+  {
+    id: 'andromeda',
+    hello: {
+      key: 'cardAndromedaHello',
+      sourceId: 'nasa-hubble-m31',
+      quote:
+        'M31, also well-known as the Andromeda Galaxy, is the nearest major galaxy to our own, the Milky Way.',
+    },
+    facts: [
+      {
+        key: 'cardAndromedaFact1',
+        sourceId: 'nasa-hubble-m31',
+        quote: 'It is easily visible with the unaided eye from a dark sky site.',
+      },
+      {
+        key: 'cardAndromedaFact2',
+        sourceId: 'nasa-hubble-m31',
+        quote: 'This stunning, colorful mosaic captures the glow of 200 million stars.',
+      },
+      {
+        key: 'cardAndromedaFact3',
+        sourceId: 'nasa-hubble-m31',
+        quote:
+          'It took over 10 years to make this vast and colorful portrait of the galaxy, requiring over 600 Hubble overlapping snapshots',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M31],
+  },
+  {
+    id: 'm87',
+    hello: {
+      key: 'cardM87Hello',
+      sourceId: 'nasa-hubble-m87',
+      quote:
+        'The elliptical galaxy M87 is the home of several trillion stars, a supermassive black hole and a family of roughly 15,000 globular star clusters.',
+    },
+    facts: [
+      {
+        key: 'cardM87Fact1',
+        sourceId: 'nasa-hubble-m87',
+        quote:
+          'The elliptical galaxy M87 is the home of several trillion stars, a supermassive black hole',
+      },
+      {
+        key: 'cardM87Fact2',
+        sourceId: 'nasa-hubble-m87',
+        quote: 'our Milky Way galaxy contains only a few hundred billion stars',
+      },
+      {
+        key: 'cardM87Fact3',
+        sourceId: 'nasa-hubble-m87',
+        quote:
+          'the energy released produces a stream of subatomic particles that are accelerated to velocities near the speed of light',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M87],
   },
 ];

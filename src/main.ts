@@ -14,7 +14,7 @@ import {
   withSpeed,
 } from './sim/time';
 import { createCard } from './ui/card';
-import { cardModel } from './ui/cardModel';
+import { cardModel, isDeepSky } from './ui/cardModel';
 import { createChips } from './ui/chips';
 import { createClockControl } from './ui/clockControl';
 import { createCompare } from './ui/compare';
@@ -61,6 +61,17 @@ function start(): void {
 
   const drawn = catalogue.filter((object) => bodyRadiusKm(object) !== null);
   const belts = catalogue.filter((object) => object.kind === 'belt');
+  // Things beyond the solar system are shown as pictures, nearest first: a ladder outwards.
+  const distanceLy = (object: (typeof catalogue)[number]): number =>
+    'sky' in object && object.sky?.distanceLy.value != null
+      ? object.sky.distanceLy.value
+      : Infinity;
+  const deep = catalogue.filter(isDeepSky).sort((a, b) => distanceLy(a) - distanceLy(b));
+  const isDeep = (id: string | null): boolean => deep.some((object) => object.id === id);
+  const picture = mustFind('#picture');
+  const pictureImage = mustFind('#picture-image');
+  const pictureCredit = mustFind('#picture-credit');
+  if (!(pictureImage instanceof HTMLImageElement)) throw new Error('#picture-image must be an img');
   const isBelt = (id: string | null): boolean => belts.some((belt) => belt.id === id);
   /** The body the camera is on, or `null` for the whole view. */
   let focus: string | null = null;
@@ -119,6 +130,7 @@ function start(): void {
    * planet the camera is at (or whose moon it is at).
    */
   const chipsFor = (id: string | null): { id: string | null; label: string }[] => {
+    if (isDeep(id)) return deep.map((object) => ({ id: object.id, label: displayName(object) }));
     const here = drawn.find((object) => object.id === id);
     const planetId = here?.kind === 'moon' ? here.parentId : (here?.id ?? null);
     return [
@@ -131,15 +143,41 @@ function start(): void {
   };
 
   const showFocus = (): void => {
-    card.show(cardModel(focus, catalogue));
+    const model = cardModel(focus, catalogue);
+    card.show(model);
     chips.show(chipsFor(focus), focus);
+    document.body.classList.toggle('deep', isDeep(focus));
+    sceneControl.show(isDeep(focus) ? 'deep' : 'solar');
+    picture.hidden = model.picture === null;
+    if (model.picture) {
+      pictureImage.src = model.picture.url;
+      pictureImage.alt = model.picture.alt;
+      pictureCredit.textContent = [model.picture.credit, model.note].filter(Boolean).join('. ');
+    }
   };
 
   const goTo = (id: string | null): void => {
+    const wasDeep = isDeep(focus);
     focus = id;
-    stage.flyTo(currentView());
+    // Pictures need no camera move; coming back from one, the camera is put straight in place.
+    if (!isDeep(id)) {
+      if (wasDeep) stage.lookAt(currentView());
+      else stage.flyTo(currentView());
+    }
     showFocus();
   };
+
+  const sceneControl = createSegmented<'solar' | 'deep'>(
+    en.sceneControl,
+    [
+      { value: 'solar', label: en.sceneSolar },
+      { value: 'deep', label: en.sceneDeep },
+    ],
+    'solar',
+    (scene) => {
+      goTo(scene === 'deep' ? (deep[0]?.id ?? null) : null);
+    },
+  );
 
   const chips = createChips(en.places, goTo);
   window.addEventListener('keydown', (event) => {
@@ -183,7 +221,10 @@ function start(): void {
     if (compare.element.hidden) compare.open();
     else compare.close();
   });
-  tools.append(compareButton, names, scaleControl.element);
+  for (const control of [compareButton, names, scaleControl.element, scaleLabel]) {
+    control.classList.add('solar-only');
+  }
+  tools.append(sceneControl.element, compareButton, names, scaleControl.element);
 
   const clockControl = createClockControl(
     limits,
@@ -218,9 +259,11 @@ function start(): void {
     scaleControl.show(linkedScale);
     showScale();
   }
-  if (drawn.some((object) => object.id === wanted) || isBelt(wanted)) focus = wanted;
+  if (drawn.some((object) => object.id === wanted) || isBelt(wanted) || isDeep(wanted)) {
+    focus = wanted;
+  }
   stage.lookAt(wholeView());
-  if (focus !== null) stage.lookAt(viewOf(focus));
+  if (focus !== null && !isDeep(focus)) stage.lookAt(viewOf(focus));
   if (new URLSearchParams(window.location.search).has('compare')) compare.open();
   showFocus();
 
@@ -231,6 +274,7 @@ function start(): void {
   });
   stage.onCameraMoved(() => {
     // A body behind the one in view gets no marker: its name would sit on the wrong globe.
+    if (isDeep(focus)) return;
     const body = focus !== null && !isBelt(focus) ? focus : null;
     const front = body === null ? null : stage.toScreen(system.positionOf(body));
     const frontRadius = body === null || !front ? 0 : system.radiusOf(body) * front.pixelsPerUnit;

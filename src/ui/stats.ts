@@ -170,3 +170,34 @@ export function beltStats(belt: ObjectOfKind<'belt'>): Stat[] {
     },
   ];
 }
+
+const MILLION = 1_000_000;
+
+/** A distance in light-years the way a kid would say it: "1,500" or "2.5 million". */
+export function formatLightYears(lightYears: number): string {
+  return lightYears >= MILLION
+    ? fill(en.valueMillionLightYears, { n: show(lightYears / MILLION, 2) })
+    : fill(en.valueLightYears, { n: show(lightYears, 3) });
+}
+
+/**
+ * The fact box for something beyond the solar system. A light-year is how far light goes in a
+ * year, so the distance in light-years is also how many years ago the light we see set out.
+ */
+export function deepSkyStats(object: CelestialObject): Stat[] {
+  if (!('sky' in object) || object.sky === null || !isKnown(object.sky.distanceLy)) return [];
+  const lightYears = object.sky.distanceLy.value;
+  const ago =
+    lightYears >= MILLION
+      ? fill(en.valueMillionYearsAgo, { n: show(lightYears / MILLION, 2) })
+      : fill(en.valueYearsAgo, { n: show(lightYears, 3) });
+  const width =
+    object.shape?.type === 'extended' && isKnown(object.shape.diameterLy)
+      ? [{ label: en.statWide, value: formatLightYears(object.shape.diameterLy.value) }]
+      : [];
+  return [
+    { label: en.statHowFar, value: formatLightYears(lightYears) },
+    { label: en.statLightLeft, value: ago },
+    ...width,
+  ];
+}

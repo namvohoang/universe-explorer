@@ -6,6 +6,9 @@ import {
   NASA_FACTS_ASTEROIDS,
   NASA_FACTS_COMETS,
   NASA_FACTS_SUN,
+  NASA_HUBBLE_M42,
+  NASA_HUBBLE_M45,
+  NASA_HUBBLE_M87,
   NASA_MOONS,
   NASA_WHAT_IS_A_PLANET,
 } from '../catalogue/sources';
@@ -85,5 +88,36 @@ export const concepts: readonly ConceptContent[] = [
         'The majority of known asteroids orbit within the asteroid belt between Mars and Jupiter',
     },
     source: NASA_FACTS_ASTEROIDS,
+  },
+  {
+    kind: 'nebula',
+    titleKey: 'conceptNebulaTitle',
+    text: {
+      key: 'conceptNebulaText',
+      sourceId: 'nasa-hubble-m42',
+      quote:
+        'The nebula is an enormous cloud of dust and gas where vast numbers of new stars are being forged.',
+    },
+    source: NASA_HUBBLE_M42,
+  },
+  {
+    kind: 'star-cluster',
+    titleKey: 'conceptStarClusterTitle',
+    text: {
+      key: 'conceptStarClusterText',
+      sourceId: 'nasa-hubble-m45',
+      quote: 'It contains over a thousand stars that are loosely bound by gravity',
+    },
+    source: NASA_HUBBLE_M45,
+  },
+  {
+    kind: 'galaxy',
+    titleKey: 'conceptGalaxyTitle',
+    text: {
+      key: 'conceptGalaxyText',
+      sourceId: 'nasa-hubble-m87',
+      quote: 'our Milky Way galaxy contains only a few hundred billion stars',
+    },
+    source: NASA_HUBBLE_M87,
   },
 ];

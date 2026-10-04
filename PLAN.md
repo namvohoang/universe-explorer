@@ -212,11 +212,17 @@ the two comparison views use catalogue ratios only.
 
 ### Phase 4 — Beyond the solar system
 
-- [ ] 4.1 Zoom-out ladder: solar system → nearby stars → Milky Way → other galaxies, with the scale stated at each step.
-- [ ] 4.2 Milky Way scene rebuilt from published structure, with "You are here"; labelled as a model, since no photo from outside exists.
-- [ ] 4.3 Black hole scene; the real Event Horizon Telescope images beside the labelled simulation.
-- [ ] 4.4 Stars of different kinds and sizes; star clusters.
-- [ ] 4.5 Nebulae and galaxies with real telescope images, false colour explained.
+Things beyond the solar system are shown in a Deep Space view as real, credited pictures with a
+card, not as 3D models: no trusted source gives data to build them from, and a picture labelled
+for what it is (photo, joined pictures, colours added, artist's drawing) is the honest way.
+
+- [x] 4.1 Zoom-out ladder: the Deep Space view lists its objects nearest first, and each card states how
+      far away it is and how long ago its light set out.
+- [ ] 4.2 The Milky Way, with "You are here", as an agency illustration labelled as an artist's drawing,
+      since no photo from outside exists.
+- [ ] 4.3 Black holes: the real Event Horizon Telescope images, with any simulation labelled as one.
+- [~] 4.4 Stars of different kinds and sizes; star clusters. (The Pleiades cluster is in; stars are not.)
+- [x] 4.5 Nebulae and galaxies with real telescope images, false colour explained.
 - [ ] 4.6 Exoplanets: sourced facts, artist's concepts labelled.
 
 **Acceptance:** every `kind` in §5.1 has a concept card and at least one object; every non-photo

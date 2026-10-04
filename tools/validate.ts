@@ -23,7 +23,12 @@ function filesUnder(dir: string): string[] {
 const mediaFiles = filesUnder(join(ROOT, MEDIA_DIR));
 const credits = readFileSync(join(ROOT, 'CREDITS.md'), 'utf8');
 const mediaUses = catalogue.flatMap((object) =>
-  object.media.map((media) => ({ objectId: object.id, file: media.file, kind: media.kind })),
+  object.media.map((media) => ({
+    objectId: object.id,
+    file: media.file,
+    kind: media.kind,
+    ...(media.credit === undefined ? {} : { credit: media.credit }),
+  })),
 );
 const errors = [
   ...checkCatalogue(catalogue),

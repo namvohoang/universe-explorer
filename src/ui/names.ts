@@ -1,10 +1,17 @@
 import type { CelestialObject } from '../data/types';
 import { en } from './strings/en';
 
-/** The name a kid reads: "The Sun" and "The Moon", otherwise the object's own name. */
+const STRINGS: Readonly<Record<string, string>> = en;
+
+/**
+ * The name a kid reads: "The Sun", "Halley's Comet", "The Orion Nebula". An object with an
+ * everyday name has it in the strings under `name` + its id in CamelCase; otherwise its own
+ * name is used.
+ */
 export function displayName(object: CelestialObject): string {
-  if (object.id === 'sun') return en.nameSun;
-  if (object.id === 'moon') return en.nameMoon;
-  if (object.id === 'halley') return en.nameHalley;
-  return object.name;
+  const key = `name${object.id
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('')}`;
+  return STRINGS[key] ?? object.name;
 }

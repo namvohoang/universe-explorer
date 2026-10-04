@@ -19,4 +19,6 @@ export interface MediaRef {
   readonly role: MediaRole;
   /** Key of the alt text in the UI strings. All user-facing text lives there, not here. */
   readonly altKey: string;
+  /** The credit line, exactly as in CREDITS.md, for a picture shown with its credit on screen. */
+  readonly credit?: string;
 }

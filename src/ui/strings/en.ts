@@ -125,6 +125,71 @@ export const en = {
   conceptBeltTitle: 'What is a belt?',
   conceptBeltText:
     'A belt is a wide ring made of a great many small worlds, all going around the Sun.',
+  pictureAltPleiades:
+    'A wispy grey cloud of dust lit by a bright star of the Pleiades, which is just outside the picture.',
+  namePleiades: 'The Pleiades',
+  cardPleiadesHello:
+    'The Pleiades is a bright group of stars that you can see without a telescope.',
+  cardPleiadesFact1: 'It holds more than a thousand stars, held loosely together by gravity.',
+  cardPleiadesFact2: 'People also call it the Seven Sisters.',
+  cardPleiadesFact3:
+    'It is about 445 light-years away, but scientists do not all agree on that number.',
+  pictureAltOrionNebula:
+    'A huge glowing cloud of pink, orange and blue gas and dust, with bright young stars inside it.',
+  nameOrionNebula: 'The Orion Nebula',
+  cardOrionNebulaHello:
+    'The Orion Nebula is a giant cloud of gas and dust where new stars are being made.',
+  cardOrionNebulaFact1: 'You can spot it without a telescope on a dark night.',
+  cardOrionNebulaFact2: 'It is the closest big star-making cloud to Earth.',
+  cardOrionNebulaFact3: 'Four big, young stars in its middle shape the cloud.',
+  pictureAltCrabNebula:
+    'A tangled cloud of orange and blue threads of gas, left behind by a star that exploded.',
+  nameCrabNebula: 'The Crab Nebula',
+  cardCrabNebulaHello: 'The Crab Nebula is what is left of a star that exploded.',
+  cardCrabNebulaFact1:
+    'People in China saw the explosion in the year 1054. It was bright enough to see in the daytime.',
+  cardCrabNebulaFact2: 'The cloud is about six light-years wide.',
+  cardCrabNebulaFact3: 'In its middle is the squashed core of the star, spinning very fast.',
+  pictureAltAndromeda:
+    'A long, tilted spiral galaxy glowing with millions of stars, with dark lanes of dust winding through it.',
+  nameAndromeda: 'The Andromeda Galaxy',
+  cardAndromedaHello: 'The Andromeda Galaxy is the nearest big galaxy to our own, the Milky Way.',
+  cardAndromedaFact1: 'You can see it with your own eyes on a dark night.',
+  cardAndromedaFact2:
+    'This picture shows the glow of 200 million stars, and that is only some of them.',
+  cardAndromedaFact3:
+    'The picture is made of more than 600 Hubble photos joined together. It took over 10 years.',
+  pictureAltM87:
+    'A huge, round, glowing yellow galaxy with a thin blue jet shooting out from its middle.',
+  nameM87: 'The M87 Galaxy',
+  cardM87Hello: 'M87 is a giant galaxy with several trillion stars.',
+  cardM87Fact1: 'A giant black hole sits in its middle.',
+  cardM87Fact2: 'Our Milky Way has a few hundred billion stars. M87 has far more.',
+  cardM87Fact3:
+    'The blue streak in the picture is a jet of tiny particles flying out at nearly the speed of light.',
+  conceptNebulaTitle: 'What is a nebula?',
+  conceptNebulaText:
+    'A nebula is a giant cloud of gas and dust in space. New stars can be born inside one.',
+  conceptStarClusterTitle: 'What is a star cluster?',
+  conceptStarClusterText: 'A star cluster is a group of stars that stay together, held by gravity.',
+  conceptGalaxyTitle: 'What is a galaxy?',
+  conceptGalaxyText:
+    'A galaxy is an enormous family of stars: billions of them, all held together by gravity.',
+  sceneControl: 'Where to explore',
+  sceneSolar: 'Solar System',
+  sceneDeep: 'Deep Space',
+  eyebrowDeep: '{kind} · {distance} away',
+  kindNebula: 'Nebula',
+  kindStarCluster: 'Star cluster',
+  kindGalaxy: 'Galaxy',
+  statHowFar: 'How far away',
+  statLightLeft: 'The light you see left it',
+  statWide: 'Width',
+  valueLightYears: '{n} light-years',
+  valueMillionLightYears: '{n} million light-years',
+  valueYearsAgo: '{n} years ago',
+  valueMillionYearsAgo: '{n} million years ago',
+  pictureCredit: 'Picture: {credit}',
   eyebrowAsteroid: 'Asteroid · goes around the Sun',
   helloAsteroid: '{name} is an asteroid.',
   eyebrowBelt: 'Belt · many small worlds going around the Sun',

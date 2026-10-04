@@ -39,9 +39,15 @@ import { eros } from './eros';
 import { kuiperBelt } from './kuiperBelt';
 import { vesta } from './vesta';
 import { halley } from './halley';
+import { pleiades } from './pleiades';
+import { orionNebula } from './orionNebula';
+import { crabNebula } from './crabNebula';
+import { andromeda } from './andromeda';
+import { m87 } from './m87';
 
 /** Every object in the app. Order is from the Sun outwards, moons and rings after their planet,
- * dwarf planets where their orbits put them. */
+ * dwarf planets where their orbits put them.
+ * Things beyond the solar system come last, nearest first. */
 export const catalogue: readonly CelestialObject[] = [
   sun,
   mercury,
@@ -83,4 +89,9 @@ export const catalogue: readonly CelestialObject[] = [
   eris,
   halley,
   kuiperBelt,
+  pleiades,
+  orionNebula,
+  crabNebula,
+  andromeda,
+  m87,
 ];

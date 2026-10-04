@@ -436,3 +436,38 @@ export const NASA_MOONS: Source = {
   url: 'https://science.nasa.gov/solar-system/moons/',
   retrieved: '2026-10-04',
 };
+
+export const NASA_HUBBLE_M45: Source = {
+  id: 'nasa-hubble-m45',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 45',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-45/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_HUBBLE_M42: Source = {
+  id: 'nasa-hubble-m42',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 42',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-42/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_HUBBLE_M1: Source = {
+  id: 'nasa-hubble-m1',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 1',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-1/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_HUBBLE_M31: Source = {
+  id: 'nasa-hubble-m31',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 31',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-31/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_HUBBLE_M87: Source = {
+  id: 'nasa-hubble-m87',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 87',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-87/',
+  retrieved: '2026-10-04',
+};

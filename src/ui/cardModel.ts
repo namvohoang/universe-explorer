@@ -4,7 +4,14 @@ import type { CelestialObject, MediaKind } from '../data/types';
 import { semiMajorAxisKm } from '../sim/elements';
 import { fill } from './format';
 import { displayName } from './names';
-import { beltStats, objectStats, solarSystemStats, type Stat } from './stats';
+import {
+  beltStats,
+  deepSkyStats,
+  formatLightYears,
+  objectStats,
+  solarSystemStats,
+  type Stat,
+} from './stats';
 import { en } from './strings/en';
 import { mediaKindLabel } from './strings/media';
 
@@ -19,6 +26,8 @@ export interface CardModel {
   readonly concept: { readonly title: string; readonly text: string } | null;
   /** A line about how the thing is drawn: what the globe's picture really is, or what a belt's dots are. */
   readonly note: string | null;
+  /** A picture to show with the card, for things that are not drawn in 3D; otherwise `null`. */
+  readonly picture: { readonly url: string; readonly alt: string; readonly credit: string } | null;
 }
 
 const STRINGS: Readonly<Record<string, string>> = en;
@@ -39,7 +48,26 @@ function placeFromSun(object: CelestialObject, catalogue: readonly CelestialObje
   return place;
 }
 
+const DEEP_KIND_LABELS: Partial<Record<CelestialObject['kind'], string>> = {
+  nebula: en.kindNebula,
+  'star-cluster': en.kindStarCluster,
+  galaxy: en.kindGalaxy,
+};
+
+/** Whether an object lies beyond the solar system and is shown as a picture, not in 3D. */
+export function isDeepSky(object: CelestialObject): boolean {
+  return object.kind in DEEP_KIND_LABELS;
+}
+
 function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
+  const deepKind = DEEP_KIND_LABELS[object.kind];
+  if (deepKind !== undefined) {
+    const distance =
+      'sky' in object && object.sky && object.sky.distanceLy.value !== null
+        ? formatLightYears(object.sky.distanceLy.value)
+        : '';
+    return fill(en.eyebrowDeep, { kind: deepKind, distance });
+  }
   if (object.kind === 'star') return en.eyebrowStar;
   if (object.kind === 'moon') {
     const parent = catalogue.find((o) => o.id === object.parentId);
@@ -80,23 +108,38 @@ export function cardModel(
       facts,
       concept: null,
       note: null,
+      picture: null,
     };
   }
   const object = catalogue.find((o) => o.id === objectId);
   if (!object) throw new Error(`No object "${objectId}" in the catalogue`);
+  const picture = object.media.find((media) => media.role === 'picture');
+  const drawnNote =
+    object.kind === 'belt'
+      ? en.beltNote
+      : object.kind === 'comet'
+        ? en.cometNote
+        : globeNote(object.media.find((media) => media.role === 'surface-map')?.kind);
+  let stats: Stat[];
+  if (object.kind === 'belt') stats = beltStats(object);
+  else if (isDeepSky(object)) stats = deepSkyStats(object);
+  else stats = objectStats(object, catalogue, content);
   return {
     eyebrow: eyebrow(object, catalogue),
     name: displayName(object),
     hello: content ? text(content.hello.key) : plainHello(object, catalogue),
-    stats: object.kind === 'belt' ? beltStats(object) : objectStats(object, catalogue, content),
+    stats,
     facts,
     concept: conceptOf(object),
-    note:
-      object.kind === 'belt'
-        ? en.beltNote
-        : object.kind === 'comet'
-          ? en.cometNote
-          : globeNote(object.media.find((media) => media.role === 'surface-map')?.kind),
+    // A picture says what it is (photo, joined pictures, colours added) right under itself.
+    note: picture ? mediaKindLabel(picture.kind) : drawnNote,
+    picture: picture
+      ? {
+          url: import.meta.env.BASE_URL + picture.file.replace(/^public\//, ''),
+          alt: text(picture.altKey),
+          credit: fill(en.pictureCredit, { credit: picture.credit ?? '' }),
+        }
+      : null,
   };
 }
 

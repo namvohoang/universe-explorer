@@ -114,6 +114,11 @@ describe('checkMediaUses', () => {
     expect(checkMediaUses([{ ...use, kind: 'artist-concept' }], HEADER + row())).toHaveLength(1);
   });
 
+  it('flags an on-screen credit that differs from the credit row', () => {
+    expect(checkMediaUses([{ ...use, credit: 'NASA' }], HEADER + row())).toEqual([]);
+    expect(checkMediaUses([{ ...use, credit: 'Someone else' }], HEADER + row())).toHaveLength(1);
+  });
+
   it('flags a file credited as showing another object', () => {
     expect(checkMediaUses([{ ...use, objectId: 'mars' }], HEADER + row())).toHaveLength(1);
   });

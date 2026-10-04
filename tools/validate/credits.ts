@@ -161,6 +161,8 @@ export interface MediaUse {
   readonly objectId: string;
   readonly file: string;
   readonly kind: string;
+  /** The credit shown on screen with the picture, if any; it must match CREDITS.md exactly. */
+  readonly credit?: string;
 }
 
 /**
@@ -180,6 +182,9 @@ export function checkMediaUses(uses: readonly MediaUse[], creditsMarkdown: strin
       errors.push(
         `${use.objectId}: ${use.file} is "${use.kind}" here but "${row.Kind}" in CREDITS.md`,
       );
+    }
+    if (use.credit !== undefined && row.Credit !== use.credit) {
+      errors.push(`${use.objectId}: the credit shown for ${use.file} differs from CREDITS.md`);
     }
     if (row.Object !== use.objectId) {
       errors.push(`${use.objectId}: ${use.file} is credited as showing "${row.Object}"`);

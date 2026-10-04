@@ -84,3 +84,17 @@ export const NSSDC_NEPTUNE: Source = {
   url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/neptunefact.html',
   retrieved: '2026-10-04',
 };
+
+export const NSSDC_SATURN_RINGS: Source = {
+  id: 'nssdc-saturn-rings',
+  title: 'NASA NSSDCA — Saturnian Rings Fact Sheet (last updated 19 April 2022)',
+  url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/satringfact.html',
+  retrieved: '2026-10-04',
+};
+
+export const NSSDC_URANUS_RINGS: Source = {
+  id: 'nssdc-uranus-rings',
+  title: 'NASA NSSDCA — Uranian Rings Fact Sheet (last updated 14 October 2015)',
+  url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/uranringfact.html',
+  retrieved: '2026-10-04',
+};

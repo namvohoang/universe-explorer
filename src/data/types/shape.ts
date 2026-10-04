@@ -56,6 +56,27 @@ export interface RingShape {
   readonly outerRadiusKm: Sourced<number>;
 }
 
+/** How much light a ring blocks, as the range of optical depth the source gives. */
+export type OpticalDepthRange = readonly [min: number, max: number];
+
+/** One part of a ring system. */
+export type RingBand =
+  | {
+      /** A broad ring with two edges. */
+      readonly type: 'band';
+      readonly name: string;
+      readonly innerRadiusKm: Sourced<number>;
+      readonly outerRadiusKm: Sourced<number>;
+      readonly opticalDepth: Measured<OpticalDepthRange>;
+    }
+  | {
+      /** A ring too narrow to have drawable edges at any scale: a line at one radius. */
+      readonly type: 'ringlet';
+      readonly name: string;
+      readonly radiusKm: Sourced<number>;
+      readonly opticalDepth: Measured<OpticalDepthRange>;
+    };
+
 /** A band of many small bodies around a star. It has no surface and no sharp edge. */
 export interface BeltShape {
   readonly type: 'belt';

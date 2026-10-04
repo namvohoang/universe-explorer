@@ -5,6 +5,7 @@ import type {
   BodyShape,
   ExtendedShape,
   HorizonShape,
+  RingBand,
   RingShape,
   SpheroidShape,
 } from './shape';
@@ -94,6 +95,8 @@ export interface RingSystem extends ObjectBase {
   readonly parentId: string;
   readonly orbit: null;
   readonly shape: RingShape;
+  /** The rings that make up the system, from the inside out. `shape` spans all of them. */
+  readonly bands: readonly RingBand[];
 }
 
 export interface Belt extends ObjectBase {

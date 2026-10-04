@@ -131,7 +131,7 @@ describe('the real catalogue', () => {
     expect(checkCatalogue(catalogue)).toEqual([]);
   });
 
-  it('holds the Sun, the eight planets and the Moon', () => {
+  it('holds the Sun, the eight planets, the Moon and two ring systems', () => {
     expect(catalogue.map((object) => object.id)).toEqual([
       'sun',
       'mercury',
@@ -141,7 +141,9 @@ describe('the real catalogue', () => {
       'mars',
       'jupiter',
       'saturn',
+      'saturn-rings',
       'uranus',
+      'uranus-rings',
       'neptune',
     ]);
   });

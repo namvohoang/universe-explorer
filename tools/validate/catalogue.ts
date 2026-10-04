@@ -126,6 +126,29 @@ function shapeErrors(id: string, shape: Shape | null): string[] {
   return errors;
 }
 
+function ringBandErrors(object: CelestialObject): string[] {
+  if (object.kind !== 'ring-system') return [];
+  const errors: string[] = [];
+  const { innerRadiusKm, outerRadiusKm } = object.shape;
+  if (object.bands.length === 0) errors.push(`${object.id}: a ring system needs at least one band`);
+  for (const band of object.bands) {
+    const at = `${object.id}: band "${band.name}"`;
+    const [inner, outer] =
+      band.type === 'band'
+        ? [band.innerRadiusKm.value, band.outerRadiusKm.value]
+        : [band.radiusKm.value, band.radiusKm.value];
+    if (band.type === 'band' && outer <= inner) errors.push(`${at} outer radius must exceed inner`);
+    if (inner < innerRadiusKm.value || outer > outerRadiusKm.value) {
+      errors.push(`${at} lies outside the system's own inner and outer radius`);
+    }
+    if (band.opticalDepth.value !== null) {
+      const [min, max] = band.opticalDepth.value;
+      if (!(min >= 0 && max >= min)) errors.push(`${at} optical depth must be a range from 0 up`);
+    }
+  }
+  return errors;
+}
+
 function orbitErrors(object: CelestialObject): string[] {
   const { id, orbit } = object;
   if (!orbit) return [];
@@ -163,6 +186,7 @@ export function checkCatalogue(catalogue: readonly CelestialObject[]): string[] 
     if (object.name.trim() === '') errors.push(`${object.id}: has no name`);
     errors.push(...sourceErrors(object), ...shapeErrors(object.id, object.shape));
     errors.push(...orbitErrors(object));
+    errors.push(...ringBandErrors(object));
     if (object.parentId !== null) {
       const parent = byId.get(object.parentId);
       if (!parent) errors.push(`${object.id}: parent "${object.parentId}" is not in the catalogue`);

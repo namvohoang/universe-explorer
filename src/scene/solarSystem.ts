@@ -4,6 +4,7 @@ import { scenePositions } from '../sim/layout';
 import type { Scale } from '../sim/scale';
 import { length, type Vec3 } from '../sim/vec3';
 import { createBody, type Body } from './body';
+import { createOrbitLine, type OrbitLine } from './orbitLine';
 
 /** Enough fill light to make out a night side; the Sun does the rest. */
 const NIGHT_SIDE_LIGHT = 0.06;
@@ -40,6 +41,11 @@ export function createSolarSystem(
     group.add(body.group);
   }
 
+  const orbitLines: OrbitLine[] = catalogue
+    .filter((object) => object.orbit)
+    .map((object) => createOrbitLine(object, catalogue));
+  for (const orbit of orbitLines) group.add(orbit.line);
+
   // Light comes from the star, at full strength however far away: brightness is not what
   // the scale modes are about, and real falloff would leave the outer planets black.
   for (const object of catalogue) {
@@ -50,6 +56,7 @@ export function createSolarSystem(
 
   let currentScale = scale;
   let positions = new Map<string, Vec3>();
+  let redrawOrbits = true;
 
   const bodyOf = (id: string): Body => {
     const body = bodies.get(id);
@@ -64,6 +71,12 @@ export function createSolarSystem(
       if (position) body.group.position.set(position.x, position.y, position.z);
       body.setDate(jd);
     }
+    for (const orbit of orbitLines) {
+      const parent = positions.get(orbit.parentId);
+      if (parent) orbit.line.position.set(parent.x, parent.y, parent.z);
+      orbit.update(jd, currentScale, redrawOrbits);
+    }
+    redrawOrbits = false;
     const star = catalogue.find((object) => object.kind === 'star');
     const sun = star ? positions.get(star.id) : undefined;
     if (sun) for (const body of bodies.values()) body.setSunPosition(sun);
@@ -74,6 +87,7 @@ export function createSolarSystem(
     setDate,
     setScale(next) {
       currentScale = next;
+      redrawOrbits = true;
       for (const body of bodies.values()) body.setScale(next);
     },
     positionOf(id) {
@@ -85,6 +99,7 @@ export function createSolarSystem(
     extent: () => Math.max(0, ...[...positions.values()].map(length)),
     dispose() {
       for (const body of bodies.values()) body.dispose();
+      for (const orbit of orbitLines) orbit.dispose();
     },
   };
 }

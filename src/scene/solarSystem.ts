@@ -1,5 +1,5 @@
 import { AmbientLight, Group, PointLight } from 'three';
-import type { CelestialObject } from '../data/types';
+import type { CelestialObject, RingSystem } from '../data/types';
 import { scenePositions } from '../sim/layout';
 import type { Scale } from '../sim/scale';
 import { length, type Vec3 } from '../sim/vec3';
@@ -29,9 +29,13 @@ export function createSolarSystem(
 ): SolarSystem {
   const group = new Group();
   const bodies = new Map<string, Body>();
+  const ringsOf = new Map<string, RingSystem>();
+  for (const object of catalogue) {
+    if (object.kind === 'ring-system') ringsOf.set(object.parentId, object);
+  }
   for (const object of catalogue) {
     if (object.shape?.type !== 'spheroid') continue;
-    const body = createBody(object, object.shape, scale);
+    const body = createBody(object, object.shape, scale, ringsOf.get(object.id) ?? null);
     bodies.set(object.id, body);
     group.add(body.group);
   }
@@ -60,6 +64,9 @@ export function createSolarSystem(
       if (position) body.group.position.set(position.x, position.y, position.z);
       body.setDate(jd);
     }
+    const star = catalogue.find((object) => object.kind === 'star');
+    const sun = star ? positions.get(star.id) : undefined;
+    if (sun) for (const body of bodies.values()) body.setSunPosition(sun);
   };
 
   return {

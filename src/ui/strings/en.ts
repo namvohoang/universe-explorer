@@ -255,6 +255,13 @@ export const en = {
   valueYearsAgo: '{n} years ago',
   valueMillionYearsAgo: '{n} million years ago',
   pictureCredit: 'Picture: {credit}',
+  realPicture: 'The real picture. Tap to make it bigger or smaller.',
+  deepNotePictureCloud:
+    'This 3D cloud is made from the real picture, shown in the corner. How deep the cloud is, is a guess: the picture cannot tell us.',
+  deepNoteSimulation:
+    'This is a computer model of what it is thought to look like, not a photo. The real picture is in the corner.',
+  deepNoteMeasured:
+    'This 3D model is built from real measurements. The real picture is in the corner.',
   eyebrowAsteroid: 'Asteroid · goes around the Sun',
   helloAsteroid: '{name} is an asteroid.',
   eyebrowBelt: 'Belt · many small worlds going around the Sun',

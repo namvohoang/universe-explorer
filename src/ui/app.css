@@ -170,6 +170,32 @@ body.deep .solar-only {
   display: none;
 }
 
+/* With a 3D model on screen, the real picture is a small card in the corner. */
+body.deep-3d #picture:not(.big) {
+  inset: auto 16px 150px auto;
+  width: min(230px, 40vw);
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  cursor: zoom-in;
+  z-index: 3;
+}
+
+body.deep-3d #picture:not(.big) figcaption {
+  font-size: 10px;
+}
+
+/* Keep the zoom buttons clear of the picture in the corner. */
+body.deep-3d .view-controls {
+  top: 30%;
+}
+
+body.deep-3d #picture.big {
+  cursor: zoom-out;
+  z-index: 6;
+}
+
 #markers {
   position: fixed;
   inset: 0;
@@ -370,7 +396,7 @@ button.round.back {
   border-color: transparent;
 }
 
-body.deep .view-controls button:not(.back) {
+body.deep:not(.deep-3d) .view-controls button:not(.back) {
   display: none;
 }
 

@@ -1,6 +1,7 @@
 import './ui/fonts';
 import { catalogue } from './data/catalogue';
 import { distanceForAspect, litSideBearing } from './scene/flight';
+import { createDeepModel, type DeepModel, type DeepModelBasis } from './scene/deep';
 import { createSolarSystem } from './scene/solarSystem';
 import { createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
@@ -35,6 +36,8 @@ const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
 const BODY_VIEW_RADII = 6;
 const BODY_CLOSEST_RADII = 1.8;
+/** A deep-space model is first seen from far enough back to take all of it in. */
+const DEEP_FRAMING = 2.5;
 /** A glowing comet is first seen from this many glow radii away. */
 const GLOW_VIEW_RADII = 40;
 const DEFAULT_SCALE: ScaleMode = 'easy';
@@ -82,6 +85,11 @@ function start(): void {
   const pictureImage = mustFind('#picture-image');
   const pictureCredit = mustFind('#picture-credit');
   if (!(pictureImage instanceof HTMLImageElement)) throw new Error('#picture-image must be an img');
+  // Beside a 3D model the real picture sits small in the corner; a tap makes it big and back.
+  picture.title = en.realPicture;
+  picture.addEventListener('click', () => {
+    picture.classList.toggle('big');
+  });
   const isBelt = (id: string | null): boolean => belts.some((belt) => belt.id === id);
   /** The body the camera is on, or `null` for the whole view. */
   let focus: string | null = null;
@@ -156,8 +164,44 @@ function start(): void {
     ];
   };
 
+  // The 3D model standing in for the solar system while a deep-space object is picked.
+  let deepModel: DeepModel | null = null;
+  let deepModelFor: string | null = null;
+  const DEEP_NOTES: Readonly<Record<DeepModelBasis, string>> = {
+    'picture-cloud': en.deepNotePictureCloud,
+    simulation: en.deepNoteSimulation,
+    measured: en.deepNoteMeasured,
+  };
+
+  /** Swaps the 3D view between the solar system and the model of the deep-space object in focus. */
+  const showDeepModel = (pictureUrl: string | null): void => {
+    const object = deep.find((candidate) => candidate.id === focus);
+    if (deepModelFor === (object?.id ?? null)) return;
+    if (deepModel) {
+      stage.scene.remove(deepModel.group);
+      deepModel.dispose();
+    }
+    deepModel = object ? createDeepModel(object, pictureUrl) : null;
+    deepModelFor = object?.id ?? null;
+    system.group.visible = deepModel === null && object === undefined;
+    if (!deepModel) return;
+    stage.scene.add(deepModel.group);
+    const { radius } = deepModel;
+    stage.lookAt({
+      target: () => ({ x: 0, y: 0, z: 0 }),
+      distance: distanceForAspect(radius * DEEP_FRAMING, stage.aspect()),
+      direction: deepModel.viewFrom,
+      minDistance: radius * 0.12,
+      maxDistance: radius * 8,
+      idleTurn: true,
+    });
+  };
+
   const showFocus = (): void => {
-    const model = cardModel(focus, catalogue);
+    const base = cardModel(focus, catalogue);
+    showDeepModel(base.picture?.url ?? null);
+    const model = deepModel ? { ...base, note: DEEP_NOTES[deepModel.basis] } : base;
+    document.body.classList.toggle('deep-3d', deepModel !== null);
     card.show(model, narrationUrl(focus, speechLines(model)));
     chips.show(chipsFor(focus), focus);
     document.body.classList.toggle('deep', isDeep(focus));
@@ -167,7 +211,7 @@ function start(): void {
     if (model.picture) {
       pictureImage.src = model.picture.url;
       pictureImage.alt = model.picture.alt;
-      pictureCredit.textContent = [model.picture.credit, model.note].filter(Boolean).join('. ');
+      pictureCredit.textContent = [model.picture.credit, base.note].filter(Boolean).join('. ');
     }
   };
 
@@ -324,6 +368,7 @@ function start(): void {
   showFocus();
 
   stage.onFrame((dt) => {
+    deepModel?.update(dt, stage.camera.position);
     clock = advanceClock(clock, dt, limits);
     system.setDate(clock.jd);
     clockControl.show(clock);

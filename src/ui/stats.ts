@@ -16,6 +16,8 @@ export interface Stat {
 
 const HOURS_PER_DAY = 24;
 const METRES_PER_KM = 1000;
+/** From this eccentricity an orbit is shown as an oval with a nearest and a farthest point. */
+const OVAL_FROM = 0.05;
 const DAYS_PER_YEAR = 365.25;
 const KELVIN_TO_CELSIUS = 273.15;
 const NUMBER = new Intl.NumberFormat('en-GB');
@@ -124,17 +126,21 @@ export function objectStats(
   }
   if (object.kind === 'spacecraft') {
     const parentRadiusKm = parent ? bodyRadiusKm(parent) : null;
-    const height =
-      object.orbit === null || parentRadiusKm === null
-        ? []
-        : [
-            {
-              label: en.statHeight,
-              value: fill(en.valueKm, {
-                n: show(semiMajorAxisKm(object.orbit) - parentRadiusKm, 2),
-              }),
-            },
-          ];
+    const above = (distanceKm: number): string =>
+      fill(en.valueKm, { n: show(distanceKm - (parentRadiusKm ?? 0), 2) });
+    let height: Stat[] = [];
+    if (object.orbit !== null && parentRadiusKm !== null) {
+      const a = semiMajorAxisKm(object.orbit);
+      const e = object.orbit.eccentricity.value;
+      // A round path has one height. A long oval one has a nearest and a farthest point.
+      height =
+        e < OVAL_FROM
+          ? [{ label: en.statHeight, value: above(a) }]
+          : [
+              { label: en.statNearest, value: above(a * (1 - e)) },
+              { label: en.statFarthest, value: above(a * (1 + e)) },
+            ];
+    }
     const [longest] = object.shape.radiiKm.value;
     const size = {
       label: en.statLength,

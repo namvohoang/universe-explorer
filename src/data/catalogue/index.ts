@@ -8,6 +8,10 @@ import { mercury } from './mercury';
 import { moon } from './moon';
 import { iss } from './iss';
 import { hubble } from './hubble';
+import { swift } from './swift';
+import { chandra } from './chandra';
+import { mro } from './mro';
+import { juno } from './juno';
 import { neptune } from './neptune';
 import { saturn } from './saturn';
 import { saturnRings } from './saturnRings';
@@ -74,9 +78,12 @@ export const catalogue: readonly CelestialObject[] = [
   moon,
   iss,
   hubble,
+  swift,
+  chandra,
   mars,
   phobos,
   deimos,
+  mro,
   eros,
   ida,
   psyche,
@@ -88,6 +95,7 @@ export const catalogue: readonly CelestialObject[] = [
   europa,
   ganymede,
   callisto,
+  juno,
   saturn,
   saturnRings,
   mimas,

@@ -497,6 +497,67 @@ export const JPL_HORIZONS_HUBBLE: Source = {
   retrieved: '2026-10-04',
 };
 
+export const JPL_HORIZONS_JUNO: Source = {
+  id: 'jpl-horizons-juno',
+  title:
+    'JPL Horizons — osculating orbital elements of Juno (-61) about Jupiter at JD 2461317.5, ecliptic of J2000, with its notes on the spacecraft',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-61%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40599%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272461317.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_JUNO: Source = {
+  id: 'nasa-juno',
+  title: 'NASA Science — Juno',
+  url: 'https://science.nasa.gov/mission/juno/',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_MRO: Source = {
+  id: 'jpl-horizons-mro',
+  title:
+    'JPL Horizons — osculating orbital elements of the Mars Reconnaissance Orbiter (-74) about Mars at JD 2461317.5, ecliptic of J2000, with its notes on the spacecraft',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-74%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40499%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272461317.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_MRO: Source = {
+  id: 'nasa-mro',
+  title: 'NASA Science — Mars Reconnaissance Orbiter',
+  url: 'https://science.nasa.gov/mission/mars-reconnaissance-orbiter/',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_SWIFT: Source = {
+  id: 'jpl-horizons-swift',
+  title:
+    'JPL Horizons — osculating orbital elements of the Swift Observatory (-128485) about Earth at JD 2461317.5, ecliptic of J2000, with its notes on the spacecraft',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27Swift%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272461317.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_SWIFT: Source = {
+  id: 'nasa-swift',
+  title: 'NASA Science — Neil Gehrels Swift Observatory',
+  url: 'https://science.nasa.gov/mission/swift/',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_CHANDRA: Source = {
+  id: 'jpl-horizons-chandra',
+  title:
+    'JPL Horizons — osculating orbital elements of the Chandra X-ray Observatory (-151) about Earth at JD 2461317.5, ecliptic of J2000, with its notes on the spacecraft',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-151%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272461317.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_CHANDRA_FACTS: Source = {
+  id: 'nasa-chandra-facts',
+  title:
+    'NASA Facts — Exploring the Invisible Universe: The Chandra X-ray Observatory (FS-2005-05-51-MSFC)',
+  url: 'https://www.nasa.gov/wp-content/uploads/2023/07/108075main-revchandra.pdf',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_ISS_FACTS: Source = {
   id: 'nasa-iss-facts',
   title: 'NASA — International Space Station Facts and Figures',

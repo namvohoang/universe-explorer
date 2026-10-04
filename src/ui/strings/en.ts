@@ -347,6 +347,8 @@ export const en = {
   spacecraftNote:
     'This is a 3D model made by NASA, not a photo. The path is the real one for one day. It keeps shifting, so where it is on the path today is not exact.',
   statHeight: 'Above the ground',
+  statNearest: 'Nearest, above the surface',
+  statFarthest: 'Farthest, above the surface',
   valueMetresLong: '{n} metres long',
   statLength: 'Size',
   cardIdaHello: 'Ida is an asteroid with a tiny moon of its own, called Dactyl.',
@@ -357,6 +359,36 @@ export const en = {
   cardPsycheFact1: 'It goes around the Sun between Mars and Jupiter.',
   cardPsycheFact2: 'Scientists think it is a mix of rock and metal.',
   cardPsycheFact3: 'It may hold metal from the middle of a small world that broke apart long ago.',
+  cardJunoHello: 'Juno is a spacecraft sent to study Jupiter from close up.',
+  cardJunoFact1: 'It was the first spacecraft at Jupiter to run on sunlight.',
+  cardJunoFact2: 'Its three long solar panels make it more than 20 metres wide.',
+  cardJunoFact3: 'Its first trip around Jupiter took 53 days.',
+  modelAltJuno:
+    'A 3D model of Juno: a six-sided body with three very long solar panels spread out like the blades of a windmill.',
+  nameMro: 'The Mars Reconnaissance Orbiter',
+  cardMroHello:
+    'The Mars Reconnaissance Orbiter goes around Mars and takes very sharp pictures of the ground.',
+  cardMroFact1: 'It left Earth in 2005.',
+  cardMroFact2: 'It looks for signs that Mars once had water for a long time.',
+  cardMroFact3: 'Its camera can spot something as small as a dinner table on the ground.',
+  modelAltMro:
+    'A 3D model of the orbiter: a body with a large round dish on top and a wide solar panel on each side.',
+  nameSwift: 'The Swift Observatory',
+  cardSwiftHello:
+    'Swift is a satellite that watches for the most powerful explosions in the universe.',
+  cardSwiftFact1: 'It carries three telescopes.',
+  cardSwiftFact2: 'It sees kinds of light our eyes cannot, such as X-rays and gamma rays.',
+  cardSwiftFact3: 'It was launched in November 2004.',
+  modelAltSwift:
+    'A 3D model of Swift: a boxy body with telescopes pointing out of one end and a solar panel on each side.',
+  nameChandra: 'The Chandra X-ray Observatory',
+  cardChandraHello:
+    'Chandra is a telescope in space that sees X-rays, a kind of light our eyes cannot see.',
+  cardChandraFact1:
+    'Its path is a long oval. At its farthest it is almost a third of the way to the Moon.',
+  cardChandraFact2: 'One trip around Earth takes it 64 hours.',
+  cardChandraFact3: 'A space shuttle carried it up in 1999.',
+  modelAltChandra: 'A 3D model of Chandra: a long silver tube with a solar panel on each side.',
   nameIss: 'The International Space Station',
   cardIssHello:
     'The International Space Station is a home in space where astronauts live and work.',

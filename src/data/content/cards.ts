@@ -20,7 +20,11 @@ import {
   NASA_HUBBLE_CASSIOPEIA,
   NASA_HUBBLE_M104,
   NASA_HUBBLE_NUMBERS,
+  NASA_CHANDRA_FACTS,
   NASA_ISS_FACTS,
+  NASA_JUNO,
+  NASA_MRO,
+  NASA_SWIFT,
   NASA_HUBBLE_M31,
   NASA_HUBBLE_M33,
   NASA_HUBBLE_M51,
@@ -345,6 +349,117 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_HUBBLE_NUMBERS],
+  },
+  {
+    id: 'juno',
+    hello: {
+      key: 'cardJunoHello',
+      sourceId: 'nasa-juno',
+      quote:
+        'Juno has provided breathtaking images and breakthrough discoveries from Jupiter and its moons',
+    },
+    facts: [
+      {
+        key: 'cardJunoFact1',
+        sourceId: 'nasa-juno',
+        quote: 'First solar-powered spacecraft operating at Jupiter.',
+      },
+      {
+        key: 'cardJunoFact2',
+        sourceId: 'nasa-juno',
+        quote: 'give it an overall width exceeding 66 feet (20 meters)',
+      },
+      {
+        key: 'cardJunoFact3',
+        sourceId: 'nasa-juno',
+        quote: 'From its very first orbit, stretching across 53 days',
+      },
+    ],
+    moons: null,
+    sources: [NASA_JUNO],
+  },
+  {
+    id: 'mro',
+    hello: {
+      key: 'cardMroHello',
+      sourceId: 'nasa-mro',
+      quote: 'The instruments zoom in for extreme close-up photography of the Martian surface',
+    },
+    facts: [
+      {
+        key: 'cardMroFact1',
+        sourceId: 'nasa-mro',
+        quote: "NASA's Mars Reconnaissance Orbiter blasted off from Cape Canaveral in 2005",
+      },
+      {
+        key: 'cardMroFact2',
+        sourceId: 'nasa-mro',
+        quote:
+          'on a search for evidence that water persisted on the surface of Mars for long periods of time',
+      },
+      {
+        key: 'cardMroFact3',
+        sourceId: 'nasa-mro',
+        quote: 'this camera can spot something as small as a dinner table',
+      },
+    ],
+    moons: null,
+    sources: [NASA_MRO],
+  },
+  {
+    id: 'swift',
+    hello: {
+      key: 'cardSwiftHello',
+      sourceId: 'nasa-swift',
+      quote:
+        'is a satellite that studies gamma-ray bursts, the most powerful explosions in the universe',
+    },
+    facts: [
+      {
+        key: 'cardSwiftFact1',
+        sourceId: 'nasa-swift',
+        quote: 'Swift houses three multiwavelength telescopes',
+      },
+      {
+        key: 'cardSwiftFact2',
+        sourceId: 'nasa-swift',
+        quote: 'collecting data in visible, ultraviolet, X-ray, and gamma-ray light',
+      },
+      {
+        key: 'cardSwiftFact3',
+        sourceId: 'nasa-swift',
+        quote: 'Launch Nov. 20, 2004',
+      },
+    ],
+    moons: null,
+    sources: [NASA_SWIFT],
+  },
+  {
+    id: 'chandra',
+    hello: {
+      key: 'cardChandraHello',
+      sourceId: 'nasa-chandra-facts',
+      quote: 'Chandra allows scientists from around the world to obtain unprecedented X-ray images',
+    },
+    facts: [
+      {
+        key: 'cardChandraFact1',
+        sourceId: 'nasa-chandra-facts',
+        quote: 'Chandra travels almost one-third of the way to the Moon',
+      },
+      {
+        key: 'cardChandraFact2',
+        sourceId: 'nasa-chandra-facts',
+        quote: 'It takes Chandra 64 hours to complete one full orbit',
+      },
+      {
+        key: 'cardChandraFact3',
+        sourceId: 'nasa-chandra-facts',
+        quote: 'was carried into low-Earth orbit by the Space Shuttle Columbia on July 23, 1999',
+      },
+    ],
+    moons: null,
+    sources: [NASA_CHANDRA_FACTS],
   },
   {
     id: 'mars',

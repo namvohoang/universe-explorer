@@ -271,6 +271,10 @@ The owner asked for more objects, and for the things people have put in orbit ro
 - [x] 7.5 Star patterns in 3D (Orion, the Big Dipper, Cassiopeia, the Southern Cross): a new `constellation`
       kind, each star placed from its ESA Hipparcos position and distance, first seen from the Sun
       and then turned to show how far apart the stars really are.
+- [x] 7.6 More spacecraft: Juno at Jupiter, the Mars Reconnaissance Orbiter, and the Earth
+      satellites Swift and Chandra, each with its Horizons orbit and NASA's 3D model. Left out for
+      now: Parker Solar Probe (no published size), Europa Clipper (model too heavy), Terra (NASA's
+      model file is broken), Voyager and New Horizons (escape paths, which the orbit code cannot draw).
 
 **Acceptance:** every new object has a cited source for each number, a credited picture or model,
 a card with a recording, and passes the gate.

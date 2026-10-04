@@ -14,8 +14,13 @@
   </head>
   <body>
     <canvas id="stage" aria-label="3D view of space"></canvas>
+    <div id="markers"></div>
     <header class="top">
-      <h1 id="title"></h1>
+      <div class="brand">
+        <h1 id="title"></h1>
+        <p id="scale-label" aria-live="polite"></p>
+      </div>
+      <div class="tools" id="tools"></div>
     </header>
     <script type="module" src="/src/main.ts"></script>
   </body>

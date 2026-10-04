@@ -52,17 +52,23 @@ export function createRingMap(system: RingSystem, planetEquatorialRadiusKm: numb
   };
 }
 
+// The logdepthbuf chunks keep the rings ordered correctly with the stage's logarithmic depth.
 const VERTEX = /* glsl */ `
+  #include <common>
+  #include <logdepthbuf_pars_vertex>
   varying vec3 vPosition;
   void main() {
     vPosition = position;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    #include <logdepthbuf_vertex>
   }
 `;
 
 // The planet is a unit sphere at the origin of the space the ring is drawn in, so a point of
 // the ring is in shadow when the line from it towards the Sun passes through that sphere.
 const FRAGMENT = /* glsl */ `
+  #include <common>
+  #include <logdepthbuf_pars_fragment>
   uniform sampler2D profile;
   uniform float inner;
   uniform float outer;
@@ -71,6 +77,7 @@ const FRAGMENT = /* glsl */ `
   uniform float shadowBrightness;
   varying vec3 vPosition;
   void main() {
+    #include <logdepthbuf_fragment>
     float radius = length(vPosition.xy);
     float opacity = texture2D(profile, vec2((radius - inner) / (outer - inner), 0.5)).r;
     if (opacity <= 0.0) discard;

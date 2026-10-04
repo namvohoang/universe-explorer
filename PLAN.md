@@ -183,8 +183,8 @@ supported date range; in `true` mode every size and distance ratio equals the ca
 - [x] 2.4 Saturn's rings (and the fainter ring systems) at real radii; ring shadow and planet shadow.
 - [x] 2.5 Orbit paths drawn from the same elements that move the bodies.
 - [x] 2.6 Lighting from the Sun: day and night sides, Moon phases.
-- [~] 2.7 Scale-mode switch with the on-screen label; markers so tiny bodies can be found in `true` mode.
-- [ ] 2.8 Date clock with pause, speeds and "today".
+- [x] 2.7 Scale-mode switch with the on-screen label; markers so tiny bodies can be found in `true` mode.
+- [~] 2.8 Date clock with pause, speeds and "today".
 - [ ] 2.9 Info card, name labels, chips and scene tabs, ported from the prototype.
 - [ ] 2.10 Card content for the ten bodies: every prototype stat and fact re-sourced or removed; numbers generated from the catalogue.
 - [ ] 2.11 Read aloud with the browser voice.

@@ -1,7 +1,8 @@
-import { Color, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+import { Color, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { Vec3 } from '../sim/vec3';
 import { followTarget, startFlight, stepFlight, type Flight, type View } from './flight';
+import { pixelsFor } from './projection';
 
 const BACKGROUND = '#05070f';
 const MAX_PIXEL_RATIO = 2;
@@ -31,11 +32,24 @@ export interface FlyTo {
   readonly idleTurn: boolean;
 }
 
+/** Where a point of the scene lands on screen. */
+export interface ScreenPoint {
+  /** CSS pixels from the top-left of the view. */
+  readonly x: number;
+  readonly y: number;
+  /** False when the point is behind the camera or outside the view. */
+  readonly visible: boolean;
+  /** How many CSS pixels one scene unit covers at that point. */
+  readonly pixelsPerUnit: number;
+}
+
 export interface Stage {
   readonly scene: Scene;
   readonly camera: PerspectiveCamera;
   /** Width over height of the view, for choosing camera distances. */
   aspect(): number;
+  /** Projects a scene position onto the screen, e.g. to place a label over a body. */
+  toScreen(position: Vec3): ScreenPoint;
   flyTo(request: FlyTo): void;
   /** Jumps there without a flight, e.g. for the first frame. */
   lookAt(request: FlyTo): void;
@@ -50,13 +64,15 @@ const toVec3 = (v: { x: number; y: number; z: number }): Vec3 => ({ x: v.x, y: v
 
 /** The stage every scene is drawn on: renderer, camera, drag-to-look controls and fly-to. */
 export function createStage(canvas: HTMLCanvasElement, options: StageOptions): Stage {
-  const renderer = new WebGLRenderer({ canvas, antialias: true });
+  // Distances span a factor of millions between a planet's surface and the edge of the
+  // system, more than an ordinary depth buffer can order correctly.
+  const renderer = new WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
   renderer.setPixelRatio(Math.min(options.pixelRatio, MAX_PIXEL_RATIO));
 
   const scene = new Scene();
   scene.background = new Color(BACKGROUND);
 
-  const camera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, 0.01, 100_000);
+  const camera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, 1e-4, 1e6);
   camera.position.set(0, 30, 60);
 
   const controls = new OrbitControls(camera, canvas);
@@ -70,6 +86,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   let flight: Flight | null = null;
   let previousTarget: Vec3 | null = null;
   let lastTime: number | null = null;
+  let viewWidth = 1;
+  let viewHeight = 1;
+  const projected = new Vector3();
 
   const currentView = (): View => ({
     camera: toVec3(camera.position),
@@ -133,6 +152,22 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     scene,
     camera,
     aspect: () => camera.aspect,
+    toScreen(position) {
+      projected.set(position.x, position.y, position.z);
+      const distance = projected.distanceTo(camera.position);
+      projected.project(camera);
+      const inView =
+        projected.z > -1 &&
+        projected.z < 1 &&
+        Math.abs(projected.x) <= 1 &&
+        Math.abs(projected.y) <= 1;
+      return {
+        x: (projected.x * 0.5 + 0.5) * viewWidth,
+        y: (-projected.y * 0.5 + 0.5) * viewHeight,
+        visible: inView,
+        pixelsPerUnit: pixelsFor(1, distance, FIELD_OF_VIEW_DEG, viewHeight),
+      };
+    },
     flyTo: (request) => {
       begin(request, false);
     },
@@ -144,6 +179,8 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       frameCallbacks.push(callback);
     },
     resize(width, height) {
+      viewWidth = width;
+      viewHeight = height;
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);

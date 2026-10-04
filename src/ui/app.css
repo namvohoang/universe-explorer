@@ -1,10 +1,19 @@
 :root {
   color-scheme: dark;
   --void: #060914;
+  --panel: rgba(15, 22, 46, 0.84);
+  --line: rgba(160, 180, 255, 0.2);
   --ink: #f4eedc;
+  --ink-dim: #aeb6d2;
   --sun: #ffc53d;
+  --sun-ink: #2a1a00;
+  --sky: #6fd3ff;
   --display: 'Lilita One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
   --body: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 html,
@@ -17,6 +26,7 @@ body {
   background: var(--void);
   color: var(--ink);
   font-family: var(--body);
+  font-size: 16px;
   overflow: hidden;
 }
 
@@ -29,16 +39,139 @@ body {
   touch-action: none;
 }
 
-.top {
-  position: fixed;
-  top: calc(12px + env(safe-area-inset-top, 0px));
-  left: 16px;
+button {
+  font: 700 14px/1 var(--body);
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  min-height: 44px;
+  padding: 0 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
 }
 
-.top h1 {
+button:hover {
+  border-color: rgba(255, 197, 61, 0.6);
+}
+
+button[aria-pressed='true'] {
+  background: var(--sun);
+  color: var(--sun-ink);
+  border-color: transparent;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--sky);
+  outline-offset: 2px;
+}
+
+.top {
+  position: fixed;
+  z-index: 3;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px 16px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+
+.top > * {
+  pointer-events: auto;
+}
+
+.brand h1 {
   margin: 0;
   font-family: var(--display);
   font-weight: 400;
   font-size: clamp(24px, 3.2vw, 32px);
   line-height: 1;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+}
+
+.brand p {
+  margin: 6px 0 0;
+  max-width: 34ch;
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.3;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+.tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.seg {
+  display: flex;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.seg button {
+  border: 0;
+  background: transparent;
+  min-height: 38px;
+  padding: 0 12px;
+}
+
+.seg button[aria-pressed='true'] {
+  background: var(--sun);
+}
+
+#markers {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* A 44px tap target centred on the body, with a small ring drawn in the middle. */
+.marker {
+  position: absolute;
+  left: -22px;
+  top: -22px;
+  width: 44px;
+  height: 44px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: auto;
+  will-change: transform;
+}
+
+.marker::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 2px solid var(--sky);
+  border-radius: 50%;
+  opacity: 0.85;
+}
+
+.marker:hover::after,
+.marker:focus-visible::after {
+  border-color: var(--sun);
+  opacity: 1;
+}
+
+.marker:hover {
+  border: 0;
 }

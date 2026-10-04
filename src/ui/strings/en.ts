@@ -1,6 +1,12 @@
 /** Every user-facing string lives here, never inline in components. */
 export const en = {
   appTitle: 'Universe Explorer',
+  wholeView: 'Whole view',
+  goTo: 'Go to',
+  scaleControl: 'How big and how far things are drawn',
+  scaleOptionTrue: 'Real',
+  scaleOptionTrueSizes: 'Real sizes',
+  scaleOptionEasy: 'Easy view',
   scaleLabelTrue: 'Real sizes and real distances.',
   scaleLabelTrueSizes:
     'Planets are the right size next to each other. They are really much farther apart.',

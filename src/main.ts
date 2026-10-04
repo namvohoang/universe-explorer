@@ -3,8 +3,11 @@ import { catalogue } from './data/catalogue';
 import { distanceForAspect } from './scene/flight';
 import { createSolarSystem } from './scene/solarSystem';
 import { createStage, type FlyTo } from './scene/stage';
-import { createScale } from './sim/scale';
+import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import { advanceClock, createClock, dateLimits, julianDateFromUnixMs } from './sim/time';
+import { create, mustFind } from './ui/dom';
+import { createMarkers } from './ui/markers';
+import { createSegmented } from './ui/segmented';
 import { en } from './ui/strings/en';
 
 /** Whole-view camera: looking down on the system from the prototype's angle. */
@@ -14,13 +17,20 @@ const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
 const BODY_VIEW_RADII = 6;
 const BODY_CLOSEST_RADII = 1.8;
+const DEFAULT_SCALE: ScaleMode = 'easy';
+
+const SCALE_OPTION_LABELS: Readonly<Record<ScaleMode, string>> = {
+  true: en.scaleOptionTrue,
+  'true-sizes': en.scaleOptionTrueSizes,
+  easy: en.scaleOptionEasy,
+};
 
 function start(): void {
-  const canvas = document.querySelector<HTMLCanvasElement>('#stage');
-  const title = document.querySelector<HTMLElement>('#title');
-  if (!canvas || !title) throw new Error('Page is missing #stage or #title');
-
-  title.textContent = en.appTitle;
+  const canvas = mustFind('#stage');
+  if (!(canvas instanceof HTMLCanvasElement)) throw new Error('#stage must be a canvas');
+  const tools = mustFind('#tools');
+  const scaleLabel = mustFind('#scale-label');
+  mustFind('#title').textContent = en.appTitle;
 
   const stage = createStage(canvas, {
     pixelRatio: window.devicePixelRatio,
@@ -29,9 +39,14 @@ function start(): void {
 
   const limits = dateLimits(catalogue);
   let clock = createClock(julianDateFromUnixMs(Date.now()), limits);
-  const system = createSolarSystem(catalogue, createScale('easy'));
+  let scale = createScale(DEFAULT_SCALE);
+  const system = createSolarSystem(catalogue, scale);
   system.setDate(clock.jd);
   stage.scene.add(system.group);
+
+  const drawn = catalogue.filter((object) => object.shape?.type === 'spheroid');
+  /** The body the camera is on, or `null` for the whole view. */
+  let focus: string | null = null;
 
   const resize = (): void => {
     stage.resize(window.innerWidth, window.innerHeight);
@@ -60,15 +75,69 @@ function start(): void {
     idleTurn: false,
   });
 
+  const currentView = (): FlyTo => (focus === null ? wholeView() : bodyView(focus));
+
+  const goTo = (id: string | null): void => {
+    focus = id;
+    stage.flyTo(currentView());
+  };
+
+  // The sentence that says what is and is not to scale is always on screen.
+  const showScale = (): void => {
+    scaleLabel.textContent = en[scale.labelKey];
+  };
+  showScale();
+
+  const home = create('button', '', en.wholeView);
+  home.type = 'button';
+  home.addEventListener('click', () => {
+    goTo(null);
+  });
+  const scaleControl = createSegmented(
+    en.scaleControl,
+    SCALE_MODES.map((mode) => ({ value: mode, label: SCALE_OPTION_LABELS[mode] })),
+    scale.mode,
+    (mode) => {
+      scale = createScale(mode);
+      system.setScale(scale);
+      system.setDate(clock.jd);
+      showScale();
+      // Everything has moved and changed size, so the camera re-frames what it was on at once.
+      stage.lookAt(currentView());
+    },
+  );
+  tools.append(home, scaleControl.element);
+
+  const markers = createMarkers(
+    mustFind('#markers'),
+    drawn.map((object) => ({ id: object.id, label: `${en.goTo} ${object.name}` })),
+    goTo,
+  );
+
   // A link can open straight onto one body: ?go=saturn
   const wanted = new URLSearchParams(window.location.search).get('go');
-  const known = catalogue.some((o) => o.id === wanted && o.shape?.type === 'spheroid');
+  const wantedScale = new URLSearchParams(window.location.search).get('scale');
+  const linkedScale = SCALE_MODES.find((mode) => mode === wantedScale);
+  if (linkedScale) {
+    scale = createScale(linkedScale);
+    system.setScale(scale);
+    system.setDate(clock.jd);
+    scaleControl.show(linkedScale);
+    showScale();
+  }
+  if (drawn.some((object) => object.id === wanted)) focus = wanted;
   stage.lookAt(wholeView());
-  if (wanted && known) stage.lookAt(bodyView(wanted));
+  if (focus !== null) stage.lookAt(bodyView(focus));
 
   stage.onFrame((dt) => {
     clock = advanceClock(clock, dt, limits);
     system.setDate(clock.jd);
+  });
+  stage.onFrame(() => {
+    markers.update((id) => {
+      const point = stage.toScreen(system.positionOf(id));
+      return { point, radiusPixels: system.radiusOf(id) * point.pixelsPerUnit };
+    });
   });
   stage.start();
 }

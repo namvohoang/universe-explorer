@@ -6,7 +6,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { catalogue } from '../src/data/catalogue';
 import { checkCatalogue } from './validate/catalogue';
-import { MEDIA_DIR, checkCredits } from './validate/credits';
+import { MEDIA_DIR, checkCredits, checkMediaUses } from './validate/credits';
 
 const ROOT = join(import.meta.dirname, '..');
 const IGNORED_FILES = new Set(['.gitkeep', '.DS_Store']);
@@ -21,9 +21,14 @@ function filesUnder(dir: string): string[] {
 }
 
 const mediaFiles = filesUnder(join(ROOT, MEDIA_DIR));
+const credits = readFileSync(join(ROOT, 'CREDITS.md'), 'utf8');
+const mediaUses = catalogue.flatMap((object) =>
+  object.media.map((media) => ({ objectId: object.id, file: media.file, kind: media.kind })),
+);
 const errors = [
   ...checkCatalogue(catalogue),
-  ...checkCredits(mediaFiles, readFileSync(join(ROOT, 'CREDITS.md'), 'utf8')),
+  ...checkCredits(mediaFiles, credits),
+  ...checkMediaUses(mediaUses, credits),
 ];
 
 if (errors.length > 0) {

@@ -155,3 +155,35 @@ export function checkCredits(mediaFiles: readonly string[], creditsMarkdown: str
   }
   return errors;
 }
+
+/** What the catalogue says about one media file. */
+export interface MediaUse {
+  readonly objectId: string;
+  readonly file: string;
+  readonly kind: string;
+}
+
+/**
+ * Checks the catalogue's media against CREDITS.md: every file an object uses is credited, and
+ * the credit agrees on which object it shows and what kind of picture it is.
+ */
+export function checkMediaUses(uses: readonly MediaUse[], creditsMarkdown: string): string[] {
+  const rows = new Map(parseMediaCredits(creditsMarkdown).rows.map((row) => [row.File, row]));
+  const errors: string[] = [];
+  for (const use of uses) {
+    const row = rows.get(use.file);
+    if (!row) {
+      errors.push(`${use.objectId}: uses ${use.file}, which has no row in CREDITS.md`);
+      continue;
+    }
+    if (row.Kind !== use.kind) {
+      errors.push(
+        `${use.objectId}: ${use.file} is "${use.kind}" here but "${row.Kind}" in CREDITS.md`,
+      );
+    }
+    if (row.Object !== use.objectId) {
+      errors.push(`${use.objectId}: ${use.file} is credited as showing "${row.Object}"`);
+    }
+  }
+  return errors;
+}

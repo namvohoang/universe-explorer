@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkCredits, parseMediaCredits } from './credits';
+import { checkCredits, checkMediaUses, parseMediaCredits } from './credits';
 
 const HEADER = `## Images, textures and shape models
 
@@ -96,5 +96,25 @@ describe('checkCredits', () => {
     'https://astrogeology.usgs.gov/search/map/x',
   ])('accepts trusted source %s', (Source) => {
     expect(checkCredits([FILE], HEADER + row({ Source }))).toEqual([]);
+  });
+});
+
+describe('checkMediaUses', () => {
+  const use = { objectId: 'earth', file: FILE, kind: 'photo' };
+
+  it('passes when the catalogue and the credits agree', () => {
+    expect(checkMediaUses([use], HEADER + row())).toEqual([]);
+  });
+
+  it('flags a file the catalogue uses but nobody credited', () => {
+    expect(checkMediaUses([use], HEADER)).toHaveLength(1);
+  });
+
+  it('flags a kind that differs from the credit', () => {
+    expect(checkMediaUses([{ ...use, kind: 'artist-concept' }], HEADER + row())).toHaveLength(1);
+  });
+
+  it('flags a file credited as showing another object', () => {
+    expect(checkMediaUses([{ ...use, objectId: 'mars' }], HEADER + row())).toHaveLength(1);
   });
 });

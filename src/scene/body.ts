@@ -92,6 +92,8 @@ export interface Body {
   setScale(scale: Scale): void;
   /** Fetches the body's 3D model if it has one that was put off until needed. */
   loadDetail(): void;
+  /** Fetches only the surface map: cheap enough to do for a whole family of moons at once. */
+  loadMap(): void;
   /** Turns the body to where it is at this date. */
   setDate(jd: number): void;
   /**
@@ -183,13 +185,17 @@ interface Surface {
   readonly material: Material;
   /** Set when the surface is lit by the star and so can show a ring's shadow. */
   readonly lit: MeshStandardMaterial | null;
-  readonly texture: Texture | null;
+  /** Fetches the surface map, if there is one; safe to call again. */
+  loadMap(): void;
+  dispose(): void;
 }
 
 function createSurface(object: CelestialObject): Surface {
+  const nothing = (): void => undefined;
   // A star shines by itself; everything else is lit by it.
   if (object.kind === 'star') {
-    return { material: new MeshBasicMaterial({ color: UNMAPPED_STAR }), lit: null, texture: null };
+    const material = new MeshBasicMaterial({ color: UNMAPPED_STAR });
+    return { material, lit: null, loadMap: nothing, dispose: nothing };
   }
   const material = new MeshStandardMaterial({
     color: object.kind === 'comet' ? COMET_NUCLEUS : UNMAPPED_SURFACE,
@@ -197,16 +203,36 @@ function createSurface(object: CelestialObject): Surface {
     metalness: 0,
   });
   const map = object.media.find((media) => media.role === 'surface-map');
-  if (!map) return { material, lit: material, texture: null };
+  if (!map) return { material, lit: material, loadMap: nothing, dispose: nothing };
 
-  const texture = new TextureLoader().load(mediaUrl(map.file), () => {
-    material.map = texture;
-    material.color.set('#ffffff');
-    material.needsUpdate = true;
-  });
-  texture.colorSpace = SRGBColorSpace;
-  texture.anisotropy = ANISOTROPY;
-  return { material, lit: material, texture };
+  let texture: Texture | null = null;
+  return {
+    material,
+    lit: material,
+    loadMap() {
+      if (texture) return;
+      const loading = new TextureLoader().load(mediaUrl(map.file), () => {
+        material.map = loading;
+        material.color.set('#ffffff');
+        material.needsUpdate = true;
+      });
+      loading.colorSpace = SRGBColorSpace;
+      loading.anisotropy = ANISOTROPY;
+      texture = loading;
+    },
+    dispose() {
+      texture?.dispose();
+    },
+  };
+}
+
+/**
+ * Whether a body's map and model wait until somebody goes to see it. The Sun and the planets
+ * can be made out from the whole view, so theirs load at once; a moon, a small world or a
+ * spacecraft is a speck until visited, and there are many of them.
+ */
+function waitsForAVisit(object: CelestialObject): boolean {
+  return object.kind !== 'star' && object.kind !== 'planet';
 }
 
 export function createBody(
@@ -232,7 +258,8 @@ export function createBody(
   group.add(tilt);
 
   const geometry = new SphereGeometry(1, SPHERE_SEGMENTS.width, SPHERE_SEGMENTS.height);
-  const { material, lit, texture } = createSurface(object);
+  const surface = createSurface(object);
+  const { material, lit } = surface;
   // The proportions live on a holder so the spinning mesh inside stays a unit sphere.
   const flattened = new Group();
   const mesh = new Mesh(geometry, material);
@@ -243,17 +270,14 @@ export function createBody(
   const model = object.media.find((media) => media.role === 'model');
   let modelWanted = model !== undefined;
   const loadDetail = (): void => {
+    surface.loadMap();
     if (!model || !modelWanted) return;
     modelWanted = false;
     loadModel(model.file, mesh, (dispose) => extras.push(dispose));
   };
-  if (object.kind === 'spacecraft') {
-    // A spacecraft is nothing like a ball, so no ball is drawn while its model is on the way.
-    // The model is big and the craft tiny, so it is only fetched when someone goes to see it.
-    material.visible = false;
-  } else {
-    loadDetail();
-  }
+  // A spacecraft is nothing like a ball, so no ball is drawn while its model is on the way.
+  if (object.kind === 'spacecraft') material.visible = false;
+  if (!waitsForAVisit(object)) loadDetail();
   if (object.kind === 'star') {
     const glow = createGlow();
     flattened.add(glow);
@@ -294,6 +318,9 @@ export function createBody(
     group,
     radius: () => longest,
     loadDetail,
+    loadMap: () => {
+      surface.loadMap();
+    },
     setScale,
     setDate(jd) {
       if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd);
@@ -318,7 +345,7 @@ export function createBody(
     dispose() {
       geometry.dispose();
       material.dispose();
-      texture?.dispose();
+      surface.dispose();
       for (const dispose of extras) dispose();
       rings?.dispose();
       ringMap?.texture.dispose();

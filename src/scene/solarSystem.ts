@@ -24,7 +24,10 @@ export interface SolarSystem {
   setScale(scale: Scale): void;
   /** Where a body is now, in scene units. */
   positionOf(id: string): Vec3;
-  /** Makes sure a body's 3D model is loaded, for one that waits until somebody visits. */
+  /**
+   * Makes sure the maps and models are loaded for a body and the small things round it, for
+   * those that wait until somebody visits.
+   */
   showDetail(id: string): void;
   /** Drawn radius of a body under the current scale. */
   radiusOf(id: string): number;
@@ -162,7 +165,21 @@ export function createSolarSystem(
       if (!position) throw new Error(`No position for "${id}"; call setDate first`);
       return position;
     },
-    showDetail: (id) => bodies.get(id)?.loadDetail(),
+    showDetail(id) {
+      // Going to a world brings its whole family into view: what it goes round, and
+      // everything that goes round either of them. Their maps are fetched; a heavy 3D model
+      // is fetched only for the one being visited.
+      const here = catalogue.find((object) => object.id === id);
+      const parent = catalogue.find((object) => object.id === here?.parentId);
+      // Everything goes round the Sun, so the Sun does not count as family.
+      const family = new Set([id, parent && parent.kind !== 'star' ? parent.id : id]);
+      for (const object of catalogue) {
+        if (family.has(object.id) || (object.parentId !== null && family.has(object.parentId))) {
+          bodies.get(object.id)?.loadMap();
+        }
+      }
+      bodies.get(id)?.loadDetail();
+    },
     radiusOf: (id) => bodyOf(id).radius(),
     glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,
     setViewer(camera) {

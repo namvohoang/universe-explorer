@@ -91,6 +91,8 @@ Trivial fixes (typos, config) may skip the plan but not the quality gate.
 ## 8. Dependencies
 
 - Permissive licences only (MIT, Apache-2.0, BSD, ISC). No GPL-family code.
+- Fonts may be OFL-1.1. Each font is credited in `CREDITS.md` and its licence text ships in
+  `public/licenses/`.
 - Check current library docs (context7) before using an API; never rely on memory for a
   fast-moving library.
 - MCP servers in `.mcp.json` send queries to external services. Never include personal data.

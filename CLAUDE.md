@@ -38,7 +38,8 @@ Detailed rules are in `.claude/rules/`.
 ## Sources
 - Every new image, texture or dataset goes into `CREDITS.md` with source URL, credit and licence,
   in the same commit.
-- Every new dependency must have a permissive licence (MIT, Apache-2.0, BSD, ISC).
+- Every new dependency must have a permissive licence (MIT, Apache-2.0, BSD, ISC). Fonts may be
+  OFL-1.1, credited in `CREDITS.md` with their licence text shipped in `public/licenses/`.
 
 ## Git
 - Commits are authored by the repo owner only. Do not add `Co-Authored-By` or other

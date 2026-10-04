@@ -1,3 +1,4 @@
+import './ui/fonts';
 import { createStage } from './scene/stage';
 import { en } from './ui/strings/en';
 

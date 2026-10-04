@@ -20,3 +20,26 @@ export function add(a: Vec3, b: Vec3): Vec3 {
 export function subtract(a: Vec3, b: Vec3): Vec3 {
   return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
 }
+
+export function dot(a: Vec3, b: Vec3): number {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+export function cross(a: Vec3, b: Vec3): Vec3 {
+  return {
+    x: a.y * b.z - a.z * b.y,
+    y: a.z * b.x - a.x * b.z,
+    z: a.x * b.y - a.y * b.x,
+  };
+}
+
+export function normalize(v: Vec3): Vec3 {
+  const size = length(v);
+  if (size === 0) throw new RangeError('Cannot normalise a zero vector');
+  return scale(v, 1 / size);
+}
+
+/** Angle between two directions, in radians, in [0, π]. */
+export function angleBetween(a: Vec3, b: Vec3): number {
+  return Math.atan2(length(cross(a, b)), dot(a, b));
+}

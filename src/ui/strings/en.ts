@@ -260,8 +260,12 @@ export const en = {
     'This 3D cloud is made from the real picture, shown in the corner. How deep the cloud is, is a guess: the picture cannot tell us.',
   deepNoteSimulation:
     'This is a computer model of what it is thought to look like, not a photo. The real picture is in the corner.',
-  deepNoteMeasured:
-    'This 3D model is built from real measurements. The real picture is in the corner.',
+  deepNoteCluster:
+    'Every dot is a real star, placed where the Gaia space telescope measured it. Distances to stars are hard to measure, so the cluster looks more stretched towards us than it really is.',
+  deepNoteStarSizes:
+    'The stars are the right size next to each other, and each is the colour its heat gives it. They are lined up to compare: really they are light-years apart.',
+  deepNotePlanetSystem:
+    'The star and the planets’ paths are the right size next to each other, and the planets go round at their real speeds. The planets are drawn {times} times too big so you can see them, and plain because nobody has seen what they look like.',
   eyebrowAsteroid: 'Asteroid · goes around the Sun',
   helloAsteroid: '{name} is an asteroid.',
   eyebrowBelt: 'Belt · many small worlds going around the Sun',

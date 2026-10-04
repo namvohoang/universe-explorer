@@ -141,7 +141,7 @@ export function createBlackHole(): DeepModel {
   return {
     group,
     radius: DISC_OUTER,
-    basis: 'simulation',
+    note: 'simulation',
     viewFrom: { x: 0, y: 0.75, z: 1 },
     update(dt, camera) {
       time.value += dt;

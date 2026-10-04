@@ -1,25 +1,77 @@
 import type { CelestialObject } from '../../data/types';
+import { isKnown } from '../../data/types';
+import { KM_PER_AU } from '../../sim/constants';
+import { bodyRadiusKm } from '../../sim/layout';
 import { createBlackHole } from './blackHole';
 import type { DeepModel } from './model';
 import { createPictureCloud } from './pictureCloud';
+import { createPlanetSystem } from './planetSystem';
+import { createStarCluster } from './starCluster';
+import { createStarSizes, type SizedStar } from './starSizes';
 
-export type { DeepModel, DeepModelBasis } from './model';
+export type { DeepModel, DeepModelNote } from './model';
+export { PLANET_ENLARGEMENT } from './planetSystem';
 
 /** A nebula is a deep cloud; a galaxy is a thin disc with a fat middle that slowly turns. */
 const NEBULA = { depth: 0.16, bulge: 1.2, spin: 0, lay: 'upright' } as const;
 const GALAXY = { depth: 0.012, bulge: 9, spin: 0.02, lay: 'flat' } as const;
 
+export interface DeepContext {
+  /** The whole catalogue, for the Sun and Earth that other things are measured against. */
+  readonly catalogue: readonly CelestialObject[];
+  /** Where the object's real picture is served from, if it has one. */
+  readonly pictureUrl: string | null;
+  /** The name to show for an object in a label. */
+  readonly nameOf: (object: CelestialObject) => string;
+}
+
 /**
  * The 3D model for something beyond the solar system, or `null` when there is none and only
  * its picture can be shown.
- *
- * @param pictureUrl where its real picture is served from, if it has one
  */
-export function createDeepModel(
-  object: CelestialObject,
-  pictureUrl: string | null,
-): DeepModel | null {
+export function createDeepModel(object: CelestialObject, context: DeepContext): DeepModel | null {
+  const { catalogue, pictureUrl, nameOf } = context;
+  const sun = catalogue.find((o) => o.id === 'sun');
+  const earth = catalogue.find((o) => o.id === 'earth');
+  const sunRadiusKm = sun ? bodyRadiusKm(sun) : null;
+  const earthRadiusKm = earth ? bodyRadiusKm(earth) : null;
+
   if (object.kind === 'black-hole') return createBlackHole();
+  if (object.kind === 'star-cluster' && object.stars) return createStarCluster(object.stars.value);
+
+  if (object.kind === 'exoplanet' && object.system && sunRadiusKm && earthRadiusKm) {
+    return createPlanetSystem({
+      starRadiusInSuns: object.system.starRadiusInSuns.value,
+      starTemperatureK: object.system.starTemperatureK.value,
+      planets: object.system.planets.value,
+      sunRadiusKm,
+      earthRadiusKm,
+      kmPerAu: KM_PER_AU,
+    });
+  }
+
+  if (object.kind === 'star' && sun?.kind === 'star') {
+    const { radiusInSuns, effectiveTemperatureK } = object;
+    if (radiusInSuns && isKnown(radiusInSuns) && isKnown(effectiveTemperatureK)) {
+      const stars: SizedStar[] = [
+        {
+          name: nameOf(object),
+          radiusInSuns: radiusInSuns.value,
+          temperatureK: effectiveTemperatureK.value,
+        },
+      ];
+      // The Sun stands beside it as the yardstick.
+      if (isKnown(sun.effectiveTemperatureK)) {
+        stars.unshift({
+          name: nameOf(sun),
+          radiusInSuns: 1,
+          temperatureK: sun.effectiveTemperatureK.value,
+        });
+      }
+      return createStarSizes(stars);
+    }
+  }
+
   if (pictureUrl === null) return null;
   if (object.kind === 'nebula') return createPictureCloud(pictureUrl, NEBULA);
   if (object.kind === 'galaxy') return createPictureCloud(pictureUrl, GALAXY);

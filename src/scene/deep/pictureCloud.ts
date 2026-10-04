@@ -136,7 +136,7 @@ export function createPictureCloud(url: string, options: CloudOptions): DeepMode
   return {
     group,
     radius: HALF_WIDTH,
-    basis: 'picture-cloud',
+    note: 'picture-cloud',
     viewFrom: options.lay === 'flat' ? { x: 0, y: 0.8, z: 1 } : { x: 0.35, y: 0.12, z: 1 },
     update(dt) {
       group.rotation.y += options.spin * dt;

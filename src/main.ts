@@ -1,7 +1,12 @@
 import './ui/fonts';
 import { catalogue } from './data/catalogue';
 import { distanceForAspect, litSideBearing } from './scene/flight';
-import { createDeepModel, type DeepModel, type DeepModelBasis } from './scene/deep';
+import {
+  PLANET_ENLARGEMENT,
+  createDeepModel,
+  type DeepModel,
+  type DeepModelNote,
+} from './scene/deep';
 import { createSolarSystem } from './scene/solarSystem';
 import { createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
@@ -21,6 +26,7 @@ import { createChips } from './ui/chips';
 import { createClockControl } from './ui/clockControl';
 import { createCompare } from './ui/compare';
 import { create, mustFind } from './ui/dom';
+import { fill } from './ui/format';
 import { createGrownUps } from './ui/grownups';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
@@ -167,10 +173,12 @@ function start(): void {
   // The 3D model standing in for the solar system while a deep-space object is picked.
   let deepModel: DeepModel | null = null;
   let deepModelFor: string | null = null;
-  const DEEP_NOTES: Readonly<Record<DeepModelBasis, string>> = {
+  const DEEP_NOTES: Readonly<Record<DeepModelNote, string>> = {
     'picture-cloud': en.deepNotePictureCloud,
     simulation: en.deepNoteSimulation,
-    measured: en.deepNoteMeasured,
+    cluster: en.deepNoteCluster,
+    'star-sizes': en.deepNoteStarSizes,
+    'planet-system': fill(en.deepNotePlanetSystem, { times: PLANET_ENLARGEMENT }),
   };
 
   /** Swaps the 3D view between the solar system and the model of the deep-space object in focus. */
@@ -181,7 +189,9 @@ function start(): void {
       stage.scene.remove(deepModel.group);
       deepModel.dispose();
     }
-    deepModel = object ? createDeepModel(object, pictureUrl) : null;
+    deepModel = object
+      ? createDeepModel(object, { catalogue, pictureUrl, nameOf: displayName })
+      : null;
     deepModelFor = object?.id ?? null;
     system.group.visible = deepModel === null && object === undefined;
     if (!deepModel) return;
@@ -200,7 +210,7 @@ function start(): void {
   const showFocus = (): void => {
     const base = cardModel(focus, catalogue);
     showDeepModel(base.picture?.url ?? null);
-    const model = deepModel ? { ...base, note: DEEP_NOTES[deepModel.basis] } : base;
+    const model = deepModel ? { ...base, note: DEEP_NOTES[deepModel.note] } : base;
     document.body.classList.toggle('deep-3d', deepModel !== null);
     card.show(model, narrationUrl(focus, speechLines(model)));
     chips.show(chipsFor(focus), focus);

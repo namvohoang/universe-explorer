@@ -39,11 +39,13 @@ const OTHER_MOONS_DISTANCE_TOLERANCE = 0.02;
  * Moons a single ellipse cannot follow well. Each stays on the right orbit, at the right
  * distance, but can be well away from its true place along it. Worst seen: Mimas 67° and 4.5% in
  * distance (its neighbour Tethys swings it back and forth along its orbit over decades);
- * Triton 8° (its tilted orbit slowly turns about Neptune, and that turning is left out).
+ * Triton 8° (its tilted orbit slowly turns about Neptune, and that turning is left out);
+ * Phobos 5.6° and 2.6% (one fixed period does not quite fit 80 years of so fast a moon).
  */
 const LOOSE_MOONS: Readonly<Record<string, { directionDeg: number; distance: number }>> = {
   mimas: { directionDeg: 75, distance: 0.06 },
   triton: { directionDeg: 10, distance: OTHER_MOONS_DISTANCE_TOLERANCE },
+  phobos: { directionDeg: 8, distance: 0.04 },
 };
 
 const ARCSEC_PER_DEG = 3600;

@@ -1,7 +1,9 @@
 import type { CelestialObject } from '../types';
 import { earth } from './earth';
 import { jupiter } from './jupiter';
+import { deimos } from './deimos';
 import { mars } from './mars';
+import { phobos } from './phobos';
 import { mercury } from './mercury';
 import { moon } from './moon';
 import { neptune } from './neptune';
@@ -37,6 +39,8 @@ export const catalogue: readonly CelestialObject[] = [
   earth,
   moon,
   mars,
+  phobos,
+  deimos,
   jupiter,
   io,
   europa,

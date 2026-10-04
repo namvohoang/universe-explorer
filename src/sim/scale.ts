@@ -57,7 +57,7 @@ interface DistanceCompression {
  * Venus's, and each planet's moons have to clear the next planet's.
  */
 const TRUE_SIZES_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.32 };
-const EASY_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.43 };
+const EASY_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.45 };
 
 function requirePositive(name: string, value: number): void {
   if (!(value > 0) || !Number.isFinite(value)) {

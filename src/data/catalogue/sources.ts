@@ -276,3 +276,27 @@ export const JPL_HORIZONS_TRITON: Source = {
   url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27801%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40899%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
   retrieved: '2026-10-04',
 };
+
+export const JPL_HORIZONS_PHOBOS_PERIOD: Source = {
+  id: 'jpl-horizons-phobos-period',
+  title:
+    'JPL Horizons — positions of Phobos about Mars at six dates from J2000 to 50 years later, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27401%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40499%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&VEC_TABLE=%271%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TLIST=%272451545.0+2451548.0+2451575.0+2451845.0+2454545.0+2469807.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_DEIMOS_PERIOD: Source = {
+  id: 'jpl-horizons-deimos-period',
+  title:
+    'JPL Horizons — positions of Deimos about Mars at six dates from J2000 to 50 years later, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27402%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40499%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&VEC_TABLE=%271%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TLIST=%272451545.0+2451548.0+2451575.0+2451845.0+2454545.0+2469807.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SAT_ELEM_MARS: Source = {
+  id: 'jpl-sat-elem-mars',
+  title:
+    'JPL Solar System Dynamics — Planetary Satellite Mean Elements, satellites of Mars (ephemeris MAR099)',
+  url: 'https://ssd.jpl.nasa.gov/sats/elem/',
+  retrieved: '2026-10-04',
+};

@@ -54,6 +54,12 @@ describe('sceneAxes', () => {
     expect(axes.y / axes.x).toBeLessThan(0.95);
   });
 
+  it('draws Phobos lumpy: its three radii are clearly different', () => {
+    const axes = sceneAxes(bodyShape('phobos'), createScale('true'));
+    expect(axes.y / axes.x).toBeLessThan(0.75);
+    expect(axes.z / axes.x).toBeLessThan(0.9);
+  });
+
   it.each(SCALE_MODES)('keeps the real proportions of a three-axis moon in %s mode', (mode) => {
     const shape = bodyShape('mimas');
     if (shape.type !== 'triaxial') throw new Error('Mimas is triaxial in the catalogue');

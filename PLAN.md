@@ -197,7 +197,7 @@ maps, real orbits and a real date; a body always sits on its drawn path; `/data-
 ### Phase 3 — The rest of the solar system
 
 - [x] 3.1 Major moons of Mars, Jupiter, Saturn, Uranus and Neptune, with orbits relative to their planet.
-- [ ] 3.2 Irregular bodies drawn from shape models or triaxial dimensions (never as spheres).
+- [x] 3.2 Irregular bodies drawn from shape models or triaxial dimensions (never as spheres).
 - [ ] 3.3 Dwarf planets.
 - [ ] 3.4 Asteroids and the asteroid belt and Kuiper belt as real distributions, not decorative rings.
 - [ ] 3.5 Comets: eccentric orbits, a tail that points away from the Sun and grows near it.

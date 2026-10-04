@@ -4,7 +4,15 @@ import { distanceForAspect } from './scene/flight';
 import { createSolarSystem } from './scene/solarSystem';
 import { createStage, type FlyTo } from './scene/stage';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
-import { advanceClock, createClock, dateLimits, julianDateFromUnixMs } from './sim/time';
+import {
+  advanceClock,
+  createClock,
+  dateLimits,
+  julianDateFromUnixMs,
+  withDate,
+  withSpeed,
+} from './sim/time';
+import { createClockControl } from './ui/clockControl';
 import { create, mustFind } from './ui/dom';
 import { createMarkers } from './ui/markers';
 import { createSegmented } from './ui/segmented';
@@ -108,6 +116,17 @@ function start(): void {
   );
   tools.append(home, scaleControl.element);
 
+  const clockControl = createClockControl(
+    limits,
+    (speed) => {
+      clock = withSpeed(clock, speed);
+    },
+    () => {
+      clock = withDate(clock, julianDateFromUnixMs(Date.now()), limits);
+    },
+  );
+  mustFind('#tray').append(clockControl.element);
+
   const markers = createMarkers(
     mustFind('#markers'),
     drawn.map((object) => ({ id: object.id, label: `${en.goTo} ${object.name}` })),
@@ -132,6 +151,7 @@ function start(): void {
   stage.onFrame((dt) => {
     clock = advanceClock(clock, dt, limits);
     system.setDate(clock.jd);
+    clockControl.show(clock);
   });
   stage.onFrame(() => {
     markers.update((id) => {

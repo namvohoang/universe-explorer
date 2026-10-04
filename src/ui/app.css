@@ -175,3 +175,60 @@ button:focus-visible {
 .marker:hover {
   border: 0;
 }
+
+.tray {
+  position: fixed;
+  z-index: 3;
+  left: 16px;
+  right: 16px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.tray > * {
+  pointer-events: auto;
+}
+
+.clock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 16px;
+  padding: 8px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+}
+
+.clock p {
+  margin: 0;
+}
+
+.clock-date {
+  font-weight: 700;
+  font-size: 18px;
+  /* Digits of equal width, so the date does not jiggle as it runs. */
+  font-variant-numeric: tabular-nums;
+}
+
+.clock-rate {
+  color: var(--ink-dim);
+  font-size: 13px;
+}
+
+.clock-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.clock-limit {
+  flex-basis: 100%;
+  text-align: center;
+  color: var(--sun);
+  font-size: 14px;
+}

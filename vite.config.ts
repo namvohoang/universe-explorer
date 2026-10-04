@@ -6,6 +6,6 @@ export default defineConfig({
   // Never inline assets as data: URIs; the page's CSP only allows fonts from its own origin.
   build: { assetsInlineLimit: 0 },
   test: {
-    include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'tests/**/*.test.ts', 'tools/**/*.test.ts'],
   },
 });

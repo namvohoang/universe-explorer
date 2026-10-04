@@ -153,7 +153,7 @@ display time (rounding, units, comparisons such as "N Earths wide"), never typed
 - [x] 0.2 Scaffold Vite + TypeScript strict + three.js + Vitest + ESLint/Prettier with the scripts in §4.
 - [x] 0.3 CI: typecheck, lint, test, validate, build on every push.
 - [x] 0.4 `CREDITS.md` with the table from `.claude/rules/media.md`; self-host the two fonts and credit them.
-- [ ] 0.5 `tools/validate`: catalogue schema, sources on every record, every media file credited.
+- [x] 0.5 `tools/validate`: every media file credited in `CREDITS.md` with a complete row from a trusted source.
 
 **Acceptance:** an empty scene builds and deploys as a static site; the quality gate runs green;
 the app requests nothing from a third party.
@@ -161,7 +161,8 @@ the app requests nothing from a third party.
 ### Phase 1 — Data and simulation core (no rendering)
 
 - [ ] 1.1 Types for §5.1–5.3 (`CelestialObject`, shapes, orbital elements, sources).
-- [ ] 1.2 Catalogue records for the Sun, the eight planets and the Moon, each value sourced.
+- [ ] 1.2 Catalogue records for the Sun, the eight planets and the Moon, each value sourced. `validate` gains
+      the catalogue checks: schema, and a source with retrieval date on every record.
 - [ ] 1.3 `kepler.ts`: Kepler solver and elements → position, with unit tests.
 - [ ] 1.4 `time.ts`: dates, Julian date, centuries since epoch, speed control, validity limits.
 - [ ] 1.5 `frames.ts`: orbit plane → ecliptic → scene axes; pole orientation for tilt.

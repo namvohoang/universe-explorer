@@ -9,7 +9,7 @@ export const MEDIA_KINDS = [
 ] as const;
 export type MediaKind = (typeof MEDIA_KINDS)[number];
 
-export const MEDIA_ROLES = ['surface-map', 'ring-map', 'picture'] as const;
+export const MEDIA_ROLES = ['surface-map', 'ring-map', 'picture', 'model'] as const;
 export type MediaRole = (typeof MEDIA_ROLES)[number];
 
 /** An image or texture shown for an object. Its credit and licence live in CREDITS.md. */

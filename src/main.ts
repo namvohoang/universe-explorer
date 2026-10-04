@@ -6,6 +6,7 @@ import { createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
+  SPEEDS,
   advanceClock,
   createClock,
   dateLimits,
@@ -33,6 +34,8 @@ const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
 const BODY_VIEW_RADII = 6;
 const BODY_CLOSEST_RADII = 1.8;
+/** A glowing comet is first seen from this many glow radii away. */
+const GLOW_VIEW_RADII = 40;
 const DEFAULT_SCALE: ScaleMode = 'easy';
 
 const SCALE_OPTION_LABELS: Readonly<Record<ScaleMode, string>> = {
@@ -54,7 +57,15 @@ function start(): void {
   });
 
   const limits = dateLimits(catalogue);
-  let clock = createClock(julianDateFromUnixMs(Date.now()), limits);
+  // A link can open on a date and a speed: ?date=1986-02-09&speed=pause
+  const query = new URLSearchParams(window.location.search);
+  const linkedDate = Date.parse(query.get('date') ?? '');
+  const linkedSpeed = SPEEDS.find((speed) => speed === query.get('speed'));
+  let clock = createClock(
+    julianDateFromUnixMs(Number.isNaN(linkedDate) ? Date.now() : linkedDate),
+    limits,
+    linkedSpeed ?? 'normal',
+  );
   let scale = createScale(DEFAULT_SCALE);
   const system = createSolarSystem(catalogue, scale);
   system.setDate(clock.jd);
@@ -92,15 +103,19 @@ function start(): void {
     };
   };
 
-  const bodyView = (id: string): FlyTo => ({
-    target: () => system.positionOf(id),
-    distance: system.radiusOf(id) * BODY_VIEW_RADII,
-    // Arrive on the sunny side, so the kid meets the body lit rather than in the dark.
-    direction: litSideBearing(system.positionOf(id), system.positionOf('sun')),
-    minDistance: system.radiusOf(id) * BODY_CLOSEST_RADII,
-    maxDistance: wholeView().maxDistance,
-    idleTurn: false,
-  });
+  const bodyView = (id: string): FlyTo => {
+    // A comet with a glow is framed to show the glow and tails; zooming in reaches the nucleus.
+    const glow = system.glowRadiusOf(id) * GLOW_VIEW_RADII;
+    return {
+      target: () => system.positionOf(id),
+      distance: Math.max(system.radiusOf(id) * BODY_VIEW_RADII, glow),
+      // Arrive on the sunny side, so the kid meets the body lit rather than in the dark.
+      direction: litSideBearing(system.positionOf(id), system.positionOf('sun')),
+      minDistance: system.radiusOf(id) * BODY_CLOSEST_RADII,
+      maxDistance: wholeView().maxDistance,
+      idleTurn: false,
+    };
+  };
 
   /** A belt is looked at from above the Sun, far enough back to see all of it. */
   const beltView = (id: string): FlyTo => {
@@ -313,6 +328,7 @@ function start(): void {
     clockControl.show(clock);
   });
   stage.onCameraMoved(() => {
+    system.setViewer(stage.camera.position);
     // A body behind the one in view gets no marker: its name would sit on the wrong globe.
     if (isDeep(focus)) return;
     const body = focus !== null && !isBelt(focus) ? focus : null;

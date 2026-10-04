@@ -127,7 +127,7 @@ export const en = {
   nameHalley: "Halley's Comet",
   eyebrowComet: 'Comet · goes around the Sun',
   cometNote:
-    'The tail is drawn, not photographed. It points away from the Sun, as real tails do, but its length is not to scale. The path shown is right for 1950 to 2050; earlier visits came at slightly different times.',
+    'The glow and the two tails are drawn, not photographed. They point the way real tails do, but their size is not to scale. The path shown is right for 1950 to 2050; earlier visits came at slightly different times.',
   statClosest: 'Closest to the Sun',
   valueTimesEarthOne: "{n} times Earth's distance",
   conceptStarTitle: 'What is a star?',
@@ -312,6 +312,8 @@ export const en = {
   mapAltSaturn: "An artist's drawing of Saturn's pale yellow cloud bands.",
   mapAltUranus: "An artist's drawing of Uranus: smooth pale blue-green.",
   mapAltNeptune: "An artist's drawing of Neptune: deep blue with a few white clouds.",
+  modelAltSun:
+    'A 3D model of the Sun: a bright yellow-orange ball with a mottled, glowing surface.',
   mediaKindComposite: 'Made from many pictures joined together.',
   mediaKindFalseColour: 'Colours added by scientists.',
   mediaKindArtistConcept: "An artist's drawing, not a photo.",

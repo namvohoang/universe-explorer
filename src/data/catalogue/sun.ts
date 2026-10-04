@@ -38,6 +38,14 @@ export const sun: Star = {
   spectralType: s('G2 V', 'nssdc-sun'),
   sky: null,
   orbit: null,
-  media: [],
+  media: [
+    {
+      file: 'public/media/models/sun.glb',
+      kind: 'artist-concept',
+      role: 'model',
+      altKey: 'modelAltSun',
+      credit: 'NASA. The page gives no credit line.',
+    },
+  ],
   sources: [NSSDC_SUN],
 };

@@ -1,16 +1,23 @@
 import {
+  AdditiveBlending,
+  Box3,
+  CanvasTexture,
   Group,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
   Quaternion,
   SRGBColorSpace,
+  Sphere,
   SphereGeometry,
+  Sprite,
+  SpriteMaterial,
   TextureLoader,
   Vector3,
   type Material,
   type Texture,
 } from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { CelestialObject, RingSystem, SpheroidShape, TriaxialShape } from '../data/types';
 import { eclipticToScene, northPoleEcliptic, poleOf } from '../sim/frames';
 import { largestRadiusKm, sceneAxes } from '../sim/layout';
@@ -23,6 +30,8 @@ const SPHERE_SEGMENTS = { width: 64, height: 32 };
 /** Plain colours for a body with no surface map, and while a map is still loading. */
 const UNMAPPED_SURFACE = '#b9b4ab';
 const UNMAPPED_STAR = '#fff1c9';
+/** A comet's nucleus is coated in dark material (NASA: "ice coated with dark organic material"). */
+const COMET_NUCLEUS = '#4a443d';
 const ANISOTROPY = 4;
 
 const SCENE_UP = new Vector3(0, 1, 0);
@@ -92,6 +101,75 @@ export interface Body {
   dispose(): void;
 }
 
+/** How far a star's glow reaches, in its own radii, and how strong it is. A drawing choice. */
+const GLOW_RADII = 3.2;
+const GLOW_COLOR = '255, 214, 130';
+
+/** A soft round glow, bright in the middle and fading to nothing: light spilling off a star. */
+function createGlow(): Sprite {
+  const size = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const context = canvas.getContext('2d');
+  if (context) {
+    const gradient = context.createRadialGradient(
+      size / 2,
+      size / 2,
+      0,
+      size / 2,
+      size / 2,
+      size / 2,
+    );
+    // The body itself covers the middle third; the glow only shows around it.
+    gradient.addColorStop(0, `rgba(${GLOW_COLOR}, 0.9)`);
+    gradient.addColorStop(0.32, `rgba(${GLOW_COLOR}, 0.55)`);
+    gradient.addColorStop(0.55, `rgba(${GLOW_COLOR}, 0.14)`);
+    gradient.addColorStop(1, `rgba(${GLOW_COLOR}, 0)`);
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, size, size);
+  }
+  const map = new CanvasTexture(canvas);
+  map.colorSpace = SRGBColorSpace;
+  const sprite = new Sprite(
+    new SpriteMaterial({
+      map,
+      blending: AdditiveBlending,
+      depthWrite: false,
+      transparent: true,
+    }),
+  );
+  sprite.scale.setScalar(GLOW_RADII * 2);
+  return sprite;
+}
+
+/**
+ * Loads a body's own 3D model and puts it in place of the plain sphere, sized to a radius of
+ * one whatever size the file was made at. Until it arrives (or if it cannot), the sphere stays.
+ */
+function loadModel(file: string, sphere: Mesh, onDispose: (dispose: () => void) => void): void {
+  new GLTFLoader().load(mediaUrl(file), (gltf) => {
+    const model = gltf.scene;
+    const bounds = new Box3().setFromObject(model).getBoundingSphere(new Sphere());
+    if (!(bounds.radius > 0)) return;
+    const holder = new Group();
+    holder.scale.setScalar(1 / bounds.radius);
+    model.position.sub(bounds.center);
+    holder.add(model);
+    sphere.add(holder);
+    // The sphere keeps turning the model but is no longer drawn itself.
+    (sphere.material as Material).visible = false;
+    onDispose(() => {
+      model.traverse((part) => {
+        if (part instanceof Mesh) {
+          (part.geometry as { dispose(): void }).dispose();
+          for (const material of [part.material].flat() as Material[]) material.dispose();
+        }
+      });
+    });
+  });
+}
+
 /** Where the app serves a catalogue media file from: `public/` is the site root. */
 function mediaUrl(file: string): string {
   return import.meta.env.BASE_URL + file.replace(/^public\//, '');
@@ -110,7 +188,7 @@ function createSurface(object: CelestialObject): Surface {
     return { material: new MeshBasicMaterial({ color: UNMAPPED_STAR }), lit: null, texture: null };
   }
   const material = new MeshStandardMaterial({
-    color: UNMAPPED_SURFACE,
+    color: object.kind === 'comet' ? COMET_NUCLEUS : UNMAPPED_SURFACE,
     roughness: 0.95,
     metalness: 0,
   });
@@ -156,6 +234,18 @@ export function createBody(
   const mesh = new Mesh(geometry, material);
   flattened.add(mesh);
   tilt.add(flattened);
+
+  const extras: (() => void)[] = [];
+  const model = object.media.find((media) => media.role === 'model');
+  if (model) loadModel(model.file, mesh, (dispose) => extras.push(dispose));
+  if (object.kind === 'star') {
+    const glow = createGlow();
+    flattened.add(glow);
+    extras.push(() => {
+      glow.material.map?.dispose();
+      glow.material.dispose();
+    });
+  }
 
   // Rings sit in the flattened group, where one unit is one equatorial radius, so they keep
   // their real size against the planet in every scale mode.
@@ -212,6 +302,7 @@ export function createBody(
       geometry.dispose();
       material.dispose();
       texture?.dispose();
+      for (const dispose of extras) dispose();
       rings?.dispose();
       ringMap?.texture.dispose();
     },

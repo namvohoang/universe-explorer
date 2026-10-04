@@ -11,6 +11,8 @@ import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
 
+/** How far ahead to look to find which way a comet is heading, in days. */
+const HEADING_DAYS = 0.5;
 /** Enough fill light to make out a night side; the Sun does the rest. */
 const NIGHT_SIDE_LIGHT = 0.06;
 const SUNLIGHT = 2.8;
@@ -24,6 +26,10 @@ export interface SolarSystem {
   positionOf(id: string): Vec3;
   /** Drawn radius of a body under the current scale. */
   radiusOf(id: string): number;
+  /** How big a body's glow is right now (a comet near the Sun); 0 for anything with none. */
+  glowRadiusOf(id: string): number;
+  /** Tells the scene where the camera is, for effects that change when seen from inside. */
+  setViewer(camera: Vec3): void;
   /** Scene radius of a belt's outer edge under the current scale. */
   beltRadius(id: string): number;
   /** Distance from the centre to the farthest body right now. */
@@ -61,7 +67,7 @@ export function createSolarSystem(
     if (object.kind !== 'comet' || !bodies.has(object.id)) continue;
     const tail = createCometTail();
     tails.set(object.id, tail);
-    group.add(tail.mesh);
+    group.add(tail.group);
   }
 
   // Rocky dots for a belt near its star, icy ones for a belt far out. A drawing choice.
@@ -122,13 +128,19 @@ export function createSolarSystem(
       orbit.update(jd, currentScale, redrawOrbits);
     }
     redrawOrbits = false;
-    for (const [id, tail] of tails) {
-      const comet = catalogue.find((object) => object.id === id);
-      const position = positions.get(id);
-      const parent = comet?.parentId ? positions.get(comet.parentId) : undefined;
-      if (!comet || !position || !parent) continue;
-      const offset = eclipticOffsetKm(comet, catalogue, jd);
-      tail.update(position, parent, length(offset) / KM_PER_AU);
+    if (tails.size > 0) {
+      // Where each comet will be a little later tells which way it is heading.
+      const soon = scenePositions(catalogue, jd + HEADING_DAYS, currentScale);
+      for (const [id, tail] of tails) {
+        const comet = catalogue.find((object) => object.id === id);
+        const position = positions.get(id);
+        const next = soon.get(id);
+        const parent = comet?.parentId ? positions.get(comet.parentId) : undefined;
+        if (!comet || !position || !next || !parent) continue;
+        const heading = { x: next.x - position.x, y: next.y - position.y, z: next.z - position.z };
+        const offset = eclipticOffsetKm(comet, catalogue, jd);
+        tail.update(position, parent, heading, length(offset) / KM_PER_AU);
+      }
     }
     const star = catalogue.find((object) => object.kind === 'star');
     const sun = star ? positions.get(star.id) : undefined;
@@ -149,6 +161,10 @@ export function createSolarSystem(
       return position;
     },
     radiusOf: (id) => bodyOf(id).radius(),
+    glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,
+    setViewer(camera) {
+      for (const tail of tails.values()) tail.setViewer(camera);
+    },
     beltRadius(id) {
       const belt = catalogue.find((o) => o.id === id);
       const radiusKm = beltParentRadiusKm.get(id);

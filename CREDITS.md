@@ -28,8 +28,9 @@ image's own page has been opened and read.
 | `public/media/deep/trappist-1.webp` | trappist-1 | artist-concept | NASA/JPL-Caltech | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/exoplanets/trappist1/ | 2026-10-04 | The main picture of the page (PIA22093) at 1600 pixels wide, converted to WebP. |
 | `public/media/deep/milky-way.webp` | milky-way | artist-concept | NASA/JPL-Caltech/R. Hurt (SSC/Caltech) | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/resource/the-milky-way-galaxy/ | 2026-10-04 | The picture of the page (ssc2008-10b1, with labels) at 1600 pixels wide, converted to WebP. |
 | `public/media/deep/m87-black-hole.webp` | m87-black-hole | false-colour | Event Horizon Telescope Collaboration | The NASA page credits the Event Horizon Telescope Collaboration, which is not NASA, and shows no copyright notice. Check the Collaboration's own terms before any wider use. | https://science.nasa.gov/resource/first-image-of-a-black-hole/ | 2026-10-04 | The main picture of the page (blackhole_1600) at 1600 pixels wide, converted to WebP. It was made from radio telescope data, which has no colour of its own. |
+| `public/media/models/sun.glb` | sun | artist-concept | NASA. The page gives no credit line. | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/learn/heat/resource/sun-3d-model/ | 2026-10-04 | The glTF model offered on the page, with its texture re-encoded as JPEG at half size. The page does not say how the texture was made, so it is treated as an artist's rendering. |
 
-The Sun has no map: it has no fixed surface, and the trusted sites offer pictures of its disc but no map to wrap on a globe.
+The Sun is drawn from NASA's own 3D model of it, not from a map.
 
 Kind is one of `photo`, `composite`, `false-colour`, `artist-concept`, `simulation`, `diagram`.
 

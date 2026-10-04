@@ -124,7 +124,10 @@ export function cardModel(
       ? en.beltNote
       : object.kind === 'comet'
         ? en.cometNote
-        : globeNote(object.media.find((media) => media.role === 'surface-map')?.kind);
+        : globeNote(
+            object.media.find((media) => media.role === 'surface-map' || media.role === 'model')
+              ?.kind,
+          );
   let stats: Stat[];
   if (object.kind === 'belt') stats = beltStats(object);
   else if (isDeepSky(object)) stats = deepSkyStats(object);

@@ -100,7 +100,8 @@ describe('cardModel', () => {
     );
     expect(cardModel('venus', catalogue).note).toContain(en.mediaKindFalseColour);
     expect(cardModel('earth', catalogue).note).toContain(en.mediaKindComposite);
-    expect(cardModel('sun', catalogue).note).toBeNull();
+    expect(cardModel('sun', catalogue).note).toContain(en.mediaKindArtistConcept);
+    expect(cardModel('titan', catalogue).note).toBeNull();
   });
 
   it('calls the Sun and the Moon by the names kids use', () => {

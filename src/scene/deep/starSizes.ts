@@ -4,13 +4,14 @@ import {
   Color,
   Group,
   Mesh,
-  MeshBasicMaterial,
   SphereGeometry,
   Sprite,
   SpriteMaterial,
+  SRGBColorSpace,
 } from 'three';
 import { colorFromTemperature } from '../../sim/stars';
 import { createLabel, disposeLabel } from './label';
+import { createStarSurface } from './starSurface';
 import type { DeepModel } from './model';
 
 export interface SizedStar {
@@ -24,6 +25,10 @@ export interface SizedStar {
 const BIGGEST = 5;
 const GAP = 1.2;
 const FRAMING = 1.7;
+/** How far out from the middle of the glow picture the star's own edge sits. */
+const EDGE = 0.36;
+/** From this many Suns wide, a star is drawn with the huge patches giants are thought to have. */
+const GIANT_IN_SUNS = 100;
 /** Below this drawn radius a star is only a speck, so a ring marks where it is. */
 const SMALLEST_VISIBLE = 0.08;
 const MARKER_SIZE = 0.6;
@@ -43,8 +48,10 @@ function glowTexture(): CanvasTexture {
       size / 2,
       size / 2,
     );
-    gradient.addColorStop(0, 'rgba(255,255,255,0.85)');
-    gradient.addColorStop(0.34, 'rgba(255,255,255,0.5)');
+    // The glow starts at the star's edge (EDGE of the way out) so it never hides the face.
+    gradient.addColorStop(0, 'rgba(255,255,255,0)');
+    gradient.addColorStop(EDGE * 0.96, 'rgba(255,255,255,0)');
+    gradient.addColorStop(EDGE, 'rgba(255,255,255,0.5)');
     gradient.addColorStop(0.6, 'rgba(255,255,255,0.12)');
     gradient.addColorStop(1, 'rgba(255,255,255,0)');
     context.fillStyle = gradient;
@@ -92,12 +99,13 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
   stars.forEach((star, n) => {
     const radius = radii[n] ?? 0;
     const tint = colorFromTemperature(star.temperatureK);
-    const color = new Color(tint.r, tint.g, tint.b);
+    const color = new Color().setRGB(tint.r, tint.g, tint.b, SRGBColorSpace);
     x += radius;
 
     const geometry = new SphereGeometry(radius, 48, 32);
-    const material = new MeshBasicMaterial({ color });
-    const ball = new Mesh(geometry, material);
+    // A giant is drawn with patches; a star like the Sun is far too finely grained to show any.
+    const surface = createStarSurface(color, star.radiusInSuns >= GIANT_IN_SUNS, n + 1);
+    const ball = new Mesh(geometry, surface.material);
     ball.position.set(x, 0, 0);
     group.add(ball);
 
@@ -110,7 +118,7 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
     });
     const halo = new Sprite(haloMaterial);
     halo.position.copy(ball.position);
-    halo.scale.setScalar(radius * 5.5);
+    halo.scale.setScalar((radius * 2) / EDGE);
     group.add(halo);
 
     // A star too small to see at this size gets a ring round it, like the markers elsewhere.
@@ -131,7 +139,7 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
 
     disposers.push(() => {
       geometry.dispose();
-      material.dispose();
+      surface.dispose();
       haloMaterial.dispose();
       disposeLabel(label);
     });

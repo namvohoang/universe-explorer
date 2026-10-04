@@ -13,6 +13,7 @@ import {
   SphereGeometry,
   Sprite,
   SpriteMaterial,
+  SRGBColorSpace,
   Vector3,
 } from 'three';
 import type { SystemPlanet } from '../../data/types';
@@ -52,7 +53,7 @@ export function createPlanetSystem(data: SystemData): DeepModel {
   const unitsPerKm = unitsPerAu / data.kmPerAu;
 
   const tint = colorFromTemperature(data.starTemperatureK);
-  const starColor = new Color(tint.r, tint.g, tint.b);
+  const starColor = new Color().setRGB(tint.r, tint.g, tint.b, SRGBColorSpace);
   const starRadius = data.starRadiusInSuns * data.sunRadiusKm * unitsPerKm;
   const starGeometry = new SphereGeometry(starRadius, 48, 32);
   const starMaterial = new MeshBasicMaterial({ color: starColor });

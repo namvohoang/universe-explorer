@@ -8,6 +8,7 @@ import {
   LineSegments,
   Sprite,
   SpriteMaterial,
+  SRGBColorSpace,
   Vector3,
 } from 'three';
 import type { FigureStar } from '../../data/types';
@@ -104,7 +105,7 @@ export function createConstellation(
     const tint = colorFromTemperature(temperatureFromBV(bV));
     const material = new SpriteMaterial({
       map: dot,
-      color: new Color(tint.r, tint.g, tint.b),
+      color: new Color().setRGB(tint.r, tint.g, tint.b, SRGBColorSpace),
       blending: AdditiveBlending,
       depthWrite: false,
       transparent: true,

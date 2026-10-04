@@ -1,4 +1,12 @@
-import { AdditiveBlending, CanvasTexture, Color, Group, Sprite, SpriteMaterial } from 'three';
+import {
+  AdditiveBlending,
+  CanvasTexture,
+  Color,
+  Group,
+  Sprite,
+  SpriteMaterial,
+  SRGBColorSpace,
+} from 'three';
 import type { ClusterStar } from '../../data/types';
 import { clusterLayout, colorFromTemperature, temperatureFromBpRp } from '../../sim/stars';
 import type { DeepModel } from './model';
@@ -53,7 +61,7 @@ export function createStarCluster(stars: readonly ClusterStar[]): DeepModel {
     const tint = colorFromTemperature(temperatureFromBpRp(bpRp));
     const material = new SpriteMaterial({
       map: dot,
-      color: new Color(tint.r, tint.g, tint.b),
+      color: new Color().setRGB(tint.r, tint.g, tint.b, SRGBColorSpace),
       blending: AdditiveBlending,
       depthWrite: false,
       transparent: true,

@@ -49,6 +49,15 @@ export const eros: Asteroid = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/eros.webp',
+      kind: 'composite',
+      role: 'surface-map',
+      altKey: 'mapAltEros',
+      credit:
+        'Golish, D.R., Brodbeck, J.I., Webber, C., Becker, K.J., Bennett, C.A., DellaGiustina, D.N. Published by USGS Astrogeology Science Center.',
+    },
+  ],
   sources: [JPL_SBDB_EROS],
 };

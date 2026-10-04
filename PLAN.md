@@ -97,7 +97,8 @@ all objects of that kind.
 | `triaxial` | Irregular bodies with no model | Three axis lengths |
 | `model` | Irregular bodies with a published shape model | Model file + its credit |
 | `ring` | Ring systems | Inner and outer radius, in the parent's equatorial plane |
-| `extended` | Belts, nebulae, clusters, galaxies | Real extent and structure type; no hard surface |
+| `belt` | Asteroid belt, Kuiper belt | Inner and outer radius around the star; no surface |
+| `extended` | Nebulae, clusters, galaxies | Real extent and structure type; no hard surface |
 | `horizon` | Black holes | Event-horizon radius derived from mass |
 
 Orientation is part of shape: axial tilt, pole direction, rotation period, retrograde flag.
@@ -160,7 +161,7 @@ the app requests nothing from a third party.
 
 ### Phase 1 — Data and simulation core (no rendering)
 
-- [ ] 1.1 Types for §5.1–5.3 (`CelestialObject`, shapes, orbital elements, sources).
+- [x] 1.1 Types for §5.1–5.3 (`CelestialObject`, shapes, orbital elements, sources).
 - [ ] 1.2 Catalogue records for the Sun, the eight planets and the Moon, each value sourced. `validate` gains
       the catalogue checks: schema, and a source with retrieval date on every record.
 - [ ] 1.3 `kepler.ts`: Kepler solver and elements → position, with unit tests.

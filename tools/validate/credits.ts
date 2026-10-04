@@ -2,18 +2,10 @@
  * Checks that every media file is credited in CREDITS.md and every credit row is complete
  * (.claude/rules/media.md). Pure: callers supply the file list and the Markdown text.
  */
+import { MEDIA_KINDS } from '../../src/data/types/media';
 
 export const MEDIA_DIR = 'public/media/';
 export const MEDIA_SECTION = 'Images, textures and shape models';
-
-export const MEDIA_KINDS = [
-  'photo',
-  'composite',
-  'false-colour',
-  'artist-concept',
-  'simulation',
-  'diagram',
-] as const;
 
 /** Trusted sources, as listed in .claude/rules/media.md. A host matches if it equals or ends with one. */
 export const TRUSTED_HOSTS = [

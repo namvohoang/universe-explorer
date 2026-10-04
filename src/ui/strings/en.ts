@@ -72,7 +72,7 @@ export const en = {
   grownUpsPrivacy2:
     'While it runs it loads nothing from any other website: the pictures, fonts and data all come with the app.',
   grownUpsPrivacy3:
-    'Read aloud only uses a voice stored on this device. If the device has none, the button does nothing, so that no text is sent to a speech service.',
+    'Read aloud plays recordings that come with the app. They were made beforehand with a computer voice (Kokoro, voice af_heart); nothing is sent anywhere to make the app speak. If a recording is missing, a voice stored on this device is used, never one that speaks through a server.',
   grownUpsAccuracyTitle: 'How accurate is it?',
   grownUpsAccuracy1:
     'Every size, distance and orbit comes from the pages listed below, and every sentence on a card rests on a quoted passage from a NASA page.',

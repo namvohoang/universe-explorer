@@ -5,7 +5,8 @@ import { en } from './strings/en';
 
 export interface Card {
   readonly element: HTMLElement;
-  show(model: CardModel): void;
+  /** `narration` is the address of a recording of this card being read, if there is one. */
+  show(model: CardModel, narration: string | null): void;
   hide(): void;
 }
 
@@ -33,40 +34,67 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   const conceptTitle = create('h3', '');
   const concept = create('p', 'concept');
   const globe = create('p', 'globe-note');
-  // "Read it to me", for kids who are still learning to read. Hidden where there is no voice.
+  // "Read it to me", for kids who are still learning to read. A card with a recording plays
+  // it; one without falls back to a voice on the device, and with neither the button is hidden.
   const read = create('button', 'primary', en.readToMe);
   read.type = 'button';
-  read.hidden = speaker === null;
   const actions = create('div', 'card-actions');
   actions.append(read);
   element.append(head, hello, stats, factsTitle, facts, conceptTitle, concept, globe, actions);
 
   let shown: CardModel | null = null;
+  let recording: string | null = null;
   let reading = false;
+  const player = new Audio();
   const setReading = (now: boolean): void => {
     reading = now;
     read.textContent = now ? en.stopReading : en.readToMe;
   };
   const stopReading = (): void => {
-    if (reading) speaker?.stop();
+    if (!reading) return;
+    player.pause();
+    speaker?.stop();
+    setReading(false);
   };
+  const speak = (model: CardModel): void => {
+    if (!speaker) {
+      setReading(false);
+      return;
+    }
+    speaker.speak(speechLines(model), () => {
+      setReading(false);
+    });
+  };
+  player.addEventListener('ended', () => {
+    setReading(false);
+  });
   read.addEventListener('click', () => {
-    if (!speaker || !shown) return;
+    if (!shown) return;
     if (reading) {
-      speaker.stop();
+      stopReading();
       return;
     }
     setReading(true);
-    speaker.speak(speechLines(shown), () => {
-      setReading(false);
+    if (recording === null) {
+      speak(shown);
+      return;
+    }
+    const model = shown;
+    player.src = recording;
+    player.currentTime = 0;
+    // If the recording cannot play (not downloaded yet and offline, say), use the device voice.
+    player.play().catch(() => {
+      speak(model);
     });
   });
 
   return {
     element,
-    show(model) {
+    show(model, narration) {
       stopReading();
       shown = model;
+      recording = narration;
+      read.hidden = narration === null && speaker === null;
       eyebrow.textContent = model.eyebrow;
       name.textContent = model.name;
       hello.textContent = model.hello;

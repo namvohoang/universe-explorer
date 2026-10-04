@@ -3,14 +3,20 @@ import type { CardModel } from './cardModel';
 /** A little slower than normal talking, as in the prototype. */
 const SPEAKING_RATE = 0.92;
 
-/** Rewrites symbols a voice would stumble over into words. */
+/** Rewrites symbols and names a voice would stumble over into words. */
 export function cleanForSpeech(text: string): string {
-  return text
-    .replace(/-(\d)/g, 'minus $1')
-    .replace(/\s?°C/g, ' degrees Celsius')
-    .replace(/\s?km\b/g, ' kilometres')
-    .replace(/\s?cm\b/g, ' centimetres')
-    .replace(/·/g, ',');
+  return (
+    text
+      // Names with digits, said the way people say them.
+      .replace(/TRAPPIST-1/g, 'Trappist One')
+      .replace(/\bM87\b/g, 'M eighty-seven')
+      // A minus sign is one that starts a number, not a hyphen inside a word.
+      .replace(/(^|[\s(])-(\d)/g, '$1minus $2')
+      .replace(/\s?°C/g, ' degrees Celsius')
+      .replace(/\s?km\b/g, ' kilometres')
+      .replace(/\s?cm\b/g, ' centimetres')
+      .replace(/·/g, ',')
+  );
 }
 
 /** What is read out for a card: its name, its hello and its facts. */

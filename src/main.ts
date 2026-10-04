@@ -24,7 +24,8 @@ import { createGrownUps } from './ui/grownups';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
 import { createSegmented } from './ui/segmented';
-import { createBrowserSpeaker } from './ui/speech';
+import { narrationUrl } from './ui/narration';
+import { createBrowserSpeaker, speechLines } from './ui/speech';
 import { en } from './ui/strings/en';
 
 /** Whole-view camera: looking down on the system from the prototype's angle. */
@@ -157,7 +158,7 @@ function start(): void {
 
   const showFocus = (): void => {
     const model = cardModel(focus, catalogue);
-    card.show(model);
+    card.show(model, narrationUrl(focus, speechLines(model)));
     chips.show(chipsFor(focus), focus);
     document.body.classList.toggle('deep', isDeep(focus));
     sceneControl.show(isDeep(focus) ? 'deep' : 'solar');

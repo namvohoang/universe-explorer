@@ -3,6 +3,7 @@ import { concepts } from '../data/content/concepts';
 import type { CelestialObject, MediaKind } from '../data/types';
 import { semiMajorAxisKm } from '../sim/elements';
 import { fill } from './format';
+import { mediaUrl } from './mediaUrl';
 import { displayName } from './names';
 import {
   beltStats,
@@ -143,7 +144,7 @@ export function cardModel(
     note: picture ? mediaKindLabel(picture.kind) : drawnNote,
     picture: picture
       ? {
-          url: import.meta.env.BASE_URL + picture.file.replace(/^public\//, ''),
+          url: mediaUrl(picture.file),
           alt: text(picture.altKey),
           credit: fill(en.pictureCredit, { credit: picture.credit ?? '' }),
         }

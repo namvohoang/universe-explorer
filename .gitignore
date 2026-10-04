@@ -22,3 +22,8 @@ coverage/
 
 # Claude Code (personal settings)
 .claude/settings.local.json
+
+# Narration tooling (tools/narrate): local Python environment and working files
+tools/narrate/.venv/
+tools/narrate/out/
+__pycache__/

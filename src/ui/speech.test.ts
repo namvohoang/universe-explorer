@@ -15,6 +15,11 @@ describe('cleanForSpeech', () => {
     );
   });
 
+  it('says names with digits the way people do', () => {
+    expect(cleanForSpeech('TRAPPIST-1 is a star')).toBe('Trappist One is a star');
+    expect(cleanForSpeech('The M87 Black Hole.')).toBe('The M eighty-seven Black Hole.');
+  });
+
   it('leaves hyphens inside words alone', () => {
     expect(cleanForSpeech('second-biggest, blue-green')).toBe('second-biggest, blue-green');
   });
@@ -33,7 +38,9 @@ describe('speechLines', () => {
   it('leaves no symbol a voice would trip on, for any card', () => {
     const ids = [null, ...catalogue.filter((o) => bodyRadiusKm(o) !== null).map((o) => o.id)];
     for (const id of ids) {
-      expect(speechLines(cardModel(id, catalogue)).join(' ')).not.toMatch(/°|·| km\b| cm\b|-\d/);
+      expect(speechLines(cardModel(id, catalogue)).join(' ')).not.toMatch(
+        /°|·| km\b| cm\b|-\d|M87/,
+      );
     }
   });
 });

@@ -235,6 +235,20 @@ export const en = {
   kindBlackHole: 'Black hole',
   kindExoplanet: 'Planets of another star',
   eyebrowHome: '{kind} · our home',
+  cardAntaresHello: 'Antares is a huge red star in the heart of the Scorpion, a pattern of stars.',
+  cardAntaresFact1: 'It is about 700 times as wide as the Sun.',
+  cardAntaresFact2: 'It is a red supergiant: a huge, cool star near the end of its life.',
+  cardAntaresFact3:
+    'When it was made in 2017, this was the most detailed picture of any star but the Sun.',
+  cardVyCanisMajorisHello: 'VY Canis Majoris is one of the biggest stars anyone knows of.',
+  cardVyCanisMajorisFact1:
+    'It is about 1,400 times as wide as the Sun. Scientists are not sure of the exact size.',
+  cardVyCanisMajorisFact2: 'It is about 5,000 light-years away.',
+  cardVyCanisMajorisFact3: 'It throws off huge clouds of gas and dust.',
+  pictureAltAntares:
+    'A fuzzy orange ball with brighter and darker patches on it, on a black background.',
+  pictureAltVyCanisMajoris:
+    'A bright point of light with a wide, wispy cloud around it, coloured green, yellow, pink and purple.',
   pictureAltBetelgeuse:
     'A fuzzy round glow on black: yellow-white in the middle, fading to orange and dark red at the edge.',
   nameBetelgeuse: 'Betelgeuse',

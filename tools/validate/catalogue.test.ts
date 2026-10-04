@@ -148,7 +148,7 @@ describe('the real catalogue', () => {
 
   it('holds the Sun, the eight planets, their major moons and two ring systems', () => {
     const count = (kind: string): number => catalogue.filter((o) => o.kind === kind).length;
-    expect(count('star')).toBe(3);
+    expect(count('star')).toBe(5);
     expect(catalogue[0]?.id).toBe('sun');
     expect(count('planet')).toBe(8);
     expect(count('ring-system')).toBe(2);

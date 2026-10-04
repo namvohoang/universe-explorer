@@ -45,6 +45,8 @@ SAY: dict[str, str] = {
     "Proxima": "pɹˈɑksəmə",  # PROK-sih-muh
     "Centauri": "sɛntˈɔɹi",  # sen-TOR-ee
     "Betelgeuse": "bˈiTəlʤˌuz",  # BEE-tul-jooz
+    "Canis": "kˈAnɪs",  # KAY-niss
+    "Majoris": "məʤˈɔɹɪs",  # muh-JOR-iss
 }
 
 

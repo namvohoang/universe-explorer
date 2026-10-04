@@ -52,6 +52,8 @@ import { sombrero } from './sombrero';
 import { whirlpool } from './whirlpool';
 import { m87 } from './m87';
 import { betelgeuse } from './betelgeuse';
+import { antares } from './antares';
+import { vyCanisMajoris } from './vyCanisMajoris';
 import { proximaCentauri } from './proximaCentauri';
 import { trappist1 } from './trappist1';
 import { milkyWay } from './milkyWay';
@@ -112,8 +114,10 @@ export const catalogue: readonly CelestialObject[] = [
   proximaCentauri,
   trappist1,
   pleiades,
+  antares,
   betelgeuse,
   orionNebula,
+  vyCanisMajoris,
   crabNebula,
   milkyWay,
   andromeda,

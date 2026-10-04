@@ -29,7 +29,11 @@ import {
   NASA_HUBBLE_M87,
   NASA_APOD_SOUTHERN_CROSS,
   NASA_ASTERISMS,
+  ESA_HUBBLE_VY_CMA,
+  ESO_ANTARES,
   NASA_BETELGEUSE,
+  NASA_HUBBLE_VY_CMA,
+  NASA_VY_CMA_DIMMING,
   NASA_CONSTELLATIONS,
   NASA_ORION_CONSTELLATION,
   NASA_IDA,
@@ -1060,5 +1064,63 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_HUBBLE_CASSIOPEIA],
+  },
+  {
+    id: 'antares',
+    hello: {
+      key: 'cardAntaresHello',
+      sourceId: 'eso-antares',
+      quote:
+        'the famous, bright star Antares shines with a strong red tint in the heart of the constellation of Scorpius (The Scorpion)',
+    },
+    facts: [
+      {
+        key: 'cardAntaresFact1',
+        sourceId: 'eso-antares',
+        quote: 'a diameter about 700 times larger than the Sun',
+      },
+      {
+        key: 'cardAntaresFact2',
+        sourceId: 'eso-antares',
+        quote:
+          'It is a huge and comparatively cool red supergiant star in the late stages of its life',
+      },
+      {
+        key: 'cardAntaresFact3',
+        sourceId: 'eso-antares',
+        quote:
+          'This is the most detailed image ever of this object, or any other star apart from the Sun.',
+      },
+    ],
+    moons: null,
+    sources: [ESO_ANTARES],
+  },
+  {
+    id: 'vy-canis-majoris',
+    hello: {
+      key: 'cardVyCanisMajorisHello',
+      sourceId: 'esa-hubble-vy-cma',
+      quote:
+        'VY Canis Majoris is one of the largest known stars in the Universe in respect of size.',
+    },
+    facts: [
+      {
+        key: 'cardVyCanisMajorisFact1',
+        sourceId: 'esa-hubble-vy-cma',
+        quote: 'The diameter of this red hypergiant is about 1400 times larger than the Sun.',
+      },
+      {
+        key: 'cardVyCanisMajorisFact2',
+        sourceId: 'nasa-hubble-vy-cma',
+        quote: 'Approximately 5,000 light-years',
+      },
+      {
+        key: 'cardVyCanisMajorisFact3',
+        sourceId: 'nasa-vy-cma-dimming',
+        quote: 'the huge nebula of material cast off by the hypergiant star VY Canis Majoris',
+      },
+    ],
+    moons: null,
+    sources: [ESA_HUBBLE_VY_CMA, NASA_HUBBLE_VY_CMA, NASA_VY_CMA_DIMMING],
   },
 ];

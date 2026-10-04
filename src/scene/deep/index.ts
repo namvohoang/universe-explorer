@@ -2,6 +2,7 @@ import type { CelestialObject } from '../../data/types';
 import { isKnown } from '../../data/types';
 import { KM_PER_AU } from '../../sim/constants';
 import { bodyRadiusKm } from '../../sim/layout';
+import { temperatureFromBV } from '../../sim/stars';
 import { createBlackHole } from './blackHole';
 import { createConstellation } from './constellation';
 import type { DeepModel } from './model';
@@ -57,13 +58,19 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
   }
 
   if (object.kind === 'star' && sun?.kind === 'star') {
-    const { radiusInSuns, effectiveTemperatureK } = object;
-    if (radiusInSuns && isKnown(radiusInSuns) && isKnown(effectiveTemperatureK)) {
+    const { radiusInSuns, effectiveTemperatureK, colourBV } = object;
+    // Its colour comes from its temperature, or failing that from its measured colour.
+    const temperatureK = isKnown(effectiveTemperatureK)
+      ? effectiveTemperatureK.value
+      : colourBV
+        ? temperatureFromBV(colourBV.value)
+        : null;
+    if (radiusInSuns && isKnown(radiusInSuns) && temperatureK !== null) {
       const stars: SizedStar[] = [
         {
           name: nameOf(object),
           radiusInSuns: radiusInSuns.value,
-          temperatureK: effectiveTemperatureK.value,
+          temperatureK,
         },
       ];
       // The Sun stands beside it as the yardstick.

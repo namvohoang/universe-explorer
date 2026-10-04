@@ -85,6 +85,8 @@ export interface Star extends ObjectBase {
   readonly sky: SkyPosition | null;
   /** How wide the star is next to the Sun, for a star with no `shape` of its own. */
   readonly radiusInSuns?: Measured<number>;
+  /** The star's measured colour (B−V; smaller is bluer), used to tint it when no temperature is given. */
+  readonly colourBV?: Sourced<number>;
 }
 
 export interface Planet extends ObjectBase {

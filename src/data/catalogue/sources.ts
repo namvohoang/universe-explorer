@@ -588,6 +588,35 @@ export const NASA_HUBBLE_PROXIMA: Source = {
   retrieved: '2026-10-04',
 };
 
+export const ESO_ANTARES: Source = {
+  id: 'eso-antares',
+  title:
+    'ESO — Best Ever Image of a Star’s Surface and Atmosphere (eso1726), and its picture page eso1726a',
+  url: 'https://www.eso.org/public/news/eso1726/',
+  retrieved: '2026-10-04',
+};
+
+export const ESA_HUBBLE_VY_CMA: Source = {
+  id: 'esa-hubble-vy-cma',
+  title: 'ESA/Hubble — Massive star VY Canis Majoris, polarized light (opo0703c)',
+  url: 'https://esahubble.org/images/opo0703c/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_HUBBLE_VY_CMA: Source = {
+  id: 'nasa-hubble-vy-cma',
+  title: 'NASA Science — Massive Star VY Canis Majoris, Visible Light',
+  url: 'https://science.nasa.gov/asset/hubble/massive-star-vy-canis-majoris-visible-light/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_VY_CMA_DIMMING: Source = {
+  id: 'nasa-vy-cma-dimming',
+  title: "NASA Science — Hubble Solves Mystery of Monster Star's Dimming",
+  url: 'https://science.nasa.gov/missions/hubble/hubble-solves-mystery-of-monster-stars-dimming/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_BETELGEUSE: Source = {
   id: 'nasa-betelgeuse',
   title: 'NASA Science — What is Betelgeuse? Inside the Strange, Volatile Star',
@@ -620,7 +649,7 @@ export const NASA_FIRST_BLACK_HOLE_IMAGE: Source = {
 export const ESA_HIPPARCOS: Source = {
   id: 'esa-hipparcos',
   title:
-    'ESA Hipparcos Catalogue (1997) — position, parallax, V magnitude and B−V colour of each star, from the table public.hipparcos of the ESA Gaia Archive',
+    'ESA Hipparcos Catalogue (1997) — position, parallax, V magnitude and B−V colour of each star, from the table public.hipparcos of the ESA Gaia Archive, or from the same catalogue at CDS VizieR (I/239/hip_main) where a record says so',
   url: 'https://gea.esac.esa.int/archive/',
   retrieved: '2026-10-04',
 };

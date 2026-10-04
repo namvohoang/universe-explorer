@@ -31,6 +31,7 @@ export const cassini: Spacecraft = {
     'nasa-cassini-facts',
     'Source says: Weight at end of mission: 4,685 pounds (2,125 kilograms)',
   ),
+  firstUsedYear: s(1997, 'nasa-cassini-facts', 'Source says: Launch: Oct. 15, 1997'),
   media: [
     {
       file: 'public/media/models/cassini.glb',

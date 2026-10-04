@@ -11,6 +11,12 @@ import { hubble } from './hubble';
 import { spaceShuttle } from './spaceShuttle';
 import { saturnV } from './saturnV';
 import { cassini } from './cassini';
+import { voyager } from './voyager';
+import { lunarModule } from './lunarModule';
+import { gemini } from './gemini';
+import { pioneer10 } from './pioneer10';
+import { newHorizons } from './newHorizons';
+import { curiosity } from './curiosity';
 import { swift } from './swift';
 import { chandra } from './chandra';
 import { mro } from './mro';
@@ -141,7 +147,13 @@ export const catalogue: readonly CelestialObject[] = [
   bigDipper,
   southernCross,
   cassiopeia,
+  gemini,
   saturnV,
+  lunarModule,
+  pioneer10,
+  voyager,
   spaceShuttle,
   cassini,
+  newHorizons,
+  curiosity,
 ];

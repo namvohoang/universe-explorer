@@ -346,6 +346,7 @@ export const en = {
   eyebrowSpacecraft: 'Built by people · goes around {parent}',
   spacecraftNote:
     'This is a 3D model made by NASA, not a photo. The path is the real one for one day. It keeps shifting, so where it is on the path today is not exact.',
+  statFirstUsed: 'First used',
   statHeight: 'Above the ground',
   statNearest: 'Nearest, above the surface',
   statFarthest: 'Farthest, above the surface',
@@ -390,7 +391,7 @@ export const en = {
   cardChandraFact3: 'A space shuttle carried it up in 1999.',
   modelAltChandra: 'A 3D model of Chandra: a long silver tube with a solar panel on each side.',
   sceneCraft: 'Spaceships',
-  eyebrowSpaceship: 'Spaceship · built by people',
+  eyebrowSpaceship: 'Built by people to explore space',
   deepNoteCraft:
     'This is a 3D model made by NASA, not a photo. Turn it round to look at it from every side.',
   valueMetresEndToEnd: '{n} metres',
@@ -401,7 +402,7 @@ export const en = {
   cardSpaceShuttleFact2: 'In 30 years it flew 135 missions.',
   cardSpaceShuttleFact3: 'It took off like a rocket and landed on a runway like a glider.',
   modelAltSpaceShuttle:
-    'A plain grey 3D model of the space shuttle: a space plane with wings, fixed to a big fuel tank with a thin rocket on each side.',
+    'A 3D model of the space shuttle orbiter: a white space plane with black edges, wings, three big engines at the back and a long cargo bay on top.',
   nameSaturnV: 'The Saturn V Rocket',
   cardSaturnVHello: 'The Saturn V was a rocket built to send people to the Moon.',
   cardSaturnVFact1: 'It was 111 metres tall, about as high as a building with 36 floors.',
@@ -416,6 +417,48 @@ export const en = {
     'It carried a smaller probe, Huygens, which went down to the moon Titan in 2005.',
   modelAltCassini:
     'A 3D model of Cassini: a tall body wrapped in gold foil, with a large white dish on top and a long thin boom.',
+  nameVoyager: 'The Voyager Spacecraft',
+  cardVoyagerHello: 'The Voyagers are twin spacecraft that left Earth in 1977.',
+  cardVoyagerFact1: 'Voyager 1 flew past Jupiter and Saturn.',
+  cardVoyagerFact2:
+    'Voyager 1 was the first thing made by people to travel out into the space between the stars.',
+  cardVoyagerFact3: 'Each one carries a golden record with a message for anyone who finds it.',
+  modelAltVoyager:
+    'A 3D model of Voyager: a large white dish on a small body, with long thin arms sticking out.',
+  nameLunarModule: 'The Apollo Lunar Module',
+  cardLunarModuleHello: 'The Lunar Module was the spacecraft that landed astronauts on the Moon.',
+  cardLunarModuleFact1: 'It carried two astronauts down to the Moon and back up again.',
+  cardLunarModuleFact2: 'Six Apollo flights landed on the Moon.',
+  cardLunarModuleFact3: 'Twelve astronauts walked on the Moon.',
+  modelAltLunarModule:
+    'A 3D model of the Lunar Module: a boxy cabin wrapped in gold foil, standing on four thin legs with round feet.',
+  nameGemini: 'The Gemini Capsule',
+  cardGeminiHello: 'Gemini was a small spacecraft that carried two astronauts.',
+  cardGeminiFact1: 'Ten crews flew in it, in 1965 and 1966.',
+  cardGeminiFact2: 'It is named after the star pattern Gemini.',
+  cardGeminiFact3: 'It rode into space on a Titan II rocket.',
+  modelAltGemini:
+    'A 3D model of the Gemini capsule: a small cone-shaped cabin on a wider white section.',
+  cardPioneer10Hello: 'Pioneer 10 was a spacecraft sent to fly past Jupiter.',
+  cardPioneer10Fact1: 'It was built to work for 21 months but lasted more than 30 years.',
+  cardPioneer10Fact2:
+    'It went into the asteroid belt in July 1972 and came out the other side in February 1973.',
+  cardPioneer10Fact3: 'It sent back better pictures of Jupiter than anyone could take from Earth.',
+  modelAltPioneer10:
+    'A 3D model of Pioneer 10: a big dish on a small six-sided body, with two short arms and one long one.',
+  cardNewHorizonsHello: 'New Horizons is a spacecraft that flew past Pluto.',
+  cardNewHorizonsFact1: 'It flew past Pluto on 14 July 2015.',
+  cardNewHorizonsFact2: 'In 2019 it flew past Arrokoth, the farthest thing ever explored up close.',
+  cardNewHorizonsFact3: 'By 2024 it was 60 times as far from the Sun as Earth is.',
+  modelAltNewHorizons:
+    'A 3D model of New Horizons: a flat, triangle-shaped body wrapped in gold foil, with a round white dish on top.',
+  nameCuriosity: 'The Curiosity Rover',
+  cardCuriosityHello: 'Curiosity is a rover: a robot car that drives around on Mars.',
+  cardCuriosityFact1: 'It is about the size of a car.',
+  cardCuriosityFact2: 'It has been exploring a place called Gale Crater since 2012.',
+  cardCuriosityFact3: 'It looks for the chemical building blocks of life.',
+  modelAltCuriosity:
+    'A 3D model of the Curiosity rover: a car-sized machine with six wheels, a long arm and a mast with cameras on top.',
   nameIss: 'The International Space Station',
   cardIssHello:
     'The International Space Station is a home in space where astronauts live and work.',

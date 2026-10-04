@@ -130,10 +130,13 @@ export interface Spacecraft extends ObjectBase {
   readonly parentId: string | null;
   /**
    * Its overall size, as three equal radii of half its longest side. What it really looks
-   * like comes from its 3D model in `media`, which is drawn in place of a ball.
+   * like comes from its 3D model in `media`, which is drawn in place of a ball. `null` for a
+   * craft shown only as a model whose overall size the sources used do not give.
    */
-  readonly shape: TriaxialShape;
+  readonly shape: TriaxialShape | null;
   readonly massKg: Measured<number>;
+  /** The year it first flew, or first did the job it was built for; the note says which. */
+  readonly firstUsedYear?: Sourced<number>;
 }
 
 export interface RingSystem extends ObjectBase {

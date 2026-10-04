@@ -48,6 +48,7 @@ SAY: dict[str, str] = {
     "Canis": "kˈAnɪs",  # KAY-niss
     "Chandra": "ʧˈɑndɹə",  # CHAHN-druh
     "Cassini": "kəsˈini",  # kuh-SEE-nee
+    "Arrokoth": "ˈæɹəkɑθ",  # AR-uh-koth
     "Huygens": "hˈYɡənz",  # HOY-guns
     "Majoris": "məʤˈɔɹɪs",  # muh-JOR-iss
 }

@@ -3,7 +3,7 @@
 // This craft no longer flies, so it has no orbit here: it is shown as a model to look at.
 import type { Spacecraft } from '../types';
 import { s, unknown } from './helpers';
-import { NASA_SHUTTLE_REFERENCE } from './sources';
+import { NASA_SHUTTLE_KIDS, NASA_SHUTTLE_REFERENCE } from './sources';
 
 export const spaceShuttle: Spacecraft = {
   id: 'space-shuttle',
@@ -14,9 +14,9 @@ export const spaceShuttle: Spacecraft = {
   shape: {
     type: 'triaxial',
     radiiKm: s(
-      [0.0280416, 0.0280416, 0.0280416],
+      [0.0185928, 0.0185928, 0.0185928],
       'nasa-shuttle-reference',
-      'Half of the 184 feet the source gives for the length of the whole space shuttle (56.1 metres), used for all three so the model keeps its real shape.',
+      'Half of the 122 feet the source gives for the length of the orbiter, the winged part shown here (37.2 metres), used for all three so the model keeps its real shape.',
     ),
     orientation: {
       axialTiltDeg: unknown('It is shown as a model, not in flight.'),
@@ -27,14 +27,19 @@ export const spaceShuttle: Spacecraft = {
     },
   },
   massKg: unknown('The source gives several liftoff weights, depending on the flight.'),
+  firstUsedYear: s(
+    1981,
+    'nasa-shuttle-kids',
+    'Source says: The first space shuttle flight took place April 12, 1981.',
+  ),
   media: [
     {
       file: 'public/media/models/space-shuttle.glb',
       kind: 'artist-concept',
       role: 'model',
       altKey: 'modelAltSpaceShuttle',
-      credit: 'NASA/Michael D. Carbajal',
+      credit: 'NASA/Johnson Space Center',
     },
   ],
-  sources: [NASA_SHUTTLE_REFERENCE],
+  sources: [NASA_SHUTTLE_KIDS, NASA_SHUTTLE_REFERENCE],
 };

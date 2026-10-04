@@ -1,6 +1,7 @@
 import { SOLAR_SYSTEM_CARD_ID } from '../data/content/cards';
 import { NARRATION } from '../data/content/narration';
 import type { CelestialObject } from '../data/types';
+import { isShowpiece } from '../data/types';
 import { bodyRadiusKm } from '../sim/layout';
 import { mediaUrl } from './mediaUrl';
 
@@ -11,6 +12,7 @@ export function narratedIds(catalogue: readonly CelestialObject[]): (string | nu
       bodyRadiusKm(object) !== null ||
       object.kind === 'belt' ||
       object.kind === 'constellation' ||
+      isShowpiece(object) ||
       object.media.some((media) => media.role === 'picture'),
   );
   return [null, ...places.map((object) => object.id)];

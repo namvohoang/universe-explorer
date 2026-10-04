@@ -21,6 +21,12 @@ import {
   NASA_HUBBLE_M104,
   NASA_HUBBLE_NUMBERS,
   NASA_CASSINI_FACTS,
+  NASA_APOLLO_KIDS,
+  NASA_CURIOSITY,
+  NASA_GEMINI_KIDS,
+  NASA_NEW_HORIZONS,
+  NASA_PIONEER_10,
+  NASA_VOYAGER_1,
   NASA_CHANDRA_FACTS,
   NASA_ISS_FACTS,
   NASA_JUNO,
@@ -1322,5 +1328,170 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_CASSINI_FACTS],
+  },
+  {
+    id: 'voyager',
+    hello: {
+      key: 'cardVoyagerHello',
+      sourceId: 'nasa-voyager-1',
+      quote: 'The twin spacecraft launched in 1977.',
+    },
+    facts: [
+      {
+        key: 'cardVoyagerFact1',
+        sourceId: 'nasa-voyager-1',
+        quote: 'Launched in 1977 to fly by Jupiter and Saturn',
+      },
+      {
+        key: 'cardVoyagerFact2',
+        sourceId: 'nasa-voyager-1',
+        quote: 'Voyager 1 is the first human-made object to venture into interstellar space.',
+      },
+      {
+        key: 'cardVoyagerFact3',
+        sourceId: 'nasa-voyager-1',
+        quote:
+          'Each of the Voyagers contain a message to potential extraterrestrials in the form of a 30-centimeter diameter gold-plated copper disc.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_VOYAGER_1],
+  },
+  {
+    id: 'lunar-module',
+    hello: {
+      key: 'cardLunarModuleHello',
+      sourceId: 'nasa-apollo-kids',
+      quote: 'Another spacecraft, the Lunar Module, was used for landing on the moon.',
+    },
+    facts: [
+      {
+        key: 'cardLunarModuleFact1',
+        sourceId: 'nasa-apollo-kids',
+        quote: 'Two astronauts in the Lunar Module landed on the lunar surface.',
+      },
+      {
+        key: 'cardLunarModuleFact2',
+        sourceId: 'nasa-apollo-kids',
+        quote: 'Six of the other seven flights landed on the moon.',
+      },
+      {
+        key: 'cardLunarModuleFact3',
+        sourceId: 'nasa-apollo-kids',
+        quote: 'A total of 12 astronauts walked on the moon.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_APOLLO_KIDS],
+  },
+  {
+    id: 'gemini',
+    hello: {
+      key: 'cardGeminiHello',
+      sourceId: 'nasa-gemini-kids',
+      quote: 'Ten crews flew missions on the two-man Gemini spacecraft.',
+    },
+    facts: [
+      {
+        key: 'cardGeminiFact1',
+        sourceId: 'nasa-gemini-kids',
+        quote: 'The Gemini missions were flown in 1965 and 1966.',
+      },
+      {
+        key: 'cardGeminiFact2',
+        sourceId: 'nasa-gemini-kids',
+        quote: 'NASA named the Gemini spacecraft and program after the constellation Gemini.',
+      },
+      {
+        key: 'cardGeminiFact3',
+        sourceId: 'nasa-gemini-kids',
+        quote: 'The Gemini capsule flew on a Titan II rocket.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_GEMINI_KIDS],
+  },
+  {
+    id: 'pioneer-10',
+    hello: {
+      key: 'cardPioneer10Hello',
+      sourceId: 'nasa-pioneer-10',
+      quote: 'Originally designed for a 21-month mission to fly by Jupiter',
+    },
+    facts: [
+      {
+        key: 'cardPioneer10Fact1',
+        sourceId: 'nasa-pioneer-10',
+        quote: 'Pioneer 10 lasted more than 30 years',
+      },
+      {
+        key: 'cardPioneer10Fact2',
+        sourceId: 'nasa-pioneer-10',
+        quote:
+          'On July 15, 1972, the spacecraft entered the asteroid belt, emerging in February 1973',
+      },
+      {
+        key: 'cardPioneer10Fact3',
+        sourceId: 'nasa-pioneer-10',
+        quote: 'Pioneer 10 was returning better images of the planet than possible from Earth',
+      },
+    ],
+    moons: null,
+    sources: [NASA_PIONEER_10],
+  },
+  {
+    id: 'new-horizons',
+    hello: {
+      key: 'cardNewHorizonsHello',
+      sourceId: 'nasa-new-horizons',
+      quote: 'as it flew through the Pluto system on July 14, 2015',
+    },
+    facts: [
+      {
+        key: 'cardNewHorizonsFact1',
+        sourceId: 'nasa-new-horizons',
+        quote: 'July 14, 2015 : Pluto Flyby',
+      },
+      {
+        key: 'cardNewHorizonsFact2',
+        sourceId: 'nasa-new-horizons',
+        quote:
+          'reaching the Kuiper Belt object Arrokoth in 2019, the most distant object ever explored up close',
+      },
+      {
+        key: 'cardNewHorizonsFact3',
+        sourceId: 'nasa-new-horizons',
+        quote: 'New Horizons passed 60 times as far from the Sun as Earth is',
+      },
+    ],
+    moons: null,
+    sources: [NASA_NEW_HORIZONS],
+  },
+  {
+    id: 'curiosity',
+    hello: {
+      key: 'cardCuriosityHello',
+      sourceId: 'nasa-curiosity',
+      quote: 'The car-size rover is about as tall as a basketball player',
+    },
+    facts: [
+      {
+        key: 'cardCuriosityFact1',
+        sourceId: 'nasa-curiosity',
+        quote: 'The car-size rover',
+      },
+      {
+        key: 'cardCuriosityFact2',
+        sourceId: 'nasa-curiosity',
+        quote: 'has been exploring Gale Crater since 2012',
+      },
+      {
+        key: 'cardCuriosityFact3',
+        sourceId: 'nasa-curiosity',
+        quote: 'Curiosity is seeking evidence of organics, the chemical building blocks of life.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_CURIOSITY],
   },
 ];

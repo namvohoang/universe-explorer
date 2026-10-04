@@ -27,6 +27,11 @@ export const saturnV: Spacecraft = {
     },
   },
   massKg: unknown('The source gives only the weight with fuel at liftoff.'),
+  firstUsedYear: s(
+    1967,
+    'nasa-saturn-v-kids',
+    'Source says: The first Saturn V was launched in 1967.',
+  ),
   media: [
     {
       file: 'public/media/models/saturn-v.glb',

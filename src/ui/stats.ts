@@ -141,14 +141,22 @@ export function objectStats(
               { label: en.statFarthest, value: above(a * (1 + e)) },
             ];
     }
-    const [longest] = object.shape.radiiKm.value;
-    const size = {
-      label: en.statLength,
-      value: fill(object.orbit === null ? en.valueMetresEndToEnd : en.valueMetresLong, {
-        n: show(2 * longest * METRES_PER_KM, 3),
-      }),
-    };
-    return [...trip, ...height, size];
+    // A craft whose size the sources do not give has no size to show.
+    const size: Stat[] = object.shape
+      ? [
+          {
+            label: en.statLength,
+            value: fill(object.orbit === null ? en.valueMetresEndToEnd : en.valueMetresLong, {
+              n: show(2 * object.shape.radiiKm.value[0] * METRES_PER_KM, 3),
+            }),
+          },
+        ]
+      : [];
+    // A year is shown as written, with no thousands separator.
+    const firstUsed: Stat[] = object.firstUsedYear
+      ? [{ label: en.statFirstUsed, value: String(object.firstUsedYear.value) }]
+      : [];
+    return [...trip, ...height, ...size, ...firstUsed];
   }
   if (object.kind === 'moon') {
     const distance =

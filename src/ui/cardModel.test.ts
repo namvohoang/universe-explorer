@@ -13,13 +13,16 @@ const drawn = catalogue.filter((o) => bodyRadiusKm(o) !== null && !isShowpiece(o
 const written = new Set(cards.map((card) => card.id));
 
 describe('a spaceship shown as a model', () => {
-  it('has a card with its size and says it is a model', () => {
+  it('has a card with what is known of it and says it is a model', () => {
     const shown = catalogue.filter(isShowpiece);
     expect(shown.length).toBeGreaterThanOrEqual(3);
     for (const craft of shown) {
       const card = cardModel(craft.id, catalogue);
       expect(card.eyebrow).toBe(en.eyebrowSpaceship);
-      expect(card.stats.map((stat) => stat.label)).toEqual([en.statLength]);
+      // Its size where a source gives one, and always the year it was first used.
+      const labels = card.stats.map((stat) => stat.label);
+      expect(labels).toContain(en.statFirstUsed);
+      expect(labels.includes(en.statLength)).toBe(craft.shape !== null);
       expect(card.facts).toHaveLength(3);
       expect(card.note).toBe(en.deepNoteCraft);
     }

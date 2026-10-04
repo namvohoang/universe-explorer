@@ -67,7 +67,13 @@ export const NARRATION: Readonly<Record<string, { file: string; fingerprint: str
   'big-dipper': { file: 'public/voice/big-dipper.mp3', fingerprint: '71a62d0a' },
   'southern-cross': { file: 'public/voice/southern-cross.mp3', fingerprint: 'd173b01f' },
   cassiopeia: { file: 'public/voice/cassiopeia.mp3', fingerprint: 'ec3fb3ed' },
+  gemini: { file: 'public/voice/gemini.mp3', fingerprint: 'dbc8a6ee' },
   'saturn-v': { file: 'public/voice/saturn-v.mp3', fingerprint: 'd7b3f603' },
+  'lunar-module': { file: 'public/voice/lunar-module.mp3', fingerprint: '6d79b2be' },
+  'pioneer-10': { file: 'public/voice/pioneer-10.mp3', fingerprint: '44ce1b58' },
+  voyager: { file: 'public/voice/voyager.mp3', fingerprint: '5c5db46c' },
   'space-shuttle': { file: 'public/voice/space-shuttle.mp3', fingerprint: '742ab68f' },
   cassini: { file: 'public/voice/cassini.mp3', fingerprint: '1bdc5a24' },
+  'new-horizons': { file: 'public/voice/new-horizons.mp3', fingerprint: '556eb037' },
+  curiosity: { file: 'public/voice/curiosity.mp3', fingerprint: '816034ba' },
 };

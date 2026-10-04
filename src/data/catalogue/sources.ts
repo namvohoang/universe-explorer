@@ -586,6 +586,48 @@ export const NASA_CASSINI_FACTS: Source = {
   retrieved: '2026-10-04',
 };
 
+export const NASA_VOYAGER_1: Source = {
+  id: 'nasa-voyager-1',
+  title: 'NASA Science — Voyager 1: The Farthest Spacecraft',
+  url: 'https://science.nasa.gov/mission/voyager/voyager-1/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_APOLLO_KIDS: Source = {
+  id: 'nasa-apollo-kids',
+  title: 'NASA — What Was the Apollo Program? (Grades 5-8)',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-was-the-apollo-program-grades-5-8/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_GEMINI_KIDS: Source = {
+  id: 'nasa-gemini-kids',
+  title: 'NASA — What Was the Gemini Program? (Grades 5-8)',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-was-the-gemini-program-grades-5-8/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_PIONEER_10: Source = {
+  id: 'nasa-pioneer-10',
+  title: 'NASA Science — Pioneer 10',
+  url: 'https://science.nasa.gov/mission/pioneer-10/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_NEW_HORIZONS: Source = {
+  id: 'nasa-new-horizons',
+  title: 'NASA Science — New Horizons',
+  url: 'https://science.nasa.gov/mission/new-horizons/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_CURIOSITY: Source = {
+  id: 'nasa-curiosity',
+  title: 'NASA Science — Mars Science Laboratory: Curiosity Rover',
+  url: 'https://science.nasa.gov/mission/msl-curiosity/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_ISS_FACTS: Source = {
   id: 'nasa-iss-facts',
   title: 'NASA — International Space Station Facts and Figures',

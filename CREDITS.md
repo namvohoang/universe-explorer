@@ -63,6 +63,9 @@ image's own page has been opened and read.
 | `public/media/models/mro.glb` | mro | artist-concept | NASA/JPL-Caltech | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/resource/mars-reconnaissance-orbiter-3d-model/ | 2026-10-04 | The glTF model offered on the page (4 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
 | `public/media/models/swift.glb` | swift | artist-concept | NASA/Christopher R. Meaney | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/3d-resources/swift/ | 2026-10-04 | The glTF model offered on the page (0.2 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
 | `public/media/models/chandra.glb` | chandra | artist-concept | NASA/Brian E. Kumanchik | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/3d-resources/chandra-x-ray-observatory/ | 2026-10-04 | The glTF model offered on the page (1 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
+| `public/media/models/space-shuttle.glb` | space-shuttle | artist-concept | NASA/Michael D. Carbajal | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/3d-resources/space-shuttle-a/ | 2026-10-04 | The glTF model offered on the page (1 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
+| `public/media/models/saturn-v.glb` | saturn-v | artist-concept | NASA/Michael D. Carbajal | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/3d-resources/saturn-v/ | 2026-10-04 | The glTF model offered on the page (0.9 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
+| `public/media/models/cassini.glb` | cassini | artist-concept | NASA Visualization Technology Applications and Development (VTAD) | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/resource/cassini-3d-model/ | 2026-10-04 | The glTF model offered on the page (5.6 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
 
 The Sun is drawn from NASA's own 3D model of it, not from a map.
 
@@ -91,7 +94,7 @@ ship with the app.
 
 | What | Made with | Licence | Source |
 |---|---|---|---|
-| 66 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
+| 69 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
 
 ## Fonts
 

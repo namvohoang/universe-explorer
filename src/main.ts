@@ -1,6 +1,6 @@
 import './ui/fonts';
 import { catalogue } from './data/catalogue';
-import { isSatellite } from './data/types';
+import { isSatellite, isShowpiece, type CelestialObject } from './data/types';
 import { distanceForAspect, litSideBearing } from './scene/flight';
 import {
   PLANET_ENLARGEMENT,
@@ -29,6 +29,7 @@ import { createCompare } from './ui/compare';
 import { create, mustFind } from './ui/dom';
 import { fill } from './ui/format';
 import { createGrownUps } from './ui/grownups';
+import { mediaUrl } from './ui/mediaUrl';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
 import { createSegmented } from './ui/segmented';
@@ -82,11 +83,21 @@ function start(): void {
   system.setDate(clock.jd);
   stage.scene.add(system.group);
 
-  const drawn = catalogue.filter((object) => bodyRadiusKm(object) !== null);
+  const drawn = catalogue.filter((object) => bodyRadiusKm(object) !== null && !isShowpiece(object));
   const belts = catalogue.filter((object) => object.kind === 'belt');
   // Things beyond the solar system are shown as pictures. The catalogue lists them nearest
   // first, so stepping through them is a ladder outwards.
-  const deep = catalogue.filter(isDeepSky);
+  // Everything shown by itself in place of the solar system: deep-space objects, and the
+  // spaceships that are only models to look at. Each kind has its own tab.
+  const deep = catalogue.filter((object) => isDeepSky(object) || isShowpiece(object));
+  type Scene = 'solar' | 'deep' | 'craft';
+  const sceneOf = (object: CelestialObject | undefined): Scene =>
+    object === undefined || !deep.includes(object)
+      ? 'solar'
+      : isShowpiece(object)
+        ? 'craft'
+        : 'deep';
+  const sceneOfId = (id: string | null): Scene => sceneOf(deep.find((object) => object.id === id));
   const isDeep = (id: string | null): boolean => deep.some((object) => object.id === id);
   const picture = mustFind('#picture');
   const pictureImage = mustFind('#picture-image');
@@ -159,7 +170,11 @@ function start(): void {
    * planet the camera is at (or whose moon it is at).
    */
   const chipsFor = (id: string | null): { id: string | null; label: string }[] => {
-    if (isDeep(id)) return deep.map((object) => ({ id: object.id, label: displayName(object) }));
+    if (isDeep(id)) {
+      return deep
+        .filter((object) => sceneOf(object) === sceneOfId(id))
+        .map((object) => ({ id: object.id, label: displayName(object) }));
+    }
     const here = drawn.find((object) => object.id === id);
     const planetId = here && isSatellite(here) ? here.parentId : (here?.id ?? null);
     return [
@@ -179,6 +194,7 @@ function start(): void {
     simulation: en.deepNoteSimulation,
     cluster: en.deepNoteCluster,
     constellation: en.deepNoteConstellation,
+    'craft-model': en.deepNoteCraft,
     'star-sizes': en.deepNoteStarSizes,
     'planet-system': fill(en.deepNotePlanetSystem, { times: PLANET_ENLARGEMENT }),
   };
@@ -191,8 +207,14 @@ function start(): void {
       stage.scene.remove(deepModel.group);
       deepModel.dispose();
     }
+    const modelFile = object?.media.find((media) => media.role === 'model')?.file;
     deepModel = object
-      ? createDeepModel(object, { catalogue, pictureUrl, nameOf: displayName })
+      ? createDeepModel(object, {
+          catalogue,
+          pictureUrl,
+          modelUrl: modelFile ? mediaUrl(modelFile) : null,
+          nameOf: displayName,
+        })
       : null;
     deepModelFor = object?.id ?? null;
     system.group.visible = deepModel === null && object === undefined;
@@ -217,7 +239,7 @@ function start(): void {
     card.show(model, narrationUrl(focus, speechLines(model)));
     chips.show(chipsFor(focus), focus);
     document.body.classList.toggle('deep', isDeep(focus));
-    sceneControl.show(isDeep(focus) ? 'deep' : 'solar');
+    sceneControl.show(sceneOfId(focus));
     back.hidden = focus === null;
     picture.hidden = model.picture === null;
     if (model.picture) {
@@ -239,15 +261,17 @@ function start(): void {
     showFocus();
   };
 
-  const sceneControl = createSegmented<'solar' | 'deep'>(
+  const sceneControl = createSegmented<Scene>(
     en.sceneControl,
     [
       { value: 'solar', label: en.sceneSolar },
       { value: 'deep', label: en.sceneDeep },
+      { value: 'craft', label: en.sceneCraft },
     ],
     'solar',
     (scene) => {
-      goTo(scene === 'deep' ? (deep[0]?.id ?? null) : null);
+      const first = deep.find((object) => sceneOf(object) === scene);
+      goTo(scene === 'solar' ? null : (first?.id ?? null));
     },
   );
 

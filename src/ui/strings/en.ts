@@ -389,6 +389,33 @@ export const en = {
   cardChandraFact2: 'One trip around Earth takes it 64 hours.',
   cardChandraFact3: 'A space shuttle carried it up in 1999.',
   modelAltChandra: 'A 3D model of Chandra: a long silver tube with a solar panel on each side.',
+  sceneCraft: 'Spaceships',
+  eyebrowSpaceship: 'Spaceship · built by people',
+  deepNoteCraft:
+    'This is a 3D model made by NASA, not a photo. Turn it round to look at it from every side.',
+  valueMetresEndToEnd: '{n} metres',
+  nameSpaceShuttle: 'The Space Shuttle',
+  cardSpaceShuttleHello:
+    'The space shuttle was a spaceship that carried astronauts and cargo to space and back.',
+  cardSpaceShuttleFact1: 'It first flew in April 1981.',
+  cardSpaceShuttleFact2: 'In 30 years it flew 135 missions.',
+  cardSpaceShuttleFact3: 'It took off like a rocket and landed on a runway like a glider.',
+  modelAltSpaceShuttle:
+    'A plain grey 3D model of the space shuttle: a space plane with wings, fixed to a big fuel tank with a thin rocket on each side.',
+  nameSaturnV: 'The Saturn V Rocket',
+  cardSaturnVHello: 'The Saturn V was a rocket built to send people to the Moon.',
+  cardSaturnVFact1: 'It was 111 metres tall, about as high as a building with 36 floors.',
+  cardSaturnVFact2: 'It was the most powerful rocket that had ever flown.',
+  cardSaturnVFact3: 'It first launched in 1967.',
+  modelAltSaturnV:
+    'A 3D model of the Saturn V: a very tall, thin white rocket with black markings.',
+  cardCassiniHello: 'Cassini was a spacecraft sent to Saturn.',
+  cardCassiniFact1: 'It left Earth in October 1997 and reached Saturn in July 2004.',
+  cardCassiniFact2: 'Its whole mission lasted 20 years.',
+  cardCassiniFact3:
+    'It carried a smaller probe, Huygens, which went down to the moon Titan in 2005.',
+  modelAltCassini:
+    'A 3D model of Cassini: a tall body wrapped in gold foil, with a large white dish on top and a long thin boom.',
   nameIss: 'The International Space Station',
   cardIssHello:
     'The International Space Station is a home in space where astronauts live and work.',

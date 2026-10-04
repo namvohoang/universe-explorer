@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import { cards } from '../data/content/cards';
 import { formatDuration, objectStats, solarSystemStats } from './stats';
+import { isShowpiece } from '../data/types';
 
 const statsOf = (id: string): Record<string, string> => {
   const object = catalogue.find((o) => o.id === id);
@@ -57,6 +58,8 @@ describe('objectStats', () => {
   it('gives every drawn body a few stats', () => {
     for (const object of catalogue) {
       if (object.shape?.type !== 'spheroid' && object.shape?.type !== 'triaxial') continue;
+      // A spaceship shown only as a model has just its size.
+      if (isShowpiece(object)) continue;
       const card = cards.find((c) => c.id === object.id);
       expect(objectStats(object, catalogue, card).length).toBeGreaterThanOrEqual(3);
     }

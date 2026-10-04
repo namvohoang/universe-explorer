@@ -144,7 +144,9 @@ export function objectStats(
     const [longest] = object.shape.radiiKm.value;
     const size = {
       label: en.statLength,
-      value: fill(en.valueMetresLong, { n: show(2 * longest * METRES_PER_KM, 3) }),
+      value: fill(object.orbit === null ? en.valueMetresEndToEnd : en.valueMetresLong, {
+        n: show(2 * longest * METRES_PER_KM, 3),
+      }),
     };
     return [...trip, ...height, size];
   }

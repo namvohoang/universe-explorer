@@ -5,6 +5,7 @@ import { bodyRadiusKm } from '../../sim/layout';
 import { temperatureFromBV } from '../../sim/stars';
 import { createBlackHole } from './blackHole';
 import { createConstellation } from './constellation';
+import { createCraftModel } from './craftModel';
 import type { DeepModel } from './model';
 import { createPictureCloud } from './pictureCloud';
 import { createPlanetSystem } from './planetSystem';
@@ -25,6 +26,8 @@ export interface DeepContext {
   readonly catalogue: readonly CelestialObject[];
   /** Where the object's real picture is served from, if it has one. */
   readonly pictureUrl: string | null;
+  /** Where the object's own 3D model is served from, if it has one. */
+  readonly modelUrl: string | null;
   /** The name to show for an object in a label. */
   readonly nameOf: (object: CelestialObject) => string;
 }
@@ -34,12 +37,13 @@ export interface DeepContext {
  * its picture can be shown.
  */
 export function createDeepModel(object: CelestialObject, context: DeepContext): DeepModel | null {
-  const { catalogue, pictureUrl, nameOf } = context;
+  const { catalogue, pictureUrl, modelUrl, nameOf } = context;
   const sun = catalogue.find((o) => o.id === 'sun');
   const earth = catalogue.find((o) => o.id === 'earth');
   const sunRadiusKm = sun ? bodyRadiusKm(sun) : null;
   const earthRadiusKm = earth ? bodyRadiusKm(earth) : null;
 
+  if (object.kind === 'spacecraft') return modelUrl === null ? null : createCraftModel(modelUrl);
   if (object.kind === 'black-hole') return createBlackHole();
   if (object.kind === 'constellation') {
     return createConstellation(object.stars.value, object.lines, sun ? nameOf(sun) : '');

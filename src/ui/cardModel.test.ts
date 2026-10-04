@@ -6,9 +6,25 @@ import { bodyRadiusKm } from '../sim/layout';
 import { cardModel, isDeepSky } from './cardModel';
 import { displayName } from './names';
 import { en } from './strings/en';
+import { isShowpiece } from '../data/types';
 
-const drawn = catalogue.filter((o) => bodyRadiusKm(o) !== null);
+// Bodies drawn in the solar system. A spaceship shown only as a model is not among them.
+const drawn = catalogue.filter((o) => bodyRadiusKm(o) !== null && !isShowpiece(o));
 const written = new Set(cards.map((card) => card.id));
+
+describe('a spaceship shown as a model', () => {
+  it('has a card with its size and says it is a model', () => {
+    const shown = catalogue.filter(isShowpiece);
+    expect(shown.length).toBeGreaterThanOrEqual(3);
+    for (const craft of shown) {
+      const card = cardModel(craft.id, catalogue);
+      expect(card.eyebrow).toBe(en.eyebrowSpaceship);
+      expect(card.stats.map((stat) => stat.label)).toEqual([en.statLength]);
+      expect(card.facts).toHaveLength(3);
+      expect(card.note).toBe(en.deepNoteCraft);
+    }
+  });
+});
 
 describe('cardModel', () => {
   it('has a card for the whole view and for every drawn body', () => {
@@ -191,8 +207,9 @@ describe('deep-sky cards', () => {
 
 describe('concepts', () => {
   const strings: Readonly<Record<string, string>> = en;
+  // A spaceship shown only as a model has no concept: the one for its kind is about satellites.
   const places = catalogue.filter(
-    (o) => bodyRadiusKm(o) !== null || o.kind === 'belt' || isDeepSky(o),
+    (o) => (bodyRadiusKm(o) !== null || o.kind === 'belt' || isDeepSky(o)) && !isShowpiece(o),
   );
 
   it('says what kind of thing every place is', () => {

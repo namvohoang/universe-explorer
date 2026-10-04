@@ -123,7 +123,11 @@ export interface Comet extends ObjectBase {
 /** Something people built and put in orbit: a space station or a satellite. */
 export interface Spacecraft extends ObjectBase {
   readonly kind: 'spacecraft';
-  readonly parentId: string;
+  /**
+   * What it goes round. `null`, with no `orbit`, for a craft shown only as a model to look at:
+   * one that no longer flies, or whose path is not one the app draws.
+   */
+  readonly parentId: string | null;
   /**
    * Its overall size, as three equal radii of half its longest side. What it really looks
    * like comes from its 3D model in `media`, which is drawn in place of a ball.
@@ -250,4 +254,9 @@ export type ObjectOfKind<K extends ObjectKind> = Extract<CelestialObject, { kind
 /** A moon or a spacecraft: something that goes round a planet, natural or built. */
 export function isSatellite(object: CelestialObject): object is Moon | Spacecraft {
   return object.kind === 'moon' || object.kind === 'spacecraft';
+}
+
+/** A spacecraft shown by itself as a model, with no place in the solar system view. */
+export function isShowpiece(object: CelestialObject): object is Spacecraft {
+  return object.kind === 'spacecraft' && object.orbit === null;
 }

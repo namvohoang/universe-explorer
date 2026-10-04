@@ -1,6 +1,7 @@
 import { SOLAR_SYSTEM_CARD_ID, cards } from '../data/content/cards';
 import { concepts } from '../data/content/concepts';
 import type { CelestialObject, MediaRef } from '../data/types';
+import { isShowpiece } from '../data/types';
 import { semiMajorAxisKm } from '../sim/elements';
 import { fill } from './format';
 import { mediaUrl } from './mediaUrl';
@@ -82,6 +83,7 @@ function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[])
     return fill(en.eyebrowMoon, { parent: parent ? displayName(parent) : '' });
   }
   if (object.kind === 'spacecraft') {
+    if (object.orbit === null) return en.eyebrowSpaceship;
     const parent = catalogue.find((o) => o.id === object.parentId);
     return fill(en.eyebrowSpacecraft, { parent: parent ? displayName(parent) : '' });
   }
@@ -93,6 +95,8 @@ function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[])
 }
 
 function conceptOf(object: CelestialObject): CardModel['concept'] {
+  // The spacecraft concept explains satellites, which a rocket or a retired craft is not.
+  if (isShowpiece(object)) return null;
   const concept = concepts.find((c) => c.kind === object.kind);
   return concept ? { title: text(concept.titleKey), text: text(concept.text.key) } : null;
 }
@@ -134,7 +138,9 @@ export function cardModel(
       : object.kind === 'comet'
         ? en.cometNote
         : object.kind === 'spacecraft'
-          ? en.spacecraftNote
+          ? object.orbit === null
+            ? en.deepNoteCraft
+            : en.spacecraftNote
           : globeNote(
               object.media.find((media) => media.role === 'surface-map' || media.role === 'model'),
             );

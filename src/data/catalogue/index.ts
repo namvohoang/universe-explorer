@@ -8,6 +8,9 @@ import { mercury } from './mercury';
 import { moon } from './moon';
 import { iss } from './iss';
 import { hubble } from './hubble';
+import { spaceShuttle } from './spaceShuttle';
+import { saturnV } from './saturnV';
+import { cassini } from './cassini';
 import { swift } from './swift';
 import { chandra } from './chandra';
 import { mro } from './mro';
@@ -138,4 +141,7 @@ export const catalogue: readonly CelestialObject[] = [
   bigDipper,
   southernCross,
   cassiopeia,
+  saturnV,
+  spaceShuttle,
+  cassini,
 ];

@@ -275,6 +275,10 @@ The owner asked for more objects, and for the things people have put in orbit ro
       satellites Swift and Chandra, each with its Horizons orbit and NASA's 3D model. Left out for
       now: Parker Solar Probe (no published size), Europa Clipper (model too heavy), Terra (NASA's
       model file is broken), Voyager and New Horizons (escape paths, which the orbit code cannot draw).
+- [x] 7.7 A Spaceships tab for craft that no longer fly, shown as NASA's 3D models to turn
+      round, with no made-up path: the Space Shuttle, the Saturn V rocket and Cassini. More models
+      exist to add (Voyager, the Apollo Lunar Module, Gemini, Mir, Pioneer 10, New Horizons,
+      Galileo, the Curiosity rover) once each has a sourced size.
 
 **Acceptance:** every new object has a cited source for each number, a credited picture or model,
 a card with a recording, and passes the gate.

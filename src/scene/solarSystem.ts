@@ -1,5 +1,6 @@
 import { AmbientLight, Group, PointLight } from 'three';
 import type { CelestialObject, RingSystem } from '../data/types';
+import { isShowpiece } from '../data/types';
 import { J2000_JD, KM_PER_AU } from '../sim/constants';
 import { poleOf } from '../sim/frames';
 import { sceneDistance } from '../sim/belt';
@@ -55,6 +56,8 @@ export function createSolarSystem(
   for (const object of catalogue) {
     const { shape } = object;
     if (shape?.type !== 'spheroid' && shape?.type !== 'triaxial') continue;
+    // A craft shown only as a model to look at has no place among the planets.
+    if (isShowpiece(object)) continue;
     const needsPole = object.orbit !== null && poleOf(shape.orientation) === null;
     const fallbackPole = needsPole ? sceneOrbitNormal(object, catalogue, J2000_JD) : null;
     const body = createBody(object, shape, scale, ringsOf.get(object.id) ?? null, fallbackPole);

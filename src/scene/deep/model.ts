@@ -8,10 +8,17 @@ import type { Group } from 'three';
  * - `cluster`: every star placed from its measured position and distance.
  * - `star-sizes`: stars at their true sizes next to each other, lined up to compare.
  * - `constellation`: stars of a pattern placed from their measured positions and distances.
+ * - `craft-model`: an agency's own 3D model of a spacecraft, shown by itself.
  * - `planet-system`: a star and its planets' orbits to scale, with the planets enlarged.
  */
 export type DeepModelNote =
-  'picture-cloud' | 'simulation' | 'cluster' | 'star-sizes' | 'constellation' | 'planet-system';
+  | 'picture-cloud'
+  | 'simulation'
+  | 'cluster'
+  | 'star-sizes'
+  | 'constellation'
+  | 'craft-model'
+  | 'planet-system';
 
 /** A 3D model shown in place of the solar system when a deep-space object is picked. */
 export interface DeepModel {

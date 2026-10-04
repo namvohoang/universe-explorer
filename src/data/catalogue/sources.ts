@@ -558,6 +558,34 @@ export const NASA_CHANDRA_FACTS: Source = {
   retrieved: '2026-10-04',
 };
 
+export const NASA_SHUTTLE_KIDS: Source = {
+  id: 'nasa-shuttle-kids',
+  title: 'NASA — What Was the Space Shuttle? (Grades 5-8)',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-was-the-space-shuttle-grades-5-8/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_SHUTTLE_REFERENCE: Source = {
+  id: 'nasa-shuttle-reference',
+  title: 'NASA — The Space Shuttle (reference)',
+  url: 'https://www.nasa.gov/reference/the-space-shuttle/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_SATURN_V_KIDS: Source = {
+  id: 'nasa-saturn-v-kids',
+  title: 'NASA — What Was the Saturn V? (Grades 5-8)',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-was-the-saturn-v-grades-5-8/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_CASSINI_FACTS: Source = {
+  id: 'nasa-cassini-facts',
+  title: 'NASA Science — Cassini Quick Facts',
+  url: 'https://science.nasa.gov/mission/cassini/quick-facts/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_ISS_FACTS: Source = {
   id: 'nasa-iss-facts',
   title: 'NASA — International Space Station Facts and Figures',

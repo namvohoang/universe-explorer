@@ -20,10 +20,13 @@ import {
   NASA_HUBBLE_CASSIOPEIA,
   NASA_HUBBLE_M104,
   NASA_HUBBLE_NUMBERS,
+  NASA_CASSINI_FACTS,
   NASA_CHANDRA_FACTS,
   NASA_ISS_FACTS,
   NASA_JUNO,
   NASA_MRO,
+  NASA_SATURN_V_KIDS,
+  NASA_SHUTTLE_KIDS,
   NASA_SWIFT,
   NASA_HUBBLE_M31,
   NASA_HUBBLE_M33,
@@ -1237,5 +1240,87 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [ESA_HUBBLE_VY_CMA, NASA_HUBBLE_VY_CMA, NASA_VY_CMA_DIMMING],
+  },
+  {
+    id: 'space-shuttle',
+    hello: {
+      key: 'cardSpaceShuttleHello',
+      sourceId: 'nasa-shuttle-kids',
+      quote: 'It carried astronauts and cargo to and from Earth orbit.',
+    },
+    facts: [
+      {
+        key: 'cardSpaceShuttleFact1',
+        sourceId: 'nasa-shuttle-kids',
+        quote: 'The first space shuttle flight took place April 12, 1981.',
+      },
+      {
+        key: 'cardSpaceShuttleFact2',
+        sourceId: 'nasa-shuttle-kids',
+        quote: 'During those 30 years, the space shuttle launched on 135 missions.',
+      },
+      {
+        key: 'cardSpaceShuttleFact3',
+        sourceId: 'nasa-shuttle-kids',
+        quote: 'The orbiter landed like a glider.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_SHUTTLE_KIDS],
+  },
+  {
+    id: 'saturn-v',
+    hello: {
+      key: 'cardSaturnVHello',
+      sourceId: 'nasa-saturn-v-kids',
+      quote: 'The Saturn V was a rocket NASA built to send people to the moon.',
+    },
+    facts: [
+      {
+        key: 'cardSaturnVFact1',
+        sourceId: 'nasa-saturn-v-kids',
+        quote:
+          'The Saturn V rocket was 111 meters (363 feet) tall, about the height of a 36-story-tall building',
+      },
+      {
+        key: 'cardSaturnVFact2',
+        sourceId: 'nasa-saturn-v-kids',
+        quote: 'It was the most powerful rocket that had ever flown successfully.',
+      },
+      {
+        key: 'cardSaturnVFact3',
+        sourceId: 'nasa-saturn-v-kids',
+        quote: 'The first Saturn V was launched in 1967.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_SATURN_V_KIDS],
+  },
+  {
+    id: 'cassini',
+    hello: {
+      key: 'cardCassiniHello',
+      sourceId: 'nasa-cassini-facts',
+      quote: 'Saturn arrival: July 1, 2004',
+    },
+    facts: [
+      {
+        key: 'cardCassiniFact1',
+        sourceId: 'nasa-cassini-facts',
+        quote: 'Launch: Oct. 15, 1997',
+      },
+      {
+        key: 'cardCassiniFact2',
+        sourceId: 'nasa-cassini-facts',
+        quote: 'during its 20 year mission',
+      },
+      {
+        key: 'cardCassiniFact3',
+        sourceId: 'nasa-cassini-facts',
+        quote: 'Huygens Probe: Titan Release Dec. 24, 2004; Titan Descent Jan. 14, 2005',
+      },
+    ],
+    moons: null,
+    sources: [NASA_CASSINI_FACTS],
   },
 ];

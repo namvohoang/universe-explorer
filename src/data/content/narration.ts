@@ -67,4 +67,7 @@ export const NARRATION: Readonly<Record<string, { file: string; fingerprint: str
   'big-dipper': { file: 'public/voice/big-dipper.mp3', fingerprint: '71a62d0a' },
   'southern-cross': { file: 'public/voice/southern-cross.mp3', fingerprint: 'd173b01f' },
   cassiopeia: { file: 'public/voice/cassiopeia.mp3', fingerprint: 'ec3fb3ed' },
+  'saturn-v': { file: 'public/voice/saturn-v.mp3', fingerprint: 'd7b3f603' },
+  'space-shuttle': { file: 'public/voice/space-shuttle.mp3', fingerprint: '742ab68f' },
+  cassini: { file: 'public/voice/cassini.mp3', fingerprint: '1bdc5a24' },
 };

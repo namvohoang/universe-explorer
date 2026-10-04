@@ -38,6 +38,7 @@ import { asteroidBelt } from './asteroidBelt';
 import { eros } from './eros';
 import { kuiperBelt } from './kuiperBelt';
 import { vesta } from './vesta';
+import { halley } from './halley';
 
 /** Every object in the app. Order is from the Sun outwards, moons and rings after their planet,
  * dwarf planets where their orbits put them. */
@@ -80,5 +81,6 @@ export const catalogue: readonly CelestialObject[] = [
   pluto,
   makemake,
   eris,
+  halley,
   kuiperBelt,
 ];

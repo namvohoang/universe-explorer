@@ -1,13 +1,14 @@
 import { AmbientLight, Group, PointLight } from 'three';
 import type { CelestialObject, RingSystem } from '../data/types';
-import { J2000_JD } from '../sim/constants';
+import { J2000_JD, KM_PER_AU } from '../sim/constants';
 import { poleOf } from '../sim/frames';
 import { sceneDistance } from '../sim/belt';
-import { bodyRadiusKm, sceneOrbitNormal, scenePositions } from '../sim/layout';
+import { bodyRadiusKm, eclipticOffsetKm, sceneOrbitNormal, scenePositions } from '../sim/layout';
 import type { Scale } from '../sim/scale';
 import { length, type Vec3 } from '../sim/vec3';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
+import { createCometTail, type CometTail } from './cometTail';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
 
 /** Enough fill light to make out a night side; the Sun does the rest. */
@@ -54,6 +55,14 @@ export function createSolarSystem(
     .filter((object) => object.orbit)
     .map((object) => createOrbitLine(object, catalogue));
   for (const orbit of orbitLines) group.add(orbit.line);
+
+  const tails = new Map<string, CometTail>();
+  for (const object of catalogue) {
+    if (object.kind !== 'comet' || !bodies.has(object.id)) continue;
+    const tail = createCometTail();
+    tails.set(object.id, tail);
+    group.add(tail.mesh);
+  }
 
   // Rocky dots for a belt near its star, icy ones for a belt far out. A drawing choice.
   const ROCK = 0xb8ab96;
@@ -113,6 +122,14 @@ export function createSolarSystem(
       orbit.update(jd, currentScale, redrawOrbits);
     }
     redrawOrbits = false;
+    for (const [id, tail] of tails) {
+      const comet = catalogue.find((object) => object.id === id);
+      const position = positions.get(id);
+      const parent = comet?.parentId ? positions.get(comet.parentId) : undefined;
+      if (!comet || !position || !parent) continue;
+      const offset = eclipticOffsetKm(comet, catalogue, jd);
+      tail.update(position, parent, length(offset) / KM_PER_AU);
+    }
     const star = catalogue.find((object) => object.kind === 'star');
     const sun = star ? positions.get(star.id) : undefined;
     if (sun) for (const body of bodies.values()) body.setSunPosition(sun);
@@ -143,6 +160,7 @@ export function createSolarSystem(
       for (const body of bodies.values()) body.dispose();
       for (const orbit of orbitLines) orbit.dispose();
       for (const belt of belts) belt.dispose();
+      for (const tail of tails.values()) tail.dispose();
     },
   };
 }

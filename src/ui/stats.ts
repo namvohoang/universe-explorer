@@ -1,6 +1,7 @@
 import type { CardContent, CelestialObject, ObjectOfKind } from '../data/types';
 import { isKnown } from '../data/types';
 import { lightTravelSeconds, orbitalPeriodDays, semiMajorAxisKm } from '../sim/elements';
+import { KM_PER_AU } from '../sim/constants';
 import { bodyRadiusKm } from '../sim/layout';
 import { fill } from './format';
 import { displayName } from './names';
@@ -131,6 +132,15 @@ export function objectStats(
             },
           ];
     return [...trip, ...spinStat(object), ...distance, ...widthStat(object, earth)];
+  }
+  if (object.kind === 'comet' && object.orbit) {
+    const closestAu =
+      (semiMajorAxisKm(object.orbit) * (1 - object.orbit.eccentricity.value)) / KM_PER_AU;
+    const closest = {
+      label: en.statClosest,
+      value: fill(en.valueTimesEarthOne, { n: show(closestAu, 2) }),
+    };
+    return [...trip, closest, ...widthStat(object, earth)];
   }
   return [...spinStat(object), ...trip, ...moonsStat(card), ...widthStat(object, earth)];
 }

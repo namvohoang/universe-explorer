@@ -85,6 +85,18 @@ export const en = {
     "It starts at Neptune's orbit, about 30 times as far from the Sun as Earth is.",
   cardKuiperBeltFact2: 'Scientists think it holds millions of small, icy objects.',
   cardKuiperBeltFact3: 'Some of its worlds, like Pluto, are more than 1,000 km wide.',
+  cardHalleyHello: "Halley's Comet is a lump of ice, frozen gas and dust that goes around the Sun.",
+  cardHalleyFact1:
+    'When a comet gets near the Sun it warms up and grows a cloud around it, called a coma.',
+  cardHalleyFact2:
+    'Sunlight and wind from the Sun blow dust and gas off the comet, making a long, bright tail.',
+  cardHalleyFact3: "Halley's Comet never gets closer to the Sun than 89 million km.",
+  nameHalley: "Halley's Comet",
+  eyebrowComet: 'Comet · goes around the Sun',
+  cometNote:
+    'The tail is drawn, not photographed. It points away from the Sun, as real tails do, but its length is not to scale. The path shown is right for 1950 to 2050; earlier visits came at slightly different times.',
+  statClosest: 'Closest to the Sun',
+  valueTimesEarthOne: "{n} times Earth's distance",
   eyebrowAsteroid: 'Asteroid · goes around the Sun',
   helloAsteroid: '{name} is an asteroid.',
   eyebrowBelt: 'Belt · many small worlds going around the Sun',

@@ -121,11 +121,13 @@ Orientation is part of shape: axial tilt, pole direction, rotation period, retro
 | Mode | Sizes | Distances | On-screen label |
 |---|---|---|---|
 | `true` | One factor | Same factor | "Real sizes and real distances" |
-| `true-sizes` | One factor for all bodies | Compressed, order and ellipse shape kept | "Planets are the right size next to each other. They are really much farther apart." |
+| `true-sizes` | One factor for all bodies | Compressed, order and directions kept | "Planets are the right size next to each other. They are really much farther apart." |
 | `easy` | Compressed, order kept | Compressed, order kept | "Drawn bigger and closer so you can see everything." |
 
 In `true` mode planets are too small to see from far away; the camera, labels and markers handle
-that, not a hidden multiplier. Compression functions are monotonic, named and tested. The
+that, not a hidden multiplier. Compression functions are monotonic, named and tested. They act
+on each position's distance from its parent, so directions stay true and nothing lands inside its
+parent; a stretched orbit looks rounder than it is in the two compressing modes. The
 default mode is an open decision (§8).
 
 Two extra views give the true ratios directly:
@@ -201,8 +203,8 @@ maps, real orbits and a real date; a body always sits on its drawn path; `/data-
 - [x] 3.3 Dwarf planets: Ceres, Pluto, Makemake and Eris. Haumea waits for a trusted source of its three
       axes: NASA's page gives one diameter and calls it football-shaped, so it cannot be drawn truthfully yet.
 - [x] 3.4 Asteroids and the asteroid belt and Kuiper belt as real distributions, not decorative rings.
-- [~] 3.5 Comets: eccentric orbits, a tail that points away from the Sun and grows near it.
-- [ ] 3.6 Concept cards for each new kind.
+- [x] 3.5 Comets: eccentric orbits, a tail that points away from the Sun and grows near it.
+- [~] 3.6 Concept cards for each new kind.
 - [ ] 3.7 Size line-up and Distance line views (§5.4).
 
 **Acceptance:** each object kind in the solar system has at least one object and a concept card;

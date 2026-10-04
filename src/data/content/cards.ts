@@ -3,6 +3,7 @@
 // The sentences themselves are in src/ui/strings/en.ts under each `key`.
 import {
   NASA_FACTS_ASTEROIDS,
+  NASA_FACTS_COMETS,
   NASA_FACTS_EARTH,
   NASA_FACTS_JUPITER,
   NASA_FACTS_KUIPER,
@@ -413,5 +414,33 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_FACTS_KUIPER],
+  },
+  {
+    id: 'halley',
+    hello: {
+      key: 'cardHalleyHello',
+      sourceId: 'nasa-facts-comets',
+      quote: 'The nucleus contains icy chunks, frozen gases with bits of embedded dust.',
+    },
+    facts: [
+      {
+        key: 'cardHalleyFact1',
+        sourceId: 'nasa-facts-comets',
+        quote: 'A comet warms up as it nears the Sun and develops an atmosphere, or coma.',
+      },
+      {
+        key: 'cardHalleyFact2',
+        sourceId: 'nasa-facts-comets',
+        quote:
+          'The pressure of sunlight and high-speed solar particles (solar wind) can blow the coma dust and gas away from the Sun, sometimes forming a long, bright tail.',
+      },
+      {
+        key: 'cardHalleyFact3',
+        sourceId: 'nasa-facts-comets',
+        quote: "Halley's comet gets no closer than 55 million miles (89 million kilometers).",
+      },
+    ],
+    moons: null,
+    sources: [NASA_FACTS_COMETS],
   },
 ];

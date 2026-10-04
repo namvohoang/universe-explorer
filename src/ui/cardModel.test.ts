@@ -35,6 +35,19 @@ describe('cardModel', () => {
     );
   });
 
+  it('gives a comet its everyday name, its closest approach and a note about the drawn tail', () => {
+    const halley = cardModel('halley', catalogue);
+    expect(halley.name).toBe("Halley's Comet");
+    expect(halley.eyebrow).toBe('Comet · goes around the Sun');
+    expect(halley.note).toBe(en.cometNote);
+    expect(halley.stats.map((s) => s.label)).toEqual([
+      'One trip around the Sun',
+      'Closest to the Sun',
+      'Width',
+    ]);
+    expect(halley.stats[1]?.value).toBe("0.57 times Earth's distance");
+  });
+
   it('introduces an asteroid as one', () => {
     const eros = cardModel('eros', catalogue);
     expect(eros.eyebrow).toBe('Asteroid · goes around the Sun');

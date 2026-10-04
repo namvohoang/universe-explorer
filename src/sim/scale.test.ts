@@ -40,7 +40,7 @@ const parentOf = (object: CelestialObject): CelestialObject => byId(object.paren
  * Neptune's; Eros crosses Mars's).
  */
 const keepsItsLane = (object: CelestialObject): boolean =>
-  object.kind !== 'dwarf-planet' && object.kind !== 'asteroid';
+  object.kind !== 'dwarf-planet' && object.kind !== 'asteroid' && object.kind !== 'comet';
 const childrenOf = (parent: CelestialObject): CelestialObject[] =>
   catalogue
     .filter((o) => o.parentId === parent.id && o.orbit && keepsItsLane(o))
@@ -50,8 +50,11 @@ const childrenOf = (parent: CelestialObject): CelestialObject[] =>
 const sceneRange = (scale: Scale, object: CelestialObject): { near: number; far: number } => {
   const a = semiMajorAxisKm(object);
   const e = object.orbit?.eccentricity.value ?? 0;
-  const factor = scale.orbitFactor(a, radiusKm(parentOf(object)));
-  return { near: a * (1 - e) * factor, far: a * (1 + e) * factor };
+  const parentRadius = radiusKm(parentOf(object));
+  return {
+    near: scale.distanceToScene(a * (1 - e), parentRadius),
+    far: scale.distanceToScene(a * (1 + e), parentRadius),
+  };
 };
 
 /** How far a body and everything orbiting it reaches from its own centre, in scene units. */
@@ -69,8 +72,8 @@ describe('true scale', () => {
 
   it('uses one factor for sizes and distances', () => {
     const factor = scale.sizeToScene(1);
-    expect(scale.orbitFactor(5e8, 7e5)).toBe(factor);
-    expect(scale.orbitFactor(4e5, 6e3)).toBe(factor);
+    expect(scale.distanceToScene(5e8, 7e5)).toBeCloseTo(5e8 * factor, 9);
+    expect(scale.distanceToScene(4e5, 6e3)).toBeCloseTo(4e5 * factor, 9);
     expect(scale.sizeToScene(70_000)).toBeCloseTo(70_000 * factor, 12);
   });
 
@@ -85,8 +88,8 @@ describe('true scale', () => {
     }
     for (const a of orbiting) {
       for (const b of orbiting) {
-        const sceneA = semiMajorAxisKm(a) * scale.orbitFactor(semiMajorAxisKm(a), 1);
-        const sceneB = semiMajorAxisKm(b) * scale.orbitFactor(semiMajorAxisKm(b), 1);
+        const sceneA = scale.distanceToScene(semiMajorAxisKm(a), 1);
+        const sceneB = scale.distanceToScene(semiMajorAxisKm(b), 1);
         expect(sceneA / sceneB).toBeCloseTo(semiMajorAxisKm(a) / semiMajorAxisKm(b), 9);
       }
     }
@@ -95,8 +98,7 @@ describe('true scale', () => {
   it('keeps size against distance true as well', () => {
     const earth = byId('earth');
     const sceneRatio =
-      (semiMajorAxisKm(earth) * scale.orbitFactor(semiMajorAxisKm(earth), 1)) /
-      scale.sizeToScene(radiusKm(earth));
+      scale.distanceToScene(semiMajorAxisKm(earth), 1) / scale.sizeToScene(radiusKm(earth));
     expect(sceneRatio).toBeCloseTo(semiMajorAxisKm(earth) / radiusKm(earth), 6);
   });
 });
@@ -118,13 +120,13 @@ describe('true sizes', () => {
   it('keeps a close moon at its real distance from its planet', () => {
     // Inside the near zone the distance, measured in planet radii, is the real one.
     const planetRadiusKm = 60_000;
-    const scene = 2 * planetRadiusKm * scale.orbitFactor(2 * planetRadiusKm, planetRadiusKm);
+    const scene = scale.distanceToScene(2 * planetRadiusKm, planetRadiusKm);
     expect(scene / scale.sizeToScene(planetRadiusKm)).toBeCloseTo(2, 9);
   });
 
   it('brings distances in: far orbits are compressed more than near ones', () => {
-    const near = scale.orbitFactor(1e7, 7e5);
-    const far = scale.orbitFactor(1e9, 7e5);
+    const near = scale.distanceToScene(1e7, 7e5) / 1e7;
+    const far = scale.distanceToScene(1e9, 7e5) / 1e9;
     expect(far).toBeLessThan(near);
   });
 });
@@ -157,7 +159,7 @@ describe.each(SCALE_MODES)('%s mode', (mode) => {
     for (const parentRadius of [1_000, 60_000, 700_000]) {
       let previous = 0;
       for (let a = parentRadius * 2; a < 1e10; a *= 1.37) {
-        const scene = a * scale.orbitFactor(a, parentRadius);
+        const scene = scale.distanceToScene(a, parentRadius);
         expect(scene).toBeGreaterThan(previous);
         previous = scene;
       }
@@ -212,9 +214,17 @@ describe.each(SCALE_MODES)('%s mode', (mode) => {
     }
   });
 
+  it('keeps a comet that dives close to its star outside the star', () => {
+    const halley = byId('halley');
+    const closest = sceneRange(scale, halley).near;
+    expect(closest).toBeGreaterThan(scale.sizeToScene(radiusKm(parentOf(halley))));
+    // And inside Venus's orbit, as it really is at its closest.
+    expect(closest).toBeLessThan(sceneRange(scale, byId('venus')).near);
+  });
+
   it('rejects sizes and distances that are not positive', () => {
     expect(() => scale.sizeToScene(0)).toThrow(RangeError);
-    expect(() => scale.orbitFactor(-1, 1)).toThrow(RangeError);
-    expect(() => scale.orbitFactor(1, Number.NaN)).toThrow(RangeError);
+    expect(() => scale.distanceToScene(-1, 1)).toThrow(RangeError);
+    expect(() => scale.distanceToScene(1, Number.NaN)).toThrow(RangeError);
   });
 });

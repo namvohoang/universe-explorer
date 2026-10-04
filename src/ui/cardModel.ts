@@ -45,6 +45,7 @@ function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[])
   if (object.kind === 'dwarf-planet') return en.eyebrowDwarfPlanet;
   if (object.kind === 'asteroid') return en.eyebrowAsteroid;
   if (object.kind === 'belt') return en.eyebrowBelt;
+  if (object.kind === 'comet') return en.eyebrowComet;
   return fill(en.eyebrowPlanet, { place: placeFromSun(object, catalogue) });
 }
 
@@ -83,7 +84,9 @@ export function cardModel(
     note:
       object.kind === 'belt'
         ? en.beltNote
-        : globeNote(object.media.find((media) => media.role === 'surface-map')?.kind),
+        : object.kind === 'comet'
+          ? en.cometNote
+          : globeNote(object.media.find((media) => media.role === 'surface-map')?.kind),
   };
 }
 

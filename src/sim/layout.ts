@@ -3,7 +3,7 @@ import { orbitStateAt } from './elements';
 import { eclipticToScene, orbitFrameToEcliptic, orbitNormal, poleOf, type Pole } from './frames';
 import { orbitPath, positionFromState } from './kepler';
 import type { Scale } from './scale';
-import { add, normalize, scale as scaleVec, type Vec3 } from './vec3';
+import { add, length, normalize, scale as scaleVec, type Vec3 } from './vec3';
 
 /** The longest radius of a solid body, in km: what its size is judged by. */
 export function largestRadiusKm(shape: BodyShape): number {
@@ -93,10 +93,13 @@ function toSceneOffset(
   pointKm: Vec3,
   orbit: OrbitalElements,
   parent: CelestialObject,
-  factor: number,
+  scale: Scale,
 ): Vec3 {
   const ecliptic = orbitFrameToEcliptic(pointKm, orbit.frame, parentPole(parent));
-  return scaleVec(eclipticToScene(ecliptic), factor);
+  const distanceKm = length(ecliptic);
+  if (distanceKm === 0) return { x: 0, y: 0, z: 0 };
+  const sceneDistance = scale.distanceToScene(distanceKm, parentRadiusKm(parent));
+  return scaleVec(eclipticToScene(ecliptic), sceneDistance / distanceKm);
 }
 
 /**
@@ -118,8 +121,7 @@ export function scenePositions(
     if (object.orbit) {
       const parent = requireParent(object, byId);
       const state = orbitStateAt(object.orbit, jd);
-      const factor = scale.orbitFactor(state.semiMajorAxis, parentRadiusKm(parent));
-      const offset = toSceneOffset(positionFromState(state), object.orbit, parent, factor);
+      const offset = toSceneOffset(positionFromState(state), object.orbit, parent, scale);
       position = add(place(parent), offset);
     } else if (object.parentId !== null) {
       position = place(requireParent(object, byId));
@@ -134,8 +136,8 @@ export function scenePositions(
 
 /**
  * The path an object's orbit traces at a date, as a closed loop of offsets from its parent's
- * position, in scene units. Built from the same elements and the same factor that place the
- * body, so the body always sits on its path.
+ * position, in scene units. Each point goes through the same elements and the same scaling
+ * that place the body, so the body always sits on its path.
  */
 export function sceneOrbitPath(
   object: CelestialObject,
@@ -148,8 +150,7 @@ export function sceneOrbitPath(
   if (!orbit) throw new Error(`${object.id} has no orbit to draw`);
   const parent = requireParent(object, new Map(catalogue.map((o) => [o.id, o])));
   const state = orbitStateAt(orbit, jd);
-  const factor = scale.orbitFactor(state.semiMajorAxis, parentRadiusKm(parent));
-  return orbitPath(state, segments).map((point) => toSceneOffset(point, orbit, parent, factor));
+  return orbitPath(state, segments).map((point) => toSceneOffset(point, orbit, parent, scale));
 }
 
 /**

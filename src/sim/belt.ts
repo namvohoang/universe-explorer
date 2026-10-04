@@ -8,7 +8,7 @@ const DEG = Math.PI / 180;
 /**
  * Where every member of a belt is at a date, as offsets from the belt's parent in scene units,
  * written into `out` as x, y, z triples (so nothing is allocated per frame). Each member moves
- * on its own real ellipse, scaled the same way a planet's orbit is.
+ * on its own real ellipse.
  */
 export function beltScenePositions(
   members: readonly BeltOrbit[],
@@ -33,8 +33,13 @@ export function beltScenePositions(
     const x = (cosW * cosO - sinW * sinO * cosI) * px + (-sinW * cosO - cosW * sinO * cosI) * py;
     const y = (cosW * sinO + sinW * cosO * cosI) * px + (-sinW * sinO + cosW * cosO * cosI) * py;
     const z = sinW * sinI * px + cosW * sinI * py;
-    // Scene axes put the ecliptic's north up: (x, z, −y).
-    const unitsPerAu = scale.orbitFactor(aAu * KM_PER_AU, parentRadiusKm) * KM_PER_AU;
+    // Scene axes put the ecliptic's north up: (x, z, −y). The distance is scaled the same
+    // way a planet's is.
+    const distanceAu = Math.hypot(x, y, z);
+    const unitsPerAu =
+      distanceAu === 0
+        ? 0
+        : scale.distanceToScene(distanceAu * KM_PER_AU, parentRadiusKm) / distanceAu;
     out[n * 3] = x * unitsPerAu;
     out[n * 3 + 1] = z * unitsPerAu;
     out[n * 3 + 2] = -y * unitsPerAu;
@@ -44,6 +49,5 @@ export function beltScenePositions(
 
 /** The scene radius of a circle around the parent at a real distance, e.g. a belt's outer edge. */
 export function sceneDistance(distanceAu: number, parentRadiusKm: number, scale: Scale): number {
-  const km = distanceAu * KM_PER_AU;
-  return km * scale.orbitFactor(km, parentRadiusKm);
+  return scale.distanceToScene(distanceAu * KM_PER_AU, parentRadiusKm);
 }

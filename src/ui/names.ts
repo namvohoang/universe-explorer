@@ -5,5 +5,6 @@ import { en } from './strings/en';
 export function displayName(object: CelestialObject): string {
   if (object.id === 'sun') return en.nameSun;
   if (object.id === 'moon') return en.nameMoon;
+  if (object.id === 'halley') return en.nameHalley;
   return object.name;
 }

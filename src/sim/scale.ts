@@ -22,10 +22,11 @@ export interface Scale {
   /** Scene radius for a real radius. */
   sizeToScene(radiusKm: number): number;
   /**
-   * Scene units per km for a whole orbit. Multiplying every point of the orbit by one factor
-   * keeps the ellipse's real shape; only its size on screen changes.
+   * Scene distance from a parent's centre for a real distance from it. Applied to each
+   * position on its own, so directions are always true and nothing can end up inside its
+   * parent. In a compressing mode a stretched orbit therefore looks rounder than it is.
    */
-  orbitFactor(semiMajorAxisKm: number, parentRadiusKm: number): number;
+  distanceToScene(distanceKm: number, parentRadiusKm: number): number;
 }
 
 /** True scale: 1 AU is this many scene units, for sizes and distances alike. */
@@ -53,11 +54,11 @@ interface DistanceCompression {
 /**
  * Found by search as the most compact layout in which nothing in the catalogue overlaps: every
  * gap is at least half the drawn radius of the body beside it (scale.test.ts checks there is no
- * overlap). Orbits keep their true shape, so Mercury's stretched orbit still has to clear
- * Venus's, and each planet's moons have to clear the next planet's.
+ * overlap). Each planet's moons have to clear the next planet's, which is what sets how tightly
+ * the planets can sit.
  */
-const TRUE_SIZES_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.32 };
-const EASY_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.45 };
+const TRUE_SIZES_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.2 };
+const EASY_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.36 };
 
 function requirePositive(name: string, value: number): void {
   if (!(value > 0) || !Number.isFinite(value)) {
@@ -65,16 +66,15 @@ function requirePositive(name: string, value: number): void {
   }
 }
 
-function compressedOrbitFactor(
+function compressedDistance(
   compression: DistanceCompression,
   parentSceneRadius: number,
-  semiMajorAxisKm: number,
+  distanceKm: number,
   parentRadiusKm: number,
 ): number {
   const { near, exponent } = compression;
-  const real = semiMajorAxisKm / parentRadiusKm;
-  const inParentRadii = real <= near ? real : near * (real / near) ** exponent;
-  return (parentSceneRadius * inParentRadii) / semiMajorAxisKm;
+  const real = distanceKm / parentRadiusKm;
+  return parentSceneRadius * (real <= near ? real : near * (real / near) ** exponent);
 }
 
 function trueSizesRadius(radiusKm: number): number {
@@ -92,7 +92,7 @@ const SCALES: Readonly<Record<ScaleMode, Scale>> = {
     distances: 'true',
     labelKey: 'scaleLabelTrue',
     sizeToScene: (radiusKm) => radiusKm * TRUE_SCENE_UNITS_PER_KM,
-    orbitFactor: () => TRUE_SCENE_UNITS_PER_KM,
+    distanceToScene: (distanceKm) => distanceKm * TRUE_SCENE_UNITS_PER_KM,
   },
   'true-sizes': {
     mode: 'true-sizes',
@@ -100,11 +100,11 @@ const SCALES: Readonly<Record<ScaleMode, Scale>> = {
     distances: 'compressed',
     labelKey: 'scaleLabelTrueSizes',
     sizeToScene: trueSizesRadius,
-    orbitFactor: (semiMajorAxisKm, parentRadiusKm) =>
-      compressedOrbitFactor(
+    distanceToScene: (distanceKm, parentRadiusKm) =>
+      compressedDistance(
         TRUE_SIZES_DISTANCES,
         trueSizesRadius(parentRadiusKm),
-        semiMajorAxisKm,
+        distanceKm,
         parentRadiusKm,
       ),
   },
@@ -114,13 +114,8 @@ const SCALES: Readonly<Record<ScaleMode, Scale>> = {
     distances: 'compressed',
     labelKey: 'scaleLabelEasy',
     sizeToScene: easyRadius,
-    orbitFactor: (semiMajorAxisKm, parentRadiusKm) =>
-      compressedOrbitFactor(
-        EASY_DISTANCES,
-        easyRadius(parentRadiusKm),
-        semiMajorAxisKm,
-        parentRadiusKm,
-      ),
+    distanceToScene: (distanceKm, parentRadiusKm) =>
+      compressedDistance(EASY_DISTANCES, easyRadius(parentRadiusKm), distanceKm, parentRadiusKm),
   },
 };
 
@@ -132,10 +127,10 @@ export function createScale(mode: ScaleMode): Scale {
       requirePositive('radiusKm', radiusKm);
       return scale.sizeToScene(radiusKm);
     },
-    orbitFactor(semiMajorAxisKm, parentRadiusKm) {
-      requirePositive('semiMajorAxisKm', semiMajorAxisKm);
+    distanceToScene(distanceKm, parentRadiusKm) {
+      requirePositive('distanceKm', distanceKm);
       requirePositive('parentRadiusKm', parentRadiusKm);
-      return scale.orbitFactor(semiMajorAxisKm, parentRadiusKm);
+      return scale.distanceToScene(distanceKm, parentRadiusKm);
     },
   };
 }

@@ -41,12 +41,15 @@ const OTHER_MOONS_DISTANCE_TOLERANCE = 0.02;
  * distance, but can be well away from its true place along it. Worst seen: Mimas 67° and 4.5% in
  * distance (its neighbour Tethys swings it back and forth along its orbit over decades);
  * Triton 8° (its tilted orbit slowly turns about Neptune, and that turning is left out);
- * Phobos 5.6° and 2.6% (one fixed period does not quite fit 80 years of so fast a moon).
+ * Phobos 5.6° and 2.6% (one fixed period does not quite fit 80 years of so fast a moon);
+ * Halley's Comet 3.2° and 3.4% close to the Sun in 1986. Halley is checked from 1950 on only:
+ * its database orbit is for the 1986 visit and does not fit the visits before it.
  */
 const LOOSE_MOONS: Readonly<Record<string, { directionDeg: number; distance: number }>> = {
   mimas: { directionDeg: 75, distance: 0.06 },
   triton: { directionDeg: 10, distance: OTHER_MOONS_DISTANCE_TOLERANCE },
   phobos: { directionDeg: 8, distance: 0.04 },
+  halley: { directionDeg: 5, distance: 0.05 },
 };
 
 const ARCSEC_PER_DEG = 3600;
@@ -132,7 +135,7 @@ describe('positions against JPL Horizons', () => {
       const loose = LOOSE_MOONS[bodyId];
       const directionDeg = loose?.directionDeg ?? OTHER_MOONS_DIRECTION_TOLERANCE_DEG;
       const distance = loose?.distance ?? OTHER_MOONS_DISTANCE_TOLERANCE;
-      expect(series.positionsKm.length).toBeGreaterThanOrEqual(8);
+      expect(series.positionsKm.length).toBeGreaterThanOrEqual(7);
       for (const [jd, x, y, z] of series.positionsKm) {
         const expected = { x, y, z };
         const actual = eclipticOffsetKm(object, catalogue, jd);

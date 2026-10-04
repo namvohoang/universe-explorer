@@ -401,3 +401,17 @@ export const JPL_SBDB_EROS: Source = {
   url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Eros',
   retrieved: '2026-10-04',
 };
+
+export const JPL_SBDB_HALLEY: Source = {
+  id: 'jpl-sbdb-halley',
+  title: 'JPL Small-Body Database — 1P/Halley (orbit solution 75)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=1P',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_COMETS: Source = {
+  id: 'nasa-facts-comets',
+  title: 'NASA Science — Comet facts',
+  url: 'https://science.nasa.gov/solar-system/comets/facts/',
+  retrieved: '2026-10-04',
+};

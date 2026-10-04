@@ -200,8 +200,8 @@ maps, real orbits and a real date; a body always sits on its drawn path; `/data-
 - [x] 3.2 Irregular bodies drawn from shape models or triaxial dimensions (never as spheres).
 - [x] 3.3 Dwarf planets: Ceres, Pluto, Makemake and Eris. Haumea waits for a trusted source of its three
       axes: NASA's page gives one diameter and calls it football-shaped, so it cannot be drawn truthfully yet.
-- [ ] 3.4 Asteroids and the asteroid belt and Kuiper belt as real distributions, not decorative rings.
-- [ ] 3.5 Comets: eccentric orbits, a tail that points away from the Sun and grows near it.
+- [x] 3.4 Asteroids and the asteroid belt and Kuiper belt as real distributions, not decorative rings.
+- [~] 3.5 Comets: eccentric orbits, a tail that points away from the Sun and grows near it.
 - [ ] 3.6 Concept cards for each new kind.
 - [ ] 3.7 Size line-up and Distance line views (§5.4).
 

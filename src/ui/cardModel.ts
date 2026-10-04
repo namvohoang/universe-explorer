@@ -3,7 +3,7 @@ import type { CelestialObject, MediaKind } from '../data/types';
 import { semiMajorAxisKm } from '../sim/elements';
 import { fill } from './format';
 import { displayName } from './names';
-import { objectStats, solarSystemStats, type Stat } from './stats';
+import { beltStats, objectStats, solarSystemStats, type Stat } from './stats';
 import { en } from './strings/en';
 import { mediaKindLabel } from './strings/media';
 
@@ -14,8 +14,8 @@ export interface CardModel {
   readonly hello: string;
   readonly stats: readonly Stat[];
   readonly facts: readonly string[];
-  /** What the globe's picture really is, when it is not a plain photo; otherwise `null`. */
-  readonly globeNote: string | null;
+  /** A line about how the thing is drawn: what the globe's picture really is, or what a belt's dots are. */
+  readonly note: string | null;
 }
 
 const STRINGS: Readonly<Record<string, string>> = en;
@@ -43,11 +43,14 @@ function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[])
     return fill(en.eyebrowMoon, { parent: parent ? displayName(parent) : '' });
   }
   if (object.kind === 'dwarf-planet') return en.eyebrowDwarfPlanet;
+  if (object.kind === 'asteroid') return en.eyebrowAsteroid;
+  if (object.kind === 'belt') return en.eyebrowBelt;
   return fill(en.eyebrowPlanet, { place: placeFromSun(object, catalogue) });
 }
 
 function globeNote(kind: MediaKind | undefined): string | null {
-  return kind === undefined ? null : mediaKindLabel(kind);
+  const label = kind === undefined ? null : mediaKindLabel(kind);
+  return label === null ? null : `${en.aboutTheGlobe}: ${label}`;
 }
 
 /** The card for one object, or for the whole view when `objectId` is `null`. */
@@ -66,7 +69,7 @@ export function cardModel(
       hello: text(content.hello.key),
       stats: solarSystemStats(catalogue),
       facts,
-      globeNote: null,
+      note: null,
     };
   }
   const object = catalogue.find((o) => o.id === objectId);
@@ -75,9 +78,12 @@ export function cardModel(
     eyebrow: eyebrow(object, catalogue),
     name: displayName(object),
     hello: content ? text(content.hello.key) : plainHello(object, catalogue),
-    stats: objectStats(object, catalogue, content),
+    stats: object.kind === 'belt' ? beltStats(object) : objectStats(object, catalogue, content),
     facts,
-    globeNote: globeNote(object.media.find((media) => media.role === 'surface-map')?.kind),
+    note:
+      object.kind === 'belt'
+        ? en.beltNote
+        : globeNote(object.media.find((media) => media.role === 'surface-map')?.kind),
   };
 }
 
@@ -89,6 +95,7 @@ function plainHello(object: CelestialObject, catalogue: readonly CelestialObject
   if (object.kind === 'dwarf-planet') {
     return fill(en.helloDwarfPlanet, { name: displayName(object) });
   }
+  if (object.kind === 'asteroid') return fill(en.helloAsteroid, { name: displayName(object) });
   if (object.kind !== 'moon') throw new Error(`No card for "${object.id}"`);
   const parent = catalogue.find((o) => o.id === object.parentId);
   return fill(en.helloMoon, {

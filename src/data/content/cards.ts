@@ -2,8 +2,10 @@
 // quote appears in the page as fetched on the source's `retrieved` date, then wrote this file.
 // The sentences themselves are in src/ui/strings/en.ts under each `key`.
 import {
+  NASA_FACTS_ASTEROIDS,
   NASA_FACTS_EARTH,
   NASA_FACTS_JUPITER,
+  NASA_FACTS_KUIPER,
   NASA_FACTS_MARS,
   NASA_FACTS_MERCURY,
   NASA_FACTS_MOON,
@@ -355,5 +357,61 @@ export const cards: readonly CardContent[] = [
       note: 'Source says: Neptune has 16 known moons.',
     },
     sources: [NASA_FACTS_NEPTUNE],
+  },
+  {
+    id: 'asteroid-belt',
+    hello: {
+      key: 'cardAsteroidBeltHello',
+      sourceId: 'nasa-facts-asteroids',
+      quote: 'Most asteroids orbit our Sun between Mars and Jupiter within the main asteroid belt.',
+    },
+    facts: [
+      {
+        key: 'cardAsteroidBeltFact1',
+        sourceId: 'nasa-facts-asteroids',
+        quote: 'rocky remnants left over from the formation of our solar system',
+      },
+      {
+        key: 'cardAsteroidBeltFact2',
+        sourceId: 'nasa-facts-asteroids',
+        quote: 'Vesta - the largest asteroid at about 329 miles (530 kilometers) in diameter',
+      },
+      {
+        key: 'cardAsteroidBeltFact3',
+        sourceId: 'nasa-facts-asteroids',
+        quote:
+          'Most asteroids are irregularly shaped, though a few are nearly round, and they are often pitted or cratered.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_FACTS_ASTEROIDS],
+  },
+  {
+    id: 'kuiper-belt',
+    hello: {
+      key: 'cardKuiperBeltHello',
+      sourceId: 'nasa-facts-kuiper',
+      quote:
+        'The Kuiper Belt is a large, doughnut-shaped region of icy bodies extending far beyond the orbit of Neptune.',
+    },
+    facts: [
+      {
+        key: 'cardKuiperBeltFact1',
+        sourceId: 'nasa-facts-kuiper',
+        quote: 'Its inner edge begins at the orbit of Neptune, at about 30 AU from the Sun.',
+      },
+      {
+        key: 'cardKuiperBeltFact2',
+        sourceId: 'nasa-facts-kuiper',
+        quote: 'Astronomers think there are millions of small, icy objects in this region',
+      },
+      {
+        key: 'cardKuiperBeltFact3',
+        sourceId: 'nasa-facts-kuiper',
+        quote: 'Some of the objects, including Pluto, are over 600 miles (1,000 kilometers) wide.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_FACTS_KUIPER],
   },
 ];

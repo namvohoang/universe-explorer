@@ -91,6 +91,22 @@ export interface BeltShape {
   readonly outerRadiusAu: Sourced<number>;
 }
 
+/**
+ * The orbit of one member of a belt, around the belt's parent, in the ecliptic of J2000:
+ * [semi-major axis (AU), eccentricity, inclination, longitude of ascending node, argument of
+ * perihelion, mean anomaly (all degrees), mean motion (degrees per day), epoch (Julian date)].
+ */
+export type BeltOrbit = readonly [
+  semiMajorAxisAu: number,
+  eccentricity: number,
+  inclinationDeg: number,
+  nodeDeg: number,
+  periapsisDeg: number,
+  meanAnomalyDeg: number,
+  meanMotionDegPerDay: number,
+  epochJd: number,
+];
+
 export const EXTENDED_STRUCTURES = [
   'cloud',
   'shell',

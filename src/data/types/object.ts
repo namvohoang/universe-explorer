@@ -1,6 +1,7 @@
 import type { MediaRef } from './media';
 import type { OrbitalElements } from './orbit';
 import type {
+  BeltOrbit,
   BeltShape,
   BodyShape,
   ExtendedShape,
@@ -9,7 +10,7 @@ import type {
   RingShape,
   SpheroidShape,
 } from './shape';
-import type { Measured, Source } from './source';
+import type { Measured, Source, Sourced } from './source';
 
 /** Every kind of object a kid can meet. Add a kind rather than bending an existing one. */
 export const OBJECT_KINDS = [
@@ -104,6 +105,8 @@ export interface Belt extends ObjectBase {
   readonly parentId: string;
   readonly orbit: null;
   readonly shape: BeltShape;
+  /** Real orbits of a sample of the belt's members; each is drawn as one dot. */
+  readonly members: Sourced<readonly BeltOrbit[]>;
 }
 
 export interface Exoplanet extends ObjectBase {

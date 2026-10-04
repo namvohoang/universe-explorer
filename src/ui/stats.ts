@@ -1,4 +1,4 @@
-import type { CardContent, CelestialObject } from '../data/types';
+import type { CardContent, CelestialObject, ObjectOfKind } from '../data/types';
 import { isKnown } from '../data/types';
 import { lightTravelSeconds, orbitalPeriodDays, semiMajorAxisKm } from '../sim/elements';
 import { bodyRadiusKm } from '../sim/layout';
@@ -143,5 +143,20 @@ export function solarSystemStats(catalogue: readonly CelestialObject[]): Stat[] 
     { label: en.statPlanets, value: NUMBER.format(planets) },
     { label: en.statStars, value: en.valueOneSun },
     ...(earth ? sunlightStat(earth) : []),
+  ];
+}
+
+/** The fact box for a belt: how many dots are drawn and how far from the Sun it lies. */
+export function beltStats(belt: ObjectOfKind<'belt'>): Stat[] {
+  return [
+    { label: en.statDots, value: NUMBER.format(belt.members.value.length) },
+    {
+      label: en.statBeltSpan,
+      // One AU is Earth's distance from the Sun, so a distance in AU is "times Earth's".
+      value: fill(en.valueTimesEarth, {
+        from: show(belt.shape.innerRadiusAu.value, 2),
+        to: show(belt.shape.outerRadiusAu.value, 2),
+      }),
+    },
   ];
 }

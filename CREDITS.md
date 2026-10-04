@@ -31,8 +31,10 @@ Astronomical values carry their own source and retrieval date in each catalogue 
 
 | Dataset | Used for | Credit | Licence | Source | Retrieved |
 |---|---|---|---|---|---|
+| Orbits of the first 1500 numbered main-belt asteroids (`src/data/belts/asteroidBeltOrbits.ts`) | The dots of the asteroid belt | NASA/JPL Small-Body Database | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. | https://ssd.jpl.nasa.gov/tools/sbdb_query.html | 2026-10-04 |
+| Orbits of 787 numbered trans-Neptunian objects within 50 AU (`src/data/belts/kuiperBeltOrbits.ts`) | The dots of the Kuiper Belt | NASA/JPL Small-Body Database | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. | https://ssd.jpl.nasa.gov/tools/sbdb_query.html | 2026-10-04 |
 
-*None yet.*
+Both are rounded for drawing; the exact queries are in the records' sources.
 
 ## Fonts
 

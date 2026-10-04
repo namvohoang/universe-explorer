@@ -138,6 +138,8 @@ describe('the real catalogue', () => {
     expect(count('ring-system')).toBe(2);
     expect(count('moon')).toBeGreaterThanOrEqual(18);
     expect(count('dwarf-planet')).toBe(4);
+    expect(count('asteroid')).toBe(2);
+    expect(count('belt')).toBe(2);
     // Parents come before what orbits them, so anything placed relative to a parent finds it.
     catalogue.forEach((object, i) => {
       if (object.parentId === null) return;

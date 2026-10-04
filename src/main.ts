@@ -59,6 +59,8 @@ function start(): void {
   stage.scene.add(system.group);
 
   const drawn = catalogue.filter((object) => bodyRadiusKm(object) !== null);
+  const belts = catalogue.filter((object) => object.kind === 'belt');
+  const isBelt = (id: string | null): boolean => belts.some((belt) => belt.id === id);
   /** The body the camera is on, or `null` for the whole view. */
   let focus: string | null = null;
 
@@ -90,7 +92,21 @@ function start(): void {
     idleTurn: false,
   });
 
-  const currentView = (): FlyTo => (focus === null ? wholeView() : bodyView(focus));
+  /** A belt is looked at from above the Sun, far enough back to see all of it. */
+  const beltView = (id: string): FlyTo => {
+    const distance = distanceForAspect(system.beltRadius(id) * FRAMING, stage.aspect());
+    return {
+      ...wholeView(),
+      distance,
+      maxDistance: Math.max(distance * 2, wholeView().maxDistance),
+    };
+  };
+
+  const viewOf = (id: string | null): FlyTo => {
+    if (id === null) return wholeView();
+    return isBelt(id) ? beltView(id) : bodyView(id);
+  };
+  const currentView = (): FlyTo => viewOf(focus);
 
   const card = createCard(() => {
     card.hide();
@@ -106,7 +122,8 @@ function start(): void {
     const planetId = here?.kind === 'moon' ? here.parentId : (here?.id ?? null);
     return [
       { id: null, label: en.wholeView },
-      ...drawn
+      ...catalogue
+        .filter((object) => drawn.includes(object) || isBelt(object.id))
         .filter((object) => object.kind !== 'moon' || object.parentId === planetId)
         .map((object) => ({ id: object.id, label: displayName(object) })),
     ];
@@ -190,9 +207,9 @@ function start(): void {
     scaleControl.show(linkedScale);
     showScale();
   }
-  if (drawn.some((object) => object.id === wanted)) focus = wanted;
+  if (drawn.some((object) => object.id === wanted) || isBelt(wanted)) focus = wanted;
   stage.lookAt(wholeView());
-  if (focus !== null) stage.lookAt(bodyView(focus));
+  if (focus !== null) stage.lookAt(viewOf(focus));
   showFocus();
 
   stage.onFrame((dt) => {
@@ -202,13 +219,14 @@ function start(): void {
   });
   stage.onCameraMoved(() => {
     // A body behind the one in view gets no marker: its name would sit on the wrong globe.
-    const front = focus === null ? null : stage.toScreen(system.positionOf(focus));
-    const frontRadius = focus === null || !front ? 0 : system.radiusOf(focus) * front.pixelsPerUnit;
+    const body = focus !== null && !isBelt(focus) ? focus : null;
+    const front = body === null ? null : stage.toScreen(system.positionOf(body));
+    const frontRadius = body === null || !front ? 0 : system.radiusOf(body) * front.pixelsPerUnit;
     markers.update((id) => {
       const point = stage.toScreen(system.positionOf(id));
       const hidden =
         front !== null &&
-        id !== focus &&
+        id !== body &&
         point.distance > front.distance &&
         Math.hypot(point.x - front.x, point.y - front.y) < frontRadius;
       return {

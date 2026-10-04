@@ -2,9 +2,11 @@ import { AmbientLight, Group, PointLight } from 'three';
 import type { CelestialObject, RingSystem } from '../data/types';
 import { J2000_JD } from '../sim/constants';
 import { poleOf } from '../sim/frames';
-import { sceneOrbitNormal, scenePositions } from '../sim/layout';
+import { sceneDistance } from '../sim/belt';
+import { bodyRadiusKm, sceneOrbitNormal, scenePositions } from '../sim/layout';
 import type { Scale } from '../sim/scale';
 import { length, type Vec3 } from '../sim/vec3';
+import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
 
@@ -21,6 +23,8 @@ export interface SolarSystem {
   positionOf(id: string): Vec3;
   /** Drawn radius of a body under the current scale. */
   radiusOf(id: string): number;
+  /** Scene radius of a belt's outer edge under the current scale. */
+  beltRadius(id: string): number;
   /** Distance from the centre to the farthest body right now. */
   extent(): number;
   dispose(): void;
@@ -51,6 +55,24 @@ export function createSolarSystem(
     .map((object) => createOrbitLine(object, catalogue));
   for (const orbit of orbitLines) group.add(orbit.line);
 
+  // Rocky dots for a belt near its star, icy ones for a belt far out. A drawing choice.
+  const ROCK = 0xb8ab96;
+  const ICE = 0xa9c4d6;
+  const FAR_AU = 10;
+  const belts: BeltPoints[] = [];
+  const beltParentRadiusKm = new Map<string, number>();
+  for (const object of catalogue) {
+    if (object.kind !== 'belt') continue;
+    const parent = catalogue.find((o) => o.id === object.parentId);
+    const radiusKm = parent ? bodyRadiusKm(parent) : null;
+    if (radiusKm === null) continue;
+    const color = object.shape.innerRadiusAu.value > FAR_AU ? ICE : ROCK;
+    const belt = createBeltPoints(object, radiusKm, color);
+    belts.push(belt);
+    beltParentRadiusKm.set(object.id, radiusKm);
+    group.add(belt.points);
+  }
+
   // Light comes from the star, at full strength however far away: brightness is not what
   // the scale modes are about, and real falloff would leave the outer planets black.
   for (const object of catalogue) {
@@ -80,6 +102,11 @@ export function createSolarSystem(
       const parent = object.parentId === null ? undefined : positions.get(object.parentId);
       if (parent) bodies.get(object.id)?.faceTowards(parent);
     }
+    for (const belt of belts) {
+      const parent = positions.get(belt.parentId);
+      if (parent) belt.points.position.set(parent.x, parent.y, parent.z);
+      belt.update(jd, currentScale);
+    }
     for (const orbit of orbitLines) {
       const parent = positions.get(orbit.parentId);
       if (parent) orbit.line.position.set(parent.x, parent.y, parent.z);
@@ -105,10 +132,17 @@ export function createSolarSystem(
       return position;
     },
     radiusOf: (id) => bodyOf(id).radius(),
+    beltRadius(id) {
+      const belt = catalogue.find((o) => o.id === id);
+      const radiusKm = beltParentRadiusKm.get(id);
+      if (belt?.kind !== 'belt' || radiusKm === undefined) throw new Error(`No drawn belt "${id}"`);
+      return sceneDistance(belt.shape.outerRadiusAu.value, radiusKm, currentScale);
+    },
     extent: () => Math.max(0, ...[...positions.values()].map(length)),
     dispose() {
       for (const body of bodies.values()) body.dispose();
       for (const orbit of orbitLines) orbit.dispose();
+      for (const belt of belts) belt.dispose();
     },
   };
 }

@@ -34,6 +34,10 @@ import { ceres } from './ceres';
 import { pluto } from './pluto';
 import { makemake } from './makemake';
 import { eris } from './eris';
+import { asteroidBelt } from './asteroidBelt';
+import { eros } from './eros';
+import { kuiperBelt } from './kuiperBelt';
+import { vesta } from './vesta';
 
 /** Every object in the app. Order is from the Sun outwards, moons and rings after their planet,
  * dwarf planets where their orbits put them. */
@@ -46,6 +50,9 @@ export const catalogue: readonly CelestialObject[] = [
   mars,
   phobos,
   deimos,
+  eros,
+  asteroidBelt,
+  vesta,
   ceres,
   jupiter,
   io,
@@ -73,4 +80,5 @@ export const catalogue: readonly CelestialObject[] = [
   pluto,
   makemake,
   eris,
+  kuiperBelt,
 ];

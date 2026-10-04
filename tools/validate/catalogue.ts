@@ -187,6 +187,9 @@ export function checkCatalogue(catalogue: readonly CelestialObject[]): string[] 
     errors.push(...sourceErrors(object), ...shapeErrors(object.id, object.shape));
     errors.push(...orbitErrors(object));
     errors.push(...ringBandErrors(object));
+    if (object.kind === 'belt' && object.members.value.length === 0) {
+      errors.push(`${object.id}: a belt needs members to draw`);
+    }
     if (object.parentId !== null) {
       const parent = byId.get(object.parentId);
       if (!parent) errors.push(`${object.id}: parent "${object.parentId}" is not in the catalogue`);

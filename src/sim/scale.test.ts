@@ -36,9 +36,11 @@ const parentOf = (object: CelestialObject): CelestialObject => byId(object.paren
 
 /**
  * Bodies whose orbits are well apart from their neighbours': the planets and the moons. Dwarf
- * planets are left out because their real orbits cross others' (Pluto comes inside Neptune's).
+ * planets and asteroids are left out because their real orbits cross others' (Pluto comes inside
+ * Neptune's; Eros crosses Mars's).
  */
-const keepsItsLane = (object: CelestialObject): boolean => object.kind !== 'dwarf-planet';
+const keepsItsLane = (object: CelestialObject): boolean =>
+  object.kind !== 'dwarf-planet' && object.kind !== 'asteroid';
 const childrenOf = (parent: CelestialObject): CelestialObject[] =>
   catalogue
     .filter((o) => o.parentId === parent.id && o.orbit && keepsItsLane(o))

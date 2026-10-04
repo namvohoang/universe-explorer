@@ -357,3 +357,47 @@ export const NASA_DWARF_ERIS: Source = {
   url: 'https://science.nasa.gov/dwarf-planets/eris/',
   retrieved: '2026-10-04',
 };
+
+export const JPL_SBDB_MAIN_BELT: Source = {
+  id: 'jpl-sbdb-main-belt',
+  title:
+    'JPL Small-Body Database Query — the first 1500 numbered asteroids of orbit class "Main-belt Asteroid"',
+  url: 'https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=full_name,a,e,i,om,w,ma,epoch,n&sb-kind=a&sb-class=MBA&sb-ns=n&limit=1500&full-prec=true',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SBDB_TNO: Source = {
+  id: 'jpl-sbdb-tno',
+  title:
+    'JPL Small-Body Database Query — numbered asteroids of orbit class "TransNeptunian Object"',
+  url: 'https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=full_name,a,e,i,om,w,ma,epoch,n&sb-kind=a&sb-class=TNO&sb-ns=n&limit=1500&full-prec=true',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_KUIPER: Source = {
+  id: 'nasa-facts-kuiper',
+  title: 'NASA Science — Kuiper Belt facts',
+  url: 'https://science.nasa.gov/solar-system/kuiper-belt/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_ASTEROIDS: Source = {
+  id: 'nasa-facts-asteroids',
+  title: 'NASA Science — Asteroid facts',
+  url: 'https://science.nasa.gov/solar-system/asteroids/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SBDB_VESTA: Source = {
+  id: 'jpl-sbdb-vesta',
+  title: 'JPL Small-Body Database — 4 Vesta (A807 FA) (orbit solution 36)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Vesta',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SBDB_EROS: Source = {
+  id: 'jpl-sbdb-eros',
+  title: 'JPL Small-Body Database — 433 Eros (A898 PA) (orbit solution 659)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Eros',
+  retrieved: '2026-10-04',
+};

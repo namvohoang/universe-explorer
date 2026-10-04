@@ -21,6 +21,26 @@ describe('cardModel', () => {
     }
   });
 
+  it('describes a belt by its dots and its span, and says the dots are not to size', () => {
+    const belt = cardModel('asteroid-belt', catalogue);
+    expect(belt.eyebrow).toBe(en.eyebrowBelt);
+    expect(belt.facts).toHaveLength(3);
+    expect(belt.note).toBe(en.beltNote);
+    expect(belt.stats).toEqual([
+      { label: 'Dots drawn here', value: '1,500' },
+      { label: 'From the Sun', value: "2.2 to 3.2 times Earth's distance" },
+    ]);
+    expect(cardModel('kuiper-belt', catalogue).stats[1]?.value).toBe(
+      "30 to 50 times Earth's distance",
+    );
+  });
+
+  it('introduces an asteroid as one', () => {
+    const eros = cardModel('eros', catalogue);
+    expect(eros.eyebrow).toBe('Asteroid · goes around the Sun');
+    expect(eros.hello).toBe('Eros is an asteroid.');
+  });
+
   it('introduces a dwarf planet as one', () => {
     const pluto = cardModel('pluto', catalogue);
     expect(pluto.eyebrow).toBe('Dwarf planet · goes around the Sun');
@@ -61,10 +81,12 @@ describe('cardModel', () => {
   });
 
   it('says what the globe is when it is not a plain photo', () => {
-    expect(cardModel('saturn', catalogue).globeNote).toBe(en.mediaKindArtistConcept);
-    expect(cardModel('venus', catalogue).globeNote).toBe(en.mediaKindFalseColour);
-    expect(cardModel('earth', catalogue).globeNote).toBe(en.mediaKindComposite);
-    expect(cardModel('sun', catalogue).globeNote).toBeNull();
+    expect(cardModel('saturn', catalogue).note).toBe(
+      `About this globe: ${en.mediaKindArtistConcept}`,
+    );
+    expect(cardModel('venus', catalogue).note).toContain(en.mediaKindFalseColour);
+    expect(cardModel('earth', catalogue).note).toContain(en.mediaKindComposite);
+    expect(cardModel('sun', catalogue).note).toBeNull();
   });
 
   it('calls the Sun and the Moon by the names kids use', () => {

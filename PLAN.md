@@ -256,7 +256,7 @@ The owner's notes after trying the app, each turned into a task.
 - [x] 6.2 Easier zoom and an obvious way back: on-screen zoom buttons and a Back button that is always there.
 - [x] 6.3 The Sun and Halley's Comet should look like the real things in 3D, not a plain ball and a cone.
 - [x] 6.4 A natural reading voice in place of the robotic device voice, with nothing sent to a server.
-- [~] 6.5 3D objects for the things in Deep Space (black hole, galaxies, nebulae, the Pleiades, other
+- [x] 6.5 3D objects for the things in Deep Space (black hole, galaxies, nebulae, the Pleiades, other
       stars and their planets, giant stars), each labelled for what it is: built from data, or a model.
 
 ## 7. Testing

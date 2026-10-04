@@ -44,6 +44,7 @@ import { orionNebula } from './orionNebula';
 import { crabNebula } from './crabNebula';
 import { andromeda } from './andromeda';
 import { m87 } from './m87';
+import { betelgeuse } from './betelgeuse';
 import { proximaCentauri } from './proximaCentauri';
 import { trappist1 } from './trappist1';
 import { milkyWay } from './milkyWay';
@@ -96,6 +97,7 @@ export const catalogue: readonly CelestialObject[] = [
   proximaCentauri,
   trappist1,
   pleiades,
+  betelgeuse,
   orionNebula,
   crabNebula,
   milkyWay,

@@ -209,6 +209,13 @@ export const en = {
   kindBlackHole: 'Black hole',
   kindExoplanet: 'Planets of another star',
   eyebrowHome: '{kind} · our home',
+  pictureAltBetelgeuse:
+    'A fuzzy round glow on black: yellow-white in the middle, fading to orange and dark red at the edge.',
+  nameBetelgeuse: 'Betelgeuse',
+  cardBetelgeuseHello: 'Betelgeuse is a giant red star, one of the biggest stars ever found.',
+  cardBetelgeuseFact1: 'It is about 700 times as wide as the Sun.',
+  cardBetelgeuseFact2: 'It is huge and bright, but its surface is cooler than the Sun’s.',
+  cardBetelgeuseFact3: 'It is around 700 light-years away.',
   pictureAltProximaCentauri:
     'A single bright white star with four spikes of light, on a black sky dotted with fainter stars.',
   nameProximaCentauri: 'Proxima Centauri',
@@ -263,7 +270,7 @@ export const en = {
   deepNoteCluster:
     'Every dot is a real star, placed where the Gaia space telescope measured it. Distances to stars are hard to measure, so the cluster looks more stretched towards us than it really is.',
   deepNoteStarSizes:
-    'The stars are the right size next to each other, and each is the colour its heat gives it. They are lined up to compare: really they are light-years apart.',
+    'The stars are the right size next to each other, and each is the colour its heat gives it. A blue ring marks a star too small to see here. They are lined up to compare: really they are light-years apart.',
   deepNotePlanetSystem:
     'The star and the planets’ paths are the right size next to each other, and the planets go round at their real speeds. The planets are drawn {times} times too big so you can see them, and plain because nobody has seen what they look like.',
   eyebrowAsteroid: 'Asteroid · goes around the Sun',

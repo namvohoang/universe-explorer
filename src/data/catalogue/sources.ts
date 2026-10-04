@@ -479,6 +479,13 @@ export const NASA_HUBBLE_PROXIMA: Source = {
   retrieved: '2026-10-04',
 };
 
+export const NASA_BETELGEUSE: Source = {
+  id: 'nasa-betelgeuse',
+  title: 'NASA Science — What is Betelgeuse? Inside the Strange, Volatile Star',
+  url: 'https://science.nasa.gov/universe/what-is-betelgeuse-inside-the-strange-volatile-star/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_TRAPPIST1: Source = {
   id: 'nasa-trappist-1',
   title:

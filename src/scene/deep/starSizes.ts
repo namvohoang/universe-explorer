@@ -24,6 +24,9 @@ export interface SizedStar {
 const BIGGEST = 5;
 const GAP = 1.2;
 const FRAMING = 1.7;
+/** Below this drawn radius a star is only a speck, so a ring marks where it is. */
+const SMALLEST_VISIBLE = 0.08;
+const MARKER_SIZE = 0.6;
 
 function glowTexture(): CanvasTexture {
   const size = 128;
@@ -50,6 +53,22 @@ function glowTexture(): CanvasTexture {
   return new CanvasTexture(canvas);
 }
 
+function ringTexture(): CanvasTexture {
+  const size = 96;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const context = canvas.getContext('2d');
+  if (context) {
+    context.strokeStyle = '#6fd3ff';
+    context.lineWidth = 5;
+    context.beginPath();
+    context.arc(size / 2, size / 2, size / 2 - 6, 0, Math.PI * 2);
+    context.stroke();
+  }
+  return new CanvasTexture(canvas);
+}
+
 /**
  * Stars side by side at their true sizes next to each other, each the colour its temperature
  * gives it. The gaps between them are not real: they are lined up to be compared.
@@ -57,9 +76,11 @@ function glowTexture(): CanvasTexture {
 export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
   const group = new Group();
   const glow = glowTexture();
+  const ring = ringTexture();
   const disposers: (() => void)[] = [
     () => {
       glow.dispose();
+      ring.dispose();
     },
   ];
   const largest = Math.max(...stars.map((star) => star.radiusInSuns));
@@ -91,6 +112,18 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
     halo.position.copy(ball.position);
     halo.scale.setScalar(radius * 5.5);
     group.add(halo);
+
+    // A star too small to see at this size gets a ring round it, like the markers elsewhere.
+    if (radius < SMALLEST_VISIBLE) {
+      const ringMaterial = new SpriteMaterial({ map: ring, depthWrite: false, transparent: true });
+      const marker = new Sprite(ringMaterial);
+      marker.position.copy(ball.position);
+      marker.scale.setScalar(MARKER_SIZE);
+      group.add(marker);
+      disposers.push(() => {
+        ringMaterial.dispose();
+      });
+    }
 
     const label = createLabel(star.name, 0.7);
     label.position.set(x, -Math.max(radius, 0.4) - 0.9, 0);

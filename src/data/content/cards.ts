@@ -21,6 +21,7 @@ import {
   NASA_HUBBLE_M42,
   NASA_HUBBLE_M45,
   NASA_HUBBLE_M87,
+  NASA_BETELGEUSE,
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_TRAPPIST1,
@@ -598,6 +599,33 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_HUBBLE_M87],
+  },
+  {
+    id: 'betelgeuse',
+    hello: {
+      key: 'cardBetelgeuseHello',
+      sourceId: 'nasa-betelgeuse',
+      quote: 'one of the largest stars ever discovered',
+    },
+    facts: [
+      {
+        key: 'cardBetelgeuseFact1',
+        sourceId: 'nasa-betelgeuse',
+        quote: 'about 700 times the size of the Sun',
+      },
+      {
+        key: 'cardBetelgeuseFact2',
+        sourceId: 'nasa-betelgeuse',
+        quote: "cooler than our Sun's roughly 10,000-degree Fahrenheit",
+      },
+      {
+        key: 'cardBetelgeuseFact3',
+        sourceId: 'nasa-betelgeuse',
+        quote: 'Betelgeuse is around 700 light-years away',
+      },
+    ],
+    moons: null,
+    sources: [NASA_BETELGEUSE],
   },
   {
     id: 'proxima-centauri',

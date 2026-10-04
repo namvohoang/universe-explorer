@@ -43,6 +43,7 @@ export const NARRATION: Readonly<Record<string, { file: string; fingerprint: str
   'proxima-centauri': { file: 'public/voice/proxima-centauri.mp3', fingerprint: '6ac3e811' },
   'trappist-1': { file: 'public/voice/trappist-1.mp3', fingerprint: '0f6c8bb2' },
   pleiades: { file: 'public/voice/pleiades.mp3', fingerprint: '75991607' },
+  betelgeuse: { file: 'public/voice/betelgeuse.mp3', fingerprint: 'd720cf2a' },
   'orion-nebula': { file: 'public/voice/orion-nebula.mp3', fingerprint: '409c9785' },
   'crab-nebula': { file: 'public/voice/crab-nebula.mp3', fingerprint: '262c72d3' },
   'milky-way': { file: 'public/voice/milky-way.mp3', fingerprint: 'db08726b' },

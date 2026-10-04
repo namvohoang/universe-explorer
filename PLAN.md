@@ -167,8 +167,8 @@ the app requests nothing from a third party.
 - [x] 1.3 `kepler.ts`: Kepler solver and elements → position, with unit tests.
 - [x] 1.4 `time.ts`: dates, Julian date, centuries since epoch, speed control, validity limits.
 - [x] 1.5 `frames.ts`: orbit plane → ecliptic → scene axes; pole orientation for tilt.
-- [~] 1.6 Position tests against JPL Horizons at several dates per body, with a named tolerance.
-- [ ] 1.7 `scale.ts`: the three modes of §5.4 with ratio and monotonicity tests.
+- [x] 1.6 Position tests against JPL Horizons at several dates per body, with a named tolerance.
+- [~] 1.7 `scale.ts`: the three modes of §5.4 with ratio and monotonicity tests.
 
 **Acceptance:** planet positions match Horizons within the documented tolerance across the
 supported date range; in `true` mode every size and distance ratio equals the catalogue ratio;

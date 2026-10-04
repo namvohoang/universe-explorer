@@ -43,7 +43,11 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
   const sunRadiusKm = sun ? bodyRadiusKm(sun) : null;
   const earthRadiusKm = earth ? bodyRadiusKm(earth) : null;
 
-  if (object.kind === 'spacecraft') return modelUrl === null ? null : createCraftModel(modelUrl);
+  if (object.kind === 'spacecraft') {
+    // A scan of the real craft is a record of it; an agency's model is a drawing in 3D.
+    const scan = object.media.some((media) => media.role === 'model' && media.kind === 'composite');
+    return modelUrl === null ? null : createCraftModel(modelUrl, scan);
+  }
   if (object.kind === 'black-hole') return createBlackHole();
   if (object.kind === 'constellation') {
     return createConstellation(object.stars.value, object.lines, sun ? nameOf(sun) : '');

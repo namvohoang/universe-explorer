@@ -19,6 +19,11 @@ export const TRUSTED_HOSTS = [
   'eso.org',
   'noirlab.edu',
   'usgs.gov',
+  // Approved by the owner on 2026-10-04: a museum's scans, mission operators, other agencies.
+  'si.edu',
+  'jhuapl.edu',
+  'jaxa.jp',
+  'roscosmos.ru',
 ] as const;
 
 const COLUMNS = [

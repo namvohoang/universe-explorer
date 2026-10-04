@@ -459,6 +459,24 @@ export const en = {
   cardCuriosityFact3: 'It looks for the chemical building blocks of life.',
   modelAltCuriosity:
     'A 3D model of the Curiosity rover: a car-sized machine with six wheels, a long arm and a mast with cameras on top.',
+  nameColumbia: 'The Apollo 11 Command Module',
+  cardColumbiaHello:
+    'Columbia is the real spacecraft that carried three astronauts to the Moon and back in July 1969.',
+  cardColumbiaFact1: 'It was where the three astronauts lived for most of the trip.',
+  cardColumbiaFact2: 'It launched on top of a Saturn V rocket.',
+  cardColumbiaFact3: 'It is the only part of the spacecraft that came back to Earth.',
+  modelAltColumbia:
+    'A 3D scan of the real command module: a wide, blunt cone of scorched brown metal, with a hatch and small windows.',
+  nameDiscovery: 'The Shuttle Discovery',
+  cardDiscoveryHello:
+    'Discovery is a real space shuttle. It flew into space more often than any other.',
+  cardDiscoveryFact1: 'It first flew in 1984.',
+  cardDiscoveryFact2: 'It flew 39 missions and spent 365 days in space.',
+  cardDiscoveryFact3: 'It carried 184 men and women into space and back.',
+  modelAltDiscovery:
+    'A 3D scan of the real shuttle Discovery: a white and grey space plane with black edges, worn from many flights, standing on its wheels as it does in the museum.',
+  deepNoteScan:
+    'This is a 3D scan of the real spacecraft, made by the Smithsonian museum where it is kept. Turn it round to look at it from every side.',
   nameIss: 'The International Space Station',
   cardIssHello:
     'The International Space Station is a home in space where astronauts live and work.',

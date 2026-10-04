@@ -275,11 +275,13 @@ The owner asked for more objects, and for the things people have put in orbit ro
       satellites Swift and Chandra, each with its Horizons orbit and NASA's 3D model. Left out for
       now: Parker Solar Probe (no published size), Europa Clipper (model too heavy), Terra (NASA's
       model file is broken), Voyager and New Horizons (escape paths, which the orbit code cannot draw).
-- [x] 7.7 A Spaceships tab for craft shown as NASA's 3D models to turn round, with no made-up
-      path: Gemini, the Saturn V rocket, the Apollo Lunar Module, Pioneer 10, Voyager, the Space
-      Shuttle (the coloured orbiter), Cassini, New Horizons and the Curiosity rover. Each shows the
-      year it was first used, and its size where a source gives one. Left out: Galileo (NASA's
-      model is in made-up colours) and Mir (no NASA page found for its facts).
+- [x] 7.7 A Spaceships tab for craft shown as 3D models to turn round, with no made-up path:
+      Gemini, the Saturn V rocket, the Apollo 11 command module Columbia, the Apollo Lunar Module,
+      Pioneer 10, Voyager, the Space Shuttle (orbiter, tank and boosters), the shuttle Discovery,
+      Cassini, New Horizons and the Curiosity rover. Columbia and Discovery are the Smithsonian's
+      3D scans of the real craft. Each shows the year it was first used, and its size where a
+      source gives one. Left out: Galileo (NASA's model is in made-up colours) and Mir (no
+      source found yet for its facts).
 
 **Acceptance:** every new object has a cited source for each number, a credited picture or model,
 a card with a recording, and passes the gate.

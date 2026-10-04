@@ -628,6 +628,49 @@ export const NASA_CURIOSITY: Source = {
   retrieved: '2026-10-04',
 };
 
+export const SI_COLUMBIA: Source = {
+  id: 'si-columbia',
+  title: 'Smithsonian National Air and Space Museum — Command Module, Apollo 11',
+  url: 'https://n2t.net/ark:/65665/nv9ce74610f-62de-46b6-904f-58abfecb555c',
+  retrieved: '2026-10-05',
+};
+
+export const SI_DISCOVERY: Source = {
+  id: 'si-discovery',
+  title: 'Smithsonian National Air and Space Museum — Orbiter, Space Shuttle, OV-103, Discovery',
+  url: 'https://n2t.net/ark:/65665/nv90f447f4d-55c5-4511-90c3-86bd30bfdbfc',
+  retrieved: '2026-10-05',
+};
+
+export const SI_LUNAR_MODULE: Source = {
+  id: 'si-lunar-module',
+  title: 'Smithsonian National Air and Space Museum — Lunar Module #2, Apollo',
+  url: 'https://n2t.net/ark:/65665/nv950f30cee-381e-4341-ad61-757e6416e7ac',
+  retrieved: '2026-10-05',
+};
+
+export const SI_GEMINI_VII: Source = {
+  id: 'si-gemini-vii',
+  title: 'Smithsonian National Air and Space Museum — Capsule, Gemini VII',
+  url: 'https://n2t.net/ark:/65665/nv9f807422e-ef0d-4749-91ae-7fa45957b56c',
+  retrieved: '2026-10-05',
+};
+
+export const SI_PIONEER: Source = {
+  id: 'si-pioneer',
+  title:
+    'Smithsonian National Air and Space Museum — Pioneer 10 / 11, reconstructed full-scale mock-up',
+  url: 'https://n2t.net/ark:/65665/nv9f8074ba1-f275-4740-baef-f8205b8f054d',
+  retrieved: '2026-10-05',
+};
+
+export const SI_NEW_HORIZONS: Source = {
+  id: 'si-new-horizons',
+  title: 'Smithsonian National Air and Space Museum — Spacecraft, New Horizons, Mock-up, model',
+  url: 'https://n2t.net/ark:/65665/nv92bb90afa-2dc6-460a-99d2-d19d4f0dd93d',
+  retrieved: '2026-10-05',
+};
+
 export const NASA_ISS_FACTS: Source = {
   id: 'nasa-iss-facts',
   title: 'NASA — International Space Station Facts and Figures',

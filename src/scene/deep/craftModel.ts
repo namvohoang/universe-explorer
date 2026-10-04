@@ -14,7 +14,7 @@ const FILL_LIGHT = 0.5;
  * A spacecraft shown by itself, to be turned round and looked at: the agency's own 3D model,
  * with no path, because it is no longer flying or its path is not one the app draws.
  */
-export function createCraftModel(modelUrl: string): DeepModel {
+export function createCraftModel(modelUrl: string, scan: boolean): DeepModel {
   const group = new Group();
   const sun = new DirectionalLight(0xffffff, SUNLIGHT);
   sun.position.set(1, 0.6, 0.8);
@@ -49,7 +49,7 @@ export function createCraftModel(modelUrl: string): DeepModel {
   return {
     group,
     radius: RADIUS,
-    note: 'craft-model',
+    note: scan ? 'craft-scan' : 'craft-model',
     viewFrom: { x: 0.7, y: 0.35, z: 1 },
     update() {
       // The model only stands to be looked at.

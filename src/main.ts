@@ -195,6 +195,7 @@ function start(): void {
     cluster: en.deepNoteCluster,
     constellation: en.deepNoteConstellation,
     'craft-model': en.deepNoteCraft,
+    'craft-scan': en.deepNoteScan,
     'star-sizes': en.deepNoteStarSizes,
     'planet-system': fill(en.deepNotePlanetSystem, { times: PLANET_ENLARGEMENT }),
   };

@@ -72,6 +72,8 @@ image's own page has been opened and read.
 | `public/media/models/pioneer-10.glb` | pioneer-10 | artist-concept | NASA/JPL/Eyes on the Solar System | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/3d-resources/pioneer/ | 2026-10-04 | The glTF model offered on the page (2 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
 | `public/media/models/new-horizons.glb` | new-horizons | artist-concept | NASA Visualization Technology Applications and Development (VTAD) | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/resource/new-horizons-3d-model/ | 2026-10-04 | The glTF model offered on the page (3.1 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
 | `public/media/models/curiosity.glb` | curiosity | artist-concept | NASA Visualization Technology Applications and Development (VTAD) | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/resource/curiosity-3d-model/ | 2026-10-04 | The glTF model offered on the page (11 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
+| `public/media/models/columbia.glb` | columbia | composite | Smithsonian National Air and Space Museum | CC0 (no rights reserved): the museum record marks this 3D package and the object 'Restrictions & Rights: CC0'. | https://3d-api.si.edu/voyager/3d_package:d8c6457e-4ebc-11ea-b77f-2e728ce88125 | 2026-10-05 | The museum's 3D scan of the real object, from the single download file (14 MB), made lighter with glTF-Transform: textures at 1024 pixels as WebP, geometry simplified to a quarter and packed with meshopt. Nothing was added or reshaped. |
+| `public/media/models/discovery.glb` | discovery | composite | Smithsonian National Air and Space Museum | CC0 (no rights reserved): the museum record marks this 3D package and the object 'Restrictions & Rights: CC0'. | https://3d-api.si.edu/voyager/3d_package:d8c636ce-4ebc-11ea-b77f-2e728ce88125 | 2026-10-05 | The museum's 3D scan of the real object, from the single download file (14.5 MB), made lighter with glTF-Transform: textures at 1024 pixels as WebP, geometry simplified to a quarter and packed with meshopt. Nothing was added or reshaped. The record adds: "Support generously provided by Meredith Siegfried Madden and Dr. Peter Madden." |
 
 The Sun is drawn from NASA's own 3D model of it, not from a map.
 
@@ -100,7 +102,7 @@ ship with the app.
 
 | What | Made with | Licence | Source |
 |---|---|---|---|
-| 75 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
+| 77 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
 
 ## Fonts
 

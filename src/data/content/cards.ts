@@ -55,6 +55,8 @@ import {
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_TRAPPIST1,
+  SI_COLUMBIA,
+  SI_DISCOVERY,
 } from '../catalogue/sources';
 import type { CardContent } from '../types';
 
@@ -1493,5 +1495,62 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_CURIOSITY],
+  },
+  {
+    id: 'columbia',
+    hello: {
+      key: 'cardColumbiaHello',
+      sourceId: 'si-columbia',
+      quote:
+        'carried astronauts Neil Armstrong, Edwin "Buzz" Aldrin and Michael Collins to the Moon and back on the first lunar landing mission in July, 1969',
+    },
+    facts: [
+      {
+        key: 'cardColumbiaFact1',
+        sourceId: 'si-columbia',
+        quote:
+          'was the living quarters for the three-person crew during most of the first crewed lunar landing mission',
+      },
+      {
+        key: 'cardColumbiaFact2',
+        sourceId: 'si-columbia',
+        quote: 'were launched from Cape Kennedy atop a Saturn V rocket',
+      },
+      {
+        key: 'cardColumbiaFact3',
+        sourceId: 'si-columbia',
+        quote: 'The Command Module is the only portion of the spacecraft to return to Earth.',
+      },
+    ],
+    moons: null,
+    sources: [SI_COLUMBIA],
+  },
+  {
+    id: 'discovery',
+    hello: {
+      key: 'cardDiscoveryHello',
+      sourceId: 'si-discovery',
+      quote: 'Discovery was flown on 39 Earth-orbital missions',
+    },
+    facts: [
+      {
+        key: 'cardDiscoveryFact1',
+        sourceId: 'si-discovery',
+        quote: 'It entered service in 1984',
+      },
+      {
+        key: 'cardDiscoveryFact2',
+        sourceId: 'si-discovery',
+        quote:
+          'Discovery was flown on 39 Earth-orbital missions, spent a total of 365 days in space',
+      },
+      {
+        key: 'cardDiscoveryFact3',
+        sourceId: 'si-discovery',
+        quote: 'It shuttled 184 men and women into space and back',
+      },
+    ],
+    moons: null,
+    sources: [SI_DISCOVERY],
   },
 ];

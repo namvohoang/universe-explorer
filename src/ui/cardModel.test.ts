@@ -24,7 +24,8 @@ describe('a spaceship shown as a model', () => {
       expect(labels).toContain(en.statFirstUsed);
       expect(labels.includes(en.statLength)).toBe(craft.shape !== null);
       expect(card.facts).toHaveLength(3);
-      expect(card.note).toBe(en.deepNoteCraft);
+      // A museum's scan of the real craft says so; an agency's model says it is a model.
+      expect([en.deepNoteCraft, en.deepNoteScan]).toContain(card.note);
     }
   });
 });

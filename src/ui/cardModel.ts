@@ -139,7 +139,9 @@ export function cardModel(
         ? en.cometNote
         : object.kind === 'spacecraft'
           ? object.orbit === null
-            ? en.deepNoteCraft
+            ? object.media.some((media) => media.role === 'model' && media.kind === 'composite')
+              ? en.deepNoteScan
+              : en.deepNoteCraft
             : en.spacecraftNote
           : globeNote(
               object.media.find((media) => media.role === 'surface-map' || media.role === 'model'),

@@ -402,7 +402,7 @@ export const en = {
   cardSpaceShuttleFact2: 'In 30 years it flew 135 missions.',
   cardSpaceShuttleFact3: 'It took off like a rocket and landed on a runway like a glider.',
   modelAltSpaceShuttle:
-    'A 3D model of the space shuttle orbiter: a white space plane with black edges, wings, three big engines at the back and a long cargo bay on top.',
+    'A 3D model of the space shuttle standing nose up: a white space plane with wings, fixed to a big orange fuel tank with a tall white rocket on each side.',
   nameSaturnV: 'The Saturn V Rocket',
   cardSaturnVHello: 'The Saturn V was a rocket built to send people to the Moon.',
   cardSaturnVFact1: 'It was 111 metres tall, about as high as a building with 36 floors.',

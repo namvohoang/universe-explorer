@@ -30,6 +30,8 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   const stats = create('dl', 'stats');
   const factsTitle = create('h3', '', en.coolFacts);
   const facts = create('ul', 'facts');
+  const conceptTitle = create('h3', '');
+  const concept = create('p', 'concept');
   const globe = create('p', 'globe-note');
   // "Read it to me", for kids who are still learning to read. Hidden where there is no voice.
   const read = create('button', 'primary', en.readToMe);
@@ -37,7 +39,7 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   read.hidden = speaker === null;
   const actions = create('div', 'card-actions');
   actions.append(read);
-  element.append(head, hello, stats, factsTitle, facts, globe, actions);
+  element.append(head, hello, stats, factsTitle, facts, conceptTitle, concept, globe, actions);
 
   let shown: CardModel | null = null;
   let reading = false;
@@ -77,6 +79,10 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
       );
       facts.replaceChildren(...model.facts.map((fact) => create('li', '', fact)));
       factsTitle.hidden = model.facts.length === 0;
+      conceptTitle.hidden = model.concept === null;
+      concept.hidden = model.concept === null;
+      conceptTitle.textContent = model.concept?.title ?? '';
+      concept.textContent = model.concept?.text ?? '';
       globe.hidden = model.note === null;
       globe.textContent = model.note ?? '';
       element.hidden = false;

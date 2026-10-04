@@ -97,6 +97,24 @@ export const en = {
     'The tail is drawn, not photographed. It points away from the Sun, as real tails do, but its length is not to scale. The path shown is right for 1950 to 2050; earlier visits came at slightly different times.',
   statClosest: 'Closest to the Sun',
   valueTimesEarthOne: "{n} times Earth's distance",
+  conceptStarTitle: 'What is a star?',
+  conceptStarText: 'A star is a huge, hot, glowing ball of gas. The Sun is the star closest to us.',
+  conceptPlanetTitle: 'What is a planet?',
+  conceptPlanetText:
+    'A planet is a big, round world that goes around a star and has cleared other big things out of its path.',
+  conceptDwarfPlanetTitle: 'What is a dwarf planet?',
+  conceptDwarfPlanetText:
+    'A dwarf planet goes around the Sun and is nearly round, but it shares its path with other things.',
+  conceptMoonTitle: 'What is a moon?',
+  conceptMoonText: 'A moon is a natural world that goes around a planet.',
+  conceptAsteroidTitle: 'What is an asteroid?',
+  conceptAsteroidText: 'An asteroid is a rocky bit left over from when the solar system was made.',
+  conceptCometTitle: 'What is a comet?',
+  conceptCometText:
+    'A comet is an icy leftover from when the solar system was new. Near the Sun it grows a tail.',
+  conceptBeltTitle: 'What is a belt?',
+  conceptBeltText:
+    'A belt is a wide ring made of a great many small worlds, all going around the Sun.',
   eyebrowAsteroid: 'Asteroid · goes around the Sun',
   helloAsteroid: '{name} is an asteroid.',
   eyebrowBelt: 'Belt · many small worlds going around the Sun',

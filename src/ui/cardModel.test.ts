@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import { cards } from '../data/content/cards';
+import { concepts } from '../data/content/concepts';
 import { bodyRadiusKm } from '../sim/layout';
 import { cardModel } from './cardModel';
 import { displayName } from './names';
@@ -111,6 +112,31 @@ describe('cardModel', () => {
 
   it('refuses an id with no card', () => {
     expect(() => cardModel('saturn-rings', catalogue)).toThrow();
+  });
+});
+
+describe('concepts', () => {
+  const strings: Readonly<Record<string, string>> = en;
+  const places = catalogue.filter((o) => bodyRadiusKm(o) !== null || o.kind === 'belt');
+
+  it('says what kind of thing every place is', () => {
+    for (const place of places) {
+      const { concept } = cardModel(place.id, catalogue);
+      expect(concept?.title, place.id).toMatch(/^What is an? .+\?$/);
+      expect(concept?.text, place.id).toMatch(/\S/);
+    }
+    expect(cardModel('titan', catalogue).concept?.title).toBe('What is a moon?');
+    expect(cardModel(null, catalogue).concept).toBeNull();
+  });
+
+  it('backs every concept with a quote and has one per kind', () => {
+    expect(new Set(concepts.map((c) => c.kind)).size).toBe(concepts.length);
+    for (const concept of concepts) {
+      expect(strings[concept.titleKey]).toMatch(/\S/);
+      expect(strings[concept.text.key]).toMatch(/\S/);
+      expect(concept.text.quote.length).toBeGreaterThan(10);
+      expect(concept.text.sourceId).toBe(concept.source.id);
+    }
   });
 });
 

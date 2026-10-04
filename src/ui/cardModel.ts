@@ -1,4 +1,5 @@
 import { SOLAR_SYSTEM_CARD_ID, cards } from '../data/content/cards';
+import { concepts } from '../data/content/concepts';
 import type { CelestialObject, MediaKind } from '../data/types';
 import { semiMajorAxisKm } from '../sim/elements';
 import { fill } from './format';
@@ -14,6 +15,8 @@ export interface CardModel {
   readonly hello: string;
   readonly stats: readonly Stat[];
   readonly facts: readonly string[];
+  /** What kind of thing this is, as a question and its answer; `null` for the whole view. */
+  readonly concept: { readonly title: string; readonly text: string } | null;
   /** A line about how the thing is drawn: what the globe's picture really is, or what a belt's dots are. */
   readonly note: string | null;
 }
@@ -49,6 +52,11 @@ function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[])
   return fill(en.eyebrowPlanet, { place: placeFromSun(object, catalogue) });
 }
 
+function conceptOf(object: CelestialObject): CardModel['concept'] {
+  const concept = concepts.find((c) => c.kind === object.kind);
+  return concept ? { title: text(concept.titleKey), text: text(concept.text.key) } : null;
+}
+
 function globeNote(kind: MediaKind | undefined): string | null {
   const label = kind === undefined ? null : mediaKindLabel(kind);
   return label === null ? null : `${en.aboutTheGlobe}: ${label}`;
@@ -70,6 +78,7 @@ export function cardModel(
       hello: text(content.hello.key),
       stats: solarSystemStats(catalogue),
       facts,
+      concept: null,
       note: null,
     };
   }
@@ -81,6 +90,7 @@ export function cardModel(
     hello: content ? text(content.hello.key) : plainHello(object, catalogue),
     stats: object.kind === 'belt' ? beltStats(object) : objectStats(object, catalogue, content),
     facts,
+    concept: conceptOf(object),
     note:
       object.kind === 'belt'
         ? en.beltNote

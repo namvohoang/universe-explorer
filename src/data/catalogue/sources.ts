@@ -415,3 +415,24 @@ export const NASA_FACTS_COMETS: Source = {
   url: 'https://science.nasa.gov/solar-system/comets/facts/',
   retrieved: '2026-10-04',
 };
+
+export const NASA_WHAT_IS_A_PLANET: Source = {
+  id: 'nasa-what-is-a-planet',
+  title: 'NASA Science — What is a planet?',
+  url: 'https://science.nasa.gov/solar-system/planets/what-is-a-planet/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_DWARF_PLANETS: Source = {
+  id: 'nasa-dwarf-planets',
+  title: 'NASA Science — Dwarf planets',
+  url: 'https://science.nasa.gov/dwarf-planets/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_MOONS: Source = {
+  id: 'nasa-moons',
+  title: 'NASA Science — Moons of our solar system',
+  url: 'https://science.nasa.gov/solar-system/moons/',
+  retrieved: '2026-10-04',
+};

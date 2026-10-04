@@ -290,6 +290,15 @@ button:focus-visible {
   margin-top: 6px;
 }
 
+.card .concept {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.facts + h3 {
+  margin-top: 12px;
+}
+
 .globe-note {
   margin: 12px 0 0;
   padding-top: 10px;

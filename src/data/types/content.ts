@@ -1,3 +1,4 @@
+import type { ObjectKind } from './object';
 import type { Source, Sourced } from './source';
 
 /** A sentence shown to a kid, with the words of the source that back it. */
@@ -19,4 +20,13 @@ export interface CardContent {
   /** How many moons it has; `null` where the question does not apply. */
   readonly moons: Sourced<number> | null;
   readonly sources: readonly Source[];
+}
+
+/** What one kind of object is, for the "What is a moon?" part of a card. */
+export interface ConceptContent {
+  readonly kind: ObjectKind;
+  /** Key of the question in the UI strings, e.g. "What is a moon?". */
+  readonly titleKey: string;
+  readonly text: BackedText;
+  readonly source: Source;
 }

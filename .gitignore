@@ -1,0 +1,24 @@
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Node
+node_modules/
+*.log
+npm-debug.log*
+yarn-error.log
+
+# Build output
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Env
+.env
+.env.*
+
+# Claude Code (personal settings)
+.claude/settings.local.json

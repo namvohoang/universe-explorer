@@ -1,6 +1,11 @@
 import type { OrbitalElements } from '../data/types';
 import { TAU, degToRad, wrapTau } from './angles';
-import { DAYS_PER_JULIAN_CENTURY, DAYS_PER_JULIAN_YEAR, KM_PER_AU } from './constants';
+import {
+  DAYS_PER_JULIAN_CENTURY,
+  DAYS_PER_JULIAN_YEAR,
+  KM_PER_AU,
+  SPEED_OF_LIGHT_KM_PER_S,
+} from './constants';
 import { positionFromState, type OrbitState } from './kepler';
 import type { Vec3 } from './vec3';
 
@@ -76,4 +81,30 @@ export function orbitStateAt(orbit: OrbitalElements, jd: number): OrbitState {
 /** Position relative to the parent, in km, in the frame of the elements. */
 export function orbitPositionKmAt(orbit: OrbitalElements, jd: number): Vec3 {
   return positionFromState(orbitStateAt(orbit, jd));
+}
+
+/** How long one trip around the parent takes, in days, from the elements' own rate. */
+export function orbitalPeriodDays(orbit: OrbitalElements): number {
+  const { motion } = orbit;
+  switch (motion.type) {
+    case 'rates-per-century':
+      // The mean longitude advances by this many degrees per century; one trip is 360.
+      return (360 / motion.meanLongitudeDegPerCentury.value) * DAYS_PER_JULIAN_CENTURY;
+    case 'precessing-ellipse':
+      return motion.siderealPeriodDays.value;
+    default:
+      return motion satisfies never;
+  }
+}
+
+/** The orbit's semi-major axis in km, whichever unit the source gave it in. */
+export function semiMajorAxisKm(orbit: OrbitalElements): number {
+  return 'semiMajorAxisAu' in orbit
+    ? orbit.semiMajorAxisAu.value * KM_PER_AU
+    : orbit.semiMajorAxisKm.value;
+}
+
+/** Seconds light takes to cross a distance. */
+export function lightTravelSeconds(distanceKm: number): number {
+  return distanceKm / SPEED_OF_LIGHT_KM_PER_S;
 }

@@ -6,6 +6,9 @@
 /** Astronomical unit, exact by IAU 2012 Resolution B1 (149597870700 m). */
 export const KM_PER_AU = 149_597_870.7;
 
+/** Speed of light in vacuum, exact (299792458 m/s). */
+export const SPEED_OF_LIGHT_KM_PER_S = 299_792.458;
+
 export const SECONDS_PER_DAY = 86_400;
 export const DAYS_PER_JULIAN_YEAR = 365.25;
 export const DAYS_PER_JULIAN_CENTURY = 36_525;

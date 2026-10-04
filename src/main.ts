@@ -12,6 +12,9 @@ import {
   withDate,
   withSpeed,
 } from './sim/time';
+import { createCard } from './ui/card';
+import { cardModel, displayName } from './ui/cardModel';
+import { createChips } from './ui/chips';
 import { createClockControl } from './ui/clockControl';
 import { create, mustFind } from './ui/dom';
 import { createMarkers } from './ui/markers';
@@ -85,10 +88,33 @@ function start(): void {
 
   const currentView = (): FlyTo => (focus === null ? wholeView() : bodyView(focus));
 
+  const card = createCard(() => {
+    card.hide();
+  });
+  mustFind('#card-slot').append(card.element);
+
+  const showFocus = (): void => {
+    card.show(cardModel(focus, catalogue));
+    chips.show(focus);
+  };
+
   const goTo = (id: string | null): void => {
     focus = id;
     stage.flyTo(currentView());
+    showFocus();
   };
+
+  const chips = createChips(
+    en.places,
+    [
+      { id: null, label: en.wholeView },
+      ...drawn.map((object) => ({ id: object.id, label: displayName(object) })),
+    ],
+    goTo,
+  );
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') card.hide();
+  });
 
   // The sentence that says what is and is not to scale is always on screen.
   const showScale = (): void => {
@@ -96,10 +122,13 @@ function start(): void {
   };
   showScale();
 
-  const home = create('button', '', en.wholeView);
-  home.type = 'button';
-  home.addEventListener('click', () => {
-    goTo(null);
+  const names = create('button', '', en.names);
+  names.type = 'button';
+  names.setAttribute('aria-pressed', 'true');
+  names.addEventListener('click', () => {
+    const shown = names.getAttribute('aria-pressed') !== 'true';
+    names.setAttribute('aria-pressed', String(shown));
+    markers.setNames(shown);
   });
   const scaleControl = createSegmented(
     en.scaleControl,
@@ -114,7 +143,7 @@ function start(): void {
       stage.lookAt(currentView());
     },
   );
-  tools.append(home, scaleControl.element);
+  tools.append(names, scaleControl.element);
 
   const clockControl = createClockControl(
     limits,
@@ -125,11 +154,15 @@ function start(): void {
       clock = withDate(clock, julianDateFromUnixMs(Date.now()), limits);
     },
   );
-  mustFind('#tray').append(clockControl.element);
+  mustFind('#tray').append(clockControl.element, chips.element);
 
   const markers = createMarkers(
     mustFind('#markers'),
-    drawn.map((object) => ({ id: object.id, label: `${en.goTo} ${object.name}` })),
+    drawn.map((object) => ({
+      id: object.id,
+      name: displayName(object),
+      label: `${en.goTo} ${displayName(object)}`,
+    })),
     goTo,
   );
 
@@ -147,6 +180,7 @@ function start(): void {
   if (drawn.some((object) => object.id === wanted)) focus = wanted;
   stage.lookAt(wholeView());
   if (focus !== null) stage.lookAt(bodyView(focus));
+  showFocus();
 
   stage.onFrame((dt) => {
     clock = advanceClock(clock, dt, limits);

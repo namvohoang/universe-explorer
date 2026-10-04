@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import type { OrbitalElements, Sourced } from '../data/types';
 import { TAU, degToRad } from './angles';
 import { DAYS_PER_JULIAN_CENTURY, DAYS_PER_JULIAN_YEAR, KM_PER_AU } from './constants';
-import { orbitPositionKmAt, orbitStateAt } from './elements';
+import {
+  lightTravelSeconds,
+  orbitPositionKmAt,
+  orbitStateAt,
+  orbitalPeriodDays,
+  semiMajorAxisKm,
+} from './elements';
 import { length } from './vec3';
 
 // Made-up orbits that exercise the maths. Real elements are tested against JPL Horizons.
@@ -139,5 +145,27 @@ describe('orbitPositionKmAt', () => {
     const r = length(orbitPositionKmAt(planetLike, EPOCH));
     expect(r).toBeGreaterThan(1.8 * KM_PER_AU);
     expect(r).toBeLessThan(2.2 * KM_PER_AU);
+  });
+});
+
+describe('orbitalPeriodDays', () => {
+  it('follows from the mean-longitude rate', () => {
+    // 36,000 degrees per century is exactly 100 trips per century.
+    expect(orbitalPeriodDays(planetLike)).toBeCloseTo(DAYS_PER_JULIAN_CENTURY / 100, 9);
+  });
+
+  it('is the sidereal period of a precessing ellipse', () => {
+    expect(orbitalPeriodDays(moonLike)).toBe(20);
+  });
+});
+
+describe('semiMajorAxisKm and lightTravelSeconds', () => {
+  it('converts AU to km and leaves km alone', () => {
+    expect(semiMajorAxisKm(planetLike)).toBeCloseTo(2 * KM_PER_AU, 3);
+    expect(semiMajorAxisKm(moonLike)).toBe(1000);
+  });
+
+  it('times light across one light-second', () => {
+    expect(lightTravelSeconds(299_792.458)).toBeCloseTo(1, 12);
   });
 });

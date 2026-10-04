@@ -150,7 +150,7 @@ display time (rounding, units, comparisons such as "N Earths wide"), never typed
 ### Phase 0 — Foundations
 
 - [x] 0.1 Copy the prototype into `docs/prototype/` and list its features and texts as a checklist.
-- [ ] 0.2 Scaffold Vite + TypeScript strict + three.js + Vitest + ESLint/Prettier with the scripts in §4.
+- [x] 0.2 Scaffold Vite + TypeScript strict + three.js + Vitest + ESLint/Prettier with the scripts in §4.
 - [ ] 0.3 CI: typecheck, lint, test, validate, build on every push.
 - [ ] 0.4 `CREDITS.md` with the table from `.claude/rules/media.md`; self-host the two fonts and credit them.
 - [ ] 0.5 `tools/validate`: catalogue schema, sources on every record, every media file credited.

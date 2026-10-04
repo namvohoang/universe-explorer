@@ -1,0 +1,41 @@
+:root {
+  color-scheme: dark;
+  --void: #060914;
+  --ink: #f4eedc;
+  --sun: #ffc53d;
+  --body: system-ui, 'Segoe UI', sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--body);
+  overflow: hidden;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.top {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 16px;
+}
+
+.top h1 {
+  margin: 0;
+  font-size: clamp(24px, 3.2vw, 32px);
+  line-height: 1;
+}

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- Kids first: the app loads nothing from a third party (PLAN.md §3). -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; connect-src 'self' ws: wss:; object-src 'none'; base-uri 'self'; form-action 'none'"
+    />
+    <meta name="description" content="A 3D space explorer for kids." />
+    <title>Universe Explorer</title>
+    <link rel="stylesheet" href="/src/ui/app.css" />
+  </head>
+  <body>
+    <canvas id="stage" aria-label="3D view of space"></canvas>
+    <header class="top">
+      <h1 id="title"></h1>
+    </header>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

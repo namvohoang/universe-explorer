@@ -17,7 +17,10 @@ import {
   NASA_FACTS_VENUS,
   NASA_FIRST_BLACK_HOLE_IMAGE,
   NASA_HUBBLE_M1,
+  NASA_HUBBLE_M104,
   NASA_HUBBLE_M31,
+  NASA_HUBBLE_M33,
+  NASA_HUBBLE_M51,
   NASA_HUBBLE_M42,
   NASA_HUBBLE_M45,
   NASA_HUBBLE_M87,
@@ -569,6 +572,90 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_HUBBLE_M31],
+  },
+  {
+    id: 'triangulum',
+    hello: {
+      key: 'cardTriangulumHello',
+      sourceId: 'nasa-hubble-m33',
+      quote: 'About half the size of our Milky Way galaxy',
+    },
+    facts: [
+      {
+        key: 'cardTriangulumFact1',
+        sourceId: 'nasa-hubble-m33',
+        quote: 'About 3 million light-years',
+      },
+      {
+        key: 'cardTriangulumFact2',
+        sourceId: 'nasa-hubble-m33',
+        quote: 'M33 is the third-largest member of our Local Group of galaxies',
+      },
+      {
+        key: 'cardTriangulumFact3',
+        sourceId: 'nasa-hubble-m33',
+        quote:
+          'It resolves 25 million individual stars in a 14,000-light-year-wide region spanning the center of the galaxy.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M33],
+  },
+  {
+    id: 'sombrero',
+    hello: {
+      key: 'cardSombreroHello',
+      sourceId: 'nasa-hubble-m104',
+      quote: 'is a spiral galaxy seen nearly edge-on',
+    },
+    facts: [
+      {
+        key: 'cardSombreroFact1',
+        sourceId: 'nasa-hubble-m104',
+        quote: 'M104 is located 28 million light-years away',
+      },
+      {
+        key: 'cardSombreroFact2',
+        sourceId: 'nasa-hubble-m104',
+        quote: 'Looking like a broad-brimmed Mexican hat',
+      },
+      {
+        key: 'cardSombreroFact3',
+        sourceId: 'nasa-hubble-m104',
+        quote: 'The center of M104 is thought to be home to a massive black hole.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M104],
+  },
+  {
+    id: 'whirlpool',
+    hello: {
+      key: 'cardWhirlpoolHello',
+      sourceId: 'nasa-hubble-m51',
+      quote:
+        'It highlights the attributes of a typical spiral galaxy, including graceful, curving arms',
+    },
+    facts: [
+      {
+        key: 'cardWhirlpoolFact1',
+        sourceId: 'nasa-hubble-m51',
+        quote: 'is a spiral galaxy located 31 million light-years away',
+      },
+      {
+        key: 'cardWhirlpoolFact2',
+        sourceId: 'nasa-hubble-m51',
+        quote: 'they are star-formation factories',
+      },
+      {
+        key: 'cardWhirlpoolFact3',
+        sourceId: 'nasa-hubble-m51',
+        quote:
+          'The small galaxy has been gliding past the Whirlpool for hundreds of millions of years.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M51],
   },
   {
     id: 'm87',

@@ -48,6 +48,9 @@ export const NARRATION: Readonly<Record<string, { file: string; fingerprint: str
   'crab-nebula': { file: 'public/voice/crab-nebula.mp3', fingerprint: '262c72d3' },
   'milky-way': { file: 'public/voice/milky-way.mp3', fingerprint: 'db08726b' },
   andromeda: { file: 'public/voice/andromeda.mp3', fingerprint: '16f3009e' },
+  triangulum: { file: 'public/voice/triangulum.mp3', fingerprint: 'c350763d' },
+  sombrero: { file: 'public/voice/sombrero.mp3', fingerprint: '4db10609' },
+  whirlpool: { file: 'public/voice/whirlpool.mp3', fingerprint: 'd21469f6' },
   m87: { file: 'public/voice/m87.mp3', fingerprint: 'd56259f0' },
   'm87-black-hole': { file: 'public/voice/m87-black-hole.mp3', fingerprint: '23ce6070' },
 };

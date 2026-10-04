@@ -458,6 +458,27 @@ export const NASA_HUBBLE_M1: Source = {
   retrieved: '2026-10-04',
 };
 
+export const NASA_HUBBLE_M33: Source = {
+  id: 'nasa-hubble-m33',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 33',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-33/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_HUBBLE_M104: Source = {
+  id: 'nasa-hubble-m104',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 104',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-104/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_HUBBLE_M51: Source = {
+  id: 'nasa-hubble-m51',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 51',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-51/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_HUBBLE_M31: Source = {
   id: 'nasa-hubble-m31',
   title: 'NASA Science — Hubble Messier Catalog, Messier 31',

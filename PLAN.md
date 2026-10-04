@@ -259,6 +259,19 @@ The owner's notes after trying the app, each turned into a task.
 - [x] 6.5 3D objects for the things in Deep Space (black hole, galaxies, nebulae, the Pleiades, other
       stars and their planets, giant stars), each labelled for what it is: built from data, or a model.
 
+### Phase 7 — More to explore (asked for on 2026-10-04)
+
+The owner asked for more objects, and for the things people have put in orbit round Earth.
+
+- [x] 7.1 More galaxies of different shapes, each from its NASA Hubble page with its real picture.
+- [ ] 7.2 More giant stars beside the Sun, each with a NASA source for its size.
+- [ ] 7.3 Space rocks: more asteroids with real orbits and shapes, and what a meteor and a meteorite are.
+- [ ] 7.4 The International Space Station and other satellites round Earth: a new `spacecraft` kind,
+      real orbit heights and periods, real 3D models where NASA publishes one.
+
+**Acceptance:** every new object has a cited source for each number, a credited picture or model,
+a card with a recording, and passes the gate.
+
 ## 7. Testing
 
 | Layer | Tests |

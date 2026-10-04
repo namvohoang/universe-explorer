@@ -182,6 +182,29 @@ export const en = {
     'This picture shows the glow of 200 million stars, and that is only some of them.',
   cardAndromedaFact3:
     'The picture is made of more than 600 Hubble photos joined together. It took over 10 years.',
+  pictureAltTriangulum:
+    'The middle of a spiral galaxy: a soft orange glow packed with stars, with patches of bright blue where new stars are forming.',
+  nameTriangulum: 'The Triangulum Galaxy',
+  cardTriangulumHello:
+    'The Triangulum Galaxy is a spiral galaxy about half the size of our Milky Way.',
+  cardTriangulumFact1: 'It is about 3 million light-years away.',
+  cardTriangulumFact2: 'It is the third biggest galaxy in our own group of galaxies.',
+  cardTriangulumFact3: 'This picture shows only its middle, and 25 million stars one by one.',
+  pictureAltSombrero:
+    'A galaxy seen from the side: a bright white bulge in the middle with a thin, dark ring of dust around it, like a hat with a wide brim.',
+  nameSombrero: 'The Sombrero Galaxy',
+  cardSombreroHello: 'The Sombrero Galaxy is a spiral galaxy that we see almost from the side.',
+  cardSombreroFact1: 'It is 28 million light-years away.',
+  cardSombreroFact2: 'It looks like a hat with a wide brim. A sombrero is a hat from Mexico.',
+  cardSombreroFact3: 'Scientists think a huge black hole sits in its middle.',
+  pictureAltWhirlpool:
+    'A spiral galaxy seen from above, with two long curving arms dotted with pink. A smaller yellow galaxy sits at the end of one arm.',
+  nameWhirlpool: 'The Whirlpool Galaxy',
+  cardWhirlpoolHello: 'The Whirlpool Galaxy is a spiral galaxy with long, curving arms.',
+  cardWhirlpoolFact1: 'It is 31 million light-years away.',
+  cardWhirlpoolFact2: 'Its arms are places where new stars are made.',
+  cardWhirlpoolFact3:
+    'The small galaxy beside it has been gliding past for hundreds of millions of years.',
   pictureAltM87:
     'A huge, round, glowing yellow galaxy with a thin blue jet shooting out from its middle.',
   nameM87: 'The M87 Galaxy',

@@ -170,6 +170,8 @@ export interface Galaxy extends ObjectBase {
   readonly shape: ExtendedShape;
   /** `null` for the Milky Way, which we are inside. */
   readonly sky: SkyPosition | null;
+  /** Which way a disc galaxy is turned to us, when its source says. Left out when it does not. */
+  readonly seenFromEarth?: 'face-on' | 'edge-on';
 }
 
 export interface BlackHole extends ObjectBase {

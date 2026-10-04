@@ -4,7 +4,7 @@ Cross-cutting rules for AI assistants working in the **universe-explorer** repo 
 app where kids explore the universe: object catalogue (`src/data/`), orbit and scale maths
 (`src/sim/`), rendering (`src/scene/`), kid-facing UI (`src/ui/`) and media (`public/media/`).
 
-`PLAN.md` is the source of truth for architecture, phases and acceptance criteria, once it exists.
+`PLAN.md` is the source of truth for architecture, phases and acceptance criteria.
 
 ## 1. Git Workflow & Commits
 

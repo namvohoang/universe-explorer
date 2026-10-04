@@ -3,7 +3,7 @@
 A web app where kids explore the universe: what each kind of object is, what it really looks
 like, how big it is and how it moves. Written in TypeScript.
 
-Read `PLAN.md` before starting any task, once it exists. Work one task at a time and update its
+Read `PLAN.md` before starting any task. Work one task at a time and update its
 checkbox when done.
 
 ## Principles

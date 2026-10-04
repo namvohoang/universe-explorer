@@ -16,14 +16,14 @@ export const neptune: Planet = {
     orientation: {
       axialTiltDeg: s(28.32, 'nssdc-neptune'),
       poleRaDeg: s(
-        299.36,
+        299.334,
         'nssdc-neptune',
-        'Source gives 299.36 + 0.70 sin N; only the constant term is stored.',
+        'Source gives 299.36 + 0.70 sin N, with N = 357.85 + 52.316T degrees and T in Julian centuries from J2000. This is that expression evaluated at T = 0, rounded to 0.001 degrees.',
       ),
       poleDecDeg: s(
-        43.46,
+        42.95,
         'nssdc-neptune',
-        'Source gives 43.46 - 0.51 cos N; only the constant term is stored.',
+        'Source gives 43.46 - 0.51 cos N, with N = 357.85 + 52.316T degrees and T in Julian centuries from J2000. This is that expression evaluated at T = 0, rounded to 0.001 degrees.',
       ),
       rotationPeriodHours: s(
         16.11,

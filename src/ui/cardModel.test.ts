@@ -178,7 +178,9 @@ describe('deep-sky cards', () => {
     for (const object of deep) {
       const card = cardModel(object.id, catalogue);
       expect(card.facts).toHaveLength(3);
-      expect(card.picture).not.toBeNull();
+      // A star pattern is drawn from its measured stars and has no picture of its own.
+      if (object.kind === 'constellation') expect(object.stars.value.length).toBeGreaterThan(3);
+      else expect(card.picture).not.toBeNull();
     }
   });
 });

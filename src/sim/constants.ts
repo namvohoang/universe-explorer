@@ -18,3 +18,9 @@ export const DAYS_PER_JULIAN_CENTURY = 36_525;
  * (ssd.jpl.nasa.gov/planets/approx_pos.html, read 2026-10-04).
  */
 export const J2000_JD = 2_451_545.0;
+
+/** One parsec in km: the distance at which one AU spans one arcsecond (IAU 2015 definition). */
+export const KM_PER_PARSEC = (KM_PER_AU * 648_000) / Math.PI;
+/** One light-year in km: how far light goes in a Julian year. */
+export const KM_PER_LIGHT_YEAR = SPEED_OF_LIGHT_KM_PER_S * SECONDS_PER_DAY * DAYS_PER_JULIAN_YEAR;
+export const LIGHT_YEARS_PER_PARSEC = KM_PER_PARSEC / KM_PER_LIGHT_YEAR;

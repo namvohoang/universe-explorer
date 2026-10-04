@@ -38,6 +38,7 @@ function kindOf(object: CelestialObject): ObjectKind {
     case 'star-cluster':
     case 'galaxy':
     case 'black-hole':
+    case 'constellation':
       return object.kind;
     default:
       return object satisfies never;

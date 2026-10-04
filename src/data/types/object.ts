@@ -29,6 +29,7 @@ export const OBJECT_KINDS = [
   'star-cluster',
   'galaxy',
   'black-hole',
+  'constellation',
 ] as const;
 export type ObjectKind = (typeof OBJECT_KINDS)[number];
 
@@ -188,6 +189,36 @@ export interface Galaxy extends ObjectBase {
   readonly seenFromEarth?: 'face-on' | 'edge-on';
 }
 
+/**
+ * One star of a star pattern: [name, right ascension, declination (degrees, ICRS), parallax
+ * (milliarcseconds), brightness (V magnitude; smaller is brighter), colour (B−V; smaller is bluer)].
+ */
+export type FigureStar = readonly [
+  name: string,
+  raDeg: number,
+  decDeg: number,
+  parallaxMas: number,
+  vMagnitude: number,
+  bV: number,
+];
+
+/**
+ * A pattern of stars as seen from Earth: a constellation's familiar figure, or a well-known
+ * part of one. It is not a thing in space: its stars only line up from where we are.
+ */
+export interface Constellation extends ObjectBase {
+  readonly kind: 'constellation';
+  readonly parentId: null;
+  readonly orbit: null;
+  readonly shape: null;
+  readonly stars: Sourced<readonly FigureStar[]>;
+  /**
+   * Which stars are joined, as pairs of positions in `stars`. The lines are a custom, drawn
+   * differently by different people, not a measurement.
+   */
+  readonly lines: readonly (readonly [number, number])[];
+}
+
 export interface BlackHole extends ObjectBase {
   readonly kind: 'black-hole';
   readonly shape: HorizonShape;
@@ -208,7 +239,8 @@ export type CelestialObject =
   | Nebula
   | StarCluster
   | Galaxy
-  | BlackHole;
+  | BlackHole
+  | Constellation;
 
 /** The object type for one kind, e.g. `ObjectOfKind<'moon'>` is `Moon`. */
 export type ObjectOfKind<K extends ObjectKind> = Extract<CelestialObject, { kind: K }>;

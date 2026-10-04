@@ -56,6 +56,9 @@ import { proximaCentauri } from './proximaCentauri';
 import { trappist1 } from './trappist1';
 import { milkyWay } from './milkyWay';
 import { m87BlackHole } from './m87BlackHole';
+import { southernCross } from './southernCross';
+import { bigDipper } from './bigDipper';
+import { orion } from './orion';
 
 /** Every object in the app. Order is from the Sun outwards, moons and rings after their planet,
  * dwarf planets where their orbits put them.
@@ -118,4 +121,7 @@ export const catalogue: readonly CelestialObject[] = [
   whirlpool,
   m87,
   m87BlackHole,
+  orion,
+  bigDipper,
+  southernCross,
 ];

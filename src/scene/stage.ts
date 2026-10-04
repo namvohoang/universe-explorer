@@ -14,7 +14,8 @@ import { pixelsFor } from './projection';
 
 const BACKGROUND = '#05070f';
 const MAX_PIXEL_RATIO = 2;
-const FIELD_OF_VIEW_DEG = 50;
+/** How wide the camera sees, top to bottom, unless a view asks to look closer. */
+export const FIELD_OF_VIEW_DEG = 50;
 /** Longest step fed to the simulation, so a stalled tab does not jump on return. */
 const MAX_FRAME_SECONDS = 0.05;
 /** Degrees per second-ish, in OrbitControls' own unit; the prototype's gentle idle turn. */
@@ -55,6 +56,11 @@ export interface ScreenPoint {
 }
 
 export interface Stage {
+  /**
+   * Narrows or widens what the camera sees, like a zoom lens: the viewer stays where they are.
+   * Pass `FIELD_OF_VIEW_DEG` to put it back.
+   */
+  setFieldOfView(degrees: number): void;
   readonly scene: Scene;
   readonly camera: PerspectiveCamera;
   /** Width over height of the view, for choosing camera distances. */
@@ -172,6 +178,11 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     scene,
     camera,
     aspect: () => camera.aspect,
+    setFieldOfView(degrees) {
+      if (camera.fov === degrees) return;
+      camera.fov = degrees;
+      camera.updateProjectionMatrix();
+    },
     toScreen(position) {
       projected.set(position.x, position.y, position.z);
       const distance = projected.distanceTo(camera.position);
@@ -185,7 +196,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
         x: (projected.x * 0.5 + 0.5) * viewWidth,
         y: (-projected.y * 0.5 + 0.5) * viewHeight,
         visible: inView,
-        pixelsPerUnit: pixelsFor(1, distance, FIELD_OF_VIEW_DEG, viewHeight),
+        pixelsPerUnit: pixelsFor(1, distance, camera.fov, viewHeight),
         distance,
       };
     },

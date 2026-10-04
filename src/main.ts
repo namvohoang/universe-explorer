@@ -9,7 +9,7 @@ import {
   type DeepModelNote,
 } from './scene/deep';
 import { createSolarSystem } from './scene/solarSystem';
-import { createStage, type FlyTo } from './scene/stage';
+import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
@@ -178,6 +178,7 @@ function start(): void {
     'picture-cloud': en.deepNotePictureCloud,
     simulation: en.deepNoteSimulation,
     cluster: en.deepNoteCluster,
+    constellation: en.deepNoteConstellation,
     'star-sizes': en.deepNoteStarSizes,
     'planet-system': fill(en.deepNotePlanetSystem, { times: PLANET_ENLARGEMENT }),
   };
@@ -200,10 +201,10 @@ function start(): void {
     const { radius } = deepModel;
     stage.lookAt({
       target: () => ({ x: 0, y: 0, z: 0 }),
-      distance: distanceForAspect(radius * DEEP_FRAMING, stage.aspect()),
+      distance: deepModel.viewDistance ?? distanceForAspect(radius * DEEP_FRAMING, stage.aspect()),
       direction: deepModel.viewFrom,
       minDistance: radius * 0.12,
-      maxDistance: radius * 8,
+      maxDistance: Math.max(radius * 8, (deepModel.viewDistance ?? 0) * 2),
       idleTurn: true,
     });
   };
@@ -384,6 +385,9 @@ function start(): void {
 
   stage.onFrame((dt) => {
     deepModel?.update(dt, stage.camera.position);
+    stage.setFieldOfView(
+      deepModel?.fieldOfViewDeg?.(stage.camera.position, FIELD_OF_VIEW_DEG) ?? FIELD_OF_VIEW_DEG,
+    );
     clock = advanceClock(clock, dt, limits);
     system.setDate(clock.jd);
     clockControl.show(clock);

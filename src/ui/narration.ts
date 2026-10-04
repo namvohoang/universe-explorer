@@ -10,6 +10,7 @@ export function narratedIds(catalogue: readonly CelestialObject[]): (string | nu
     (object) =>
       bodyRadiusKm(object) !== null ||
       object.kind === 'belt' ||
+      object.kind === 'constellation' ||
       object.media.some((media) => media.role === 'picture'),
   );
   return [null, ...places.map((object) => object.id)];

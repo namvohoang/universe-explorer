@@ -293,6 +293,32 @@ export const en = {
     'This 3D cloud is made from the real picture, shown in the corner. How deep the cloud is, is a guess: the picture cannot tell us.',
   deepNoteSimulation:
     'This is a computer model of what it is thought to look like, not a photo. The real picture is in the corner.',
+  deepNoteConstellation:
+    'Every star is placed where the Hipparcos space telescope measured it. You start at the Sun, where the stars make this pattern. Turn it round: the stars are really very far from each other. The lines are only how people join the dots.',
+  eyebrowConstellation: 'Star pattern · seen from Earth',
+  helloConstellation: '{name} is a pattern of stars in our night sky.',
+  statNearestStar: 'Nearest star',
+  statFarthestStar: 'Farthest star',
+  valueStarAt: '{name}, {distance}',
+  conceptConstellationTitle: 'What is a constellation?',
+  conceptConstellationText:
+    'A constellation is a group of stars that looks like a shape in the sky and has a name. The stars are not really together: some are close to us and others are very far away.',
+  cardOrionHello: 'Orion is a pattern of stars that people long ago saw as a giant hunter.',
+  cardOrionFact1:
+    'To find it, look for three bright stars close together in a line. They are the hunter’s belt.',
+  cardOrionFact2: 'Its brightest stars are red Betelgeuse and blue Rigel.',
+  cardOrionFact3:
+    'The three belt stars look like neighbours, but they are hundreds of light-years apart.',
+  cardBigDipperHello: 'The Big Dipper is a pattern of stars shaped like a big spoon for soup.',
+  cardBigDipperFact1: 'Its stars are part of a bigger constellation, the Great Bear.',
+  cardBigDipperFact2: 'In some countries people call it the Plough.',
+  cardBigDipperFact3: 'It is in the northern sky and is easy to spot.',
+  cardSouthernCrossHello: 'The Southern Cross is a famous pattern of four bright stars.',
+  cardSouthernCrossFact1: 'It is best seen from the southern half of Earth.',
+  cardSouthernCrossFact2: 'It is on the flags of Australia and New Zealand.',
+  cardSouthernCrossFact3: 'One of its four stars is orange.',
+  nameBigDipper: 'The Big Dipper',
+  nameSouthernCross: 'The Southern Cross',
   deepNoteCluster:
     'Every dot is a real star, placed where the Gaia space telescope measured it. Distances to stars are hard to measure, so the cluster looks more stretched towards us than it really is.',
   deepNoteStarSizes:

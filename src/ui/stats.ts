@@ -3,6 +3,7 @@ import { isKnown, isSatellite } from '../data/types';
 import { lightTravelSeconds, orbitalPeriodDays, semiMajorAxisKm } from '../sim/elements';
 import { KM_PER_AU } from '../sim/constants';
 import { bodyRadiusKm } from '../sim/layout';
+import { figureDepth } from '../sim/stars';
 import { fill } from './format';
 import { displayName } from './names';
 import { en } from './strings/en';
@@ -205,6 +206,16 @@ export function formatLightYears(lightYears: number): string {
  * year, so the distance in light-years is also how many years ago the light we see set out.
  */
 export function deepSkyStats(object: CelestialObject): Stat[] {
+  if (object.kind === 'constellation') {
+    const depth = figureDepth(object.stars.value);
+    if (!depth) return [];
+    const star = (one: { name: string; lightYears: number }): string =>
+      fill(en.valueStarAt, { name: one.name, distance: formatLightYears(one.lightYears) });
+    return [
+      { label: en.statNearestStar, value: star(depth.nearest) },
+      { label: en.statFarthestStar, value: star(depth.farthest) },
+    ];
+  }
   if (!('sky' in object) || object.sky === null || !isKnown(object.sky.distanceLy)) return [];
   const lightYears = object.sky.distanceLy.value;
   const ago =

@@ -57,4 +57,7 @@ export const NARRATION: Readonly<Record<string, { file: string; fingerprint: str
   whirlpool: { file: 'public/voice/whirlpool.mp3', fingerprint: 'd21469f6' },
   m87: { file: 'public/voice/m87.mp3', fingerprint: 'd56259f0' },
   'm87-black-hole': { file: 'public/voice/m87-black-hole.mp3', fingerprint: '23ce6070' },
+  orion: { file: 'public/voice/orion.mp3', fingerprint: '05d2742a' },
+  'big-dipper': { file: 'public/voice/big-dipper.mp3', fingerprint: '71a62d0a' },
+  'southern-cross': { file: 'public/voice/southern-cross.mp3', fingerprint: 'd173b01f' },
 };

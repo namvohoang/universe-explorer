@@ -63,10 +63,12 @@ const DEEP_KIND_LABELS: Partial<Record<CelestialObject['kind'], string>> = {
  * 3D, so they are the ones that carry a picture.
  */
 export function isDeepSky(object: CelestialObject): boolean {
-  return object.media.some((media) => media.role === 'picture');
+  // A star pattern has no picture of its own: its stars are the picture.
+  return object.kind === 'constellation' || object.media.some((media) => media.role === 'picture');
 }
 
 function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
+  if (object.kind === 'constellation') return en.eyebrowConstellation;
   if (isDeepSky(object)) {
     const kind = DEEP_KIND_LABELS[object.kind] ?? '';
     // With no distance given, it is the one galaxy we are inside.
@@ -167,6 +169,9 @@ function plainHello(object: CelestialObject, catalogue: readonly CelestialObject
     return fill(en.helloDwarfPlanet, { name: displayName(object) });
   }
   if (object.kind === 'asteroid') return fill(en.helloAsteroid, { name: displayName(object) });
+  if (object.kind === 'constellation') {
+    return fill(en.helloConstellation, { name: displayName(object) });
+  }
   if (object.kind !== 'moon') throw new Error(`No card for "${object.id}"`);
   const parent = catalogue.find((o) => o.id === object.parentId);
   return fill(en.helloMoon, {

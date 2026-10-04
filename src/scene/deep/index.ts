@@ -3,6 +3,7 @@ import { isKnown } from '../../data/types';
 import { KM_PER_AU } from '../../sim/constants';
 import { bodyRadiusKm } from '../../sim/layout';
 import { createBlackHole } from './blackHole';
+import { createConstellation } from './constellation';
 import type { DeepModel } from './model';
 import { createPictureCloud } from './pictureCloud';
 import { createPlanetSystem } from './planetSystem';
@@ -39,6 +40,9 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
   const earthRadiusKm = earth ? bodyRadiusKm(earth) : null;
 
   if (object.kind === 'black-hole') return createBlackHole();
+  if (object.kind === 'constellation') {
+    return createConstellation(object.stars.value, object.lines, sun ? nameOf(sun) : '');
+  }
   if (object.kind === 'star-cluster' && object.stars) return createStarCluster(object.stars.value);
 
   if (object.kind === 'exoplanet' && object.system && sunRadiusKm && earthRadiusKm) {

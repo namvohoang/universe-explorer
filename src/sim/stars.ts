@@ -1,5 +1,6 @@
-import type { ClusterStar } from '../data/types';
+import type { ClusterStar, FigureStar } from '../data/types';
 import { degToRad } from './angles';
+import { LIGHT_YEARS_PER_PARSEC } from './constants';
 import type { Vec3 } from './vec3';
 
 /** A parallax of one arcsecond puts a star one parsec away; Gaia gives milliarcseconds. */
@@ -72,4 +73,58 @@ export function colorFromTemperature(kelvin: number): Rgb {
  */
 export function temperatureFromBpRp(bpRp: number): number {
   return 4600 * (1 / (0.92 * bpRp + 1.7) + 1 / (0.92 * bpRp + 0.62));
+}
+
+/**
+ * A star's temperature guessed from its B−V colour, for tinting its dot. The same curve as
+ * for the Gaia colour: both say how much bluer or redder a star is, on nearly the same scale.
+ */
+export const temperatureFromBV = temperatureFromBpRp;
+
+/** A star pattern laid out in space around the middle of its stars, in parsecs. */
+export interface FigureLayout {
+  /** Each star, measured from the middle of them all. */
+  readonly offsets: Vec3[];
+  /** Where the Sun is, measured from the same middle. From there the pattern looks as it does from Earth. */
+  readonly sun: Vec3;
+  /** How far the farthest star is from the middle. */
+  readonly radiusPc: number;
+  /** How far each star is from the Sun. */
+  readonly distancesPc: number[];
+}
+
+export function figureLayout(stars: readonly FigureStar[]): FigureLayout {
+  if (stars.length === 0)
+    return { offsets: [], sun: { x: 0, y: 0, z: 0 }, radiusPc: 0, distancesPc: [] };
+  const positions = stars.map(([, ra, dec, parallax]) => starPositionPc(ra, dec, parallax));
+  const n = positions.length;
+  const middle = positions.reduce(
+    (sum, p) => ({ x: sum.x + p.x / n, y: sum.y + p.y / n, z: sum.z + p.z / n }),
+    { x: 0, y: 0, z: 0 },
+  );
+  const offsets = positions.map((p) => ({
+    x: p.x - middle.x,
+    y: p.y - middle.y,
+    z: p.z - middle.z,
+  }));
+  return {
+    offsets,
+    sun: { x: -middle.x, y: -middle.y, z: -middle.z },
+    radiusPc: Math.max(...offsets.map((o) => Math.hypot(o.x, o.y, o.z))),
+    distancesPc: positions.map((p) => Math.hypot(p.x, p.y, p.z)),
+  };
+}
+
+/** The nearest and the farthest star of a pattern, with how far each is in light-years. */
+export function figureDepth(stars: readonly FigureStar[]): {
+  nearest: { name: string; lightYears: number };
+  farthest: { name: string; lightYears: number };
+} | null {
+  const { distancesPc } = figureLayout(stars);
+  const ranked = stars
+    .map(([name], n) => ({ name, lightYears: (distancesPc[n] ?? 0) * LIGHT_YEARS_PER_PARSEC }))
+    .sort((a, b) => a.lightYears - b.lightYears);
+  const nearest = ranked[0];
+  const farthest = ranked.at(-1);
+  return nearest && farthest ? { nearest, farthest } : null;
 }

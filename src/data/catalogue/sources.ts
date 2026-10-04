@@ -617,6 +617,42 @@ export const NASA_FIRST_BLACK_HOLE_IMAGE: Source = {
   retrieved: '2026-10-04',
 };
 
+export const ESA_HIPPARCOS: Source = {
+  id: 'esa-hipparcos',
+  title:
+    'ESA Hipparcos Catalogue (1997) — position, parallax, V magnitude and B−V colour of each star, from the table public.hipparcos of the ESA Gaia Archive',
+  url: 'https://gea.esac.esa.int/archive/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_ORION_CONSTELLATION: Source = {
+  id: 'nasa-orion-constellation',
+  title: 'NASA Science — Discovering the Universe Through the Constellation Orion',
+  url: 'https://science.nasa.gov/universe/stories/quick-reads/discovering-the-universe-through-the-constellation-orion/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_ASTERISMS: Source = {
+  id: 'nasa-asterisms',
+  title: 'NASA Science — What Are Asterisms?',
+  url: 'https://science.nasa.gov/solar-system/what-are-asterisms/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_APOD_SOUTHERN_CROSS: Source = {
+  id: 'nasa-apod-southern-cross',
+  title: 'NASA Science — APOD 2015 October 19, The Southern Cross in a Southern Sky',
+  url: 'https://science.nasa.gov/image-article/apod-2015-october-19-the-southern-cross-in-a-southern-sky/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_CONSTELLATIONS: Source = {
+  id: 'nasa-constellations',
+  title: 'NASA Space Place — What Are Constellations?',
+  url: 'https://spaceplace.nasa.gov/constellations/en/',
+  retrieved: '2026-10-04',
+};
+
 export const ESA_GAIA_PLEIADES: Source = {
   id: 'esa-gaia-pleiades',
   title:

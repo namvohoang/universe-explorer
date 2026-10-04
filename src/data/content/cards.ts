@@ -26,7 +26,11 @@ import {
   NASA_HUBBLE_M42,
   NASA_HUBBLE_M45,
   NASA_HUBBLE_M87,
+  NASA_APOD_SOUTHERN_CROSS,
+  NASA_ASTERISMS,
   NASA_BETELGEUSE,
+  NASA_CONSTELLATIONS,
+  NASA_ORION_CONSTELLATION,
   NASA_IDA,
   NASA_METEORS,
   NASA_PSYCHE,
@@ -944,5 +948,88 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_FIRST_BLACK_HOLE_IMAGE],
+  },
+  {
+    id: 'orion',
+    hello: {
+      key: 'cardOrionHello',
+      sourceId: 'nasa-orion-constellation',
+      quote:
+        'the ancient Greeks thought that an arrangement of stars in the sky looked like a giant hunter with a sword attached to his belt',
+    },
+    facts: [
+      {
+        key: 'cardOrionFact1',
+        sourceId: 'nasa-orion-constellation',
+        quote: 'look for three bright stars close together in an almost-straight line',
+      },
+      {
+        key: 'cardOrionFact2',
+        sourceId: 'nasa-orion-constellation',
+        quote: 'stand out as the brightest members in the constellation',
+      },
+      {
+        key: 'cardOrionFact3',
+        sourceId: 'nasa-orion-constellation',
+        quote: 'Alnilam, the star in the middle of the belt, is about 1,300 light-years away.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_ORION_CONSTELLATION],
+  },
+  {
+    id: 'big-dipper',
+    hello: {
+      key: 'cardBigDipperHello',
+      sourceId: 'nasa-constellations',
+      quote: 'If you trace a line between the stars, it looks like a ladle, or dipper',
+    },
+    facts: [
+      {
+        key: 'cardBigDipperFact1',
+        sourceId: 'nasa-asterisms',
+        quote: 'Its stars are part of the constellation Ursa Major, the Great Bear.',
+      },
+      {
+        key: 'cardBigDipperFact2',
+        sourceId: 'nasa-asterisms',
+        quote: 'The Big Dipper is also known as the Plow (or Plough, in the United Kingdom).',
+      },
+      {
+        key: 'cardBigDipperFact3',
+        sourceId: 'nasa-asterisms',
+        quote:
+          'located very close to each other in the northern sky, and are generally easy to observe',
+      },
+    ],
+    moons: null,
+    sources: [NASA_ASTERISMS, NASA_CONSTELLATIONS],
+  },
+  {
+    id: 'southern-cross',
+    hello: {
+      key: 'cardSouthernCrossHello',
+      sourceId: 'nasa-apod-southern-cross',
+      quote: 'the four bright stars that mark the Southern Cross',
+    },
+    facts: [
+      {
+        key: 'cardSouthernCrossFact1',
+        sourceId: 'nasa-apod-southern-cross',
+        quote: "This famous constellation is best seen from Earth's Southern Hemisphere.",
+      },
+      {
+        key: 'cardSouthernCrossFact2',
+        sourceId: 'nasa-apod-southern-cross',
+        quote: 'it is depicted on the national flags of',
+      },
+      {
+        key: 'cardSouthernCrossFact3',
+        sourceId: 'nasa-apod-southern-cross',
+        quote: 'is the orange star',
+      },
+    ],
+    moons: null,
+    sources: [NASA_APOD_SOUTHERN_CROSS],
   },
 ];

@@ -11,6 +11,7 @@ import {
   NASA_HUBBLE_M45,
   NASA_HUBBLE_M87,
   NASA_MOONS,
+  NASA_CONSTELLATIONS,
   NASA_SATELLITE,
   NASA_TRAPPIST1,
   NASA_WHAT_IS_A_PLANET,
@@ -60,6 +61,16 @@ export const concepts: readonly ConceptContent[] = [
         'Naturally-formed bodies that orbit planets are called moons, or planetary satellites.',
     },
     source: NASA_MOONS,
+  },
+  {
+    kind: 'constellation',
+    titleKey: 'conceptConstellationTitle',
+    text: {
+      key: 'conceptConstellationText',
+      sourceId: 'nasa-constellations',
+      quote: 'Some stars in a constellation might be close while others are very far away.',
+    },
+    source: NASA_CONSTELLATIONS,
   },
   {
     kind: 'spacecraft',

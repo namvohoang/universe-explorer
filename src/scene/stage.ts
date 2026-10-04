@@ -55,6 +55,8 @@ export interface Stage {
   lookAt(request: FlyTo): void;
   /** Registers work to do before each frame is drawn; `dt` is real seconds since the last. */
   onFrame(callback: (dt: number) => void): void;
+  /** Registers work to do once the camera has moved for the frame, e.g. placing labels. */
+  onCameraMoved(callback: () => void): void;
   resize(width: number, height: number): void;
   start(): void;
   dispose(): void;
@@ -82,6 +84,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   controls.autoRotateSpeed = AUTO_ROTATE_SPEED;
 
   const frameCallbacks: ((dt: number) => void)[] = [];
+  const cameraCallbacks: (() => void)[] = [];
   let following: FlyTo | null = null;
   let flight: Flight | null = null;
   let previousTarget: Vec3 | null = null;
@@ -145,6 +148,8 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     for (const callback of frameCallbacks) callback(dt);
     moveCamera(dt);
     controls.update(dt);
+    camera.updateMatrixWorld();
+    for (const callback of cameraCallbacks) callback();
     renderer.render(scene, camera);
   };
 
@@ -177,6 +182,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     },
     onFrame: (callback) => {
       frameCallbacks.push(callback);
+    },
+    onCameraMoved: (callback) => {
+      cameraCallbacks.push(callback);
     },
     resize(width, height) {
       viewWidth = width;

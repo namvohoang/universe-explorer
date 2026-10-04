@@ -62,6 +62,8 @@ export const en = {
   names: 'Names',
   places: 'Places to explore',
   closeCard: 'Close card',
+  readToMe: 'Read it to me',
+  stopReading: 'Stop reading',
   coolFacts: 'Cool facts',
   aboutTheGlobe: 'About this globe',
   nameSolarSystem: 'Our Solar System',

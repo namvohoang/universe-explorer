@@ -1,5 +1,6 @@
 import type { CardModel } from './cardModel';
 import { create } from './dom';
+import { speechLines, type Speaker } from './speech';
 import { en } from './strings/en';
 
 export interface Card {
@@ -9,7 +10,7 @@ export interface Card {
 }
 
 /** The info card: who this is, a few numbers, a few facts, and what the globe really is. */
-export function createCard(onClose: () => void): Card {
+export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   const element = create('aside', 'card');
   element.setAttribute('aria-live', 'polite');
   element.hidden = true;
@@ -30,11 +31,40 @@ export function createCard(onClose: () => void): Card {
   const factsTitle = create('h3', '', en.coolFacts);
   const facts = create('ul', 'facts');
   const globe = create('p', 'globe-note');
-  element.append(head, hello, stats, factsTitle, facts, globe);
+  // "Read it to me", for kids who are still learning to read. Hidden where there is no voice.
+  const read = create('button', 'primary', en.readToMe);
+  read.type = 'button';
+  read.hidden = speaker === null;
+  const actions = create('div', 'card-actions');
+  actions.append(read);
+  element.append(head, hello, stats, factsTitle, facts, globe, actions);
+
+  let shown: CardModel | null = null;
+  let reading = false;
+  const setReading = (now: boolean): void => {
+    reading = now;
+    read.textContent = now ? en.stopReading : en.readToMe;
+  };
+  const stopReading = (): void => {
+    if (reading) speaker?.stop();
+  };
+  read.addEventListener('click', () => {
+    if (!speaker || !shown) return;
+    if (reading) {
+      speaker.stop();
+      return;
+    }
+    setReading(true);
+    speaker.speak(speechLines(shown), () => {
+      setReading(false);
+    });
+  });
 
   return {
     element,
     show(model) {
+      stopReading();
+      shown = model;
       eyebrow.textContent = model.eyebrow;
       name.textContent = model.name;
       hello.textContent = model.hello;
@@ -52,6 +82,7 @@ export function createCard(onClose: () => void): Card {
       element.scrollTop = 0;
     },
     hide() {
+      stopReading();
       element.hidden = true;
     },
   };

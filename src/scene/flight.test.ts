@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { length, subtract, type Vec3 } from '../sim/vec3';
+import { dot, length, normalize, subtract, type Vec3 } from '../sim/vec3';
 import {
   FLIGHT_SECONDS,
   distanceForAspect,
   easeInOutCubic,
   followTarget,
+  litSideBearing,
   startFlight,
   stepFlight,
   type View,
@@ -105,5 +106,27 @@ describe('followTarget', () => {
     const next = followTarget(view, TARGET, { x: 11, y: 0, z: -1 });
     expectVec(next.target, { x: 11, y: 0, z: -1 });
     expectVec(next.camera, { x: 11, y: 2, z: 3 });
+  });
+});
+
+describe('litSideBearing', () => {
+  const sun: Vec3 = { x: 0, y: 0, z: 0 };
+
+  it('looks from the sunny side, a little above', () => {
+    const body: Vec3 = { x: 50, y: 0, z: 20 };
+    const bearing = litSideBearing(body, sun);
+    if (!bearing) throw new Error('expected a bearing');
+    expect(length(bearing)).toBeCloseTo(1, 12);
+    expect(dot(bearing, normalize(subtract(sun, body)))).toBeGreaterThan(0.7);
+    expect(bearing.y).toBeGreaterThan(0.2);
+  });
+
+  it('has no answer for the light itself', () => {
+    expect(litSideBearing(sun, sun)).toBeNull();
+  });
+
+  it('copes with a body straight above the light', () => {
+    const bearing = litSideBearing({ x: 0, y: 10, z: 0 }, sun);
+    expect(bearing && Number.isFinite(bearing.x)).toBe(true);
   });
 });

@@ -188,7 +188,7 @@ supported date range; in `true` mode every size and distance ratio equals the ca
 - [x] 2.9 Info card, name labels and chips, ported from the prototype. Scene tabs wait for Phase 4, when
       there is a second scene to switch to.
 - [x] 2.10 Card content for the ten bodies: every prototype stat and fact re-sourced or removed; numbers generated from the catalogue.
-- [~] 2.11 Read aloud with the browser voice.
+- [x] 2.11 Read aloud with the browser voice.
 
 **Acceptance:** everything the prototype's Solar System scene does, now with real shapes, real
 maps, real orbits and a real date; a body always sits on its drawn path; `/data-check all` and

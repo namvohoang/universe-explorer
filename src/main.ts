@@ -1,6 +1,6 @@
 import './ui/fonts';
 import { catalogue } from './data/catalogue';
-import { distanceForAspect } from './scene/flight';
+import { distanceForAspect, litSideBearing } from './scene/flight';
 import { createSolarSystem } from './scene/solarSystem';
 import { createStage, type FlyTo } from './scene/stage';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
@@ -19,6 +19,7 @@ import { createClockControl } from './ui/clockControl';
 import { create, mustFind } from './ui/dom';
 import { createMarkers } from './ui/markers';
 import { createSegmented } from './ui/segmented';
+import { createBrowserSpeaker } from './ui/speech';
 import { en } from './ui/strings/en';
 
 /** Whole-view camera: looking down on the system from the prototype's angle. */
@@ -80,7 +81,8 @@ function start(): void {
   const bodyView = (id: string): FlyTo => ({
     target: () => system.positionOf(id),
     distance: system.radiusOf(id) * BODY_VIEW_RADII,
-    direction: null,
+    // Arrive on the sunny side, so the kid meets the body lit rather than in the dark.
+    direction: litSideBearing(system.positionOf(id), system.positionOf('sun')),
     minDistance: system.radiusOf(id) * BODY_CLOSEST_RADII,
     maxDistance: wholeView().maxDistance,
     idleTurn: false,
@@ -90,7 +92,7 @@ function start(): void {
 
   const card = createCard(() => {
     card.hide();
-  });
+  }, createBrowserSpeaker());
   mustFind('#card-slot').append(card.element);
 
   const showFocus = (): void => {
@@ -187,7 +189,7 @@ function start(): void {
     system.setDate(clock.jd);
     clockControl.show(clock);
   });
-  stage.onFrame(() => {
+  stage.onCameraMoved(() => {
     markers.update((id) => {
       const point = stage.toScreen(system.positionOf(id));
       return { point, radiusPixels: system.radiusOf(id) * point.pixelsPerUnit };

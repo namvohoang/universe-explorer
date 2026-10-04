@@ -1,4 +1,4 @@
-import { add, length, normalize, scale, subtract, type Vec3 } from '../sim/vec3';
+import { add, cross, length, normalize, scale, subtract, type Vec3 } from '../sim/vec3';
 
 /** How long a fly-to takes, in seconds (as in the prototype). */
 export const FLIGHT_SECONDS = 1.6;
@@ -88,4 +88,23 @@ export function stepFlight(flight: Flight, dt: number, target: Vec3): FlightStep
 export function followTarget(view: View, previousTarget: Vec3, target: Vec3): View {
   const moved = subtract(target, previousTarget);
   return { camera: add(view.camera, moved), target: add(view.target, moved) };
+}
+
+/** How far round to the side, and how far above, the camera stands when it looks at a lit body. */
+const SIDE_SHARE = 0.6;
+const UP_SHARE = 0.35;
+const SCENE_UP: Vec3 = { x: 0, y: 1, z: 0 };
+
+/**
+ * A bearing from which a body lit by `light` shows mostly its day side, with some of the night
+ * side for shape: towards the light, swung a little to one side and lifted above the plane.
+ * Returns `null` when the body is at the light itself.
+ */
+export function litSideBearing(body: Vec3, light: Vec3): Vec3 | null {
+  const offset = subtract(light, body);
+  if (length(offset) === 0) return null;
+  const towards = normalize(offset);
+  const sideways = cross(SCENE_UP, towards);
+  const side = length(sideways) === 0 ? { x: 1, y: 0, z: 0 } : normalize(sideways);
+  return normalize(add(add(towards, scale(side, SIDE_SHARE)), scale(SCENE_UP, UP_SHARE)));
 }

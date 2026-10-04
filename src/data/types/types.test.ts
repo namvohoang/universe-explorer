@@ -116,7 +116,7 @@ describe('catalogue types', () => {
       inclinationDeg: sourced(0),
       longitudeOfAscendingNodeDeg: sourced(0),
       phase: { form: 'anomalies', argumentOfPeriapsisDeg: sourced(0), meanAnomalyDeg: sourced(0) },
-      motion: { type: 'mean-motion', meanMotionDegPerDay: sourced(1) },
+      motion: { type: 'precessing-ellipse', siderealPeriodDays: sourced(1) },
       validity: null,
     } as const;
     const inAu: OrbitalElements = { ...base, semiMajorAxisAu: sourced(1) };

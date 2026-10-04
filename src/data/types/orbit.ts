@@ -44,9 +44,13 @@ export type OrbitMotion =
       readonly longitudeOfAscendingNodeDegPerCentury: Sourced<number>;
     }
   | {
-      /** A fixed ellipse the body moves along, optionally turning slowly in its plane and about its pole. */
-      readonly type: 'mean-motion';
-      readonly meanMotionDegPerDay: Sourced<number>;
+      /**
+       * A fixed-shape ellipse that the body goes round once per sidereal period, while the
+       * ellipse itself turns slowly in its plane (apsides) and about the frame's pole (node).
+       * Sources give the precession periods without a direction; `src/sim` owns that.
+       */
+      readonly type: 'precessing-ellipse';
+      readonly siderealPeriodDays: Sourced<number>;
       readonly apsidalPrecessionPeriodYears?: Sourced<number>;
       readonly nodalPrecessionPeriodYears?: Sourced<number>;
     };

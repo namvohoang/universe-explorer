@@ -1,10 +1,20 @@
 import type { Measured, Sourced } from './source';
 
-/** How a body spins and which way its axis points. Part of the shape a kid sees. */
+/**
+ * How a body spins and which way its axis points. Part of the shape a kid sees.
+ *
+ * Two conventions meet here, as they do in the sources:
+ * - `poleRaDeg`/`poleDecDeg` give the IAU north pole (the pole on the north side of the solar
+ *   system's invariable plane), and `rotation` says which way the body turns about that pole.
+ *   Rendering uses these.
+ * - `axialTiltDeg` is the obliquity as published, measured to the right-hand spin axis, so it is
+ *   above 90° for a retrograde body. It already includes the spin direction: never combine it
+ *   with `rotation`, or the two cancel.
+ */
 export interface Orientation {
-  /** Angle between the spin axis and the pole of the body's orbit. */
+  /** Angle between the spin axis and the pole of the body's orbit (see the note above). */
   readonly axialTiltDeg: Measured<number>;
-  /** Direction of the north pole on the sky (ICRF right ascension and declination). */
+  /** Direction of the IAU north pole on the sky (ICRF right ascension and declination). */
   readonly poleRaDeg: Measured<number>;
   readonly poleDecDeg: Measured<number>;
   /** Sidereal rotation period, always positive. Direction is given by `rotation`. */

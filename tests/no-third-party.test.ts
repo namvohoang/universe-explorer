@@ -6,6 +6,8 @@ import { describe, expect, it } from 'vitest';
 const ROOT = join(import.meta.dirname, '..');
 const SHIPPED_EXTENSIONS = ['.ts', '.css', '.html', '.json'];
 const URL_PATTERN = /(?:https?:)?\/\/[a-z0-9.-]+\.[a-z]{2,}[^\s"'`)]*/gi;
+// Citations: where catalogue values were read from. Shown as text, never fetched by the app.
+const CITATION_FILES = [join(ROOT, 'src/data/catalogue/sources.ts')];
 // XML namespaces are identifiers, not requests.
 const ALLOWED = [/^http:\/\/www\.w3\.org\//];
 
@@ -14,7 +16,8 @@ function shippedFiles(dir: string): string[] {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) return shippedFiles(path);
     const shipped = SHIPPED_EXTENSIONS.some((ext) => entry.name.endsWith(ext));
-    return shipped && !entry.name.endsWith('.test.ts') ? [path] : [];
+    const checked = shipped && !entry.name.endsWith('.test.ts') && !CITATION_FILES.includes(path);
+    return checked ? [path] : [];
   });
 }
 

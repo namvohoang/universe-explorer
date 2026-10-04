@@ -44,6 +44,7 @@ SAY: dict[str, str] = {
     "Makemake": "mˌɑkimˈɑki",  # MAH-kee-MAH-kee
     "Proxima": "pɹˈɑksəmə",  # PROK-sih-muh
     "Centauri": "sɛntˈɔɹi",  # sen-TOR-ee
+    "Betelgeuse": "bˈiTəlʤˌuz",  # BEE-tul-jooz
 }
 
 
@@ -140,7 +141,8 @@ def main() -> int:
             entries.append(f"  {json.dumps(card)}: {{ file: 'public/voice/{card}.mp3', fingerprint: '{fingerprint(lines)}' }},")
     if wanted:
         # A partial run keeps the fingerprints of the cards it did not touch.
-        old = dict(re.findall(r'"([^"]+)": \{ file: \'[^\']+\', fingerprint: \'([0-9a-f]+)\' \}', MANIFEST.read_text()))
+        # Prettier rewrites the keys (bare or single-quoted), so read them any way they are written.
+        old = dict(re.findall(r"['\"]?([\w-]+)['\"]?: \{ file: '[^']+', fingerprint: '([0-9a-f]+)' \}", MANIFEST.read_text()))
         entries = []
         for card, lines in cards.items():
             if not (OUT_DIR / f"{card}.mp3").exists():

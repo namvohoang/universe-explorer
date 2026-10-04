@@ -36,7 +36,11 @@ export const moon: Moon = {
     },
     motion: {
       type: 'precessing-ellipse',
-      siderealPeriodDays: s(27.322, 'jpl-sat-elem'),
+      siderealPeriodDays: s(
+        27.3217,
+        'nssdc-moon',
+        'The "Revolution period" of the NASA fact sheet. JPL\'s table rounds the period to 27.322, which makes the Moon drift by several degrees over a century.',
+      ),
       apsidalPrecessionPeriodYears: s(5.997, 'jpl-sat-elem'),
       nodalPrecessionPeriodYears: s(18.6, 'jpl-sat-elem'),
     },

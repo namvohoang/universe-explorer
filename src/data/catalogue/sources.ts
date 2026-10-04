@@ -500,3 +500,19 @@ export const NASA_FIRST_BLACK_HOLE_IMAGE: Source = {
   url: 'https://science.nasa.gov/resource/first-image-of-a-black-hole/',
   retrieved: '2026-10-04',
 };
+
+export const ESA_GAIA_PLEIADES: Source = {
+  id: 'esa-gaia-pleiades',
+  title:
+    'ESA Gaia Data Release 3 — stars within 2 degrees of the Pleiades that share its distance and motion',
+  url: 'https://gea.esac.esa.int/archive/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_EXOPLANET_ARCHIVE: Source = {
+  id: 'nasa-exoplanet-archive',
+  title:
+    'NASA Exoplanet Archive — Planetary Systems Composite Parameters (TRAPPIST-1 and Proxima Cen)',
+  url: 'https://exoplanetarchive.ipac.caltech.edu/',
+  retrieved: '2026-10-04',
+};

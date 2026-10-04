@@ -2,7 +2,7 @@
 // Do not edit a number by hand: re-read the source (CLAUDE.md, real numbers only).
 import type { Star } from '../types';
 import { s, unknown } from './helpers';
-import { NASA_HUBBLE_PROXIMA } from './sources';
+import { NASA_EXOPLANET_ARCHIVE, NASA_HUBBLE_PROXIMA } from './sources';
 
 export const proximaCentauri: Star = {
   id: 'proxima-centauri',
@@ -12,7 +12,8 @@ export const proximaCentauri: Star = {
   orbit: null,
   shape: null,
   massKg: unknown("The source gives the mass only as about an eighth of the Sun's."),
-  effectiveTemperatureK: unknown('The source used gives no temperature for this star.'),
+  effectiveTemperatureK: s(2900.0, 'nasa-exoplanet-archive'),
+  radiusInSuns: s(0.141, 'nasa-exoplanet-archive'),
   spectralType: unknown('The source used gives no spectral type for this star.'),
   sky: {
     raDeg: unknown('The source used gives no sky position for this object.'),
@@ -28,5 +29,5 @@ export const proximaCentauri: Star = {
       credit: 'NASA and ESA',
     },
   ],
-  sources: [NASA_HUBBLE_PROXIMA],
+  sources: [NASA_EXOPLANET_ARCHIVE, NASA_HUBBLE_PROXIMA],
 };

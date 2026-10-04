@@ -43,8 +43,10 @@ Astronomical values carry their own source and retrieval date in each catalogue 
 |---|---|---|---|---|---|
 | Orbits of the first 1500 numbered main-belt asteroids (`src/data/belts/asteroidBeltOrbits.ts`) | The dots of the asteroid belt | NASA/JPL Small-Body Database | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. | https://ssd.jpl.nasa.gov/tools/sbdb_query.html | 2026-10-04 |
 | Orbits of 787 numbered trans-Neptunian objects within 50 AU (`src/data/belts/kuiperBeltOrbits.ts`) | The dots of the Kuiper Belt | NASA/JPL Small-Body Database | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. | https://ssd.jpl.nasa.gov/tools/sbdb_query.html | 2026-10-04 |
+| Positions, distances, brightness and colour of 120 Pleiades stars (`src/data/deep/pleiadesStars.ts`) | The 3D model of the Pleiades | ESA/Gaia/DPAC. This work has made use of data from the European Space Agency (ESA) mission Gaia, processed by the Gaia Data Processing and Analysis Consortium (DPAC). | Gaia data are free to use with that acknowledgement (Gaia Archive credit and citation instructions) | https://gea.esac.esa.int/archive/ | 2026-10-04 |
+| Star and planet sizes and orbits for TRAPPIST-1; size and temperature of Proxima Centauri | The 3D models of those systems | NASA Exoplanet Archive, operated by Caltech under contract with NASA | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. | https://exoplanetarchive.ipac.caltech.edu/ | 2026-10-04 |
 
-Both are rounded for drawing; the exact queries are in the records' sources.
+The belt orbits are rounded for drawing; the exact queries are in the records' sources.
 
 ## Narration
 

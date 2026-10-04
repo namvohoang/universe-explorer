@@ -50,6 +50,27 @@ interface ObjectBase {
   readonly sources: readonly Source[];
 }
 
+/**
+ * One star of a cluster as a space telescope measured it:
+ * [right ascension, declination (degrees, ICRS), parallax (milliarcseconds), brightness
+ * (Gaia G magnitude; smaller is brighter), colour (Gaia BP−RP; smaller is bluer)].
+ */
+export type ClusterStar = readonly [
+  raDeg: number,
+  decDeg: number,
+  parallaxMas: number,
+  gMagnitude: number,
+  bpRp: number,
+];
+
+/** One planet of another star: [name, radius in Earths, orbit's semi-major axis (AU), period (days)]. */
+export type SystemPlanet = readonly [
+  name: string,
+  radiusInEarths: number,
+  semiMajorAxisAu: number,
+  periodDays: number,
+];
+
 export interface Star extends ObjectBase {
   readonly kind: 'star';
   /** `null` for a star so far away that it is only ever seen as a point of light. */
@@ -59,6 +80,8 @@ export interface Star extends ObjectBase {
   readonly spectralType: Measured<string>;
   /** `null` for the Sun, which is the origin of the solar-system frame. */
   readonly sky: SkyPosition | null;
+  /** How wide the star is next to the Sun, for a star with no `shape` of its own. */
+  readonly radiusInSuns?: Measured<number>;
 }
 
 export interface Planet extends ObjectBase {
@@ -117,6 +140,12 @@ export interface Exoplanet extends ObjectBase {
   readonly radiusKm: Measured<number>;
   readonly massKg: Measured<number>;
   readonly sky: SkyPosition;
+  /** When the record stands for a whole family of planets: their star and each planet. */
+  readonly system?: {
+    readonly starRadiusInSuns: Sourced<number>;
+    readonly starTemperatureK: Sourced<number>;
+    readonly planets: Sourced<readonly SystemPlanet[]>;
+  };
 }
 
 export interface Nebula extends ObjectBase {
@@ -131,6 +160,8 @@ export interface StarCluster extends ObjectBase {
   readonly orbit: null;
   readonly shape: ExtendedShape;
   readonly sky: SkyPosition;
+  /** Measured stars of the cluster, each drawn where it is. */
+  readonly stars?: Sourced<readonly ClusterStar[]>;
 }
 
 export interface Galaxy extends ObjectBase {

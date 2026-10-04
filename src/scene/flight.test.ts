@@ -6,6 +6,7 @@ import {
   easeInOutCubic,
   followTarget,
   litSideBearing,
+  zoomedDistance,
   startFlight,
   stepFlight,
   type View,
@@ -128,5 +129,25 @@ describe('litSideBearing', () => {
   it('copes with a body straight above the light', () => {
     const bearing = litSideBearing({ x: 0, y: 10, z: 0 }, sun);
     expect(bearing && Number.isFinite(bearing.x)).toBe(true);
+  });
+});
+
+describe('zoomedDistance', () => {
+  it('moves in or out by the factor', () => {
+    expect(zoomedDistance(100, 0.5, 1, 1000)).toBe(50);
+    expect(zoomedDistance(100, 2, 1, 1000)).toBe(200);
+  });
+
+  it('stops at the nearest and farthest the view allows', () => {
+    expect(zoomedDistance(3, 0.5, 2, 1000)).toBe(2);
+    expect(zoomedDistance(800, 2, 1, 1000)).toBe(1000);
+  });
+});
+
+describe('a quick flight', () => {
+  it('takes the time it is given', () => {
+    const flight = startFlight(HOME, TARGET, 5, null, false, 0.35);
+    expect(stepFlight(flight, 0.2, TARGET).flight).not.toBeNull();
+    expect(stepFlight(flight, 0.35, TARGET).flight).toBeNull();
   });
 });

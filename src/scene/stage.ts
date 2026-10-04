@@ -1,7 +1,15 @@
 import { Color, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { Vec3 } from '../sim/vec3';
-import { followTarget, startFlight, stepFlight, type Flight, type View } from './flight';
+import {
+  ZOOM_SECONDS,
+  followTarget,
+  startFlight,
+  stepFlight,
+  zoomedDistance,
+  type Flight,
+  type View,
+} from './flight';
 import { pixelsFor } from './projection';
 
 const BACKGROUND = '#05070f';
@@ -12,6 +20,7 @@ const MAX_FRAME_SECONDS = 0.05;
 /** Degrees per second-ish, in OrbitControls' own unit; the prototype's gentle idle turn. */
 const AUTO_ROTATE_SPEED = 0.25;
 const DAMPING = 0.08;
+const ZOOM_SPEED = 2;
 
 export interface StageOptions {
   readonly pixelRatio: number;
@@ -55,6 +64,8 @@ export interface Stage {
   flyTo(request: FlyTo): void;
   /** Jumps there without a flight, e.g. for the first frame. */
   lookAt(request: FlyTo): void;
+  /** Moves the camera towards (factor below 1) or away from what it is looking at. */
+  zoom(factor: number): void;
   /** Registers work to do before each frame is drawn; `dt` is real seconds since the last. */
   onFrame(callback: (dt: number) => void): void;
   /** Registers work to do once the camera has moved for the frame, e.g. placing labels. */
@@ -84,6 +95,8 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   controls.enableDamping = !options.reducedMotion;
   controls.dampingFactor = DAMPING;
   controls.autoRotateSpeed = AUTO_ROTATE_SPEED;
+  // A wheel notch or pinch moves further than the default: scenes span huge distances.
+  controls.zoomSpeed = ZOOM_SPEED;
 
   const frameCallbacks: ((dt: number) => void)[] = [];
   const cameraCallbacks: (() => void)[] = [];
@@ -182,6 +195,27 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     lookAt: (request) => {
       begin(request, true);
       moveCamera(0);
+    },
+    zoom(factor) {
+      if (!following || flight) return;
+      const view = currentView();
+      const offset = {
+        x: view.camera.x - view.target.x,
+        y: view.camera.y - view.target.y,
+        z: view.camera.z - view.target.z,
+      };
+      const distance = Math.hypot(offset.x, offset.y, offset.z);
+      if (distance === 0) return;
+      const { minDistance, maxDistance } = following;
+      flight = startFlight(
+        view,
+        following.target(),
+        zoomedDistance(distance, factor, minDistance, maxDistance),
+        offset,
+        options.reducedMotion,
+        ZOOM_SECONDS,
+      );
+      controls.enabled = false;
     },
     onFrame: (callback) => {
       frameCallbacks.push(callback);

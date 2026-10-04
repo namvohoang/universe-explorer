@@ -146,6 +146,7 @@ function start(): void {
     chips.show(chipsFor(focus), focus);
     document.body.classList.toggle('deep', isDeep(focus));
     sceneControl.show(isDeep(focus) ? 'deep' : 'solar');
+    back.hidden = focus === null;
     picture.hidden = model.picture === null;
     if (model.picture) {
       pictureImage.src = model.picture.url;
@@ -179,6 +180,9 @@ function start(): void {
 
   const chips = createChips(en.places, goTo);
   window.addEventListener('keydown', (event) => {
+    if (event.target instanceof HTMLInputElement) return;
+    if (event.key === '+' || event.key === '=') stage.zoom(ZOOM_STEP);
+    if (event.key === '-' || event.key === '_') stage.zoom(1 / ZOOM_STEP);
     if (event.key !== 'Escape') return;
     if (!grownUps.element.hidden) grownUps.close();
     else if (!compare.element.hidden) compare.close();
@@ -190,6 +194,35 @@ function start(): void {
     scaleLabel.textContent = en[scale.labelKey];
   };
   showScale();
+
+  // Big, always-there buttons for getting closer, further, and back out again.
+  const viewControls = mustFind('#view-controls');
+  viewControls.setAttribute('aria-label', en.viewControls);
+  const viewButton = (label: string, symbol: string, onClick: () => void): HTMLButtonElement => {
+    const button = create('button', 'round', symbol);
+    button.type = 'button';
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    button.addEventListener('click', onClick);
+    viewControls.append(button);
+    return button;
+  };
+  const ZOOM_STEP = 0.6;
+  viewButton(en.zoomIn, '+', () => {
+    stage.zoom(ZOOM_STEP);
+  });
+  viewButton(en.zoomOut, '−', () => {
+    stage.zoom(1 / ZOOM_STEP);
+  });
+  // Back goes up one level: from a moon to its planet, from anything else to the whole view.
+  const backTarget = (): string | null => {
+    const here = catalogue.find((object) => object.id === focus);
+    return here?.kind === 'moon' ? here.parentId : null;
+  };
+  const back = viewButton(en.back, '←', () => {
+    goTo(backTarget());
+  });
+  back.classList.add('back');
 
   const names = create('button', '', en.names);
   names.type = 'button';

@@ -46,6 +46,7 @@ export function startFlight(
   distance: number,
   direction: Vec3 | null,
   reducedMotion: boolean,
+  seconds: number = FLIGHT_SECONDS,
 ): Flight {
   let bearing = direction;
   if (!bearing) {
@@ -58,7 +59,7 @@ export function startFlight(
     from,
     direction: normalize(bearing),
     distance,
-    seconds: reducedMotion ? 0 : FLIGHT_SECONDS,
+    seconds: reducedMotion ? 0 : seconds,
     elapsed: 0,
   };
 }
@@ -107,4 +108,20 @@ export function litSideBearing(body: Vec3, light: Vec3): Vec3 | null {
   const sideways = cross(SCENE_UP, towards);
   const side = length(sideways) === 0 ? { x: 1, y: 0, z: 0 } : normalize(sideways);
   return normalize(add(add(towards, scale(side, SIDE_SHARE)), scale(SCENE_UP, UP_SHARE)));
+}
+
+/** How long one press of a zoom button takes, in seconds. */
+export const ZOOM_SECONDS = 0.35;
+
+/**
+ * The distance to move to for one press of a zoom button: the present distance times `factor`
+ * (below 1 zooms in), kept within the nearest and farthest the view allows.
+ */
+export function zoomedDistance(
+  distance: number,
+  factor: number,
+  nearest: number,
+  farthest: number,
+): number {
+  return Math.min(farthest, Math.max(nearest, distance * factor));
 }

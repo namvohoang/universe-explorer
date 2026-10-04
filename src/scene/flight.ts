@@ -1,0 +1,91 @@
+import { add, length, normalize, scale, subtract, type Vec3 } from '../sim/vec3';
+
+/** How long a fly-to takes, in seconds (as in the prototype). */
+export const FLIGHT_SECONDS = 1.6;
+
+/** The prototype's ease: slow start, slow finish. */
+export function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+}
+
+/**
+ * On a tall, narrow screen the view is narrower, so the camera stands further back to keep
+ * the same things in frame (the prototype's rule).
+ */
+export function distanceForAspect(distance: number, aspect: number): number {
+  return distance * Math.max(1, 1.25 / aspect);
+}
+
+function lerp(a: Vec3, b: Vec3, t: number): Vec3 {
+  return add(a, scale(subtract(b, a), t));
+}
+
+/** Where the camera is and what it looks at. */
+export interface View {
+  readonly camera: Vec3;
+  readonly target: Vec3;
+}
+
+/** A camera move towards a target that may itself be moving. */
+export interface Flight {
+  readonly from: View;
+  /** Unit vector from the target to where the camera should end up. */
+  readonly direction: Vec3;
+  readonly distance: number;
+  readonly seconds: number;
+  readonly elapsed: number;
+}
+
+/**
+ * Plans a move that ends `distance` from the target. With no `direction` the camera keeps
+ * its present bearing, lifted so it never ends up looking from below or flat along the plane.
+ */
+export function startFlight(
+  from: View,
+  target: Vec3,
+  distance: number,
+  direction: Vec3 | null,
+  reducedMotion: boolean,
+): Flight {
+  let bearing = direction;
+  if (!bearing) {
+    const offset = subtract(from.camera, target);
+    const reach = length(offset);
+    bearing =
+      reach > 0 ? { ...offset, y: Math.max(offset.y, reach * 0.3) } : { x: 0, y: 0.4, z: 1 };
+  }
+  return {
+    from,
+    direction: normalize(bearing),
+    distance,
+    seconds: reducedMotion ? 0 : FLIGHT_SECONDS,
+    elapsed: 0,
+  };
+}
+
+export interface FlightStep {
+  readonly view: View;
+  /** The flight to continue next frame, or `null` once it has arrived. */
+  readonly flight: Flight | null;
+}
+
+/** Advances a flight by `dt` seconds towards wherever the target is now. */
+export function stepFlight(flight: Flight, dt: number, target: Vec3): FlightStep {
+  const elapsed = flight.elapsed + dt;
+  const progress = flight.seconds === 0 ? 1 : Math.min(1, elapsed / flight.seconds);
+  const eased = easeInOutCubic(progress);
+  const destination = add(target, scale(flight.direction, flight.distance));
+  return {
+    view: {
+      camera: lerp(flight.from.camera, destination, eased),
+      target: lerp(flight.from.target, target, eased),
+    },
+    flight: progress >= 1 ? null : { ...flight, elapsed },
+  };
+}
+
+/** Once arrived, the camera rides along with a moving target: both shift by what it moved. */
+export function followTarget(view: View, previousTarget: Vec3, target: Vec3): View {
+  const moved = subtract(target, previousTarget);
+  return { camera: add(view.camera, moved), target: add(view.target, moved) };
+}

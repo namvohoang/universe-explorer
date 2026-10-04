@@ -268,7 +268,8 @@ body.deep-3d #picture.big {
   left: 16px;
   top: calc(96px + env(safe-area-inset-top, 0px));
   width: min(340px, calc(100vw - 32px));
-  max-height: calc(100vh - 260px);
+  /* Ends above the clock bar and the two rows of chips below it. */
+  max-height: calc(100vh - 310px);
   overflow: auto;
   padding: 16px;
   background: var(--panel);

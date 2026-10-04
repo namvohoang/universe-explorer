@@ -1,11 +1,19 @@
-import { SPEEDS, secondsPerYear, type Clock, type DateLimits, type Speed } from '../sim/time';
+import {
+  SPEEDS,
+  secondsPerYear,
+  showsHours,
+  type Clock,
+  type DateLimits,
+  type Speed,
+} from '../sim/time';
 import { create } from './dom';
-import { fill, formatDate, yearOf } from './format';
+import { fill, formatDate, formatDateAndHour, yearOf } from './format';
 import { createSegmented } from './segmented';
 import { en } from './strings/en';
 
 const SPEED_LABELS: Readonly<Record<Speed, string>> = {
   pause: en.speedPause,
+  hourly: en.speedHourly,
   slow: en.speedSlow,
   normal: en.speedNormal,
   fast: en.speedFast,
@@ -59,7 +67,7 @@ export function createClockControl(
   return {
     element,
     show(clock) {
-      const text = formatDate(clock.jd);
+      const text = showsHours(clock.speed) ? formatDateAndHour(clock.jd) : formatDate(clock.jd);
       if (text !== shownDate) {
         date.textContent = text;
         shownDate = text;
@@ -67,7 +75,11 @@ export function createClockControl(
       if (clock.speed !== shownSpeed) {
         const seconds = secondsPerYear(clock.speed);
         rate.textContent =
-          seconds === null ? en.ratePaused : fill(en.rate, { seconds: Math.round(seconds) });
+          seconds === null
+            ? en.ratePaused
+            : showsHours(clock.speed)
+              ? en.rateHourly
+              : fill(en.rate, { seconds: Math.round(seconds) });
         speeds.show(clock.speed);
         shownSpeed = clock.speed;
       }

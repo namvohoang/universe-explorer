@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { J2000_JD } from '../sim/constants';
 import { julianDateAtStartOfYear } from '../sim/time';
-import { fill, formatDate, yearOf } from './format';
+import { fill, formatDate, formatDateAndHour, yearOf } from './format';
+
+describe('formatDateAndHour', () => {
+  it('adds the hour of the day in world time', () => {
+    // J2000 is noon on 1 January 2000.
+    expect(formatDateAndHour(J2000_JD)).toBe('1 January 2000, 12:00');
+    expect(formatDateAndHour(J2000_JD + 2.4 / 24)).toBe('1 January 2000, 14:00');
+    expect(formatDateAndHour(J2000_JD + 0.5)).toBe('2 January 2000, 00:00');
+  });
+});
 
 describe('formatDate', () => {
   it('writes a Julian date as a calendar day', () => {

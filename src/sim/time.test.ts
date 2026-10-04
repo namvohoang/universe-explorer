@@ -2,15 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import { DAYS_PER_JULIAN_YEAR, J2000_JD } from './constants';
 import {
-  DAYS_PER_SECOND,
   advanceClock,
   centuriesSinceJ2000,
   clampJd,
   createClock,
   dateLimits,
+  DAYS_PER_SECOND,
   julianDateAtStartOfYear,
   julianDateFromUnixMs,
   secondsPerYear,
+  showsHours,
+  SPEEDS,
   unixMsFromJulianDate,
   withDate,
   withSpeed,
@@ -85,6 +87,19 @@ describe('speeds', () => {
     expect(secondsPerYear('fast')).toBeCloseTo(5, 10);
     expect(secondsPerYear('pause')).toBeNull();
     expect(DAYS_PER_SECOND.normal * 20).toBeCloseTo(DAYS_PER_JULIAN_YEAR, 10);
+  });
+});
+
+describe('the hourly speed', () => {
+  it('lets one Earth hour pass each second', () => {
+    expect(DAYS_PER_SECOND.hourly * 24).toBeCloseTo(1, 12);
+    // 240 seconds is 240 hours, which is ten days.
+    const clock = advanceClock(createClock(150, LIMITS, 'hourly'), 240, LIMITS);
+    expect(clock.jd).toBeCloseTo(160, 9);
+  });
+
+  it('is the only speed slow enough to show the hour', () => {
+    expect(SPEEDS.filter(showsHours)).toEqual(['hourly']);
   });
 });
 

@@ -70,16 +70,21 @@ export function clampJd(jd: number, limits: DateLimits | null): number {
   return Math.min(limits.maxJd, Math.max(limits.minJd, jd));
 }
 
-/** How fast simulated time runs. `normal` is the prototype's "1 Earth year = 20 seconds". */
-export const SPEEDS = ['pause', 'slow', 'normal', 'fast'] as const;
+/**
+ * How fast simulated time runs. `normal` is the prototype's "1 Earth year = 20 seconds";
+ * `hourly` is one Earth hour each second, slow enough to watch a planet turn or a moon go round.
+ */
+export const SPEEDS = ['pause', 'hourly', 'slow', 'normal', 'fast'] as const;
 export type Speed = (typeof SPEEDS)[number];
 
 const NORMAL_SECONDS_PER_YEAR = 20;
 const NORMAL_DAYS_PER_SECOND = DAYS_PER_JULIAN_YEAR / NORMAL_SECONDS_PER_YEAR;
+const HOURS_PER_DAY = 24;
 
 /** Simulated days that pass per real second. One scale drives every body, so ratios stay true. */
 export const DAYS_PER_SECOND: Readonly<Record<Speed, number>> = {
   pause: 0,
+  hourly: 1 / HOURS_PER_DAY,
   slow: NORMAL_DAYS_PER_SECOND / 3,
   normal: NORMAL_DAYS_PER_SECOND,
   fast: NORMAL_DAYS_PER_SECOND * 4,
@@ -89,6 +94,12 @@ export const DAYS_PER_SECOND: Readonly<Record<Speed, number>> = {
 export function secondsPerYear(speed: Speed): number | null {
   const rate = DAYS_PER_SECOND[speed];
   return rate === 0 ? null : DAYS_PER_JULIAN_YEAR / rate;
+}
+
+/** Whether a speed is slow enough that the hour of the day is worth showing. */
+export function showsHours(speed: Speed): boolean {
+  const rate = DAYS_PER_SECOND[speed];
+  return rate > 0 && rate < 1;
 }
 
 /** The simulation's date and how fast it is moving. */

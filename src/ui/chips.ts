@@ -38,7 +38,13 @@ export function createChips(groupLabel: string, onPick: (id: string | null) => v
         shown = signature;
       }
       for (const button of element.querySelectorAll('button')) {
-        button.setAttribute('aria-pressed', String(button.dataset.id === (current ?? '')));
+        const here = button.dataset.id === (current ?? '');
+        button.setAttribute('aria-pressed', String(here));
+        // A long list scrolls inside the tray: keep the chip for where we are in sight.
+        // (Scrolls only the tray, not the page, and is absent in the test DOM.)
+        if (here && button.offsetParent !== null && element.scrollHeight > element.clientHeight) {
+          element.scrollTop = button.offsetTop - element.offsetTop;
+        }
       }
     },
   };

@@ -474,6 +474,9 @@ button.primary {
   flex-wrap: wrap;
   justify-content: center;
   gap: 6px;
+  /* Two rows at most, so a long list never runs under the card; the rest scrolls. */
+  max-height: 86px;
+  overflow-y: auto;
 }
 
 .chips button {
@@ -654,6 +657,8 @@ button.quiet {
     justify-content: flex-start;
     max-width: 100%;
     overflow-x: auto;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .chips button {

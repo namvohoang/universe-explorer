@@ -63,6 +63,14 @@ export const mimas: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/mimas.webp',
+      kind: 'false-colour',
+      role: 'surface-map',
+      altKey: 'mapAltMimas',
+      credit: 'NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute',
+    },
+  ],
   sources: [JPL_HORIZONS_MIMAS, NSSDC_SATURN_MOONS],
 };

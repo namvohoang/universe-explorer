@@ -66,10 +66,10 @@ export const iapetus: Moon = {
   media: [
     {
       file: 'public/media/maps/iapetus.webp',
-      kind: 'agency-model',
+      kind: 'false-colour',
       role: 'surface-map',
       altKey: 'mapAltIapetus',
-      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      credit: 'NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute',
     },
   ],
   sources: [JPL_HORIZONS_IAPETUS, NSSDC_SATURN_MOONS],

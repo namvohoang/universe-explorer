@@ -449,6 +449,7 @@ export const en = {
   mapAltCeres: "A map of Ceres's surface: grey and covered in craters, with a few bright spots.",
   mapAltVesta:
     "A map of Vesta's surface: grey, covered in craters, with long grooves round the middle.",
+  mapAltMimas: "A map of Mimas's surface: icy and crowded with craters, one of them very large.",
   mapAltMercury: "A map of Mercury's surface: grey and covered in craters.",
   mapAltVenus: 'A map of the ground on Venus made with radar, with colours added by scientists.',
   mapAltEarth:

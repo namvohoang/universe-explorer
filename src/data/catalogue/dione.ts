@@ -66,10 +66,10 @@ export const dione: Moon = {
   media: [
     {
       file: 'public/media/maps/dione.webp',
-      kind: 'agency-model',
+      kind: 'false-colour',
       role: 'surface-map',
       altKey: 'mapAltDione',
-      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      credit: 'NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute',
     },
   ],
   sources: [JPL_HORIZONS_DIONE, NSSDC_SATURN_MOONS],

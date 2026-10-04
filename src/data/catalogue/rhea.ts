@@ -66,10 +66,10 @@ export const rhea: Moon = {
   media: [
     {
       file: 'public/media/maps/rhea.webp',
-      kind: 'agency-model',
+      kind: 'false-colour',
       role: 'surface-map',
       altKey: 'mapAltRhea',
-      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      credit: 'NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute',
     },
   ],
   sources: [JPL_HORIZONS_RHEA, NSSDC_SATURN_MOONS],

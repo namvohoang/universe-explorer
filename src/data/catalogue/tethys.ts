@@ -66,10 +66,10 @@ export const tethys: Moon = {
   media: [
     {
       file: 'public/media/maps/tethys.webp',
-      kind: 'agency-model',
+      kind: 'false-colour',
       role: 'surface-map',
       altKey: 'mapAltTethys',
-      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      credit: 'NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute',
     },
   ],
   sources: [JPL_HORIZONS_TETHYS, NSSDC_SATURN_MOONS],

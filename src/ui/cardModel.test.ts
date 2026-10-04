@@ -105,7 +105,7 @@ describe('cardModel', () => {
     // Where part of a map was never photographed, the card says so.
     expect(cardModel('triton', catalogue).note).toContain(en.globeUnseen);
     // A body with no map yet has nothing to explain.
-    expect(cardModel('mimas', catalogue).note).toBeNull();
+    expect(cardModel('eris', catalogue).note).toBeNull();
   });
 
   it('calls the Sun and the Moon by the names kids use', () => {

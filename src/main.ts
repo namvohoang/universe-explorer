@@ -19,6 +19,7 @@ import { createChips } from './ui/chips';
 import { createClockControl } from './ui/clockControl';
 import { createCompare } from './ui/compare';
 import { create, mustFind } from './ui/dom';
+import { createGrownUps } from './ui/grownups';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
 import { createSegmented } from './ui/segmented';
@@ -179,7 +180,8 @@ function start(): void {
   const chips = createChips(en.places, goTo);
   window.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
-    if (!compare.element.hidden) compare.close();
+    if (!grownUps.element.hidden) grownUps.close();
+    else if (!compare.element.hidden) compare.close();
     else card.hide();
   });
 
@@ -221,7 +223,14 @@ function start(): void {
   for (const control of [compareButton, names, scaleControl.element, scaleLabel]) {
     control.classList.add('solar-only');
   }
-  tools.append(sceneControl.element, compareButton, names, scaleControl.element);
+  const grownUps = createGrownUps(catalogue, limits);
+  mustFind('#grownups-slot').append(grownUps.element);
+  const grownUpsButton = create('button', 'quiet', en.grownUps);
+  grownUpsButton.type = 'button';
+  grownUpsButton.addEventListener('click', () => {
+    grownUps.open();
+  });
+  tools.append(sceneControl.element, compareButton, names, scaleControl.element, grownUpsButton);
 
   const clockControl = createClockControl(
     limits,
@@ -262,6 +271,7 @@ function start(): void {
   stage.lookAt(wholeView());
   if (focus !== null && !isDeep(focus)) stage.lookAt(viewOf(focus));
   if (new URLSearchParams(window.location.search).has('compare')) compare.open();
+  if (new URLSearchParams(window.location.search).has('grownups')) grownUps.open();
   showFocus();
 
   stage.onFrame((dt) => {
@@ -292,3 +302,8 @@ function start(): void {
 }
 
 start();
+
+// In the built app, keep a copy of every file on the device so it works with no network.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  void navigator.serviceWorker.register('./sw.js');
+}

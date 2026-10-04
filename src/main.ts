@@ -61,12 +61,9 @@ function start(): void {
 
   const drawn = catalogue.filter((object) => bodyRadiusKm(object) !== null);
   const belts = catalogue.filter((object) => object.kind === 'belt');
-  // Things beyond the solar system are shown as pictures, nearest first: a ladder outwards.
-  const distanceLy = (object: (typeof catalogue)[number]): number =>
-    'sky' in object && object.sky?.distanceLy.value != null
-      ? object.sky.distanceLy.value
-      : Infinity;
-  const deep = catalogue.filter(isDeepSky).sort((a, b) => distanceLy(a) - distanceLy(b));
+  // Things beyond the solar system are shown as pictures. The catalogue lists them nearest
+  // first, so stepping through them is a ladder outwards.
+  const deep = catalogue.filter(isDeepSky);
   const isDeep = (id: string | null): boolean => deep.some((object) => object.id === id);
   const picture = mustFind('#picture');
   const pictureImage = mustFind('#picture-image');

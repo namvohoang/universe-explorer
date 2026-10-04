@@ -72,8 +72,11 @@ function sourceErrors(object: CelestialObject): string[] {
       errors.push(`${at} ${node.path} is not a finite number`);
     }
   }
-  for (const id of ids) {
-    if (!used.has(id)) errors.push(`${at} source "${id}" is listed but no value cites it`);
+  // A record whose every value is unknown still names the page that was read and found silent.
+  if (used.size > 0) {
+    for (const id of ids) {
+      if (!used.has(id)) errors.push(`${at} source "${id}" is listed but no value cites it`);
+    }
   }
   return errors;
 }

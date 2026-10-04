@@ -471,3 +471,32 @@ export const NASA_HUBBLE_M87: Source = {
   url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-87/',
   retrieved: '2026-10-04',
 };
+
+export const NASA_HUBBLE_PROXIMA: Source = {
+  id: 'nasa-hubble-proxima',
+  title: "NASA Science — Hubble's New Shot of Proxima Centauri, Our Nearest Neighbor",
+  url: 'https://science.nasa.gov/missions/hubble/hubbles-new-shot-of-proxima-centauri-our-nearest-neighbor/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_TRAPPIST1: Source = {
+  id: 'nasa-trappist-1',
+  title:
+    'NASA Science — Largest Batch of Earth-size Habitable Zone Planets Found Orbiting TRAPPIST-1',
+  url: 'https://science.nasa.gov/exoplanets/trappist1/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_MILKY_WAY: Source = {
+  id: 'nasa-milky-way',
+  title: 'NASA Science — The Milky Way Galaxy',
+  url: 'https://science.nasa.gov/resource/the-milky-way-galaxy/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FIRST_BLACK_HOLE_IMAGE: Source = {
+  id: 'nasa-first-black-hole-image',
+  title: 'NASA Science — First Image of a Black Hole',
+  url: 'https://science.nasa.gov/resource/first-image-of-a-black-hole/',
+  retrieved: '2026-10-04',
+};

@@ -182,6 +182,48 @@ export const en = {
   kindNebula: 'Nebula',
   kindStarCluster: 'Star cluster',
   kindGalaxy: 'Galaxy',
+  kindStar: 'Star',
+  kindBlackHole: 'Black hole',
+  kindExoplanet: 'Planets of another star',
+  eyebrowHome: '{kind} · our home',
+  pictureAltProximaCentauri:
+    'A single bright white star with four spikes of light, on a black sky dotted with fainter stars.',
+  nameProximaCentauri: 'Proxima Centauri',
+  cardProximaCentauriHello: 'Proxima Centauri is the closest star to us, apart from the Sun.',
+  cardProximaCentauriFact1: 'It is just over four light-years away.',
+  cardProximaCentauriFact2: 'Even so, it is too dim to see with your eyes alone.',
+  cardProximaCentauriFact3: 'It is small for a star: only about an eighth as heavy as the Sun.',
+  pictureAltTrappist1:
+    "An artist's drawing of seven small planets in a row, in browns, greys and blues, beside a dim red star.",
+  nameTrappist1: 'The TRAPPIST-1 Planets',
+  cardTrappist1Hello: 'TRAPPIST-1 is a star with seven rocky planets going around it.',
+  cardTrappist1Fact1: 'It is about 40 light-years away.',
+  cardTrappist1Fact2: 'All seven planets might have water.',
+  cardTrappist1Fact3:
+    "Nobody has seen these planets up close. The picture is an artist's idea of how they may look.",
+  pictureAltMilkyWay:
+    "An artist's drawing of our galaxy from above: a spiral of stars with a bright bar in the middle, and a label showing where the Sun is.",
+  nameMilkyWay: 'The Milky Way',
+  cardMilkyWayHello: 'The Milky Way is our home galaxy. The Sun is one of its stars.',
+  cardMilkyWayFact1:
+    'It is a spiral with two big arms that wrap around a bar of stars in the middle.',
+  cardMilkyWayFact2:
+    'Our Sun sits beside a small arm called the Orion Arm. Look for the word Sun in the picture.',
+  cardMilkyWayFact3:
+    "This is an artist's drawing. We live inside the Milky Way, so nobody can photograph all of it.",
+  pictureAltM87BlackHole:
+    'A fuzzy, glowing orange ring around a dark middle, on a black background.',
+  nameM87BlackHole: 'The M87 Black Hole',
+  cardM87BlackHoleHello: 'This is the first picture ever taken of a black hole.',
+  cardM87BlackHoleFact1:
+    'It sits in the middle of the galaxy M87, about 55 million light-years away.',
+  cardM87BlackHoleFact2: 'The glow is hot gas swirling around the black hole.',
+  cardM87BlackHoleFact3: 'There is a giant black hole in the middle of our own galaxy too.',
+  conceptBlackHoleTitle: 'What is a black hole?',
+  conceptBlackHoleText:
+    'A black hole is a place where gravity pulls so hard that nothing can get out, not even light.',
+  conceptExoplanetTitle: 'What is an exoplanet?',
+  conceptExoplanetText: 'An exoplanet is a planet that goes around a star other than our Sun.',
   statHowFar: 'How far away',
   statLightLeft: 'The light you see left it',
   statWide: 'Width',

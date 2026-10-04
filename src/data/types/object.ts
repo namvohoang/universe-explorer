@@ -52,7 +52,8 @@ interface ObjectBase {
 
 export interface Star extends ObjectBase {
   readonly kind: 'star';
-  readonly shape: SpheroidShape;
+  /** `null` for a star so far away that it is only ever seen as a point of light. */
+  readonly shape: SpheroidShape | null;
   readonly massKg: Measured<number>;
   readonly effectiveTemperatureK: Measured<number>;
   readonly spectralType: Measured<string>;

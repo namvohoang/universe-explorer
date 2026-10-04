@@ -142,9 +142,38 @@ describe('deep-sky cards', () => {
     expect(cardModel('saturn', catalogue).picture).toBeNull();
   });
 
+  it('are listed nearest first, so stepping through them goes outwards', () => {
+    const distances = catalogue
+      .filter(isDeepSky)
+      .flatMap((o) =>
+        'sky' in o && o.sky && o.sky.distanceLy.value !== null ? [o.sky.distanceLy.value] : [],
+      );
+    expect(distances).toEqual([...distances].sort((a, b) => a - b));
+    expect(catalogue.find(isDeepSky)?.id).toBe('proxima-centauri');
+  });
+
+  it('introduce each kind of thing, and our own galaxy as home', () => {
+    expect(cardModel('proxima-centauri', catalogue).eyebrow).toBe('Star · 4 light-years away');
+    expect(cardModel('trappist-1', catalogue).eyebrow).toBe(
+      'Planets of another star · 40 light-years away',
+    );
+    expect(cardModel('m87-black-hole', catalogue).eyebrow).toBe(
+      'Black hole · 55 million light-years away',
+    );
+    expect(cardModel('milky-way', catalogue).eyebrow).toBe('Galaxy · our home');
+    expect(cardModel('sun', catalogue).eyebrow).toBe(en.eyebrowStar);
+  });
+
+  it('label an artist’s drawing and a plain photo honestly', () => {
+    expect(cardModel('milky-way', catalogue).note).toBe(en.mediaKindArtistConcept);
+    expect(cardModel('trappist-1', catalogue).note).toBe(en.mediaKindArtistConcept);
+    expect(cardModel('m87-black-hole', catalogue).note).toBe(en.mediaKindFalseColour);
+    expect(cardModel('proxima-centauri', catalogue).note).toBeNull();
+  });
+
   it('exist for every deep-sky object, each with three facts', () => {
     const deep = catalogue.filter(isDeepSky);
-    expect(deep.length).toBeGreaterThanOrEqual(5);
+    expect(deep.length).toBeGreaterThanOrEqual(9);
     for (const object of deep) {
       const card = cardModel(object.id, catalogue);
       expect(card.facts).toHaveLength(3);

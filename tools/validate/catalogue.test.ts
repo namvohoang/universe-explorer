@@ -106,6 +106,21 @@ describe('checkCatalogue', () => {
     ]);
   });
 
+  it('accepts a record whose source was read but gave no values', () => {
+    const silent: Planet = {
+      ...planet,
+      orbit: null,
+      shape: {
+        ...shape(10),
+        equatorialRadiusKm: v(10, 'test'),
+      },
+      massKg: { value: null, reason: 'not given' },
+      sources: [SOURCE, { ...SOURCE, id: 'other' }],
+    };
+    // One value cites "test", so the unused "other" is still flagged.
+    expect(checkCatalogue([star, silent])).toHaveLength(1);
+  });
+
   it('flags a duplicate id', () => {
     expect(checkCatalogue([star, planet, planet])).toContain('planet: id is used more than once');
   });
@@ -133,7 +148,8 @@ describe('the real catalogue', () => {
 
   it('holds the Sun, the eight planets, their major moons and two ring systems', () => {
     const count = (kind: string): number => catalogue.filter((o) => o.kind === kind).length;
-    expect(count('star')).toBe(1);
+    expect(count('star')).toBe(2);
+    expect(catalogue[0]?.id).toBe('sun');
     expect(count('planet')).toBe(8);
     expect(count('ring-system')).toBe(2);
     expect(count('moon')).toBeGreaterThanOrEqual(18);

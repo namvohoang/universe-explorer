@@ -218,15 +218,18 @@ for what it is (photo, joined pictures, colours added, artist's drawing) is the 
 
 - [x] 4.1 Zoom-out ladder: the Deep Space view lists its objects nearest first, and each card states how
       far away it is and how long ago its light set out.
-- [ ] 4.2 The Milky Way, with "You are here", as an agency illustration labelled as an artist's drawing,
+- [x] 4.2 The Milky Way, with the Sun marked, as NASA's illustration labelled as an artist's drawing,
       since no photo from outside exists.
-- [ ] 4.3 Black holes: the real Event Horizon Telescope images, with any simulation labelled as one.
-- [~] 4.4 Stars of different kinds and sizes; star clusters. (The Pleiades cluster is in; stars are not.)
+- [x] 4.3 Black holes: the first Event Horizon Telescope image, of the black hole in M87, labelled as
+      colours added by scientists.
+- [x] 4.4 A star beyond the Sun (Proxima Centauri, the nearest) and a star cluster (the Pleiades).
+      Stars of other kinds and sizes can be added the same way.
 - [x] 4.5 Nebulae and galaxies with real telescope images, false colour explained.
-- [ ] 4.6 Exoplanets: sourced facts, artist's concepts labelled.
+- [x] 4.6 Exoplanets: the seven planets of TRAPPIST-1, with NASA's artist's concept labelled as one.
 
 **Acceptance:** every `kind` in §5.1 has a concept card and at least one object; every non-photo
-image carries its label.
+image carries its label. (Met, except that ring systems have objects but no card or concept of
+their own: they are drawn with their planet.)
 
 ### Phase 5 — Kid experience and release
 

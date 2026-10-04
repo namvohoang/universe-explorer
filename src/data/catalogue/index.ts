@@ -44,6 +44,10 @@ import { orionNebula } from './orionNebula';
 import { crabNebula } from './crabNebula';
 import { andromeda } from './andromeda';
 import { m87 } from './m87';
+import { proximaCentauri } from './proximaCentauri';
+import { trappist1 } from './trappist1';
+import { milkyWay } from './milkyWay';
+import { m87BlackHole } from './m87BlackHole';
 
 /** Every object in the app. Order is from the Sun outwards, moons and rings after their planet,
  * dwarf planets where their orbits put them.
@@ -89,9 +93,13 @@ export const catalogue: readonly CelestialObject[] = [
   eris,
   halley,
   kuiperBelt,
+  proximaCentauri,
+  trappist1,
   pleiades,
   orionNebula,
   crabNebula,
+  milkyWay,
   andromeda,
   m87,
+  m87BlackHole,
 ];

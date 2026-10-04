@@ -6,10 +6,12 @@ import {
   NASA_FACTS_ASTEROIDS,
   NASA_FACTS_COMETS,
   NASA_FACTS_SUN,
+  NASA_FIRST_BLACK_HOLE_IMAGE,
   NASA_HUBBLE_M42,
   NASA_HUBBLE_M45,
   NASA_HUBBLE_M87,
   NASA_MOONS,
+  NASA_TRAPPIST1,
   NASA_WHAT_IS_A_PLANET,
 } from '../catalogue/sources';
 import type { ConceptContent } from '../types';
@@ -119,5 +121,26 @@ export const concepts: readonly ConceptContent[] = [
       quote: 'our Milky Way galaxy contains only a few hundred billion stars',
     },
     source: NASA_HUBBLE_M87,
+  },
+  {
+    kind: 'black-hole',
+    titleKey: 'conceptBlackHoleTitle',
+    text: {
+      key: 'conceptBlackHoleText',
+      sourceId: 'nasa-first-black-hole-image',
+      quote:
+        'A black hole is a dense, compact object whose gravitational pull is so strong that - within a certain distance of it - nothing can escape, not even light.',
+    },
+    source: NASA_FIRST_BLACK_HOLE_IMAGE,
+  },
+  {
+    kind: 'exoplanet',
+    titleKey: 'conceptExoplanetTitle',
+    text: {
+      key: 'conceptExoplanetText',
+      sourceId: 'nasa-trappist-1',
+      quote: 'the seven rocky exoplanets orbiting the TRAPPIST-1 star',
+    },
+    source: NASA_TRAPPIST1,
   },
 ];

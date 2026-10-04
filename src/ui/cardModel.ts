@@ -49,24 +49,29 @@ function placeFromSun(object: CelestialObject, catalogue: readonly CelestialObje
 }
 
 const DEEP_KIND_LABELS: Partial<Record<CelestialObject['kind'], string>> = {
+  star: en.kindStar,
+  exoplanet: en.kindExoplanet,
   nebula: en.kindNebula,
   'star-cluster': en.kindStarCluster,
   galaxy: en.kindGalaxy,
+  'black-hole': en.kindBlackHole,
 };
 
-/** Whether an object lies beyond the solar system and is shown as a picture, not in 3D. */
+/**
+ * Whether an object lies beyond the solar system. Such objects are shown as a picture, not in
+ * 3D, so they are the ones that carry a picture.
+ */
 export function isDeepSky(object: CelestialObject): boolean {
-  return object.kind in DEEP_KIND_LABELS;
+  return object.media.some((media) => media.role === 'picture');
 }
 
 function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
-  const deepKind = DEEP_KIND_LABELS[object.kind];
-  if (deepKind !== undefined) {
-    const distance =
-      'sky' in object && object.sky && object.sky.distanceLy.value !== null
-        ? formatLightYears(object.sky.distanceLy.value)
-        : '';
-    return fill(en.eyebrowDeep, { kind: deepKind, distance });
+  if (isDeepSky(object)) {
+    const kind = DEEP_KIND_LABELS[object.kind] ?? '';
+    // With no distance given, it is the one galaxy we are inside.
+    const lightYears = 'sky' in object ? (object.sky?.distanceLy.value ?? null) : null;
+    if (lightYears === null) return fill(en.eyebrowHome, { kind });
+    return fill(en.eyebrowDeep, { kind, distance: formatLightYears(lightYears) });
   }
   if (object.kind === 'star') return en.eyebrowStar;
   if (object.kind === 'moon') {

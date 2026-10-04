@@ -15,11 +15,15 @@ import {
   NASA_FACTS_SUN,
   NASA_FACTS_URANUS,
   NASA_FACTS_VENUS,
+  NASA_FIRST_BLACK_HOLE_IMAGE,
   NASA_HUBBLE_M1,
   NASA_HUBBLE_M31,
   NASA_HUBBLE_M42,
   NASA_HUBBLE_M45,
   NASA_HUBBLE_M87,
+  NASA_HUBBLE_PROXIMA,
+  NASA_MILKY_WAY,
+  NASA_TRAPPIST1,
 } from '../catalogue/sources';
 import type { CardContent } from '../types';
 
@@ -594,5 +598,115 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_HUBBLE_M87],
+  },
+  {
+    id: 'proxima-centauri',
+    hello: {
+      key: 'cardProximaCentauriHello',
+      sourceId: 'nasa-hubble-proxima',
+      quote: 'our closest stellar neighbor: Proxima Centauri',
+    },
+    facts: [
+      {
+        key: 'cardProximaCentauriFact1',
+        sourceId: 'nasa-hubble-proxima',
+        quote: 'just over four light-years from Earth',
+      },
+      {
+        key: 'cardProximaCentauriFact2',
+        sourceId: 'nasa-hubble-proxima',
+        quote: 'Proxima Centauri is not visible to the naked eye',
+      },
+      {
+        key: 'cardProximaCentauriFact3',
+        sourceId: 'nasa-hubble-proxima',
+        quote: 'at only about an eighth of the mass of the Sun',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_PROXIMA],
+  },
+  {
+    id: 'trappist-1',
+    hello: {
+      key: 'cardTrappist1Hello',
+      sourceId: 'nasa-trappist-1',
+      quote: 'the seven rocky exoplanets orbiting the TRAPPIST-1 star',
+    },
+    facts: [
+      {
+        key: 'cardTrappist1Fact1',
+        sourceId: 'nasa-trappist-1',
+        quote: 'lies about 40 light-years away',
+      },
+      {
+        key: 'cardTrappist1Fact2',
+        sourceId: 'nasa-trappist-1',
+        quote: 'all of them with the potential for water on their surface',
+      },
+      {
+        key: 'cardTrappist1Fact3',
+        sourceId: 'nasa-trappist-1',
+        quote: "This artist's concept shows what the TRAPPIST-1 planetary system may look like",
+      },
+    ],
+    moons: null,
+    sources: [NASA_TRAPPIST1],
+  },
+  {
+    id: 'milky-way',
+    hello: {
+      key: 'cardMilkyWayHello',
+      sourceId: 'nasa-milky-way',
+      quote: 'Our Sun lies near a small, partial arm called the Orion Arm, or Orion Spur',
+    },
+    facts: [
+      {
+        key: 'cardMilkyWayFact1',
+        sourceId: 'nasa-milky-way',
+        quote:
+          "the Milky Way's elegant spiral structure is dominated by just two arms wrapping off the ends of a central bar of stars",
+      },
+      {
+        key: 'cardMilkyWayFact2',
+        sourceId: 'nasa-milky-way',
+        quote: 'Our Sun lies near a small, partial arm called the Orion Arm, or Orion Spur',
+      },
+      {
+        key: 'cardMilkyWayFact3',
+        sourceId: 'nasa-milky-way',
+        quote: "The annotated artist's concept illustrates the new view of the Milky Way.",
+      },
+    ],
+    moons: null,
+    sources: [NASA_MILKY_WAY],
+  },
+  {
+    id: 'm87-black-hole',
+    hello: {
+      key: 'cardM87BlackHoleHello',
+      sourceId: 'nasa-first-black-hole-image',
+      quote: 'This is the first picture of a black hole.',
+    },
+    facts: [
+      {
+        key: 'cardM87BlackHoleFact1',
+        sourceId: 'nasa-first-black-hole-image',
+        quote:
+          'located in the center of the elliptical galaxy M87, located about 55 million light years from Earth',
+      },
+      {
+        key: 'cardM87BlackHoleFact2',
+        sourceId: 'nasa-first-black-hole-image',
+        quote: 'The black hole is outlined by emission from hot gas swirling around it',
+      },
+      {
+        key: 'cardM87BlackHoleFact3',
+        sourceId: 'nasa-first-black-hole-image',
+        quote: 'There is a supermassive black hole at the center of our galaxy',
+      },
+    ],
+    moons: null,
+    sources: [NASA_FIRST_BLACK_HOLE_IMAGE],
   },
 ];

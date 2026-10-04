@@ -389,6 +389,109 @@ button.primary {
   padding: 0 14px;
 }
 
+.compare {
+  position: fixed;
+  z-index: 5;
+  left: 16px;
+  right: 16px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  max-height: 70vh;
+  overflow: auto;
+  padding: 14px 16px 16px;
+  background: rgba(10, 15, 34, 0.96);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.compare-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.compare .x {
+  width: 44px;
+  padding: 0;
+  font-size: 22px;
+}
+
+.compare-lead {
+  margin: 12px 0;
+  font-size: 17px;
+}
+
+.compare-note {
+  margin: 12px 0 0;
+  color: var(--ink-dim);
+  font-size: 14px;
+}
+
+.lineup {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.lineup figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 56px;
+}
+
+.lineup .disc {
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f4eedc, #8f8a7c 70%, #4d4a43);
+}
+
+.lineup figcaption {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.line-scroller {
+  overflow-x: auto;
+  padding: 26px 24px 30px 44px;
+}
+
+.line {
+  position: relative;
+  height: 2px;
+  background: var(--sky);
+}
+
+.line-mark {
+  position: absolute;
+  top: -5px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.line-mark.sun {
+  background: var(--sun);
+}
+
+.line-name {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font: 700 13px/1 var(--body);
+  white-space: nowrap;
+}
+
+.line-name.above {
+  top: -20px;
+}
+
 @media (max-width: 700px) {
   .card {
     top: auto;

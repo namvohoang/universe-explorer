@@ -205,7 +205,7 @@ maps, real orbits and a real date; a body always sits on its drawn path; `/data-
 - [x] 3.4 Asteroids and the asteroid belt and Kuiper belt as real distributions, not decorative rings.
 - [x] 3.5 Comets: eccentric orbits, a tail that points away from the Sun and grows near it.
 - [x] 3.6 Concept cards for each new kind.
-- [~] 3.7 Size line-up and Distance line views (§5.4).
+- [x] 3.7 Size line-up and Distance line views (§5.4).
 
 **Acceptance:** each object kind in the solar system has at least one object and a concept card;
 the two comparison views use catalogue ratios only.

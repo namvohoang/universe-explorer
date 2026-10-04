@@ -60,6 +60,16 @@ export const en = {
     'Neptune was the first planet found by doing maths, not by spotting it in the sky.',
   cardNeptuneFact3: 'Neptune has gone around the Sun just once since it was found in 1846.',
   names: 'Names',
+  compare: 'Compare',
+  compareClose: 'Close compare',
+  compareSizes: 'How big?',
+  compareDistances: 'How far?',
+  compareSizesLead: 'The planets side by side, at their real sizes next to each other.',
+  compareSunNote: 'The Sun is not here: it is {times} times as wide as {planet} and would not fit.',
+  compareDistancesLead:
+    'The planets in a line, at their real distances from the Sun. Slide along to reach them all.',
+  compareDistancesNote:
+    'Only the gaps are real here. At this scale even Jupiter would be far smaller than one dot.',
   places: 'Places to explore',
   closeCard: 'Close card',
   readToMe: 'Read it to me',

@@ -17,6 +17,7 @@ import { createCard } from './ui/card';
 import { cardModel } from './ui/cardModel';
 import { createChips } from './ui/chips';
 import { createClockControl } from './ui/clockControl';
+import { createCompare } from './ui/compare';
 import { create, mustFind } from './ui/dom';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
@@ -142,7 +143,9 @@ function start(): void {
 
   const chips = createChips(en.places, goTo);
   window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') card.hide();
+    if (event.key !== 'Escape') return;
+    if (!compare.element.hidden) compare.close();
+    else card.hide();
   });
 
   // The sentence that says what is and is not to scale is always on screen.
@@ -172,7 +175,15 @@ function start(): void {
       stage.lookAt(currentView());
     },
   );
-  tools.append(names, scaleControl.element);
+  const compare = createCompare(catalogue);
+  mustFind('#compare-slot').append(compare.element);
+  const compareButton = create('button', '', en.compare);
+  compareButton.type = 'button';
+  compareButton.addEventListener('click', () => {
+    if (compare.element.hidden) compare.open();
+    else compare.close();
+  });
+  tools.append(compareButton, names, scaleControl.element);
 
   const clockControl = createClockControl(
     limits,
@@ -210,6 +221,7 @@ function start(): void {
   if (drawn.some((object) => object.id === wanted) || isBelt(wanted)) focus = wanted;
   stage.lookAt(wholeView());
   if (focus !== null) stage.lookAt(viewOf(focus));
+  if (new URLSearchParams(window.location.search).has('compare')) compare.open();
   showFocus();
 
   stage.onFrame((dt) => {

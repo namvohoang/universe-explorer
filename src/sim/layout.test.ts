@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
-import type { CelestialObject, SpheroidShape } from '../data/types';
+import type { BodyShape, CelestialObject, SpheroidShape } from '../data/types';
 import { J2000_JD, KM_PER_AU } from './constants';
 import { orbitPositionKmAt } from './elements';
-import { sceneOrbitPath, scenePositions, sceneRadii } from './layout';
+import { bodyRadiusKm, sceneAxes, sceneOrbitPath, scenePositions } from './layout';
 import { SCALE_MODES, createScale } from './scale';
 import { length, subtract, type Vec3 } from './vec3';
 
@@ -27,23 +27,42 @@ const spheroid = (id: string): SpheroidShape => {
 
 const DATES = [J2000_JD - 50_000, J2000_JD, J2000_JD + 9_772.5];
 
-describe('sceneRadii', () => {
+const bodyShape = (id: string): BodyShape => {
+  const { shape } = byId(id);
+  if (shape?.type !== 'spheroid' && shape?.type !== 'triaxial')
+    throw new Error(`${id} is not solid`);
+  return shape;
+};
+
+describe('sceneAxes', () => {
   it.each(SCALE_MODES)('keeps the real flattening in %s mode', (mode) => {
     const scale = createScale(mode);
     for (const id of ['earth', 'jupiter', 'saturn', 'sun']) {
       const shape = spheroid(id);
-      const radii = sceneRadii(shape, scale);
-      expect(radii.polar / radii.equatorial).toBeCloseTo(
+      const axes = sceneAxes(shape, scale);
+      expect(axes.y / axes.x).toBeCloseTo(
         shape.polarRadiusKm.value / shape.equatorialRadiusKm.value,
         12,
       );
-      expect(radii.equatorial).toBe(scale.sizeToScene(shape.equatorialRadiusKm.value));
+      expect(axes.x).toBe(scale.sizeToScene(shape.equatorialRadiusKm.value));
+      expect(axes.z).toBe(axes.x);
     }
   });
 
   it('draws Saturn visibly flattened', () => {
-    const radii = sceneRadii(spheroid('saturn'), createScale('easy'));
-    expect(radii.polar / radii.equatorial).toBeLessThan(0.95);
+    const axes = sceneAxes(spheroid('saturn'), createScale('easy'));
+    expect(axes.y / axes.x).toBeLessThan(0.95);
+  });
+
+  it.each(SCALE_MODES)('keeps the real proportions of a three-axis moon in %s mode', (mode) => {
+    const shape = bodyShape('mimas');
+    if (shape.type !== 'triaxial') throw new Error('Mimas is triaxial in the catalogue');
+    const [towards, along, polar] = shape.radiiKm.value;
+    const axes = sceneAxes(shape, createScale(mode));
+    expect(axes.z / axes.x).toBeCloseTo(along / towards, 12);
+    expect(axes.y / axes.x).toBeCloseTo(polar / towards, 12);
+    expect(axes.x).toBeGreaterThan(axes.z);
+    expect(axes.z).toBeGreaterThan(axes.y);
   });
 });
 
@@ -98,9 +117,10 @@ describe('scenePositions', () => {
       for (const object of catalogue) {
         if (!object.orbit || object.parentId === null) continue;
         const gap = length(subtract(at(positions, object.id), at(positions, object.parentId)));
+        const parent = byId(object.parentId);
         const radii =
-          sceneRadii(spheroid(object.id), scale).equatorial +
-          sceneRadii(spheroid(object.parentId), scale).equatorial;
+          scale.sizeToScene(bodyRadiusKm(object) ?? 0) +
+          scale.sizeToScene(bodyRadiusKm(parent) ?? 0);
         expect(gap).toBeGreaterThan(radii);
       }
     }

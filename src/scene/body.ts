@@ -3,6 +3,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
+  Quaternion,
   SRGBColorSpace,
   SphereGeometry,
   TextureLoader,
@@ -10,11 +11,12 @@ import {
   type Material,
   type Texture,
 } from 'three';
-import type { CelestialObject, RingSystem, SpheroidShape } from '../data/types';
+import type { CelestialObject, RingSystem, SpheroidShape, TriaxialShape } from '../data/types';
 import { eclipticToScene, northPoleEcliptic, poleOf } from '../sim/frames';
-import { sceneRadii } from '../sim/layout';
+import { largestRadiusKm, sceneAxes } from '../sim/layout';
 import type { Scale } from '../sim/scale';
 import { spinAngleRad } from '../sim/spin';
+import type { Vec3 } from '../sim/vec3';
 import { createRingMap, createRings, type RingMap, type Rings } from './rings';
 
 const SPHERE_SEGMENTS = { width: 64, height: 32 };
@@ -70,16 +72,21 @@ function addRingShadow(material: MeshStandardMaterial, map: RingMap, sunDirectio
   };
 }
 
-/** A round body: positioned by `group`, tilted to its real pole, flattened and spinning. */
+/** A solid body: positioned by `group`, tilted to its pole, with its real proportions and spin. */
 export interface Body {
   readonly id: string;
   /** Add to the scene; set its position to move the body. */
   readonly group: Group;
-  /** Drawn equatorial radius under the current scale. */
+  /** Drawn longest radius under the current scale. */
   radius(): number;
   setScale(scale: Scale): void;
   /** Turns the body to where it is at this date. */
   setDate(jd: number): void;
+  /**
+   * For a body that keeps one face to its parent: turns that face (and its longest axis)
+   * towards where the parent is now. Does nothing for a body that spins freely.
+   */
+  faceTowards(parent: Vec3): void;
   /** Tells the body where the Sun is, so ring shadows fall the right way. */
   setSunPosition(sun: { x: number; y: number; z: number }): void;
   dispose(): void;
@@ -122,26 +129,29 @@ function createSurface(object: CelestialObject): Surface {
 
 export function createBody(
   object: CelestialObject,
-  shape: SpheroidShape,
+  shape: SpheroidShape | TriaxialShape,
   scale: Scale,
   ringSystem: RingSystem | null,
+  /** Stands in for the pole when the catalogue has none: unit vector in scene axes, or `null`. */
+  fallbackPole: Vec3 | null,
 ): Body {
   const group = new Group();
   group.name = object.id;
 
-  // The tilt group's +y is the body's north pole. Where the catalogue has no pole, the body
-  // stands upright on the ecliptic rather than leaning in a made-up direction.
+  // The tilt group's +y is the body's north pole. Where the catalogue has no pole, the pole of
+  // its orbit stands in (true to within a degree or so for a moon locked to its planet); with
+  // neither, the body stands upright on the ecliptic rather than leaning in a made-up direction.
   const tilt = new Group();
   const pole = poleOf(shape.orientation);
-  if (pole) {
-    const north = eclipticToScene(northPoleEcliptic(pole));
+  const north = pole ? eclipticToScene(northPoleEcliptic(pole)) : fallbackPole;
+  if (north) {
     tilt.quaternion.setFromUnitVectors(SCENE_UP, new Vector3(north.x, north.y, north.z));
   }
   group.add(tilt);
 
   const geometry = new SphereGeometry(1, SPHERE_SEGMENTS.width, SPHERE_SEGMENTS.height);
   const { material, lit, texture } = createSurface(object);
-  // The flattening lives on a holder so the spinning mesh inside stays a unit sphere.
+  // The proportions live on a holder so the spinning mesh inside stays a unit sphere.
   const flattened = new Group();
   const mesh = new Mesh(geometry, material);
   flattened.add(mesh);
@@ -153,30 +163,40 @@ export function createBody(
   let ringMap: RingMap | null = null;
   let rings: Rings | null = null;
   if (ringSystem) {
-    ringMap = createRingMap(ringSystem, shape.equatorialRadiusKm.value);
+    ringMap = createRingMap(ringSystem, largestRadiusKm(shape));
     rings = createRings(ringMap);
     flattened.add(rings.mesh);
     if (lit) addRingShadow(lit, ringMap, sunInMesh);
   }
+  const synchronous = shape.orientation.rotation === 'synchronous';
+  const facing = new Vector3();
+  const untilt = new Quaternion();
   const toSun = new Vector3();
   const centre = new Vector3();
   const inverse = mesh.matrixWorld.clone();
 
-  let equatorial = 0;
+  let longest = 0;
   const setScale = (next: Scale): void => {
-    const radii = sceneRadii(shape, next);
-    equatorial = radii.equatorial;
-    flattened.scale.set(radii.equatorial, radii.polar, radii.equatorial);
+    const axes = sceneAxes(shape, next);
+    longest = Math.max(axes.x, axes.y, axes.z);
+    flattened.scale.set(axes.x, axes.y, axes.z);
   };
   setScale(scale);
 
   return {
     id: object.id,
     group,
-    radius: () => equatorial,
+    radius: () => longest,
     setScale,
     setDate(jd) {
-      mesh.rotation.y = spinAngleRad(shape.orientation, jd);
+      if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd);
+    },
+    faceTowards(parent) {
+      if (!synchronous) return;
+      // The direction to the parent, seen in the tilted frame; the holder's +x is turned to it.
+      facing.set(parent.x, parent.y, parent.z).sub(group.position);
+      facing.applyQuaternion(untilt.copy(tilt.quaternion).invert());
+      flattened.rotation.y = Math.atan2(-facing.z, facing.x);
     },
     setSunPosition(sun) {
       if (!rings) return;

@@ -48,13 +48,15 @@ describe('objectStats', () => {
     expect(sun['Sunlight reaches Earth in']).toBe('about 8 minutes');
     const moon = statsOf('moon');
     expect(moon['One trip around Earth']).toBe('27.3 Earth days');
+    expect(moon.Width).toBe('0.27 Earths wide');
+    expect(statsOf('mimas').Width).toBe('416 km wide');
     expect(moon['From Earth']).toBe('384,400 km');
     expect(moon.Moons).toBeUndefined();
   });
 
   it('gives every drawn body a few stats', () => {
     for (const object of catalogue) {
-      if (object.shape?.type !== 'spheroid') continue;
+      if (object.shape?.type !== 'spheroid' && object.shape?.type !== 'triaxial') continue;
       const card = cards.find((c) => c.id === object.id);
       expect(objectStats(object, catalogue, card).length).toBeGreaterThanOrEqual(3);
     }

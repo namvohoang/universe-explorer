@@ -15,7 +15,8 @@ const HOURS_PER_DAY = 24;
  */
 export function spinAngleRad(orientation: Orientation, jd: number): number {
   const period = orientation.rotationPeriodHours;
-  if (!isKnown(period)) return 0;
+  // A synchronous body is turned to face its parent by the scene, not by a clock.
+  if (!isKnown(period) || orientation.rotation === 'synchronous') return 0;
   const turns = ((jd - J2000_JD) * HOURS_PER_DAY) / period.value;
   return (orientation.rotation === 'retrograde' ? -1 : 1) * TAU * turns;
 }

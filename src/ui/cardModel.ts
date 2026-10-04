@@ -2,6 +2,7 @@ import { SOLAR_SYSTEM_CARD_ID, cards } from '../data/content/cards';
 import type { CelestialObject, MediaKind } from '../data/types';
 import { semiMajorAxisKm } from '../sim/elements';
 import { fill } from './format';
+import { displayName } from './names';
 import { objectStats, solarSystemStats, type Stat } from './stats';
 import { en } from './strings/en';
 import { mediaKindLabel } from './strings/media';
@@ -23,13 +24,6 @@ function text(key: string): string {
   const value = STRINGS[key];
   if (value === undefined) throw new Error(`No string for key "${key}"`);
   return value;
-}
-
-/** The name a kid reads: "The Sun" and "The Moon", otherwise the object's own name. */
-export function displayName(object: CelestialObject): string {
-  if (object.id === 'sun') return en.nameSun;
-  if (object.id === 'moon') return en.nameMoon;
-  return object.name;
 }
 
 /** Which planet this is counting out from the Sun, e.g. "3rd". */
@@ -61,10 +55,10 @@ export function cardModel(
   catalogue: readonly CelestialObject[],
 ): CardModel {
   const content = cards.find((card) => card.id === (objectId ?? SOLAR_SYSTEM_CARD_ID));
-  if (!content) throw new Error(`No card for "${objectId ?? SOLAR_SYSTEM_CARD_ID}"`);
-  const facts = content.facts.map((fact) => text(fact.key));
+  const facts = content ? content.facts.map((fact) => text(fact.key)) : [];
 
   if (objectId === null) {
+    if (!content) throw new Error('There is no card for the whole view');
     return {
       eyebrow: en.eyebrowSolarSystem,
       name: en.nameSolarSystem,
@@ -79,9 +73,22 @@ export function cardModel(
   return {
     eyebrow: eyebrow(object, catalogue),
     name: displayName(object),
-    hello: text(content.hello.key),
+    hello: content ? text(content.hello.key) : plainHello(object, catalogue),
     stats: objectStats(object, catalogue, content),
     facts,
     globeNote: globeNote(object.media.find((media) => media.role === 'surface-map')?.kind),
   };
+}
+
+/**
+ * The hello for an object nobody has written a card for yet: one sentence that is true from
+ * the catalogue alone.
+ */
+function plainHello(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
+  if (object.kind !== 'moon') throw new Error(`No card for "${object.id}"`);
+  const parent = catalogue.find((o) => o.id === object.parentId);
+  return fill(en.helloMoon, {
+    name: displayName(object),
+    parent: parent ? displayName(parent) : '',
+  });
 }

@@ -19,7 +19,11 @@ export interface Orientation {
   readonly poleDecDeg: Measured<number>;
   /** Sidereal rotation period, always positive. Direction is given by `rotation`. */
   readonly rotationPeriodHours: Measured<number>;
-  readonly rotation: 'prograde' | 'retrograde';
+  /**
+   * Which way it turns about its north pole. `synchronous` means it turns exactly once per
+   * orbit, keeping the same face (and its longest axis) towards what it goes around.
+   */
+  readonly rotation: 'prograde' | 'retrograde' | 'synchronous';
 }
 
 /** A round body, flattened at the poles by its spin. */
@@ -33,8 +37,11 @@ export interface SpheroidShape {
 /** An irregular body with no published shape model, described by three axis lengths. */
 export interface TriaxialShape {
   readonly type: 'triaxial';
-  /** Full lengths along the three principal axes, longest first. */
-  readonly dimensionsKm: Sourced<readonly [number, number, number]>;
+  /**
+   * Radii along the three principal axes, longest first. For a moon that keeps one face to
+   * its planet these are: towards the planet, along the orbit, and pole to pole.
+   */
+  readonly radiiKm: Sourced<readonly [number, number, number]>;
   readonly orientation: Orientation;
 }
 
@@ -43,8 +50,8 @@ export interface ModelShape {
   readonly type: 'model';
   /** The model file, credited in CREDITS.md like any other media. */
   readonly modelFile: `public/media/${string}`;
-  /** Full lengths along the three principal axes, longest first, to scale the model. */
-  readonly dimensionsKm: Sourced<readonly [number, number, number]>;
+  /** Radii along the three principal axes, longest first, to scale the model. */
+  readonly radiiKm: Sourced<readonly [number, number, number]>;
   readonly orientation: Orientation;
 }
 

@@ -76,6 +76,7 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
         }),
       );
       facts.replaceChildren(...model.facts.map((fact) => create('li', '', fact)));
+      factsTitle.hidden = model.facts.length === 0;
       globe.hidden = model.globeNote === null;
       globe.textContent = model.globeNote === null ? '' : `${en.aboutTheGlobe}: ${model.globeNote}`;
       element.hidden = false;

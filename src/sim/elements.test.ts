@@ -46,8 +46,8 @@ const moonLike: OrbitalElements = {
   motion: {
     type: 'precessing-ellipse',
     siderealPeriodDays: v(20),
-    apsidalPrecessionPeriodYears: v(6),
-    nodalPrecessionPeriodYears: v(18),
+    apsidalPrecession: { periodYears: v(6), direction: 'forward' },
+    nodalPrecession: { periodYears: v(18), direction: 'backward' },
   },
   validity: null,
 };
@@ -117,6 +117,21 @@ describe('orbitStateAt, precessing ellipse', () => {
     };
     const turned = (longitude(EPOCH + 20) - longitude(EPOCH)) / TAU;
     expect(turned - Math.round(turned)).toBeCloseTo(0, 10);
+  });
+
+  it('turns the other way when the directions are swapped', () => {
+    const swapped: OrbitalElements = {
+      ...moonLike,
+      motion: {
+        type: 'precessing-ellipse',
+        siderealPeriodDays: v(20),
+        apsidalPrecession: { periodYears: v(6), direction: 'backward' },
+        nodalPrecession: { periodYears: v(18), direction: 'forward' },
+      },
+    };
+    const year = orbitStateAt(swapped, EPOCH + DAYS_PER_JULIAN_YEAR);
+    expect(year.longitudeOfAscendingNodeRad).toBeCloseTo(degToRad(120 + 360 / 18), 10);
+    expect(year.argumentOfPeriapsisRad).toBeCloseTo(degToRad(300 - 360 / 6), 10);
   });
 
   it('keeps a fixed ellipse when no precession is given', () => {

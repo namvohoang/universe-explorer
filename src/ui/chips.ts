@@ -8,33 +8,37 @@ export interface Chip {
 
 export interface Chips {
   readonly element: HTMLElement;
-  /** Marks the chip for where the camera is now. */
-  show(id: string | null): void;
+  /** Replaces the chips on offer and marks the one for where the camera is now. */
+  show(chips: readonly Chip[], current: string | null): void;
 }
 
 /** A row of buttons, one per place to go, as in the prototype's tray. */
-export function createChips(
-  groupLabel: string,
-  chips: readonly Chip[],
-  onPick: (id: string | null) => void,
-): Chips {
+export function createChips(groupLabel: string, onPick: (id: string | null) => void): Chips {
   const element = create('div', 'chips');
   element.setAttribute('role', 'group');
   element.setAttribute('aria-label', groupLabel);
-  const buttons = chips.map((chip) => {
-    const button = create('button', '', chip.label);
-    button.type = 'button';
-    button.addEventListener('click', () => {
-      onPick(chip.id);
-    });
-    element.append(button);
-    return { id: chip.id, button };
-  });
+  let shown = '';
   return {
     element,
-    show(id) {
-      for (const { id: own, button } of buttons) {
-        button.setAttribute('aria-pressed', String(own === id));
+    show(chips, current) {
+      // Rebuild only when the set of places changes, so focus is not lost on every pick.
+      const signature = chips.map((chip) => chip.id ?? '').join('|');
+      if (signature !== shown) {
+        element.replaceChildren(
+          ...chips.map((chip) => {
+            const button = create('button', '', chip.label);
+            button.type = 'button';
+            button.dataset.id = chip.id ?? '';
+            button.addEventListener('click', () => {
+              onPick(chip.id);
+            });
+            return button;
+          }),
+        );
+        shown = signature;
+      }
+      for (const button of element.querySelectorAll('button')) {
+        button.setAttribute('aria-pressed', String(button.dataset.id === (current ?? '')));
       }
     },
   };

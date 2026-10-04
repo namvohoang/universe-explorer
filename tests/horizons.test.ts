@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { catalogue } from '../src/data/catalogue';
 import { radToDeg } from '../src/sim/angles';
 import { orbitPositionKmAt } from '../src/sim/elements';
+import { eclipticOffsetKm } from '../src/sim/layout';
 import { dateLimits } from '../src/sim/time';
 import { angleBetween, length, type Vec3 } from '../src/sim/vec3';
 import { HORIZONS, JPL_NOMINAL_ERRORS } from './fixtures/horizons';
@@ -25,6 +26,25 @@ const NOMINAL_ERROR_MARGIN = 5;
  */
 const MOON_DIRECTION_TOLERANCE_DEG = 4;
 const MOON_DISTANCE_TOLERANCE_KM = 9_000;
+
+/**
+ * Tolerances for the moons of the other planets, checked at 16 dates across 1960–2040. Each
+ * is drawn on one ellipse (slowly turning where the source says how), so what is left out is
+ * the tug of its neighbours. The worst seen was 4.2° (Tethys) and 1.2% in distance.
+ */
+const OTHER_MOONS_DIRECTION_TOLERANCE_DEG = 5;
+const OTHER_MOONS_DISTANCE_TOLERANCE = 0.02;
+
+/**
+ * Moons a single ellipse cannot follow well. Each stays on the right orbit, at the right
+ * distance, but can be well away from its true place along it. Worst seen: Mimas 67° and 4.5% in
+ * distance (its neighbour Tethys swings it back and forth along its orbit over decades);
+ * Triton 8° (its tilted orbit slowly turns about Neptune, and that turning is left out).
+ */
+const LOOSE_MOONS: Readonly<Record<string, { directionDeg: number; distance: number }>> = {
+  mimas: { directionDeg: 75, distance: 0.06 },
+  triton: { directionDeg: 10, distance: OTHER_MOONS_DISTANCE_TOLERANCE },
+};
 
 const ARCSEC_PER_DEG = 3600;
 
@@ -97,17 +117,41 @@ describe('positions against JPL Horizons', () => {
     }
   });
 
+  const otherMoons = HORIZONS.filter(
+    (series) => series.bodyId !== 'moon' && !(series.bodyId in JPL_NOMINAL_ERRORS),
+  );
+
+  it.each(otherMoons.map((series) => [series.bodyId, series] as const))(
+    '%s stays close to where Horizons puts it around its planet',
+    (bodyId, series) => {
+      const object = catalogue.find((o) => o.id === bodyId);
+      if (!object) throw new Error(`${bodyId} is not in the catalogue`);
+      const loose = LOOSE_MOONS[bodyId];
+      const directionDeg = loose?.directionDeg ?? OTHER_MOONS_DIRECTION_TOLERANCE_DEG;
+      const distance = loose?.distance ?? OTHER_MOONS_DISTANCE_TOLERANCE;
+      expect(series.positionsKm.length).toBeGreaterThanOrEqual(16);
+      for (const [jd, x, y, z] of series.positionsKm) {
+        const expected = { x, y, z };
+        const actual = eclipticOffsetKm(object, catalogue, jd);
+        expect(radToDeg(angleBetween(actual, expected))).toBeLessThan(directionDeg);
+        expect(Math.abs(length(actual) - length(expected)) / length(expected)).toBeLessThan(
+          distance,
+        );
+      }
+    },
+  );
+
   it('would catch precession running the wrong way', () => {
     // Guard on the direction chosen in elements.ts: with the node turning forwards instead of
     // backwards, the Moon ends up many degrees out within a few decades.
     const series = HORIZONS.find((s) => s.bodyId === 'moon');
     const orbit = orbitOf('moon');
     if (!series || orbit.motion.type !== 'precessing-ellipse') throw new Error('unexpected Moon');
-    const node = orbit.motion.nodalPrecessionPeriodYears;
-    if (!node) throw new Error('the Moon has a nodal precession period');
+    const node = orbit.motion.nodalPrecession;
+    if (!node) throw new Error('the Moon has a nodal precession');
     const flipped = {
       ...orbit,
-      motion: { ...orbit.motion, nodalPrecessionPeriodYears: { ...node, value: -node.value } },
+      motion: { ...orbit.motion, nodalPrecession: { ...node, direction: 'forward' as const } },
     };
     const worst = Math.max(
       ...series.positionsKm.map(([jd, x, y, z]) =>

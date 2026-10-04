@@ -131,20 +131,16 @@ describe('the real catalogue', () => {
     expect(checkCatalogue(catalogue)).toEqual([]);
   });
 
-  it('holds the Sun, the eight planets, the Moon and two ring systems', () => {
-    expect(catalogue.map((object) => object.id)).toEqual([
-      'sun',
-      'mercury',
-      'venus',
-      'earth',
-      'moon',
-      'mars',
-      'jupiter',
-      'saturn',
-      'saturn-rings',
-      'uranus',
-      'uranus-rings',
-      'neptune',
-    ]);
+  it('holds the Sun, the eight planets, their major moons and two ring systems', () => {
+    const count = (kind: string): number => catalogue.filter((o) => o.kind === kind).length;
+    expect(count('star')).toBe(1);
+    expect(count('planet')).toBe(8);
+    expect(count('ring-system')).toBe(2);
+    expect(count('moon')).toBeGreaterThanOrEqual(18);
+    // Parents come before what orbits them, so anything placed relative to a parent finds it.
+    catalogue.forEach((object, i) => {
+      if (object.parentId === null) return;
+      expect(catalogue.findIndex((o) => o.id === object.parentId)).toBeLessThan(i);
+    });
   });
 });

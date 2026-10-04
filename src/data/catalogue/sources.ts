@@ -168,3 +168,111 @@ export const NASA_FACTS_VENUS: Source = {
   url: 'https://science.nasa.gov/venus/facts/',
   retrieved: '2026-10-04',
 };
+
+export const JPL_SAT_ELEM_JUPITER: Source = {
+  id: 'jpl-sat-elem-jupiter',
+  title:
+    'JPL Solar System Dynamics — Planetary Satellite Mean Elements, satellites of Jupiter (ephemeris JUP365)',
+  url: 'https://ssd.jpl.nasa.gov/sats/elem/',
+  retrieved: '2026-10-04',
+};
+
+export const NSSDC_JUPITER_MOONS: Source = {
+  id: 'nssdc-jupiter-moons',
+  title: 'NASA NSSDCA — Jovian Satellite Fact Sheet (last updated 6 December 2023)',
+  url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/joviansatfact.html',
+  retrieved: '2026-10-04',
+};
+
+export const NSSDC_SATURN_MOONS: Source = {
+  id: 'nssdc-saturn-moons',
+  title: 'NASA NSSDCA — Saturnian Satellite Fact Sheet (last updated 22 July 2025)',
+  url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturniansatfact.html',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SAT_ELEM_URANUS: Source = {
+  id: 'jpl-sat-elem-uranus',
+  title:
+    'JPL Solar System Dynamics — Planetary Satellite Mean Elements, satellites of Uranus (ephemeris URA182)',
+  url: 'https://ssd.jpl.nasa.gov/sats/elem/',
+  retrieved: '2026-10-04',
+};
+
+export const NSSDC_URANUS_MOONS: Source = {
+  id: 'nssdc-uranus-moons',
+  title: 'NASA NSSDCA — Uranian Satellite Fact Sheet (last updated 11 March 2023)',
+  url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/uraniansatfact.html',
+  retrieved: '2026-10-04',
+};
+
+export const NSSDC_NEPTUNE_MOONS: Source = {
+  id: 'nssdc-neptune-moons',
+  title: 'NASA NSSDCA — Neptunian Satellite Fact Sheet (last updated 11 March 2024)',
+  url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/neptuniansatfact.html',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_MIMAS: Source = {
+  id: 'jpl-horizons-mimas',
+  title:
+    'JPL Horizons — osculating orbital elements of Mimas (601) about its planet at JD 2451545.0, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27601%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40699%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_ENCELADUS: Source = {
+  id: 'jpl-horizons-enceladus',
+  title:
+    'JPL Horizons — osculating orbital elements of Enceladus (602) about its planet at JD 2451545.0, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27602%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40699%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_TETHYS: Source = {
+  id: 'jpl-horizons-tethys',
+  title:
+    'JPL Horizons — osculating orbital elements of Tethys (603) about its planet at JD 2451545.0, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27603%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40699%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_DIONE: Source = {
+  id: 'jpl-horizons-dione',
+  title:
+    'JPL Horizons — osculating orbital elements of Dione (604) about its planet at JD 2451545.0, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27604%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40699%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_RHEA: Source = {
+  id: 'jpl-horizons-rhea',
+  title:
+    'JPL Horizons — osculating orbital elements of Rhea (605) about its planet at JD 2451545.0, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27605%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40699%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_TITAN: Source = {
+  id: 'jpl-horizons-titan',
+  title:
+    'JPL Horizons — osculating orbital elements of Titan (606) about its planet at JD 2451545.0, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27606%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40699%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_IAPETUS: Source = {
+  id: 'jpl-horizons-iapetus',
+  title:
+    'JPL Horizons — osculating orbital elements of Iapetus (608) about its planet at JD 2451545.0, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27608%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40699%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_TRITON: Source = {
+  id: 'jpl-horizons-triton',
+  title:
+    'JPL Horizons — osculating orbital elements of Triton (801) about its planet at JD 2451545.0, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27801%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40899%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272451545.0%27',
+  retrieved: '2026-10-04',
+};

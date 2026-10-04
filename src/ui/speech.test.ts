@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
+import { bodyRadiusKm } from '../sim/layout';
 import { cardModel } from './cardModel';
 import { cleanForSpeech, speechLines } from './speech';
 
@@ -30,7 +31,7 @@ describe('speechLines', () => {
   });
 
   it('leaves no symbol a voice would trip on, for any card', () => {
-    const ids = [null, ...catalogue.filter((o) => o.shape?.type === 'spheroid').map((o) => o.id)];
+    const ids = [null, ...catalogue.filter((o) => bodyRadiusKm(o) !== null).map((o) => o.id)];
     for (const id of ids) {
       expect(speechLines(cardModel(id, catalogue)).join(' ')).not.toMatch(/°|·| km\b| cm\b|-\d/);
     }

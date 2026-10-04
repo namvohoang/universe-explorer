@@ -41,6 +41,8 @@ export interface ScreenPoint {
   readonly visible: boolean;
   /** How many CSS pixels one scene unit covers at that point. */
   readonly pixelsPerUnit: number;
+  /** Distance from the camera, in scene units. */
+  readonly distance: number;
 }
 
 export interface Stage {
@@ -171,6 +173,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
         y: (-projected.y * 0.5 + 0.5) * viewHeight,
         visible: inView,
         pixelsPerUnit: pixelsFor(1, distance, FIELD_OF_VIEW_DEG, viewHeight),
+        distance,
       };
     },
     flyTo: (request) => {

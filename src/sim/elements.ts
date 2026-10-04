@@ -1,4 +1,4 @@
-import type { OrbitalElements } from '../data/types';
+import type { OrbitalElements, Precession } from '../data/types';
 import { TAU, degToRad, wrapTau } from './angles';
 import {
   DAYS_PER_JULIAN_CENTURY,
@@ -9,9 +9,11 @@ import {
 import { positionFromState, type OrbitState } from './kepler';
 import type { Vec3 } from './vec3';
 
-/** Radians per day for something that turns once in `periodYears`; 0 when no period is given. */
-function ratePerDay(periodYears: number | undefined): number {
-  return periodYears === undefined ? 0 : TAU / (periodYears * DAYS_PER_JULIAN_YEAR);
+/** Radians per day of a precession, signed: positive is the way the body goes round. */
+function ratePerDay(precession: Precession | undefined): number {
+  if (!precession) return 0;
+  const rate = TAU / (precession.periodYears.value * DAYS_PER_JULIAN_YEAR);
+  return precession.direction === 'forward' ? rate : -rate;
 }
 
 /**
@@ -57,11 +59,8 @@ export function orbitStateAt(orbit: OrbitalElements, jd: number): OrbitState {
       };
     }
     case 'precessing-ellipse': {
-      // The source gives precession periods without a direction. For an orbit going the same
-      // way as its parent spins, the node moves backwards and the periapsis forwards; PLAN.md
-      // task 1.6 checks this against JPL Horizons for every body that uses it.
-      const nodeRate = -ratePerDay(motion.nodalPrecessionPeriodYears?.value);
-      const periRate = ratePerDay(motion.apsidalPrecessionPeriodYears?.value);
+      const nodeRate = ratePerDay(motion.nodalPrecession);
+      const periRate = ratePerDay(motion.apsidalPrecession);
       // One sidereal period carries the mean longitude Ω + ω + M once round.
       const anomalyRate = TAU / motion.siderealPeriodDays.value - periRate - nodeRate;
       return {

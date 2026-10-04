@@ -1,7 +1,9 @@
 import type { CardContent, CelestialObject } from '../data/types';
 import { isKnown } from '../data/types';
 import { lightTravelSeconds, orbitalPeriodDays, semiMajorAxisKm } from '../sim/elements';
+import { bodyRadiusKm } from '../sim/layout';
 import { fill } from './format';
+import { displayName } from './names';
 import { en } from './strings/en';
 
 /** One line of a card's fact box: what is measured and its value, both ready to show. */
@@ -32,24 +34,35 @@ export function formatDuration(hours: number): string {
   return fill(en.valueEarthYears, { n: show(days / DAYS_PER_YEAR, 3) });
 }
 
-function equatorialRadiusKm(object: CelestialObject): number | null {
-  return object.shape?.type === 'spheroid' ? object.shape.equatorialRadiusKm.value : null;
-}
+/** Below this share of Earth's width, a size in kilometres says more than a fraction of Earth. */
+const SMALL_NEXT_TO_EARTH = 0.2;
 
 function spinStat(object: CelestialObject): Stat[] {
-  if (object.shape?.type !== 'spheroid') return [];
-  const period = object.shape.orientation.rotationPeriodHours;
+  const { shape } = object;
+  if (shape?.type !== 'spheroid' && shape?.type !== 'triaxial') return [];
+  // A body that keeps one face to its parent turns exactly once per trip around it.
+  if (shape.orientation.rotation === 'synchronous') {
+    return object.orbit
+      ? [
+          {
+            label: en.statSpin,
+            value: formatDuration(orbitalPeriodDays(object.orbit) * HOURS_PER_DAY),
+          },
+        ]
+      : [];
+  }
+  const period = shape.orientation.rotationPeriodHours;
   return isKnown(period) ? [{ label: en.statSpin, value: formatDuration(period.value) }] : [];
 }
 
 function widthStat(object: CelestialObject, earth: CelestialObject): Stat[] {
-  const radius = equatorialRadiusKm(object);
-  const earthRadius = equatorialRadiusKm(earth);
+  const radius = bodyRadiusKm(object);
+  const earthRadius = bodyRadiusKm(earth);
   if (radius === null || earthRadius === null) return [];
-  const value =
-    object.id === earth.id
-      ? fill(en.valueKm, { n: show(2 * radius, 4) })
-      : fill(en.valueEarths, { n: show(radius / earthRadius, 2) });
+  const inEarths = radius / earthRadius;
+  let value = fill(en.valueEarths, { n: show(inEarths, 2) });
+  if (object.id === earth.id) value = fill(en.valueKm, { n: show(2 * radius, 4) });
+  else if (inEarths < SMALL_NEXT_TO_EARTH) value = fill(en.valueKmWide, { n: show(2 * radius, 3) });
   return [{ label: en.statWidth, value }];
 }
 
@@ -74,12 +87,17 @@ export function objectStats(
 ): Stat[] {
   const earth = catalogue.find((o) => o.id === 'earth');
   if (!earth) throw new Error('The catalogue has no Earth to compare with');
+  const parent = catalogue.find((o) => o.id === object.parentId);
+  const parentName = parent ? displayName(parent) : '';
   const trip =
     object.orbit === null
       ? []
       : [
           {
-            label: object.kind === 'moon' ? en.statMonth : en.statYear,
+            label:
+              object.kind === 'moon'
+                ? fill(en.statTripAround, { parent: parentName })
+                : en.statYear,
             value: formatDuration(orbitalPeriodDays(object.orbit) * HOURS_PER_DAY),
           },
         ];
@@ -108,7 +126,7 @@ export function objectStats(
         ? []
         : [
             {
-              label: en.statFromEarth,
+              label: fill(en.statFromParent, { parent: parentName }),
               value: fill(en.valueKm, { n: show(semiMajorAxisKm(object.orbit), 4) }),
             },
           ];

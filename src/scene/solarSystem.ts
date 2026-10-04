@@ -1,6 +1,8 @@
 import { AmbientLight, Group, PointLight } from 'three';
 import type { CelestialObject, RingSystem } from '../data/types';
-import { scenePositions } from '../sim/layout';
+import { J2000_JD } from '../sim/constants';
+import { poleOf } from '../sim/frames';
+import { sceneOrbitNormal, scenePositions } from '../sim/layout';
 import type { Scale } from '../sim/scale';
 import { length, type Vec3 } from '../sim/vec3';
 import { createBody, type Body } from './body';
@@ -35,8 +37,11 @@ export function createSolarSystem(
     if (object.kind === 'ring-system') ringsOf.set(object.parentId, object);
   }
   for (const object of catalogue) {
-    if (object.shape?.type !== 'spheroid') continue;
-    const body = createBody(object, object.shape, scale, ringsOf.get(object.id) ?? null);
+    const { shape } = object;
+    if (shape?.type !== 'spheroid' && shape?.type !== 'triaxial') continue;
+    const needsPole = object.orbit !== null && poleOf(shape.orientation) === null;
+    const fallbackPole = needsPole ? sceneOrbitNormal(object, catalogue, J2000_JD) : null;
+    const body = createBody(object, shape, scale, ringsOf.get(object.id) ?? null, fallbackPole);
     bodies.set(object.id, body);
     group.add(body.group);
   }
@@ -70,6 +75,10 @@ export function createSolarSystem(
       const position = positions.get(id);
       if (position) body.group.position.set(position.x, position.y, position.z);
       body.setDate(jd);
+    }
+    for (const object of catalogue) {
+      const parent = object.parentId === null ? undefined : positions.get(object.parentId);
+      if (parent) bodies.get(object.id)?.faceTowards(parent);
     }
     for (const orbit of orbitLines) {
       const parent = positions.get(orbit.parentId);

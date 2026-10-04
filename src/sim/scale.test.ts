@@ -2,11 +2,21 @@ import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import type { CelestialObject } from '../data/types';
 import { KM_PER_AU } from './constants';
+import { bodyRadiusKm } from './layout';
 import { SCALE_MODES, createScale, type Scale } from './scale';
 
 const radiusKm = (object: CelestialObject): number => {
-  if (object.shape?.type !== 'spheroid') throw new Error(`${object.id} is not a spheroid`);
-  return object.shape.equatorialRadiusKm.value;
+  const radius = bodyRadiusKm(object);
+  if (radius === null) throw new Error(`${object.id} is not a solid body`);
+  return radius;
+};
+
+/** How far a planet's rings reach, in its own radii; 1 when it has none. */
+const ringReach = (object: CelestialObject): number => {
+  const rings = catalogue.find((o) => o.kind === 'ring-system' && o.parentId === object.id);
+  return rings?.shape?.type === 'ring'
+    ? Math.max(1, rings.shape.outerRadiusKm.value / radiusKm(object))
+    : 1;
 };
 
 const semiMajorAxisKm = (object: CelestialObject): number => {
@@ -39,11 +49,11 @@ const sceneRange = (scale: Scale, object: CelestialObject): { near: number; far:
 /** How far a body and everything orbiting it reaches from its own centre, in scene units. */
 const sceneReach = (scale: Scale, object: CelestialObject): number =>
   Math.max(
-    scale.sizeToScene(radiusKm(object)),
+    scale.sizeToScene(radiusKm(object)) * ringReach(object),
     ...childrenOf(object).map((c) => sceneRange(scale, c).far + sceneReach(scale, c)),
   );
 
-const bodies = catalogue.filter((o) => o.shape?.type === 'spheroid');
+const bodies = catalogue.filter((o) => bodyRadiusKm(o) !== null);
 const orbiting = catalogue.filter((o) => o.orbit);
 
 describe('true scale', () => {
@@ -95,6 +105,13 @@ describe('true sizes', () => {
         );
       }
     }
+  });
+
+  it('keeps a close moon at its real distance from its planet', () => {
+    // Inside the near zone the distance, measured in planet radii, is the real one.
+    const planetRadiusKm = 60_000;
+    const scene = 2 * planetRadiusKm * scale.orbitFactor(2 * planetRadiusKm, planetRadiusKm);
+    expect(scene / scale.sizeToScene(planetRadiusKm)).toBeCloseTo(2, 9);
   });
 
   it('brings distances in: far orbits are compressed more than near ones', () => {
@@ -164,12 +181,12 @@ describe.each(SCALE_MODES)('%s mode', (mode) => {
     ]);
   });
 
-  it('never draws a body inside its parent', () => {
+  it('never draws a body inside its parent or its parent’s rings', () => {
     for (const object of orbiting) {
       const clearance =
         sceneRange(scale, object).near -
         sceneReach(scale, object) -
-        scale.sizeToScene(radiusKm(parentOf(object)));
+        scale.sizeToScene(radiusKm(parentOf(object))) * ringReach(parentOf(object));
       expect(clearance).toBeGreaterThan(0);
     }
   });

@@ -40,25 +40,24 @@ const EASY_SIZE_REFERENCE_KM = 5000;
 const EASY_SIZE_EXPONENT = 0.5;
 
 /**
- * Compressed distance from a parent, measured in the parent's drawn radius:
- * `gap + reach · (a / parent radius)^exponent`. It grows with `a`, so the order of orbits is
- * always kept, and `gap` above 1 keeps every orbit outside its parent.
+ * Compressed distance from a parent, measured in the parent's drawn radius. Out to `near` radii
+ * the distance is the real one, so close moons keep their true place beside the planet and its
+ * rings. Beyond that it grows as a power below 1: far orbits are pulled in, but a farther orbit
+ * is always drawn farther, so the order of orbits is kept.
  */
 interface DistanceCompression {
-  readonly gap: number;
-  readonly reach: number;
+  readonly near: number;
   readonly exponent: number;
 }
 
-const TRUE_SIZES_DISTANCES: DistanceCompression = { gap: 1, reach: 0.155, exponent: 0.513 };
 /**
- * Easy view squeezes distances as far as real ellipses allow. Orbits keep their true shape, so
- * Mercury's stretched orbit still has to clear Venus's and Earth's Moon has to clear Mars; that
- * sets how tight the inner planets can sit. These values were found by search as the most
- * compact layout in which every gap in the catalogue is at least half the body's drawn radius
- * (scale.test.ts checks there is no overlap).
+ * Found by search as the most compact layout in which nothing in the catalogue overlaps: every
+ * gap is at least half the drawn radius of the body beside it (scale.test.ts checks there is no
+ * overlap). Orbits keep their true shape, so Mercury's stretched orbit still has to clear
+ * Venus's, and each planet's moons have to clear the next planet's.
  */
-const EASY_DISTANCES: DistanceCompression = { gap: 1.1, reach: 0.07, exponent: 0.68 };
+const TRUE_SIZES_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.32 };
+const EASY_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.43 };
 
 function requirePositive(name: string, value: number): void {
   if (!(value > 0) || !Number.isFinite(value)) {
@@ -72,8 +71,9 @@ function compressedOrbitFactor(
   semiMajorAxisKm: number,
   parentRadiusKm: number,
 ): number {
-  const { gap, reach, exponent } = compression;
-  const inParentRadii = gap + reach * (semiMajorAxisKm / parentRadiusKm) ** exponent;
+  const { near, exponent } = compression;
+  const real = semiMajorAxisKm / parentRadiusKm;
+  const inParentRadii = real <= near ? real : near * (real / near) ** exponent;
   return (parentSceneRadius * inParentRadii) / semiMajorAxisKm;
 }
 

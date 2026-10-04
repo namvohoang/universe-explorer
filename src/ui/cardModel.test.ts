@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import { cards } from '../data/content/cards';
-import { cardModel, displayName } from './cardModel';
+import { bodyRadiusKm } from '../sim/layout';
+import { cardModel } from './cardModel';
+import { displayName } from './names';
 import { en } from './strings/en';
 
-const drawn = catalogue.filter((o) => o.shape?.type === 'spheroid');
+const drawn = catalogue.filter((o) => bodyRadiusKm(o) !== null);
+const written = new Set(cards.map((card) => card.id));
 
 describe('cardModel', () => {
-  it('has a complete card for the whole view and for every drawn body', () => {
+  it('has a card for the whole view and for every drawn body', () => {
     for (const id of [null, ...drawn.map((o) => o.id)]) {
       const card = cardModel(id, catalogue);
       expect(card.name).toMatch(/\S/);
@@ -15,8 +18,28 @@ describe('cardModel', () => {
       expect(card.hello).toMatch(/\S/);
       expect(card.stats.length).toBeGreaterThanOrEqual(3);
       expect(card.stats.length).toBeLessThanOrEqual(4);
-      expect(card.facts).toHaveLength(3);
     }
+  });
+
+  it('has three facts wherever a card has been written', () => {
+    expect(cardModel(null, catalogue).facts).toHaveLength(3);
+    for (const object of drawn) {
+      expect(cardModel(object.id, catalogue).facts).toHaveLength(written.has(object.id) ? 3 : 0);
+    }
+  });
+
+  it('says only what the catalogue knows about a moon with no written card', () => {
+    const titan = cardModel('titan', catalogue);
+    expect(titan.eyebrow).toBe('Moon · goes around Saturn');
+    expect(titan.hello).toBe('Titan is a moon of Saturn.');
+    expect(titan.stats.map((s) => s.label)).toEqual([
+      'One trip around Saturn',
+      'One spin',
+      'From Saturn',
+      'Width',
+    ]);
+    // Locked to its planet, it spins once per trip around it.
+    expect(titan.stats[0]?.value).toBe(titan.stats[1]?.value);
   });
 
   it('numbers the planets out from the Sun', () => {

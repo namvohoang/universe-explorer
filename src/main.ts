@@ -3,6 +3,7 @@ import { catalogue } from './data/catalogue';
 import { distanceForAspect, litSideBearing } from './scene/flight';
 import { createSolarSystem } from './scene/solarSystem';
 import { createStage, type FlyTo } from './scene/stage';
+import { bodyRadiusKm } from './sim/layout';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
   advanceClock,
@@ -13,11 +14,12 @@ import {
   withSpeed,
 } from './sim/time';
 import { createCard } from './ui/card';
-import { cardModel, displayName } from './ui/cardModel';
+import { cardModel } from './ui/cardModel';
 import { createChips } from './ui/chips';
 import { createClockControl } from './ui/clockControl';
 import { create, mustFind } from './ui/dom';
 import { createMarkers } from './ui/markers';
+import { displayName } from './ui/names';
 import { createSegmented } from './ui/segmented';
 import { createBrowserSpeaker } from './ui/speech';
 import { en } from './ui/strings/en';
@@ -56,7 +58,7 @@ function start(): void {
   system.setDate(clock.jd);
   stage.scene.add(system.group);
 
-  const drawn = catalogue.filter((object) => object.shape?.type === 'spheroid');
+  const drawn = catalogue.filter((object) => bodyRadiusKm(object) !== null);
   /** The body the camera is on, or `null` for the whole view. */
   let focus: string | null = null;
 
@@ -95,9 +97,24 @@ function start(): void {
   }, createBrowserSpeaker());
   mustFind('#card-slot').append(card.element);
 
+  /**
+   * The places on offer: the whole view, the Sun and the planets, plus the moons of whichever
+   * planet the camera is at (or whose moon it is at).
+   */
+  const chipsFor = (id: string | null): { id: string | null; label: string }[] => {
+    const here = drawn.find((object) => object.id === id);
+    const planetId = here?.kind === 'moon' ? here.parentId : (here?.id ?? null);
+    return [
+      { id: null, label: en.wholeView },
+      ...drawn
+        .filter((object) => object.kind !== 'moon' || object.parentId === planetId)
+        .map((object) => ({ id: object.id, label: displayName(object) })),
+    ];
+  };
+
   const showFocus = (): void => {
     card.show(cardModel(focus, catalogue));
-    chips.show(focus);
+    chips.show(chipsFor(focus), focus);
   };
 
   const goTo = (id: string | null): void => {
@@ -106,14 +123,7 @@ function start(): void {
     showFocus();
   };
 
-  const chips = createChips(
-    en.places,
-    [
-      { id: null, label: en.wholeView },
-      ...drawn.map((object) => ({ id: object.id, label: displayName(object) })),
-    ],
-    goTo,
-  );
+  const chips = createChips(en.places, goTo);
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') card.hide();
   });
@@ -164,6 +174,7 @@ function start(): void {
       id: object.id,
       name: displayName(object),
       label: `${en.goTo} ${displayName(object)}`,
+      parentId: object.kind === 'moon' ? object.parentId : null,
     })),
     goTo,
   );
@@ -190,9 +201,20 @@ function start(): void {
     clockControl.show(clock);
   });
   stage.onCameraMoved(() => {
+    // A body behind the one in view gets no marker: its name would sit on the wrong globe.
+    const front = focus === null ? null : stage.toScreen(system.positionOf(focus));
+    const frontRadius = focus === null || !front ? 0 : system.radiusOf(focus) * front.pixelsPerUnit;
     markers.update((id) => {
       const point = stage.toScreen(system.positionOf(id));
-      return { point, radiusPixels: system.radiusOf(id) * point.pixelsPerUnit };
+      const hidden =
+        front !== null &&
+        id !== focus &&
+        point.distance > front.distance &&
+        Math.hypot(point.x - front.x, point.y - front.y) < frontRadius;
+      return {
+        point: hidden ? { ...point, visible: false } : point,
+        radiusPixels: system.radiusOf(id) * point.pixelsPerUnit,
+      };
     });
   });
   stage.start();

@@ -3,6 +3,8 @@ import { create } from './dom';
 
 /** A body smaller than this many pixels across gets a ring so it can be found and tapped. */
 const RING_BELOW_PIXELS = 14;
+/** A moon's marker is hidden while it sits this close to its planet on screen. */
+const CROWDED_PIXELS = 26;
 /** Rough size of a name pill, for telling whether two would overlap. */
 const NAME_HEIGHT_PIXELS = 26;
 const NAME_PIXELS_PER_LETTER = 8;
@@ -24,6 +26,8 @@ export interface MarkerTarget {
   readonly name: string;
   /** Text read out for the marker, e.g. "Go to Saturn". */
   readonly label: string;
+  /** For a moon, its planet: the marker hides while the two are too close to tell apart. */
+  readonly parentId: string | null;
 }
 
 export interface MarkerPlace {
@@ -69,11 +73,16 @@ export function createMarkers(
       const placed: Box[] = [];
       for (const marker of markers) {
         const { point, radiusPixels } = place(marker.target.id);
-        if (point.visible !== marker.shown) {
-          marker.button.hidden = !point.visible;
-          marker.shown = point.visible;
+        let visible = point.visible;
+        if (visible && marker.target.parentId !== null) {
+          const parent = place(marker.target.parentId).point;
+          visible = Math.hypot(parent.x - point.x, parent.y - point.y) > CROWDED_PIXELS;
         }
-        if (!point.visible) continue;
+        if (visible !== marker.shown) {
+          marker.button.hidden = !visible;
+          marker.shown = visible;
+        }
+        if (!visible) continue;
         marker.button.style.transform = `translate(${point.x.toFixed(1)}px, ${point.y.toFixed(1)}px)`;
 
         const ringed = radiusPixels * 2 < RING_BELOW_PIXELS;

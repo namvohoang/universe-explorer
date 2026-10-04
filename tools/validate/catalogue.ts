@@ -94,9 +94,9 @@ function shapeErrors(id: string, shape: Shape | null): string[] {
       break;
     case 'triaxial':
     case 'model': {
-      const [a, b, c] = shape.dimensionsKm.value;
-      positive('dimensionsKm', c);
-      if (!(a >= b && b >= c)) errors.push(`${id}: dimensionsKm must be longest first`);
+      const [a, b, c] = shape.radiiKm.value;
+      positive('radiiKm', c);
+      if (!(a >= b && b >= c)) errors.push(`${id}: radiiKm must be longest first`);
       break;
     }
     case 'ring':

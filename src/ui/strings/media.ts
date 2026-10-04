@@ -15,6 +15,8 @@ export function mediaKindLabel(kind: MediaKind): string | null {
       return en.mediaKindFalseColour;
     case 'artist-concept':
       return en.mediaKindArtistConcept;
+    case 'agency-model':
+      return en.mediaKindAgencyModel;
     case 'simulation':
       return en.mediaKindSimulation;
     case 'diagram':

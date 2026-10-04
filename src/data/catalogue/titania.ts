@@ -49,6 +49,15 @@ export const titania: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/titania.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltTitania',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      unseen: true,
+    },
+  ],
   sources: [JPL_SAT_ELEM_URANUS, NSSDC_URANUS_MOONS],
 };

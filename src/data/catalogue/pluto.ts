@@ -46,6 +46,15 @@ export const pluto: DwarfPlanet = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/pluto.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltPluto',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      unseen: true,
+    },
+  ],
   sources: [JPL_SBDB_PLUTO, NSSDC_PLUTO],
 };

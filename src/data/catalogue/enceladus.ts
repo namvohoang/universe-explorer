@@ -63,6 +63,14 @@ export const enceladus: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/enceladus.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltEnceladus',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_HORIZONS_ENCELADUS, NSSDC_SATURN_MOONS],
 };

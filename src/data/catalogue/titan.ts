@@ -72,6 +72,14 @@ export const titan: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/titan.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltTitan',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_HORIZONS_TITAN, NSSDC_SATURN_MOONS],
 };

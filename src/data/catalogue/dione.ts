@@ -63,6 +63,14 @@ export const dione: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/dione.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltDione',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_HORIZONS_DIONE, NSSDC_SATURN_MOONS],
 };

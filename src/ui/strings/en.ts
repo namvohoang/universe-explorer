@@ -419,6 +419,36 @@ export const en = {
   scaleLabelTrueSizes:
     'Planets are the right size next to each other. They are really much farther apart.',
   scaleLabelEasy: 'Drawn bigger and closer so you can see everything.',
+  mapAltIo: "A map of Io's surface: yellow, orange and white, dotted with dark volcanoes.",
+  mapAltEuropa: "A map of Europa's surface: pale ice crossed by long brown cracks.",
+  mapAltGanymede:
+    "A map of Ganymede's surface: dark old ground and lighter grooved ground, with bright craters.",
+  mapAltCallisto: "A map of Callisto's surface: dark brown and covered all over in bright craters.",
+  mapAltTitan:
+    'A map of Titan as it looks from outside: a smooth orange haze that hides the ground.',
+  mapAltEnceladus:
+    "A map of Enceladus's surface: bright ice with craters in the north and long cracks in the south.",
+  mapAltTethys: "A map of Tethys's surface: grey ice covered in craters.",
+  mapAltDione: "A map of Dione's surface: grey ice with craters and bright wispy lines.",
+  mapAltRhea: "A map of Rhea's surface: grey ice covered in craters.",
+  mapAltIapetus: "A map of Iapetus's surface: one half very dark and the other half bright.",
+  mapAltMiranda:
+    "A map of Miranda's surface: jumbled grey ice in the south. The north is plain grey because it has never been photographed.",
+  mapAltAriel:
+    "A map of Ariel's surface: grey ice with valleys in the south. The north is plain grey because it has never been photographed.",
+  mapAltUmbriel:
+    "A map of Umbriel's surface: dark grey with craters in the south. The north is plain grey because it has never been photographed.",
+  mapAltTitania:
+    "A map of Titania's surface: brownish grey with craters and long valleys in the south. The north is plain grey because it has never been photographed.",
+  mapAltOberon:
+    "A map of Oberon's surface: brownish grey with bright craters in the south. The north is plain grey because it has never been photographed.",
+  mapAltTriton:
+    "A map of Triton's surface: pale pink ice in the south. The north is plain grey because it has never been photographed.",
+  mapAltPluto:
+    "A map of Pluto's surface: reddish brown and white, with a bright heart-shaped plain. The far south is blurry because it has never been seen up close.",
+  mapAltCeres: "A map of Ceres's surface: grey and covered in craters, with a few bright spots.",
+  mapAltVesta:
+    "A map of Vesta's surface: grey, covered in craters, with long grooves round the middle.",
   mapAltMercury: "A map of Mercury's surface: grey and covered in craters.",
   mapAltVenus: 'A map of the ground on Venus made with radar, with colours added by scientists.',
   mapAltEarth:
@@ -434,6 +464,9 @@ export const en = {
   mediaKindComposite: 'Made from many pictures joined together.',
   mediaKindFalseColour: 'Colours added by scientists.',
   mediaKindArtistConcept: "An artist's drawing, not a photo.",
+  mediaKindAgencyModel:
+    'From a 3D model made by NASA. NASA does not say whether it is a photo or a drawing.',
+  globeUnseen: 'The plain or blurry part has never been photographed.',
   mediaKindSimulation: 'A computer simulation, not a photo.',
   mediaKindDiagram: 'A diagram, not a photo.',
 } as const;

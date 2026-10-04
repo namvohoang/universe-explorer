@@ -63,6 +63,14 @@ export const tethys: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/tethys.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltTethys',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_HORIZONS_TETHYS, NSSDC_SATURN_MOONS],
 };

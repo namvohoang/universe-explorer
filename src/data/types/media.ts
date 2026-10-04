@@ -4,6 +4,8 @@ export const MEDIA_KINDS = [
   'composite',
   'false-colour',
   'artist-concept',
+  /** Taken from an agency's 3D model whose page does not say how it was made. */
+  'agency-model',
   'simulation',
   'diagram',
 ] as const;
@@ -21,4 +23,6 @@ export interface MediaRef {
   readonly altKey: string;
   /** The credit line, exactly as in CREDITS.md, for a picture shown with its credit on screen. */
   readonly credit?: string;
+  /** Set when part of a surface map is blank or blurred because nobody has photographed it. */
+  readonly unseen?: true;
 }

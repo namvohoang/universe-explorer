@@ -49,6 +49,14 @@ export const vesta: Asteroid = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/vesta.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltVesta',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_SBDB_VESTA],
 };

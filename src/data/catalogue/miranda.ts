@@ -40,6 +40,15 @@ export const miranda: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/miranda.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltMiranda',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      unseen: true,
+    },
+  ],
   sources: [JPL_SAT_ELEM_URANUS, NSSDC_URANUS_MOONS],
 };

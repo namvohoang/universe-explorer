@@ -1,6 +1,6 @@
 import { SOLAR_SYSTEM_CARD_ID, cards } from '../data/content/cards';
 import { concepts } from '../data/content/concepts';
-import type { CelestialObject, MediaKind } from '../data/types';
+import type { CelestialObject, MediaRef } from '../data/types';
 import { semiMajorAxisKm } from '../sim/elements';
 import { fill } from './format';
 import { mediaUrl } from './mediaUrl';
@@ -97,9 +97,11 @@ function conceptOf(object: CelestialObject): CardModel['concept'] {
   return concept ? { title: text(concept.titleKey), text: text(concept.text.key) } : null;
 }
 
-function globeNote(kind: MediaKind | undefined): string | null {
-  const label = kind === undefined ? null : mediaKindLabel(kind);
-  return label === null ? null : `${en.aboutTheGlobe}: ${label}`;
+function globeNote(media: MediaRef | undefined): string | null {
+  const label = media === undefined ? null : mediaKindLabel(media.kind);
+  if (label === null) return null;
+  const unseen = media?.unseen ? ` ${en.globeUnseen}` : '';
+  return `${en.aboutTheGlobe}: ${label}${unseen}`;
 }
 
 /** The card for one object, or for the whole view when `objectId` is `null`. */
@@ -134,8 +136,7 @@ export function cardModel(
         : object.kind === 'spacecraft'
           ? en.spacecraftNote
           : globeNote(
-              object.media.find((media) => media.role === 'surface-map' || media.role === 'model')
-                ?.kind,
+              object.media.find((media) => media.role === 'surface-map' || media.role === 'model'),
             );
   let stats: Stat[];
   if (object.kind === 'belt') stats = beltStats(object);

@@ -49,6 +49,15 @@ export const umbriel: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/umbriel.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltUmbriel',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      unseen: true,
+    },
+  ],
   sources: [JPL_SAT_ELEM_URANUS, NSSDC_URANUS_MOONS],
 };

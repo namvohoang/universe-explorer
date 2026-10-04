@@ -37,7 +37,7 @@ media, search-engine thumbnails or AI-generated images.
 |---|---|
 | File | Path under `public/media/` |
 | Object | Catalogue id it shows |
-| Kind | `photo`, `composite`, `false-colour`, `artist-concept`, `simulation`, `diagram` |
+| Kind | `photo`, `composite`, `false-colour`, `artist-concept`, `agency-model` (from an agency's 3D model whose page does not say how it was made), `simulation`, `diagram` |
 | Credit | Exactly as the source page gives it |
 | Licence | As stated on the source page |
 | Source | URL of the image's page (not the bare file URL) |

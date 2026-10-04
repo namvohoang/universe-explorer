@@ -52,6 +52,14 @@ export const io: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/io.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltIo',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_SAT_ELEM_JUPITER, NSSDC_JUPITER_MOONS],
 };

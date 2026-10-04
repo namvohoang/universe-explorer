@@ -58,6 +58,14 @@ export const ceres: DwarfPlanet = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/ceres.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltCeres',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_HORIZONS_CERES_PERIOD, JPL_SBDB_CERES],
 };

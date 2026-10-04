@@ -53,6 +53,14 @@ export const europa: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/europa.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltEuropa',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_SAT_ELEM_JUPITER, NSSDC_JUPITER_MOONS],
 };

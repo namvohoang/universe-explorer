@@ -63,6 +63,14 @@ export const iapetus: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/iapetus.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltIapetus',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_HORIZONS_IAPETUS, NSSDC_SATURN_MOONS],
 };

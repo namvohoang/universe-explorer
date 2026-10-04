@@ -72,6 +72,15 @@ export const triton: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/triton.webp',
+      kind: 'agency-model',
+      role: 'surface-map',
+      altKey: 'mapAltTriton',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+      unseen: true,
+    },
+  ],
   sources: [JPL_HORIZONS_TRITON, NSSDC_NEPTUNE_MOONS],
 };

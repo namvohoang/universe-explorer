@@ -21,6 +21,17 @@ describe('cardModel', () => {
     }
   });
 
+  it('introduces a dwarf planet as one', () => {
+    const pluto = cardModel('pluto', catalogue);
+    expect(pluto.eyebrow).toBe('Dwarf planet · goes around the Sun');
+    expect(pluto.hello).toBe('Pluto is a dwarf planet.');
+    expect(pluto.stats.map((s) => s.label)).toEqual([
+      'One spin',
+      'One trip around the Sun',
+      'Width',
+    ]);
+  });
+
   it('has three facts wherever a card has been written', () => {
     expect(cardModel(null, catalogue).facts).toHaveLength(3);
     for (const object of drawn) {

@@ -300,3 +300,60 @@ export const JPL_SAT_ELEM_MARS: Source = {
   url: 'https://ssd.jpl.nasa.gov/sats/elem/',
   retrieved: '2026-10-04',
 };
+
+export const JPL_SBDB_CERES: Source = {
+  id: 'jpl-sbdb-ceres',
+  title: 'JPL Small-Body Database — 1 Ceres (A801 AA) (orbit solution 48)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Ceres',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_CERES_PERIOD: Source = {
+  id: 'jpl-horizons-ceres-period',
+  title:
+    'JPL Horizons — positions of Ceres about the Sun at eight dates from 1810 to 2049, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%271%3B%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%4010%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&VEC_TABLE=%271%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TLIST=%272382148.5+2396909.5+2415020.5+2433463.5+2447951.5+2455270.5+2461317.5+2469776.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SBDB_PLUTO: Source = {
+  id: 'jpl-sbdb-pluto',
+  title: 'JPL Small-Body Database — 134340 Pluto (1930 BM) (orbit solution 1)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Pluto',
+  retrieved: '2026-10-04',
+};
+
+export const NSSDC_PLUTO: Source = {
+  id: 'nssdc-pluto',
+  title: 'NASA NSSDCA — Pluto Fact Sheet (last updated 11 January 2024)',
+  url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SBDB_MAKEMAKE: Source = {
+  id: 'jpl-sbdb-makemake',
+  title: 'JPL Small-Body Database — 136472 Makemake (2005 FY9) (orbit solution 130)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Makemake',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_DWARF_MAKEMAKE: Source = {
+  id: 'nasa-dwarf-makemake',
+  title: 'NASA Science — Makemake',
+  url: 'https://science.nasa.gov/dwarf-planets/makemake/',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SBDB_ERIS: Source = {
+  id: 'jpl-sbdb-eris',
+  title: 'JPL Small-Body Database — 136199 Eris (2003 UB313) (orbit solution 103)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Eris',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_DWARF_ERIS: Source = {
+  id: 'nasa-dwarf-eris',
+  title: 'NASA Science — Eris',
+  url: 'https://science.nasa.gov/dwarf-planets/eris/',
+  retrieved: '2026-10-04',
+};

@@ -30,8 +30,13 @@ import { umbriel } from './umbriel';
 import { titania } from './titania';
 import { oberon } from './oberon';
 import { triton } from './triton';
+import { ceres } from './ceres';
+import { pluto } from './pluto';
+import { makemake } from './makemake';
+import { eris } from './eris';
 
-/** Every object in the app. Order is from the Sun outwards, moons and rings after their planet. */
+/** Every object in the app. Order is from the Sun outwards, moons and rings after their planet,
+ * dwarf planets where their orbits put them. */
 export const catalogue: readonly CelestialObject[] = [
   sun,
   mercury,
@@ -41,6 +46,7 @@ export const catalogue: readonly CelestialObject[] = [
   mars,
   phobos,
   deimos,
+  ceres,
   jupiter,
   io,
   europa,
@@ -64,4 +70,7 @@ export const catalogue: readonly CelestialObject[] = [
   oberon,
   neptune,
   triton,
+  pluto,
+  makemake,
+  eris,
 ];

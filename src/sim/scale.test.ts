@@ -33,9 +33,15 @@ const byId = (id: string): CelestialObject => {
 };
 
 const parentOf = (object: CelestialObject): CelestialObject => byId(object.parentId ?? '');
+
+/**
+ * Bodies whose orbits are well apart from their neighbours': the planets and the moons. Dwarf
+ * planets are left out because their real orbits cross others' (Pluto comes inside Neptune's).
+ */
+const keepsItsLane = (object: CelestialObject): boolean => object.kind !== 'dwarf-planet';
 const childrenOf = (parent: CelestialObject): CelestialObject[] =>
   catalogue
-    .filter((o) => o.parentId === parent.id && o.orbit)
+    .filter((o) => o.parentId === parent.id && o.orbit && keepsItsLane(o))
     .sort((a, b) => semiMajorAxisKm(a) - semiMajorAxisKm(b));
 
 /** Nearest and farthest scene distance of a body from its parent's centre. */

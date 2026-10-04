@@ -73,6 +73,8 @@ export const en = {
   eyebrowStar: 'Star · the middle of our solar system',
   eyebrowPlanet: 'Planet · {place} from the Sun',
   eyebrowMoon: 'Moon · goes around {parent}',
+  eyebrowDwarfPlanet: 'Dwarf planet · goes around the Sun',
+  helloDwarfPlanet: '{name} is a dwarf planet.',
   ordinals: '1st 2nd 3rd 4th 5th 6th 7th 8th',
   statPlanets: 'Planets',
   statStars: 'Stars',

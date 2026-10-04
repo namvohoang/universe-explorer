@@ -28,7 +28,8 @@ const MOON_DIRECTION_TOLERANCE_DEG = 4;
 const MOON_DISTANCE_TOLERANCE_KM = 9_000;
 
 /**
- * Tolerances for the moons of the other planets, checked at 16 dates across 1960–2040. Each
+ * Tolerances for the moons of the other planets (16 dates across 1960–2040) and for the dwarf
+ * planets (eight dates across 1810–2049, where the worst seen was 1.2° and 1.0%). Each
  * is drawn on one ellipse (slowly turning where the source says how), so what is left out is
  * the tug of its neighbours. The worst seen was 4.2° (Tethys) and 1.2% in distance.
  */
@@ -124,14 +125,14 @@ describe('positions against JPL Horizons', () => {
   );
 
   it.each(otherMoons.map((series) => [series.bodyId, series] as const))(
-    '%s stays close to where Horizons puts it around its planet',
+    '%s stays close to where Horizons puts it around its parent',
     (bodyId, series) => {
       const object = catalogue.find((o) => o.id === bodyId);
       if (!object) throw new Error(`${bodyId} is not in the catalogue`);
       const loose = LOOSE_MOONS[bodyId];
       const directionDeg = loose?.directionDeg ?? OTHER_MOONS_DIRECTION_TOLERANCE_DEG;
       const distance = loose?.distance ?? OTHER_MOONS_DISTANCE_TOLERANCE;
-      expect(series.positionsKm.length).toBeGreaterThanOrEqual(16);
+      expect(series.positionsKm.length).toBeGreaterThanOrEqual(8);
       for (const [jd, x, y, z] of series.positionsKm) {
         const expected = { x, y, z };
         const actual = eclipticOffsetKm(object, catalogue, jd);

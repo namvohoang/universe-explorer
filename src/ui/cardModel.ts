@@ -42,6 +42,7 @@ function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[])
     const parent = catalogue.find((o) => o.id === object.parentId);
     return fill(en.eyebrowMoon, { parent: parent ? displayName(parent) : '' });
   }
+  if (object.kind === 'dwarf-planet') return en.eyebrowDwarfPlanet;
   return fill(en.eyebrowPlanet, { place: placeFromSun(object, catalogue) });
 }
 
@@ -85,6 +86,9 @@ export function cardModel(
  * the catalogue alone.
  */
 function plainHello(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
+  if (object.kind === 'dwarf-planet') {
+    return fill(en.helloDwarfPlanet, { name: displayName(object) });
+  }
   if (object.kind !== 'moon') throw new Error(`No card for "${object.id}"`);
   const parent = catalogue.find((o) => o.id === object.parentId);
   return fill(en.helloMoon, {

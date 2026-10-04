@@ -13,6 +13,8 @@ export const NARRATION: Readonly<Record<string, { file: string; fingerprint: str
   phobos: { file: 'public/voice/phobos.mp3', fingerprint: '897d856f' },
   deimos: { file: 'public/voice/deimos.mp3', fingerprint: '343449d3' },
   eros: { file: 'public/voice/eros.mp3', fingerprint: '6ac1c90b' },
+  ida: { file: 'public/voice/ida.mp3', fingerprint: '91b676da' },
+  psyche: { file: 'public/voice/psyche.mp3', fingerprint: '665117b8' },
   'asteroid-belt': { file: 'public/voice/asteroid-belt.mp3', fingerprint: '45d5d740' },
   vesta: { file: 'public/voice/vesta.mp3', fingerprint: '0e55bbad' },
   ceres: { file: 'public/voice/ceres.mp3', fingerprint: '3edaa630' },

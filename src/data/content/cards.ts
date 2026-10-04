@@ -27,6 +27,9 @@ import {
   NASA_HUBBLE_M45,
   NASA_HUBBLE_M87,
   NASA_BETELGEUSE,
+  NASA_IDA,
+  NASA_METEORS,
+  NASA_PSYCHE,
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_TRAPPIST1,
@@ -217,6 +220,65 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_FACTS_MOON],
+  },
+  {
+    id: 'ida',
+    hello: {
+      key: 'cardIdaHello',
+      sourceId: 'nasa-ida',
+      quote:
+        'scientists studying the images Galileo sent back to Earth noticed that a tiny moon accompanied the asteroid',
+    },
+    facts: [
+      {
+        key: 'cardIdaFact1',
+        sourceId: 'nasa-ida',
+        quote: 'Located in the main belt between Mars and Jupiter',
+      },
+      {
+        key: 'cardIdaFact2',
+        sourceId: 'nasa-ida',
+        quote:
+          "NASA's Galileo spacecraft flew by Ida at a distance of about 1,500 miles (about 2,400 kilometers) en route to Jupiter.",
+      },
+      {
+        key: 'cardIdaFact3',
+        sourceId: 'nasa-meteors',
+        quote:
+          'When a meteoroid survives a trip through the atmosphere and hits the ground, it’s called a meteorite.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_IDA, NASA_METEORS],
+  },
+  {
+    id: 'psyche',
+    hello: {
+      key: 'cardPsycheHello',
+      sourceId: 'nasa-psyche',
+      quote:
+        'The best analysis indicates that Psyche is likely made of a mixture of rock and metal, with metal composing 30% to 60% of its volume.',
+    },
+    facts: [
+      {
+        key: 'cardPsycheFact1',
+        sourceId: 'nasa-psyche',
+        quote: 'Psyche orbits the Sun between Mars and Jupiter',
+      },
+      {
+        key: 'cardPsycheFact2',
+        sourceId: 'nasa-psyche',
+        quote: 'Psyche is likely made of a mixture of rock and metal',
+      },
+      {
+        key: 'cardPsycheFact3',
+        sourceId: 'nasa-psyche',
+        quote:
+          'Scientists think Psyche may consist of significant amounts of metal from the core of a planetesimal, one of the building blocks of our solar system.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_PSYCHE],
   },
   {
     id: 'iss',

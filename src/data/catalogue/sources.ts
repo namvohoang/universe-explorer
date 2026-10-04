@@ -395,6 +395,57 @@ export const JPL_SBDB_VESTA: Source = {
   retrieved: '2026-10-04',
 };
 
+export const JPL_SBDB_PSYCHE: Source = {
+  id: 'jpl-sbdb-psyche',
+  title: 'JPL Small-Body Database — 16 Psyche (A852 FA)',
+  url: 'https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=Psyche&phys-par=1&full-prec=1',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_SBDB_IDA: Source = {
+  id: 'jpl-sbdb-ida',
+  title: 'JPL Small-Body Database — 243 Ida (A884 SB)',
+  url: 'https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=Ida&phys-par=1&full-prec=1',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_PSYCHE: Source = {
+  id: 'nasa-psyche',
+  title: 'NASA Science — Asteroid Psyche',
+  url: 'https://science.nasa.gov/solar-system/asteroids/16-psyche/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_IDA: Source = {
+  id: 'nasa-ida',
+  title: 'NASA Science — 243 Ida',
+  url: 'https://science.nasa.gov/solar-system/asteroids/243-ida/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_METEORS: Source = {
+  id: 'nasa-meteors',
+  title: 'NASA Science — Meteors and Meteorites',
+  url: 'https://science.nasa.gov/solar-system/meteors-meteorites/',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_PSYCHE_PERIOD: Source = {
+  id: 'jpl-horizons-psyche-period',
+  title:
+    'JPL Horizons — positions of Psyche about the Sun at eight dates from 1810 to 2049, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%2716%3B%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%4010%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&VEC_TABLE=%271%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TLIST=%272382148.5+2396909.5+2415020.5+2433463.5+2447951.5+2455270.5+2461317.5+2469776.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_IDA_PERIOD: Source = {
+  id: 'jpl-horizons-ida-period',
+  title:
+    'JPL Horizons — positions of Ida about the Sun at eight dates from 1810 to 2049, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27243%3B%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%4010%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&VEC_TABLE=%271%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TLIST=%272382148.5+2396909.5+2415020.5+2433463.5+2447951.5+2455270.5+2461317.5+2469776.5%27',
+  retrieved: '2026-10-04',
+};
+
 export const JPL_SBDB_EROS: Source = {
   id: 'jpl-sbdb-eros',
   title: 'JPL Small-Body Database — 433 Eros (A898 PA) (orbit solution 659)',

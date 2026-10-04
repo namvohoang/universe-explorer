@@ -62,7 +62,7 @@ ship with the app.
 
 | What | Made with | Licence | Source |
 |---|---|---|---|
-| 54 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
+| 56 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
 
 ## Fonts
 

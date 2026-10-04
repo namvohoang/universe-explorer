@@ -60,6 +60,25 @@ export const en = {
     'Neptune was the first planet found by doing maths, not by spotting it in the sky.',
   cardNeptuneFact3: 'Neptune has gone around the Sun just once since it was found in 1846.',
   names: 'Names',
+  grownUps: 'For grown-ups',
+  grownUpsClose: 'Close',
+  grownUpsPrivacyTitle: 'Privacy',
+  grownUpsPrivacy1:
+    'Universe Explorer has no adverts, no accounts and no tracking. It does not collect, store or send any information about the person using it.',
+  grownUpsPrivacy2:
+    'While it runs it loads nothing from any other website: the pictures, fonts and data all come with the app.',
+  grownUpsPrivacy3:
+    'Read aloud only uses a voice stored on this device. If the device has none, the button does nothing, so that no text is sent to a speech service.',
+  grownUpsAccuracyTitle: 'How accurate is it?',
+  grownUpsAccuracy1:
+    'Every size, distance and orbit comes from the pages listed below, and every sentence on a card rests on a quoted passage from a NASA page.',
+  grownUpsAccuracy2:
+    'Planet positions are good to a small fraction of a degree between the years {from} and {to}. Moons are drawn on simplified orbits: most are within a few degrees, Earth’s Moon within about three, and Mimas can be far from its true place along its orbit. Eclipses are not shown.',
+  grownUpsAccuracy3:
+    'Only the view called Real keeps both sizes and distances true. The other two bring things closer so they can be seen, and say so on screen.',
+  grownUpsPicturesTitle: 'Where the pictures come from',
+  grownUpsSourcesTitle: 'Where the numbers and facts come from',
+  grownUpsLinksNotice: 'These links open other websites.',
   compare: 'Compare',
   compareClose: 'Close compare',
   compareSizes: 'How big?',

@@ -63,6 +63,7 @@ export const jupiter: Planet = {
       kind: 'composite',
       role: 'surface-map',
       altKey: 'mapAltJupiter',
+      credit: 'JPL & Caltech',
     },
   ],
   sources: [JPL_APPROX_POS, NSSDC_JUPITER],

@@ -233,13 +233,17 @@ their own: they are drawn with their planet.)
 
 ### Phase 5 — Kid experience and release
 
-- [ ] 5.1 Natural voice, per the decision in §8.
-- [ ] 5.2 Photo gallery per object with credits a grown-up can open.
-- [ ] 5.3 Accessibility pass: keyboard, screen reader, contrast, reduced motion, touch targets.
-- [ ] 5.4 Reading-level review of every string with the target age in mind.
+- [ ] 5.1 Natural voice, per the decision in §8. Until then read-aloud uses only a voice stored on the
+      device, never one that sends text to a server.
+- [ ] 5.2 Photo gallery per object. (Each object's one picture or map is credited on the grown-ups' page.)
+- [~] 5.3 Accessibility pass: keyboard order, labels, reduced motion and touch targets are in place; it has
+      not yet been tried with a screen reader.
+- [ ] 5.4 Reading-level review of every string with the target age in mind, by a person. (A test caps
+      sentence length.)
 - [ ] 5.5 Performance pass on a mid-range tablet: texture sizes, lazy loading per scene.
-- [ ] 5.6 Works offline after first load.
-- [ ] 5.7 Release: deploy script, final `/data-check all`, `/credits-check`, grown-ups' page (sources, credits, privacy).
+- [x] 5.6 Works offline after first load.
+- [~] 5.7 Release: the grown-ups' page (privacy, accuracy, picture credits, sources) is done. A deploy
+      script waits for the hosting decision in §8.
 
 **Acceptance:** smooth on a mid-range tablet; usable with keyboard only and with a screen reader;
 no third-party request at runtime; credits page complete.

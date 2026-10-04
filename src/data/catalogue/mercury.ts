@@ -59,6 +59,8 @@ export const mercury: Planet = {
       kind: 'composite',
       role: 'surface-map',
       altKey: 'mapAltMercury',
+      credit:
+        'MESSENGER Team, Arizona State University, Johns Hopkins Applied Physics Laboratory, Carnegie Science. Published by USGS Astrogeology Science Center.',
     },
   ],
   sources: [JPL_APPROX_POS, NSSDC_MERCURY],

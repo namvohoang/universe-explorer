@@ -52,6 +52,7 @@ export const moon: Moon = {
       kind: 'composite',
       role: 'surface-map',
       altKey: 'mapAltMoon',
+      credit: "NASA's Scientific Visualization Studio",
     },
   ],
   sources: [JPL_SAT_ELEM, NSSDC_MOON],

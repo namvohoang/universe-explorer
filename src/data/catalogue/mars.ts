@@ -59,6 +59,7 @@ export const mars: Planet = {
       kind: 'composite',
       role: 'surface-map',
       altKey: 'mapAltMars',
+      credit: 'NASA/Jet Propulsion Laboratory & Caltech',
     },
   ],
   sources: [JPL_APPROX_POS, NSSDC_MARS],

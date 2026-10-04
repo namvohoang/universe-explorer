@@ -529,6 +529,60 @@ button.primary {
   top: -20px;
 }
 
+button.quiet {
+  background: transparent;
+  color: var(--ink-dim);
+  font-weight: 400;
+}
+
+.grownups {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: auto;
+  padding: 24px max(16px, calc((100vw - 760px) / 2));
+  background: var(--void);
+  line-height: 1.5;
+}
+
+.grownups-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.grownups h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 28px;
+}
+
+.grownups h3 {
+  margin: 24px 0 6px;
+  color: var(--sky);
+}
+
+.grownups p {
+  margin: 0 0 8px;
+}
+
+.grownups ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.grownups a {
+  color: var(--ink);
+}
+
+.grownups .notice {
+  color: var(--ink-dim);
+  font-size: 14px;
+}
+
 @media (max-width: 700px) {
   #picture {
     padding: 110px 12px 55vh;

@@ -63,6 +63,7 @@ export const neptune: Planet = {
       kind: 'artist-concept',
       role: 'surface-map',
       altKey: 'mapAltNeptune',
+      credit: 'Don Davis & JPL/Caltech',
     },
   ],
   sources: [JPL_APPROX_POS, NSSDC_NEPTUNE],

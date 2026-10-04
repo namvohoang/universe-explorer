@@ -107,6 +107,8 @@ export const earth: Planet = {
       kind: 'composite',
       role: 'surface-map',
       altKey: 'mapAltEarth',
+      credit:
+        'NASA Earth Observatory, Blue Marble: Next Generation. The page gives no credit line.',
     },
   ],
   sources: [JPL_APPROX_POS, NSSDC_EARTH],

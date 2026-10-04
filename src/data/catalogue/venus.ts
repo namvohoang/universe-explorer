@@ -55,6 +55,8 @@ export const venus: Planet = {
       kind: 'false-colour',
       role: 'surface-map',
       altKey: 'mapAltVenus',
+      credit:
+        'NASA/JPL-Caltech. The page gives no credit line; it says "From the database of JPL/Caltech generated planetary maps".',
     },
   ],
   sources: [JPL_APPROX_POS, NSSDC_VENUS],

@@ -55,6 +55,7 @@ export const uranus: Planet = {
       kind: 'artist-concept',
       role: 'surface-map',
       altKey: 'mapAltUranus',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
     },
   ],
   sources: [JPL_APPROX_POS, NSSDC_URANUS],

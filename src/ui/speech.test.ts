@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import { bodyRadiusKm } from '../sim/layout';
 import { cardModel } from './cardModel';
-import { cleanForSpeech, speechLines } from './speech';
+import { cleanForSpeech, pickLocalVoice, speechLines } from './speech';
 
 describe('cleanForSpeech', () => {
   it('says minus signs, degrees and units as words', () => {
@@ -35,5 +35,24 @@ describe('speechLines', () => {
     for (const id of ids) {
       expect(speechLines(cardModel(id, catalogue)).join(' ')).not.toMatch(/°|·| km\b| cm\b|-\d/);
     }
+  });
+});
+
+describe('pickLocalVoice', () => {
+  const voice = (lang: string, localService: boolean, isDefault = false) => ({
+    lang,
+    localService,
+    default: isDefault,
+  });
+
+  it('never picks a voice that speaks through a server', () => {
+    expect(pickLocalVoice([voice('en-US', false, true), voice('en-GB', false)])).toBe(-1);
+    expect(pickLocalVoice([voice('en-US', false, true), voice('en-GB', true)])).toBe(1);
+  });
+
+  it('picks an English voice, the default one if there is one', () => {
+    expect(pickLocalVoice([voice('fr-FR', true, true), voice('en-AU', true)])).toBe(1);
+    expect(pickLocalVoice([voice('en-AU', true), voice('en-US', true, true)])).toBe(1);
+    expect(pickLocalVoice([])).toBe(-1);
   });
 });

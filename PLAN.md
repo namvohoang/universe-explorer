@@ -268,9 +268,9 @@ The owner asked for more objects, and for the things people have put in orbit ro
 - [x] 7.3 Space rocks: more asteroids with real orbits and shapes, and what a meteor and a meteorite are.
 - [x] 7.4 The International Space Station and other satellites round Earth: a new `spacecraft` kind,
       real orbit heights and periods, real 3D models where NASA publishes one.
-- [x] 7.5 Star patterns in 3D (Orion, the Big Dipper, the Southern Cross): a new `constellation`
+- [x] 7.5 Star patterns in 3D (Orion, the Big Dipper, Cassiopeia, the Southern Cross): a new `constellation`
       kind, each star placed from its ESA Hipparcos position and distance, first seen from the Sun
-      and then turned to show how far apart the stars really are. Cassiopeia is still to add.
+      and then turned to show how far apart the stars really are.
 
 **Acceptance:** every new object has a cited source for each number, a credited picture or model,
 a card with a recording, and passes the gate.

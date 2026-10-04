@@ -56,6 +56,7 @@ import { proximaCentauri } from './proximaCentauri';
 import { trappist1 } from './trappist1';
 import { milkyWay } from './milkyWay';
 import { m87BlackHole } from './m87BlackHole';
+import { cassiopeia } from './cassiopeia';
 import { southernCross } from './southernCross';
 import { bigDipper } from './bigDipper';
 import { orion } from './orion';
@@ -124,4 +125,5 @@ export const catalogue: readonly CelestialObject[] = [
   orion,
   bigDipper,
   southernCross,
+  cassiopeia,
 ];

@@ -60,4 +60,5 @@ export const NARRATION: Readonly<Record<string, { file: string; fingerprint: str
   orion: { file: 'public/voice/orion.mp3', fingerprint: '05d2742a' },
   'big-dipper': { file: 'public/voice/big-dipper.mp3', fingerprint: '71a62d0a' },
   'southern-cross': { file: 'public/voice/southern-cross.mp3', fingerprint: 'd173b01f' },
+  cassiopeia: { file: 'public/voice/cassiopeia.mp3', fingerprint: 'ec3fb3ed' },
 };

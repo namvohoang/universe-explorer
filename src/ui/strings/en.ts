@@ -317,6 +317,10 @@ export const en = {
   cardSouthernCrossFact1: 'It is best seen from the southern half of Earth.',
   cardSouthernCrossFact2: 'It is on the flags of Australia and New Zealand.',
   cardSouthernCrossFact3: 'One of its four stars is orange.',
+  cardCassiopeiaHello: 'Cassiopeia is a pattern of stars shaped like the letter W.',
+  cardCassiopeiaFact1: 'People long ago saw it as a queen sitting on her throne.',
+  cardCassiopeiaFact2: 'From the northern half of Earth you can see it on every clear night.',
+  cardCassiopeiaFact3: 'In the north it is highest in the sky on autumn and winter evenings.',
   nameBigDipper: 'The Big Dipper',
   nameSouthernCross: 'The Southern Cross',
   deepNoteCluster:

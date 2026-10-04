@@ -632,6 +632,13 @@ export const NASA_ORION_CONSTELLATION: Source = {
   retrieved: '2026-10-04',
 };
 
+export const NASA_HUBBLE_CASSIOPEIA: Source = {
+  id: 'nasa-hubble-cassiopeia',
+  title: 'NASA Science — Hubble Captures the Ghost of Cassiopeia',
+  url: 'https://science.nasa.gov/missions/hubble/hubble-captures-the-ghost-of-cassiopeia/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_ASTERISMS: Source = {
   id: 'nasa-asterisms',
   title: 'NASA Science — What Are Asterisms?',

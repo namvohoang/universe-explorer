@@ -17,6 +17,7 @@ import {
   NASA_FACTS_VENUS,
   NASA_FIRST_BLACK_HOLE_IMAGE,
   NASA_HUBBLE_M1,
+  NASA_HUBBLE_CASSIOPEIA,
   NASA_HUBBLE_M104,
   NASA_HUBBLE_NUMBERS,
   NASA_ISS_FACTS,
@@ -1031,5 +1032,33 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_APOD_SOUTHERN_CROSS],
+  },
+  {
+    id: 'cassiopeia',
+    hello: {
+      key: 'cardCassiopeiaHello',
+      sourceId: 'nasa-hubble-cassiopeia',
+      quote: 'Its distinctive "W" asterism',
+    },
+    facts: [
+      {
+        key: 'cardCassiopeiaFact1',
+        sourceId: 'nasa-hubble-cassiopeia',
+        quote: "which forms the queen's throne",
+      },
+      {
+        key: 'cardCassiopeiaFact2',
+        sourceId: 'nasa-hubble-cassiopeia',
+        quote:
+          'The constellation Cassiopeia is visible every clear night from mid-northern and higher latitudes.',
+      },
+      {
+        key: 'cardCassiopeiaFact3',
+        sourceId: 'nasa-hubble-cassiopeia',
+        quote: 'is best seen high in the sky on autumn and winter evenings',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_CASSIOPEIA],
   },
 ];

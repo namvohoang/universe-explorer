@@ -54,7 +54,7 @@ Nothing in the prototype's numbers or text is treated as verified.
 | Tests | Vitest |
 | Lint / format | ESLint, Prettier |
 | Read aloud | Web Speech API; natural voice is an open decision (§8) |
-| Hosting | Any static host; current target is a Hugging Face static Space |
+| Hosting | GitHub Pages, deployed by `.github/workflows/pages.yml` on every push to `main` |
 
 Pin versions when scaffolding, after checking current docs (context7). `package.json` scripts:
 `typecheck`, `lint`, `test`, `validate`, `build`, `dev`.
@@ -248,6 +248,17 @@ their own: they are drawn with their planet.)
 **Acceptance:** smooth on a mid-range tablet; usable with keyboard only and with a screen reader;
 no third-party request at runtime; credits page complete.
 
+### Phase 6 — Feedback from the first look (2026-10-04)
+
+The owner's notes after trying the app, each turned into a task.
+
+- [x] 6.1 Host on GitHub: GitHub Pages, deployed from `main`.
+- [ ] 6.2 Easier zoom and an obvious way back: on-screen zoom buttons and a Back button that is always there.
+- [ ] 6.3 The Sun and Halley's Comet should look like the real things in 3D, not a plain ball and a cone.
+- [ ] 6.4 A natural reading voice in place of the robotic device voice, with nothing sent to a server.
+- [ ] 6.5 3D objects for the things in Deep Space (black hole, galaxies, nebulae, the Pleiades, other
+      stars and their planets, giant stars), each labelled for what it is: built from data, or a model.
+
 ## 7. Testing
 
 | Layer | Tests |
@@ -262,11 +273,9 @@ Tolerances are named constants with a comment saying why. They are never widened
 
 ## 8. Open decisions
 
-1. **Natural voice (Kokoro).** The prototype downloads the library from a CDN and a ~90 MB model
-   from Hugging Face, which breaks "no third-party request". Options: serve both from the app's
-   own host behind an explicit opt-in, or drop it and keep the browser voice.
+1. **Natural voice.** Decided: wanted, since the device voice sounds robotic. See task 6.4.
 2. **Default scale mode.** `easy` (like the prototype) or `true-sizes`.
 3. **Languages.** English only, or English and Vietnamese from the start.
-4. **Hosting.** Stay on a Hugging Face static Space or move to another static host.
+4. **Hosting.** Decided: GitHub Pages.
 5. **Supported dates.** Limited by the planet elements chosen in 1.2; the longer-span JPL table
    trades accuracy for range.

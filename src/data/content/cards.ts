@@ -31,6 +31,7 @@ import {
   NASA_ISS_FACTS,
   NASA_JUNO,
   NASA_MRO,
+  NASA_PARKER,
   NASA_SATURN_V_KIDS,
   NASA_SHUTTLE_KIDS,
   NASA_SWIFT,
@@ -303,6 +304,36 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_PSYCHE],
+  },
+  {
+    id: 'parker-solar-probe',
+    hello: {
+      key: 'cardParkerSolarProbeHello',
+      sourceId: 'nasa-parker',
+      quote:
+        "Flying into the outermost part of the Sun's atmosphere, the corona, for the first time",
+    },
+    facts: [
+      {
+        key: 'cardParkerSolarProbeFact1',
+        sourceId: 'nasa-parker',
+        quote:
+          'Parker Solar Probe hurtles around the Sun at approximately 430,000 mph (700,000 kph)',
+      },
+      {
+        key: 'cardParkerSolarProbeFact2',
+        sourceId: 'nasa-parker',
+        quote:
+          'carbon-composite shield, which can withstand temperatures reaching nearly 2,500 degrees Fahrenheit (1,377 Celsius)',
+      },
+      {
+        key: 'cardParkerSolarProbeFact3',
+        sourceId: 'nasa-parker',
+        quote: 'Launch Aug. 12, 2018',
+      },
+    ],
+    moons: null,
+    sources: [NASA_PARKER],
   },
   {
     id: 'iss',

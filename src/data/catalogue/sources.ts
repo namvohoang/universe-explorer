@@ -671,6 +671,28 @@ export const SI_NEW_HORIZONS: Source = {
   retrieved: '2026-10-05',
 };
 
+export const JPL_HORIZONS_PARKER: Source = {
+  id: 'jpl-horizons-parker',
+  title:
+    'JPL Horizons — osculating orbital elements of Parker Solar Probe (-96) about the Sun at JD 2461317.5, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-96%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%4010%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272461317.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const APL_PARKER: Source = {
+  id: 'apl-parker',
+  title: 'Johns Hopkins APL — Parker Solar Probe: Spacecraft',
+  url: 'https://parkersolarprobe.jhuapl.edu/Spacecraft/index.php',
+  retrieved: '2026-10-05',
+};
+
+export const NASA_PARKER: Source = {
+  id: 'nasa-parker',
+  title: 'NASA Science — Parker Solar Probe',
+  url: 'https://science.nasa.gov/mission/parker-solar-probe/',
+  retrieved: '2026-10-05',
+};
+
 export const NASA_ISS_FACTS: Source = {
   id: 'nasa-iss-facts',
   title: 'NASA — International Space Station Facts and Figures',

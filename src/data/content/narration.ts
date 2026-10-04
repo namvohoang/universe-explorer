@@ -3,6 +3,7 @@
 export const NARRATION: Readonly<Record<string, { file: string; fingerprint: string }>> = {
   'solar-system': { file: 'public/voice/solar-system.mp3', fingerprint: '1e60f5c6' },
   sun: { file: 'public/voice/sun.mp3', fingerprint: '4a4e36e8' },
+  'parker-solar-probe': { file: 'public/voice/parker-solar-probe.mp3', fingerprint: '25cdb07f' },
   mercury: { file: 'public/voice/mercury.mp3', fingerprint: 'a74b3853' },
   venus: { file: 'public/voice/venus.mp3', fingerprint: '65a5ba33' },
   earth: { file: 'public/voice/earth.mp3', fingerprint: '6ad2e052' },

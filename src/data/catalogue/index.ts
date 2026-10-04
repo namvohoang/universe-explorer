@@ -8,6 +8,7 @@ import { mercury } from './mercury';
 import { moon } from './moon';
 import { iss } from './iss';
 import { hubble } from './hubble';
+import { parkerSolarProbe } from './parkerSolarProbe';
 import { spaceShuttle } from './spaceShuttle';
 import { saturnV } from './saturnV';
 import { cassini } from './cassini';
@@ -83,6 +84,7 @@ import { orion } from './orion';
  * Things beyond the solar system come last, nearest first. */
 export const catalogue: readonly CelestialObject[] = [
   sun,
+  parkerSolarProbe,
   mercury,
   venus,
   earth,

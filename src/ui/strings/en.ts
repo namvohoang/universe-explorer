@@ -477,6 +477,15 @@ export const en = {
     'A 3D scan of the real shuttle Discovery: a white and grey space plane with black edges, worn from many flights, standing on its wheels as it does in the museum.',
   deepNoteScan:
     'This is a 3D scan of the real spacecraft, made by the Smithsonian museum where it is kept. Turn it round to look at it from every side.',
+  cardParkerSolarProbeHello:
+    'Parker Solar Probe is a spacecraft that flies through the outer part of the Sun’s atmosphere.',
+  cardParkerSolarProbeFact1:
+    'At its closest to the Sun it races along at about 700,000 kilometres an hour.',
+  cardParkerSolarProbeFact2:
+    'A thick shield keeps it safe from heat of nearly 1,400 degrees Celsius.',
+  cardParkerSolarProbeFact3: 'It left Earth in August 2018.',
+  modelAltParkerSolarProbe:
+    'A 3D model of Parker Solar Probe: a small body behind a wide, flat white heat shield, with two solar panels folded at its sides.',
   nameIss: 'The International Space Station',
   cardIssHello:
     'The International Space Station is a home in space where astronauts live and work.',

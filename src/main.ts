@@ -1,5 +1,6 @@
 import './ui/fonts';
 import { catalogue } from './data/catalogue';
+import { isSatellite } from './data/types';
 import { distanceForAspect, litSideBearing } from './scene/flight';
 import {
   PLANET_ENLARGEMENT,
@@ -160,12 +161,12 @@ function start(): void {
   const chipsFor = (id: string | null): { id: string | null; label: string }[] => {
     if (isDeep(id)) return deep.map((object) => ({ id: object.id, label: displayName(object) }));
     const here = drawn.find((object) => object.id === id);
-    const planetId = here?.kind === 'moon' ? here.parentId : (here?.id ?? null);
+    const planetId = here && isSatellite(here) ? here.parentId : (here?.id ?? null);
     return [
       { id: null, label: en.wholeView },
       ...catalogue
         .filter((object) => drawn.includes(object) || isBelt(object.id))
-        .filter((object) => object.kind !== 'moon' || object.parentId === planetId)
+        .filter((object) => !isSatellite(object) || object.parentId === planetId)
         .map((object) => ({ id: object.id, label: displayName(object) })),
     ];
   };
@@ -228,6 +229,7 @@ function start(): void {
   const goTo = (id: string | null): void => {
     const wasDeep = isDeep(focus);
     focus = id;
+    if (id !== null && !isDeep(id)) system.showDetail(id);
     // Pictures need no camera move; coming back from one, the camera is put straight in place.
     if (!isDeep(id)) {
       if (wasDeep) stage.lookAt(currentView());
@@ -287,7 +289,7 @@ function start(): void {
   // Back goes up one level: from a moon to its planet, from anything else to the whole view.
   const backTarget = (): string | null => {
     const here = catalogue.find((object) => object.id === focus);
-    return here?.kind === 'moon' ? here.parentId : null;
+    return here && isSatellite(here) ? here.parentId : null;
   };
   const back = viewButton(en.back, '←', () => {
     goTo(backTarget());
@@ -352,7 +354,7 @@ function start(): void {
       id: object.id,
       name: displayName(object),
       label: `${en.goTo} ${displayName(object)}`,
-      parentId: object.kind === 'moon' ? object.parentId : null,
+      parentId: isSatellite(object) ? object.parentId : null,
     })),
     goTo,
   );
@@ -372,7 +374,10 @@ function start(): void {
     focus = wanted;
   }
   stage.lookAt(wholeView());
-  if (focus !== null && !isDeep(focus)) stage.lookAt(viewOf(focus));
+  if (focus !== null && !isDeep(focus)) {
+    system.showDetail(focus);
+    stage.lookAt(viewOf(focus));
+  }
   if (new URLSearchParams(window.location.search).has('compare')) compare.open();
   if (new URLSearchParams(window.location.search).has('grownups')) grownUps.open();
   showFocus();

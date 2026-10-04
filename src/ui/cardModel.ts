@@ -79,6 +79,10 @@ function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[])
     const parent = catalogue.find((o) => o.id === object.parentId);
     return fill(en.eyebrowMoon, { parent: parent ? displayName(parent) : '' });
   }
+  if (object.kind === 'spacecraft') {
+    const parent = catalogue.find((o) => o.id === object.parentId);
+    return fill(en.eyebrowSpacecraft, { parent: parent ? displayName(parent) : '' });
+  }
   if (object.kind === 'dwarf-planet') return en.eyebrowDwarfPlanet;
   if (object.kind === 'asteroid') return en.eyebrowAsteroid;
   if (object.kind === 'belt') return en.eyebrowBelt;
@@ -125,10 +129,12 @@ export function cardModel(
       ? en.beltNote
       : object.kind === 'comet'
         ? en.cometNote
-        : globeNote(
-            object.media.find((media) => media.role === 'surface-map' || media.role === 'model')
-              ?.kind,
-          );
+        : object.kind === 'spacecraft'
+          ? en.spacecraftNote
+          : globeNote(
+              object.media.find((media) => media.role === 'surface-map' || media.role === 'model')
+                ?.kind,
+            );
   let stats: Stat[];
   if (object.kind === 'belt') stats = beltStats(object);
   else if (isDeepSky(object)) stats = deepSkyStats(object);

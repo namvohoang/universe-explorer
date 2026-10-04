@@ -140,6 +140,9 @@ export const en = {
     'A dwarf planet goes around the Sun and is nearly round, but it shares its path with other things.',
   conceptMoonTitle: 'What is a moon?',
   conceptMoonText: 'A moon is a natural world that goes around a planet.',
+  conceptSpacecraftTitle: 'What is a satellite?',
+  conceptSpacecraftText:
+    'A satellite is anything that goes around something bigger. The Moon is one. People also build satellites and send them into space.',
   conceptAsteroidTitle: 'What is an asteroid?',
   conceptAsteroidText: 'An asteroid is a rocky bit left over from when the solar system was made.',
   conceptCometTitle: 'What is a comet?',
@@ -296,6 +299,27 @@ export const en = {
     'The stars are the right size next to each other, and each is the colour its heat gives it. A blue ring marks a star too small to see here. They are lined up to compare: really they are light-years apart.',
   deepNotePlanetSystem:
     'The star and the planets’ paths are the right size next to each other, and the planets go round at their real speeds. The planets are drawn {times} times too big so you can see them, and plain because nobody has seen what they look like.',
+  eyebrowSpacecraft: 'Built by people · goes around {parent}',
+  spacecraftNote:
+    'This is a 3D model made by NASA, not a photo. The path is the real one for one day. It keeps shifting, so where it is on the path today is not exact.',
+  statHeight: 'Above the ground',
+  valueMetresLong: '{n} metres long',
+  statLength: 'Size',
+  nameIss: 'The International Space Station',
+  cardIssHello:
+    'The International Space Station is a home in space where astronauts live and work.',
+  cardIssFact1: 'It goes around Earth about every 90 minutes.',
+  cardIssFact2: 'The crew see 16 sunrises and 16 sunsets every day.',
+  cardIssFact3: 'People have lived on it without a break since November 2000.',
+  modelAltIss:
+    'A 3D model of the space station: a long beam with wide, flat solar panels and a cluster of tube-shaped rooms in the middle.',
+  nameHubble: 'The Hubble Space Telescope',
+  cardHubbleHello: 'The Hubble Space Telescope is a telescope that goes around Earth.',
+  cardHubbleFact1: 'It goes around Earth once every 95 minutes.',
+  cardHubbleFact2: 'It is the size of a large school bus.',
+  cardHubbleFact3: 'Astronauts flew up to fix it five times.',
+  modelAltHubble:
+    'A 3D model of the telescope: a shiny silver tube with a flat solar panel on each side.',
   eyebrowAsteroid: 'Asteroid · goes around the Sun',
   helloAsteroid: '{name} is an asteroid.',
   eyebrowBelt: 'Belt · many small worlds going around the Sun',

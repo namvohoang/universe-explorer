@@ -6,6 +6,8 @@ import { mars } from './mars';
 import { phobos } from './phobos';
 import { mercury } from './mercury';
 import { moon } from './moon';
+import { iss } from './iss';
+import { hubble } from './hubble';
 import { neptune } from './neptune';
 import { saturn } from './saturn';
 import { saturnRings } from './saturnRings';
@@ -62,6 +64,8 @@ export const catalogue: readonly CelestialObject[] = [
   venus,
   earth,
   moon,
+  iss,
+  hubble,
   mars,
   phobos,
   deimos,

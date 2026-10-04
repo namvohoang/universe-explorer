@@ -1,5 +1,5 @@
 import type { CardContent, CelestialObject, ObjectOfKind } from '../data/types';
-import { isKnown } from '../data/types';
+import { isKnown, isSatellite } from '../data/types';
 import { lightTravelSeconds, orbitalPeriodDays, semiMajorAxisKm } from '../sim/elements';
 import { KM_PER_AU } from '../sim/constants';
 import { bodyRadiusKm } from '../sim/layout';
@@ -14,6 +14,7 @@ export interface Stat {
 }
 
 const HOURS_PER_DAY = 24;
+const METRES_PER_KM = 1000;
 const DAYS_PER_YEAR = 365.25;
 const KELVIN_TO_CELSIUS = 273.15;
 const NUMBER = new Intl.NumberFormat('en-GB');
@@ -95,10 +96,9 @@ export function objectStats(
       ? []
       : [
           {
-            label:
-              object.kind === 'moon'
-                ? fill(en.statTripAround, { parent: parentName })
-                : en.statYear,
+            label: isSatellite(object)
+              ? fill(en.statTripAround, { parent: parentName })
+              : en.statYear,
             value: formatDuration(orbitalPeriodDays(object.orbit) * HOURS_PER_DAY),
           },
         ];
@@ -120,6 +120,26 @@ export function objectStats(
       ...spinStat(object),
       ...sunlightStat(earth),
     ];
+  }
+  if (object.kind === 'spacecraft') {
+    const parentRadiusKm = parent ? bodyRadiusKm(parent) : null;
+    const height =
+      object.orbit === null || parentRadiusKm === null
+        ? []
+        : [
+            {
+              label: en.statHeight,
+              value: fill(en.valueKm, {
+                n: show(semiMajorAxisKm(object.orbit) - parentRadiusKm, 2),
+              }),
+            },
+          ];
+    const [longest] = object.shape.radiiKm.value;
+    const size = {
+      label: en.statLength,
+      value: fill(en.valueMetresLong, { n: show(2 * longest * METRES_PER_KM, 3) }),
+    };
+    return [...trip, ...height, size];
   }
   if (object.kind === 'moon') {
     const distance =

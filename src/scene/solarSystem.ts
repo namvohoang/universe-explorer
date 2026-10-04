@@ -24,6 +24,8 @@ export interface SolarSystem {
   setScale(scale: Scale): void;
   /** Where a body is now, in scene units. */
   positionOf(id: string): Vec3;
+  /** Makes sure a body's 3D model is loaded, for one that waits until somebody visits. */
+  showDetail(id: string): void;
   /** Drawn radius of a body under the current scale. */
   radiusOf(id: string): number;
   /** How big a body's glow is right now (a comet near the Sun); 0 for anything with none. */
@@ -160,6 +162,7 @@ export function createSolarSystem(
       if (!position) throw new Error(`No position for "${id}"; call setDate first`);
       return position;
     },
+    showDetail: (id) => bodies.get(id)?.loadDetail(),
     radiusOf: (id) => bodyOf(id).radius(),
     glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,
     setViewer(camera) {

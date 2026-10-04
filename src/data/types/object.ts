@@ -9,6 +9,7 @@ import type {
   RingBand,
   RingShape,
   SpheroidShape,
+  TriaxialShape,
 } from './shape';
 import type { Measured, Source, Sourced } from './source';
 
@@ -20,6 +21,7 @@ export const OBJECT_KINDS = [
   'moon',
   'asteroid',
   'comet',
+  'spacecraft',
   'ring-system',
   'belt',
   'exoplanet',
@@ -115,6 +117,18 @@ export interface Comet extends ObjectBase {
   readonly shape: BodyShape;
 }
 
+/** Something people built and put in orbit: a space station or a satellite. */
+export interface Spacecraft extends ObjectBase {
+  readonly kind: 'spacecraft';
+  readonly parentId: string;
+  /**
+   * Its overall size, as three equal radii of half its longest side. What it really looks
+   * like comes from its 3D model in `media`, which is drawn in place of a ball.
+   */
+  readonly shape: TriaxialShape;
+  readonly massKg: Measured<number>;
+}
+
 export interface RingSystem extends ObjectBase {
   readonly kind: 'ring-system';
   readonly parentId: string;
@@ -187,6 +201,7 @@ export type CelestialObject =
   | Moon
   | Asteroid
   | Comet
+  | Spacecraft
   | RingSystem
   | Belt
   | Exoplanet
@@ -197,3 +212,8 @@ export type CelestialObject =
 
 /** The object type for one kind, e.g. `ObjectOfKind<'moon'>` is `Moon`. */
 export type ObjectOfKind<K extends ObjectKind> = Extract<CelestialObject, { kind: K }>;
+
+/** A moon or a spacecraft: something that goes round a planet, natural or built. */
+export function isSatellite(object: CelestialObject): object is Moon | Spacecraft {
+  return object.kind === 'moon' || object.kind === 'spacecraft';
+}

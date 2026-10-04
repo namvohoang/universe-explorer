@@ -430,6 +430,43 @@ export const NASA_DWARF_PLANETS: Source = {
   retrieved: '2026-10-04',
 };
 
+export const JPL_HORIZONS_ISS: Source = {
+  id: 'jpl-horizons-iss',
+  title:
+    'JPL Horizons — osculating orbital elements of the International Space Station (-125544) about Earth at JD 2461317.5, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-125544%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272461317.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const JPL_HORIZONS_HUBBLE: Source = {
+  id: 'jpl-horizons-hubble',
+  title:
+    'JPL Horizons — osculating orbital elements of the Hubble Space Telescope (-48) about Earth at JD 2461317.5, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-48%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27ELEMENTS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-D%27&CSV_FORMAT=%27YES%27&TLIST=%272461317.5%27',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_ISS_FACTS: Source = {
+  id: 'nasa-iss-facts',
+  title: 'NASA — International Space Station Facts and Figures',
+  url: 'https://www.nasa.gov/international-space-station/space-station-facts-and-figures/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_HUBBLE_NUMBERS: Source = {
+  id: 'nasa-hubble-numbers',
+  title: 'NASA Science — Hubble by the Numbers',
+  url: 'https://science.nasa.gov/mission/hubble/overview/hubble-by-the-numbers/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_SATELLITE: Source = {
+  id: 'nasa-satellite',
+  title: 'NASA — What Is a Satellite? (Grades K-4)',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-is-a-satellite-grades-k-4/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_MOONS: Source = {
   id: 'nasa-moons',
   title: 'NASA Science — Moons of our solar system',

@@ -80,10 +80,10 @@ describe('true scale', () => {
   it('keeps every size and distance ratio of the catalogue', () => {
     for (const a of bodies) {
       for (const b of bodies) {
-        expect(scale.sizeToScene(radiusKm(a)) / scale.sizeToScene(radiusKm(b))).toBeCloseTo(
-          radiusKm(a) / radiusKm(b),
-          9,
-        );
+        // Compared as a ratio of ratios: Earth is millions of times wider than a spacecraft,
+        // and a number that big cannot be held to a fixed number of decimal places.
+        const drawn = scale.sizeToScene(radiusKm(a)) / scale.sizeToScene(radiusKm(b));
+        expect(drawn / (radiusKm(a) / radiusKm(b))).toBeCloseTo(1, 12);
       }
     }
     for (const a of orbiting) {
@@ -109,10 +109,10 @@ describe('true sizes', () => {
   it('keeps every size ratio of the catalogue', () => {
     for (const a of bodies) {
       for (const b of bodies) {
-        expect(scale.sizeToScene(radiusKm(a)) / scale.sizeToScene(radiusKm(b))).toBeCloseTo(
-          radiusKm(a) / radiusKm(b),
-          9,
-        );
+        // Compared as a ratio of ratios: Earth is millions of times wider than a spacecraft,
+        // and a number that big cannot be held to a fixed number of decimal places.
+        const drawn = scale.sizeToScene(radiusKm(a)) / scale.sizeToScene(radiusKm(b));
+        expect(drawn / (radiusKm(a) / radiusKm(b))).toBeCloseTo(1, 12);
       }
     }
   });

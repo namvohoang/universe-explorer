@@ -33,6 +33,8 @@ image's own page has been opened and read.
 | `public/media/deep/milky-way.webp` | milky-way | artist-concept | NASA/JPL-Caltech/R. Hurt (SSC/Caltech) | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/resource/the-milky-way-galaxy/ | 2026-10-04 | The picture of the page (ssc2008-10b1, with labels) at 1600 pixels wide, converted to WebP. |
 | `public/media/deep/m87-black-hole.webp` | m87-black-hole | false-colour | Event Horizon Telescope Collaboration | The NASA page credits the Event Horizon Telescope Collaboration, which is not NASA, and shows no copyright notice. Check the Collaboration's own terms before any wider use. | https://science.nasa.gov/resource/first-image-of-a-black-hole/ | 2026-10-04 | The main picture of the page (blackhole_1600) at 1600 pixels wide, converted to WebP. It was made from radio telescope data, which has no colour of its own. |
 | `public/media/models/sun.glb` | sun | artist-concept | NASA. The page gives no credit line. | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/learn/heat/resource/sun-3d-model/ | 2026-10-04 | The glTF model offered on the page, with its texture re-encoded as JPEG at half size. The page does not say how the texture was made, so it is treated as an artist's rendering. |
+| `public/media/models/iss.glb` | iss | artist-concept | NASA Visualization Technology Applications and Development (VTAD) | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/resource/international-space-station-3d-model/ | 2026-10-04 | The glTF model offered on the page (42 MB), made lighter with glTF-Transform: textures at 256 pixels as WebP, duplicate and near-flat detail merged or simplified, geometry packed with meshopt. Nothing was added or reshaped. |
+| `public/media/models/hubble.glb` | hubble | artist-concept | NASA Visualization Technology Applications and Development (VTAD) | NASA media usage guidelines: generally not subject to copyright in the US, NASA acknowledged as the source. No copyright notice on the page. | https://science.nasa.gov/resource/hubble-space-telescope-3d-model/ | 2026-10-04 | The glTF model offered on the page (11 MB), made lighter with glTF-Transform: textures at 512 pixels as WebP, geometry simplified by half and packed with meshopt. Nothing was added or reshaped. |
 
 The Sun is drawn from NASA's own 3D model of it, not from a map.
 
@@ -60,7 +62,7 @@ ship with the app.
 
 | What | Made with | Licence | Source |
 |---|---|---|---|
-| 52 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
+| 54 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
 
 ## Fonts
 

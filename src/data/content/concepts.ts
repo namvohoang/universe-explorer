@@ -11,6 +11,7 @@ import {
   NASA_HUBBLE_M45,
   NASA_HUBBLE_M87,
   NASA_MOONS,
+  NASA_SATELLITE,
   NASA_TRAPPIST1,
   NASA_WHAT_IS_A_PLANET,
 } from '../catalogue/sources';
@@ -59,6 +60,16 @@ export const concepts: readonly ConceptContent[] = [
         'Naturally-formed bodies that orbit planets are called moons, or planetary satellites.',
     },
     source: NASA_MOONS,
+  },
+  {
+    kind: 'spacecraft',
+    titleKey: 'conceptSpacecraftTitle',
+    text: {
+      key: 'conceptSpacecraftText',
+      sourceId: 'nasa-satellite',
+      quote: 'A satellite is an object that moves around a larger object.',
+    },
+    source: NASA_SATELLITE,
   },
   {
     kind: 'asteroid',

@@ -7,6 +7,8 @@ export const NARRATION: Readonly<Record<string, { file: string; fingerprint: str
   venus: { file: 'public/voice/venus.mp3', fingerprint: '65a5ba33' },
   earth: { file: 'public/voice/earth.mp3', fingerprint: '6ad2e052' },
   moon: { file: 'public/voice/moon.mp3', fingerprint: '73833d54' },
+  iss: { file: 'public/voice/iss.mp3', fingerprint: '5ab93e3a' },
+  hubble: { file: 'public/voice/hubble.mp3', fingerprint: '1044215d' },
   mars: { file: 'public/voice/mars.mp3', fingerprint: 'ea780ff9' },
   phobos: { file: 'public/voice/phobos.mp3', fingerprint: '897d856f' },
   deimos: { file: 'public/voice/deimos.mp3', fingerprint: '343449d3' },

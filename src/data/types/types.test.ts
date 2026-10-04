@@ -30,6 +30,7 @@ function kindOf(object: CelestialObject): ObjectKind {
     case 'moon':
     case 'asteroid':
     case 'comet':
+    case 'spacecraft':
     case 'ring-system':
     case 'belt':
     case 'exoplanet':

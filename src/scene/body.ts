@@ -17,6 +17,7 @@ import {
   type Material,
   type Texture,
 } from 'three';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { CelestialObject, RingSystem, SpheroidShape, TriaxialShape } from '../data/types';
 import { eclipticToScene, northPoleEcliptic, poleOf } from '../sim/frames';
@@ -89,6 +90,8 @@ export interface Body {
   /** Drawn longest radius under the current scale. */
   radius(): number;
   setScale(scale: Scale): void;
+  /** Fetches the body's 3D model if it has one that was put off until needed. */
+  loadDetail(): void;
   /** Turns the body to where it is at this date. */
   setDate(jd: number): void;
   /**
@@ -148,7 +151,8 @@ function createGlow(): Sprite {
  * one whatever size the file was made at. Until it arrives (or if it cannot), the sphere stays.
  */
 function loadModel(file: string, sphere: Mesh, onDispose: (dispose: () => void) => void): void {
-  new GLTFLoader().load(mediaUrl(file), (gltf) => {
+  // The larger models are stored compressed (meshopt); the decoder ships with the app.
+  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(mediaUrl(file), (gltf) => {
     const model = gltf.scene;
     const bounds = new Box3().setFromObject(model).getBoundingSphere(new Sphere());
     if (!(bounds.radius > 0)) return;
@@ -237,7 +241,19 @@ export function createBody(
 
   const extras: (() => void)[] = [];
   const model = object.media.find((media) => media.role === 'model');
-  if (model) loadModel(model.file, mesh, (dispose) => extras.push(dispose));
+  let modelWanted = model !== undefined;
+  const loadDetail = (): void => {
+    if (!model || !modelWanted) return;
+    modelWanted = false;
+    loadModel(model.file, mesh, (dispose) => extras.push(dispose));
+  };
+  if (object.kind === 'spacecraft') {
+    // A spacecraft is nothing like a ball, so no ball is drawn while its model is on the way.
+    // The model is big and the craft tiny, so it is only fetched when someone goes to see it.
+    material.visible = false;
+  } else {
+    loadDetail();
+  }
   if (object.kind === 'star') {
     const glow = createGlow();
     flattened.add(glow);
@@ -277,6 +293,7 @@ export function createBody(
     id: object.id,
     group,
     radius: () => longest,
+    loadDetail,
     setScale,
     setDate(jd) {
       if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd);

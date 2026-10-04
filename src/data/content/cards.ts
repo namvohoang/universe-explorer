@@ -18,6 +18,8 @@ import {
   NASA_FIRST_BLACK_HOLE_IMAGE,
   NASA_HUBBLE_M1,
   NASA_HUBBLE_M104,
+  NASA_HUBBLE_NUMBERS,
+  NASA_ISS_FACTS,
   NASA_HUBBLE_M31,
   NASA_HUBBLE_M33,
   NASA_HUBBLE_M51,
@@ -215,6 +217,63 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_FACTS_MOON],
+  },
+  {
+    id: 'iss',
+    hello: {
+      key: 'cardIssHello',
+      sourceId: 'nasa-iss-facts',
+      quote:
+        'An international crew of seven people live and work while traveling at a speed of five miles per second, orbiting Earth about every 90 minutes.',
+    },
+    facts: [
+      {
+        key: 'cardIssFact1',
+        sourceId: 'nasa-iss-facts',
+        quote: 'orbiting Earth about every 90 minutes',
+      },
+      {
+        key: 'cardIssFact2',
+        sourceId: 'nasa-iss-facts',
+        quote:
+          'In 24 hours, the space station makes 16 orbits of Earth, traveling through 16 sunrises and sunsets.',
+      },
+      {
+        key: 'cardIssFact3',
+        sourceId: 'nasa-iss-facts',
+        quote: 'The space station has been continuously occupied since November 2000.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_ISS_FACTS],
+  },
+  {
+    id: 'hubble',
+    hello: {
+      key: 'cardHubbleHello',
+      sourceId: 'nasa-hubble-numbers',
+      quote:
+        'The Hubble Space Telescope is in low-Earth orbit, making one revolution around Earth every 95 minutes.',
+    },
+    facts: [
+      {
+        key: 'cardHubbleFact1',
+        sourceId: 'nasa-hubble-numbers',
+        quote: 'making one revolution around Earth every 95 minutes',
+      },
+      {
+        key: 'cardHubbleFact2',
+        sourceId: 'nasa-hubble-numbers',
+        quote: 'Hubble is the size of a large school bus and weighs 27,000 pounds (12,200 kg).',
+      },
+      {
+        key: 'cardHubbleFact3',
+        sourceId: 'nasa-hubble-numbers',
+        quote: 'Astronauts serviced Hubble on five separate shuttle missions.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_NUMBERS],
   },
   {
     id: 'mars',

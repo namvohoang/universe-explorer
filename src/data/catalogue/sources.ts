@@ -98,3 +98,73 @@ export const NSSDC_URANUS_RINGS: Source = {
   url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/uranringfact.html',
   retrieved: '2026-10-04',
 };
+
+export const NASA_FACTS_EARTH: Source = {
+  id: 'nasa-facts-earth',
+  title: 'NASA Science — Earth facts',
+  url: 'https://science.nasa.gov/earth/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_JUPITER: Source = {
+  id: 'nasa-facts-jupiter',
+  title: 'NASA Science — Jupiter facts',
+  url: 'https://science.nasa.gov/jupiter/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_MARS: Source = {
+  id: 'nasa-facts-mars',
+  title: 'NASA Science — Mars facts',
+  url: 'https://science.nasa.gov/mars/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_MERCURY: Source = {
+  id: 'nasa-facts-mercury',
+  title: 'NASA Science — Mercury facts',
+  url: 'https://science.nasa.gov/mercury/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_MOON: Source = {
+  id: 'nasa-facts-moon',
+  title: 'NASA Science — Moon facts',
+  url: 'https://science.nasa.gov/moon/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_NEPTUNE: Source = {
+  id: 'nasa-facts-neptune',
+  title: 'NASA Science — Neptune facts',
+  url: 'https://science.nasa.gov/neptune/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_SATURN: Source = {
+  id: 'nasa-facts-saturn',
+  title: 'NASA Science — Saturn facts',
+  url: 'https://science.nasa.gov/saturn/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_SUN: Source = {
+  id: 'nasa-facts-sun',
+  title: 'NASA Science — Sun facts',
+  url: 'https://science.nasa.gov/sun/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_URANUS: Source = {
+  id: 'nasa-facts-uranus',
+  title: 'NASA Science — Uranus facts',
+  url: 'https://science.nasa.gov/uranus/facts/',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_FACTS_VENUS: Source = {
+  id: 'nasa-facts-venus',
+  title: 'NASA Science — Venus facts',
+  url: 'https://science.nasa.gov/venus/facts/',
+  retrieved: '2026-10-04',
+};

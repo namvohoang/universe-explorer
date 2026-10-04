@@ -54,6 +54,7 @@ Every record carries `sources`: URL, what was taken from it, date retrieved. Pre
 | Asteroids, comets | JPL Small-Body Database — https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html |
 | Exoplanets | NASA Exoplanet Archive — https://exoplanetarchive.ipac.caltech.edu/ |
 | Names, classes | IAU — https://www.iau.org/ |
+| Spacecraft sizes and facts | The agency or mission operator's own pages (NASA, ESA, JAXA, Roscosmos, JHU APL, JPL), or the Smithsonian for craft in its collection |
 
 Wikipedia is fine for finding a source, never as the source.
 

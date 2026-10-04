@@ -18,6 +18,9 @@ Rules for every picture, texture map and video frame the app shows.
 | ESO | eso.org |
 | NOIRLab | noirlab.edu |
 | USGS Astrogeology (surface maps) | astrogeology.usgs.gov |
+| Smithsonian 3D (museum scans of real craft) | 3d.si.edu |
+| Mission operators' own sites | jhuapl.edu (New Horizons, Parker Solar Probe), jpl.nasa.gov mission pages |
+| Other space agencies | jaxa.jp, roscosmos.ru |
 
 Anything else needs the user's approval first. Never use stock sites, wallpaper sites, social
 media, search-engine thumbnails or AI-generated images.

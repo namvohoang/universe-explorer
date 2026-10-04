@@ -49,6 +49,13 @@ export const venus: Planet = {
     },
     validity: { fromYear: s(1800, 'jpl-approx-pos'), toYear: s(2050, 'jpl-approx-pos') },
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/venus.webp',
+      kind: 'false-colour',
+      role: 'surface-map',
+      altKey: 'mapAltVenus',
+    },
+  ],
   sources: [JPL_APPROX_POS, NSSDC_VENUS],
 };

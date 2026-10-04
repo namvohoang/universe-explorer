@@ -57,6 +57,13 @@ export const saturn: Planet = {
     },
     validity: { fromYear: s(1800, 'jpl-approx-pos'), toYear: s(2050, 'jpl-approx-pos') },
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/saturn.webp',
+      kind: 'artist-concept',
+      role: 'surface-map',
+      altKey: 'mapAltSaturn',
+    },
+  ],
   sources: [JPL_APPROX_POS, NSSDC_SATURN],
 };

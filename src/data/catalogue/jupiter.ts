@@ -57,6 +57,13 @@ export const jupiter: Planet = {
     },
     validity: { fromYear: s(1800, 'jpl-approx-pos'), toYear: s(2050, 'jpl-approx-pos') },
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/jupiter.webp',
+      kind: 'composite',
+      role: 'surface-map',
+      altKey: 'mapAltJupiter',
+    },
+  ],
   sources: [JPL_APPROX_POS, NSSDC_JUPITER],
 };

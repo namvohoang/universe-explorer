@@ -57,6 +57,13 @@ export const neptune: Planet = {
     },
     validity: { fromYear: s(1800, 'jpl-approx-pos'), toYear: s(2050, 'jpl-approx-pos') },
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/neptune.webp',
+      kind: 'artist-concept',
+      role: 'surface-map',
+      altKey: 'mapAltNeptune',
+    },
+  ],
   sources: [JPL_APPROX_POS, NSSDC_NEPTUNE],
 };

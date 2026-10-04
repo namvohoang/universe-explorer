@@ -178,7 +178,8 @@ supported date range; in `true` mode every size and distance ratio equals the ca
 
 - [x] 2.1 Scene shell: renderer, camera, orbit controls, fly-to, resize, reduced-motion handling.
 - [x] 2.2 Bodies as spheroids with real flattening, tilt, pole direction and spin (including retrograde).
-- [~] 2.3 Real surface maps for the Sun, planets and Moon, each credited; honest labels for false-colour maps.
+- [x] 2.3 Surface maps for the planets and Moon from trusted sites, each credited, with honest kinds (Saturn,
+      Uranus and Neptune have only artist's textures). The Sun stays unmapped: no globe map of it exists there.
 - [ ] 2.4 Saturn's rings (and the fainter ring systems) at real radii; ring shadow and planet shadow.
 - [ ] 2.5 Orbit paths drawn from the same elements that move the bodies.
 - [ ] 2.6 Lighting from the Sun: day and night sides, Moon phases.

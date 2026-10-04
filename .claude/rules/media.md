@@ -59,5 +59,5 @@ Do not add a row for an image whose page you have not opened and read.
 ## Files
 
 - Stored in the repo and served by the app; never hotlinked from an agency site.
-- Web-sized (AVIF or WebP with a fallback), with the original source recorded.
+- Web-sized WebP, with the original source recorded.
 - Every image has alt text that describes what is shown in words a child understands.

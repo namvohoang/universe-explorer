@@ -3,9 +3,12 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
+  SRGBColorSpace,
   SphereGeometry,
+  TextureLoader,
   Vector3,
   type Material,
+  type Texture,
 } from 'three';
 import type { CelestialObject, SpheroidShape } from '../data/types';
 import { eclipticToScene, northPoleEcliptic, poleOf } from '../sim/frames';
@@ -14,9 +17,10 @@ import type { Scale } from '../sim/scale';
 import { spinAngleRad } from '../sim/spin';
 
 const SPHERE_SEGMENTS = { width: 64, height: 32 };
-/** Plain surface colours until real maps arrive (PLAN.md task 2.3). */
+/** Plain colours for a body with no surface map, and while a map is still loading. */
 const UNMAPPED_SURFACE = '#b9b4ab';
 const UNMAPPED_STAR = '#fff1c9';
+const ANISOTROPY = 4;
 
 const SCENE_UP = new Vector3(0, 1, 0);
 
@@ -33,11 +37,37 @@ export interface Body {
   dispose(): void;
 }
 
-function surfaceMaterial(object: CelestialObject): Material {
+/** Where the app serves a catalogue media file from: `public/` is the site root. */
+function mediaUrl(file: string): string {
+  return import.meta.env.BASE_URL + file.replace(/^public\//, '');
+}
+
+interface Surface {
+  readonly material: Material;
+  readonly texture: Texture | null;
+}
+
+function createSurface(object: CelestialObject): Surface {
   // A star shines by itself; everything else is lit by it.
-  return object.kind === 'star'
-    ? new MeshBasicMaterial({ color: UNMAPPED_STAR })
-    : new MeshStandardMaterial({ color: UNMAPPED_SURFACE, roughness: 0.95, metalness: 0 });
+  if (object.kind === 'star') {
+    return { material: new MeshBasicMaterial({ color: UNMAPPED_STAR }), texture: null };
+  }
+  const material = new MeshStandardMaterial({
+    color: UNMAPPED_SURFACE,
+    roughness: 0.95,
+    metalness: 0,
+  });
+  const map = object.media.find((media) => media.role === 'surface-map');
+  if (!map) return { material, texture: null };
+
+  const texture = new TextureLoader().load(mediaUrl(map.file), () => {
+    material.map = texture;
+    material.color.set('#ffffff');
+    material.needsUpdate = true;
+  });
+  texture.colorSpace = SRGBColorSpace;
+  texture.anisotropy = ANISOTROPY;
+  return { material, texture };
 }
 
 export function createBody(object: CelestialObject, shape: SpheroidShape, scale: Scale): Body {
@@ -55,7 +85,7 @@ export function createBody(object: CelestialObject, shape: SpheroidShape, scale:
   group.add(tilt);
 
   const geometry = new SphereGeometry(1, SPHERE_SEGMENTS.width, SPHERE_SEGMENTS.height);
-  const material = surfaceMaterial(object);
+  const { material, texture } = createSurface(object);
   // The flattening lives on a holder so the spinning mesh inside stays a unit sphere.
   const flattened = new Group();
   const mesh = new Mesh(geometry, material);
@@ -81,6 +111,7 @@ export function createBody(object: CelestialObject, shape: SpheroidShape, scale:
     dispose() {
       geometry.dispose();
       material.dispose();
+      texture?.dispose();
     },
   };
 }

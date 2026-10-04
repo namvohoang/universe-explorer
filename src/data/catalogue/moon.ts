@@ -46,6 +46,13 @@ export const moon: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/moon.webp',
+      kind: 'composite',
+      role: 'surface-map',
+      altKey: 'mapAltMoon',
+    },
+  ],
   sources: [JPL_SAT_ELEM, NSSDC_MOON],
 };

@@ -28,6 +28,7 @@ import { createCompare } from './ui/compare';
 import { create, mustFind } from './ui/dom';
 import { fill } from './ui/format';
 import { createGrownUps } from './ui/grownups';
+import { formatLink, parseLink } from './ui/link';
 import { watchLayout } from './ui/layout';
 import { mediaUrl } from './ui/mediaUrl';
 import { createMarkers } from './ui/markers';
@@ -272,11 +273,42 @@ function start(): void {
     }
   };
 
-  const goTo = (id: string | null): void => {
+  // The address follows the place, so the device's back button works like the Back button here.
+  // There are at most two steps of history: the whole view, and on top of it the place in focus.
+  const placeInHistory = (): string | null => {
+    const state: unknown = history.state;
+    if (typeof state !== 'object' || state === null || !('place' in state)) return null;
+    return typeof state.place === 'string' ? state.place : null;
+  };
+  const addressOf = (id: string | null): string =>
+    window.location.pathname + formatLink(window.location.search, id, scale.mode);
+  /** Set while the app itself steps back to the whole view, so the step is not acted on twice. */
+  let steppingBack = false;
+  const record = (id: string | null): void => {
+    try {
+      if (id === null) {
+        if (placeInHistory() === null) {
+          history.replaceState({ place: null }, '', addressOf(null));
+        } else {
+          steppingBack = true;
+          history.back();
+        }
+      } else if (placeInHistory() === null) {
+        history.pushState({ place: id }, '', addressOf(id));
+      } else {
+        history.replaceState({ place: id }, '', addressOf(id));
+      }
+    } catch {
+      // Some browsers refuse to change the address of a page opened from a file. Nothing is lost.
+    }
+  };
+
+  const goTo = (id: string | null, fromHistory = false): void => {
     compare.close();
     const wasDeep = isDeep(focus);
     focus = id;
     browse = null;
+    if (!fromHistory) record(id);
     if (id !== null && !isDeep(id)) system.showDetail(id);
     // Pictures need no camera move; coming back from one, the camera is put straight in place.
     if (!isDeep(id)) {
@@ -309,10 +341,15 @@ function start(): void {
   );
   mustFind('#main-tabs').append(mainTabs.element);
 
-  const placeRow = createPlaceRow(goTo, (group) => {
-    browse = group;
-    showRow();
-  });
+  const placeRow = createPlaceRow(
+    (id) => {
+      goTo(id);
+    },
+    (group) => {
+      browse = group;
+      showRow();
+    },
+  );
   window.addEventListener('keydown', (event) => {
     if (event.target instanceof HTMLInputElement) return;
     if (event.key === '+' || event.key === '=') stage.zoom(ZOOM_STEP);
@@ -371,6 +408,11 @@ function start(): void {
     system.setScale(scale);
     system.setDate(clock.jd);
     showScale();
+    try {
+      history.replaceState(history.state, '', addressOf(focus));
+    } catch {
+      // See record().
+    }
     viewLabel.textContent = SCALE_OPTION_LABELS[mode];
     menuButton.setAttribute('aria-label', fill(en.viewMenu, { mode: SCALE_OPTION_LABELS[mode] }));
     scaleChoice.show(mode);
@@ -477,16 +519,38 @@ function start(): void {
     goTo,
   );
 
-  // A link can open straight onto one body: ?go=saturn
-  const wanted = new URLSearchParams(window.location.search).get('go');
-  const wantedScale = new URLSearchParams(window.location.search).get('scale');
-  const linkedScale = SCALE_MODES.find((mode) => mode === wantedScale);
-  if (linkedScale) {
-    setScale(linkedScale);
+  // A link can open straight onto one place and one scale mode: ?scale=true-sizes#saturn
+  const isPlace = (id: string | null): id is string =>
+    drawn.some((object) => object.id === id) || isBelt(id) || isDeep(id);
+  const link = parseLink(window.location.search, window.location.hash);
+  // An id nobody knows opens the whole view.
+  if (isPlace(link.place)) focus = link.place;
+  const linkedScale = SCALE_MODES.find((mode) => mode === link.scale);
+  if (linkedScale) setScale(linkedScale);
+  try {
+    history.replaceState({ place: null }, '', addressOf(null));
+    if (focus !== null) history.pushState({ place: focus }, '', addressOf(focus));
+  } catch {
+    // See record().
   }
-  if (drawn.some((object) => object.id === wanted) || isBelt(wanted) || isDeep(wanted)) {
-    focus = wanted;
-  }
+  window.addEventListener('popstate', () => {
+    if (steppingBack) {
+      steppingBack = false;
+      return;
+    }
+    // Forward again to a place, or an address typed by hand.
+    const typed = parseLink('', window.location.hash).place;
+    const place = placeInHistory() ?? (isPlace(typed) ? typed : null);
+    if (place !== null && isPlace(place)) {
+      if (placeInHistory() === null) history.replaceState({ place }, '', addressOf(place));
+      goTo(place, true);
+      return;
+    }
+    // Back: up one level, like the Back button. From a moon that is its planet.
+    const up = backTarget();
+    if (up !== null) history.pushState({ place: up }, '', addressOf(up));
+    goTo(up, true);
+  });
   stage.lookAt(wholeView());
   if (focus !== null && !isDeep(focus)) {
     system.showDetail(focus);

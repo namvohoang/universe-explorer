@@ -320,7 +320,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
       that traps focus. At 390×844 the 3D view keeps at least 45% of the screen with the sheet peeking.
 - [x] 8.6 Phone landscape (500 px high or less): the card is a side panel, the controls one
       column on the right, the place row one line.
-- [ ] 8.7 The URL follows the place: the focus id in the hash (`#saturn`) with `pushState`, read
+- [x] 8.7 The URL follows the place: the focus id in the hash (`#saturn`) with `pushState`, read
       on load and on `popstate`, so the device back button goes up one level. The scale mode stays
       in `?scale=` and old `?go=` links keep working. Unknown ids fall back to the whole view.
 - [ ] 8.8 First visit and tapping: a pulsing ring on Earth and a "Tap a planet to fly there" hint,

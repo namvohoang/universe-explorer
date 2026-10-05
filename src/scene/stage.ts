@@ -10,7 +10,7 @@ import {
   type Flight,
   type View,
 } from './flight';
-import { pixelsFor } from './projection';
+import { USUAL_NEAR, nearPlaneFor, pixelsFor } from './projection';
 import { createFrameWatch, lowerPixelRatio } from './quality';
 
 const BACKGROUND = '#05070f';
@@ -97,7 +97,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   const scene = new Scene();
   scene.background = new Color(BACKGROUND);
 
-  const camera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, 1e-4, 1e6);
+  const camera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, 1e6);
   camera.position.set(0, 30, 60);
 
   const controls = new OrbitControls(camera, canvas);
@@ -181,6 +181,12 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     for (const callback of frameCallbacks) callback(dt);
     moveCamera(dt);
     controls.update(dt);
+    // Close in on something tiny, and it must not be cut away for being too near the camera.
+    const near = nearPlaneFor(camera.position.distanceTo(controls.target));
+    if (near !== camera.near) {
+      camera.near = near;
+      camera.updateProjectionMatrix();
+    }
     camera.updateMatrixWorld();
     for (const callback of cameraCallbacks) callback();
     renderer.render(scene, camera);

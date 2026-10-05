@@ -107,6 +107,12 @@ ship with the app.
 |---|---|---|---|
 | 80 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
 
+## App icon
+
+| File | What | Made by | Licence |
+|---|---|---|---|
+| `public/icon.svg`, `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` | The app's icon: a drawing of a ringed planet, not a picture of a real one | Drawn for this project (2026-10-05); the PNG files are the SVG rendered at each size | Same as the project |
+
 ## Fonts
 
 Bundled with the app from the npm packages below and served from the app's own origin. Latin

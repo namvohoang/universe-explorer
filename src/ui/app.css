@@ -2,6 +2,11 @@
   color-scheme: dark;
   --void: #060914;
   --panel: rgba(15, 22, 46, 0.84);
+  --panel-solid: #0f162e;
+  /* Room taken by the top bar and the tray, measured as the app runs (src/ui/layout.ts). */
+  --top-h: 96px;
+  --bottom-h: 200px;
+  --free-h: calc(100dvh - var(--top-h) - var(--bottom-h));
   --line: rgba(160, 180, 255, 0.2);
   --ink: #f4eedc;
   --ink-dim: #aeb6d2;
@@ -139,7 +144,7 @@ button:focus-visible {
   inset: 0;
   z-index: 1;
   margin: 0;
-  padding: 96px 16px 150px 388px;
+  padding: calc(var(--top-h) + 12px) 16px calc(var(--bottom-h) + 12px) 388px;
   box-sizing: border-box;
   background: var(--void);
   display: flex;
@@ -172,7 +177,7 @@ body.deep .solar-only {
 
 /* With a 3D model on screen, the real picture is a small card in the corner. */
 body.deep-3d #picture:not(.big) {
-  inset: auto 16px 150px auto;
+  inset: auto 16px calc(var(--bottom-h) + 12px) auto;
   width: min(230px, 40vw);
   padding: 6px;
   background: var(--panel);
@@ -188,7 +193,7 @@ body.deep-3d #picture:not(.big) figcaption {
 
 /* Keep the zoom buttons clear of the picture in the corner. */
 body.deep-3d .view-controls {
-  top: 30%;
+  top: calc(var(--top-h) + var(--free-h) * 0.3);
 }
 
 body.deep-3d #picture.big {
@@ -266,20 +271,29 @@ body.deep-3d #picture.big {
   position: fixed;
   z-index: 4;
   left: 16px;
-  top: calc(96px + env(safe-area-inset-top, 0px));
+  top: calc(var(--top-h) + 12px);
   width: min(340px, calc(100vw - 32px));
-  /* Ends above the clock bar and the two rows of chips below it. */
-  max-height: calc(100vh - 310px);
-  overflow: auto;
-  padding: 16px;
-  background: var(--panel);
+  /* Fits between the top bar and the tray, however tall they are. */
+  max-height: calc(var(--free-h) - 24px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--panel-solid);
   border: 1px solid var(--line);
-  border-radius: 18px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 16px 14px;
 }
 
 .card-head {
+  flex: none;
+  padding: 16px 16px 0;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -376,7 +390,7 @@ body.deep-3d #picture.big {
   position: fixed;
   z-index: 3;
   right: 16px;
-  top: 50%;
+  top: calc(var(--top-h) + var(--free-h) / 2);
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -461,7 +475,11 @@ body.deep:not(.deep-3d) .view-controls button:not(.back) {
 }
 
 .card-actions {
-  margin-top: 14px;
+  flex: none;
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--line);
 }
 
 button.primary {
@@ -491,7 +509,7 @@ button.primary {
   left: 16px;
   right: 16px;
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  max-height: 70vh;
+  max-height: 70dvh;
   overflow: auto;
   padding: 14px 16px 16px;
   background: rgba(10, 15, 34, 0.96);
@@ -644,13 +662,13 @@ button.quiet {
 
 @media (max-width: 700px) {
   #picture {
-    padding: 110px 12px 55vh;
+    padding: calc(var(--top-h) + 12px) 12px 55dvh;
   }
 
   .card {
     top: auto;
-    bottom: calc(190px + env(safe-area-inset-bottom, 0px));
-    max-height: 40vh;
+    bottom: calc(var(--bottom-h) + 12px);
+    max-height: min(40dvh, calc(var(--free-h) - 24px));
   }
 
   .chips {

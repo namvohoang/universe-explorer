@@ -40,7 +40,10 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   read.type = 'button';
   const actions = create('div', 'card-actions');
   actions.append(read);
-  element.append(head, hello, stats, factsTitle, facts, conceptTitle, concept, globe, actions);
+  // The words scroll; the buttons below them stay put, so they are always in reach.
+  const body = create('div', 'card-body');
+  body.append(hello, stats, factsTitle, facts, conceptTitle, concept, globe);
+  element.append(head, body, actions);
 
   let shown: CardModel | null = null;
   let recording: string | null = null;
@@ -95,6 +98,7 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
       shown = model;
       recording = narration;
       read.hidden = narration === null && speaker === null;
+      actions.hidden = read.hidden;
       eyebrow.textContent = model.eyebrow;
       name.textContent = model.name;
       hello.textContent = model.hello;
@@ -114,7 +118,7 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
       globe.hidden = model.note === null;
       globe.textContent = model.note ?? '';
       element.hidden = false;
-      element.scrollTop = 0;
+      body.scrollTop = 0;
     },
     hide() {
       stopReading();

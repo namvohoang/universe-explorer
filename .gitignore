@@ -27,3 +27,5 @@ coverage/
 tools/narrate/.venv/
 tools/narrate/out/
 __pycache__/
+test-results/
+playwright-report/

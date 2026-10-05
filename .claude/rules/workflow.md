@@ -33,6 +33,7 @@ Run every check whose script exists in `package.json` (skip one that isn't scaff
 | Tests | `npm test` |
 | Data and credits | `npm run validate` (catalogue schema, sources present, every media file in `CREDITS.md`) |
 | Build | `npm run build` |
+| Layout | `npm run test:e2e` (Playwright, against the build: nothing overlaps at the five screen sizes) |
 
 Keep these script names when scaffolding, so the gate and `/pre-commit` stay valid.
 

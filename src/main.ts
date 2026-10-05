@@ -29,6 +29,7 @@ import { createCompare } from './ui/compare';
 import { create, mustFind } from './ui/dom';
 import { fill } from './ui/format';
 import { createGrownUps } from './ui/grownups';
+import { watchLayout } from './ui/layout';
 import { mediaUrl } from './ui/mediaUrl';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
@@ -374,6 +375,7 @@ function start(): void {
     },
   );
   mustFind('#tray').append(clockControl.element, chips.element);
+  watchLayout(mustFind('.top'), mustFind('#tray'));
 
   const markers = createMarkers(
     mustFind('#markers'),

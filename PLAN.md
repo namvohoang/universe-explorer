@@ -303,7 +303,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
       footer outside the scrolling part. A Playwright check at the five sizes proves that the card
       meets neither the header nor the tray and that its buttons are on screen (phone landscape
       is switched on in 8.6, when the card gets room there).
-- [ ] 8.2 One top bar: brand, main tabs (Solar System · Deep Space · Spaceships · Compare, each
+- [x] 8.2 One top bar: brand, main tabs (Solar System · Deep Space · Spaceships · Compare, each
       with an icon; Compare opens the compare view), then a "View" menu holding the scale mode and
       the Names switch, and an icon button for grown-ups. "Real sizes" becomes "True sizes", and
       each mode gets a one-line explanation. The not-to-scale sentence stays on screen. One line

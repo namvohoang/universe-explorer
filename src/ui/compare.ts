@@ -2,6 +2,7 @@ import type { CelestialObject } from '../data/types';
 import { distanceLine, sizeLineup } from '../sim/compare';
 import { bodyRadiusKm } from '../sim/layout';
 import { create } from './dom';
+import { icon } from './icons';
 import { fill } from './format';
 import { displayName } from './names';
 import { createSegmented } from './segmented';
@@ -22,7 +23,10 @@ export interface Compare {
  * Two flat pictures that show the real ratios the 3D view cannot: the planets side by side at
  * their true sizes, and along a line at their true distances from the Sun.
  */
-export function createCompare(catalogue: readonly CelestialObject[]): Compare {
+export function createCompare(
+  catalogue: readonly CelestialObject[],
+  onClose: () => void = () => undefined,
+): Compare {
   const planets = catalogue.filter((object) => object.kind === 'planet');
   const names = new Map(catalogue.map((object) => [object.id, displayName(object)]));
   const nameOf = (id: string): string => names.get(id) ?? id;
@@ -94,7 +98,8 @@ export function createCompare(catalogue: readonly CelestialObject[]): Compare {
       distances.hidden = which !== 'distances';
     },
   );
-  const close = create('button', 'x', '×');
+  const close = create('button', 'x');
+  close.append(icon('close'));
   close.type = 'button';
   close.setAttribute('aria-label', en.compareClose);
   const head = create('div', 'compare-head');
@@ -107,7 +112,9 @@ export function createCompare(catalogue: readonly CelestialObject[]): Compare {
       element.hidden = false;
     },
     close() {
+      if (element.hidden) return;
       element.hidden = true;
+      onClose();
     },
   };
   close.addEventListener('click', () => {

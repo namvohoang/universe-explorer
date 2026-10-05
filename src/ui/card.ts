@@ -1,5 +1,6 @@
 import type { CardModel } from './cardModel';
 import { create } from './dom';
+import { icon } from './icons';
 import { speechLines, type Speaker } from './speech';
 import { en } from './strings/en';
 
@@ -20,7 +21,8 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   const name = create('h2', '');
   const titles = create('div', '');
   titles.append(eyebrow, name);
-  const close = create('button', 'x', '×');
+  const close = create('button', 'x');
+  close.append(icon('close'));
   close.type = 'button';
   close.setAttribute('aria-label', en.closeCard);
   close.addEventListener('click', onClose);

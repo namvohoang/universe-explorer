@@ -51,3 +51,16 @@ for (const screen of SCREENS) {
     }
   });
 }
+
+for (const screen of SCREENS.filter((candidate) => candidate.width >= 1024)) {
+  test(`the top bar is one line on ${screen.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: screen.width, height: screen.height });
+    await page.goto('/?speed=pause');
+    const title = await boxOf(page.locator('.brand h1'));
+    const tabs = await boxOf(page.locator('.top .tabs'));
+    const tools = await boxOf(page.locator('.top .tools'));
+    // Tabs and tools start on the title's row, not on a second one below the brand.
+    expect(tabs.y).toBeLessThan(title.y + title.height);
+    expect(tools.y).toBeLessThan(title.y + title.height);
+  });
+}

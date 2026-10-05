@@ -33,7 +33,9 @@ import { watchLayout } from './ui/layout';
 import { mediaUrl } from './ui/mediaUrl';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
-import { createSegmented } from './ui/segmented';
+import { discs, icon } from './ui/icons';
+import { createChoice, createSettings, createSwitch } from './ui/settings';
+import { createTabs } from './ui/tabs';
 import { narrationUrl } from './ui/narration';
 import { createBrowserSpeaker, speechLines } from './ui/speech';
 import { en } from './ui/strings/en';
@@ -56,6 +58,30 @@ const SCALE_OPTION_LABELS: Readonly<Record<ScaleMode, string>> = {
   'true-sizes': en.scaleOptionTrueSizes,
   easy: en.scaleOptionEasy,
 };
+const SCALE_HINTS: Readonly<Record<ScaleMode, string>> = {
+  true: en.scaleHintTrue,
+  'true-sizes': en.scaleHintTrueSizes,
+  easy: en.scaleHintEasy,
+};
+/** A tiny drawing for each mode: a sun and two planets as discs (x, y, radius). Not data. */
+const SCALE_PICTURES: Readonly<Record<ScaleMode, readonly (readonly [number, number, number])[]>> =
+  {
+    true: [
+      [5, 12, 1.6],
+      [30, 12, 0.7],
+      [52, 12, 0.7],
+    ],
+    'true-sizes': [
+      [-6, 12, 16],
+      [20, 12, 2.2],
+      [30, 12, 1.2],
+    ],
+    easy: [
+      [10, 12, 8],
+      [29, 12, 5],
+      [45, 12, 4],
+    ],
+  };
 
 function start(): void {
   const canvas = mustFind('#stage');
@@ -242,7 +268,7 @@ function start(): void {
     card.show(model, narrationUrl(focus, speechLines(model)));
     chips.show(chipsFor(focus), focus);
     document.body.classList.toggle('deep', isDeep(focus));
-    sceneControl.show(sceneOfId(focus));
+    if (compare.element.hidden) mainTabs.show(sceneOfId(focus));
     back.hidden = focus === null;
     picture.hidden = model.picture === null;
     if (model.picture) {
@@ -253,6 +279,7 @@ function start(): void {
   };
 
   const goTo = (id: string | null): void => {
+    compare.close();
     const wasDeep = isDeep(focus);
     focus = id;
     if (id !== null && !isDeep(id)) system.showDetail(id);
@@ -264,19 +291,28 @@ function start(): void {
     showFocus();
   };
 
-  const sceneControl = createSegmented<Scene>(
+  const mainTabs = createTabs<Scene | 'compare'>(
     en.sceneControl,
     [
-      { value: 'solar', label: en.sceneSolar },
-      { value: 'deep', label: en.sceneDeep },
-      { value: 'craft', label: en.sceneCraft },
+      { value: 'solar', label: en.sceneSolar, icon: 'sun' },
+      { value: 'deep', label: en.sceneDeep, icon: 'sparkle' },
+      { value: 'craft', label: en.sceneCraft, icon: 'rocket' },
+      { value: 'compare', label: en.compare, icon: 'compare' },
     ],
     'solar',
-    (scene) => {
-      const first = deep.find((object) => sceneOf(object) === scene);
-      goTo(scene === 'solar' ? null : (first?.id ?? null));
+    (tab) => {
+      if (tab === 'compare') {
+        compare.open();
+        return;
+      }
+      compare.close();
+      // Coming back from Compare to the scene already on show changes nothing.
+      if (tab === sceneOfId(focus)) return;
+      const first = deep.find((object) => sceneOf(object) === tab);
+      goTo(tab === 'solar' ? null : (first?.id ?? null));
     },
   );
+  mustFind('#main-tabs').append(mainTabs.element);
 
   const chips = createChips(en.places, goTo);
   window.addEventListener('keydown', (event) => {
@@ -285,6 +321,7 @@ function start(): void {
     if (event.key === '-' || event.key === '_') stage.zoom(1 / ZOOM_STEP);
     if (event.key !== 'Escape') return;
     if (!grownUps.element.hidden) grownUps.close();
+    else if (settings.isOpen()) settings.close();
     else if (!compare.element.hidden) compare.close();
     else card.hide();
   });
@@ -324,46 +361,65 @@ function start(): void {
   });
   back.classList.add('back');
 
-  const names = create('button', '', en.names);
-  names.type = 'button';
-  names.setAttribute('aria-pressed', 'true');
-  names.addEventListener('click', () => {
-    const shown = names.getAttribute('aria-pressed') !== 'true';
-    names.setAttribute('aria-pressed', String(shown));
-    markers.setNames(shown);
-  });
-  const scaleControl = createSegmented(
+  const setScale = (mode: ScaleMode): void => {
+    scale = createScale(mode);
+    system.setScale(scale);
+    system.setDate(clock.jd);
+    showScale();
+    viewLabel.textContent = SCALE_OPTION_LABELS[mode];
+    menuButton.setAttribute('aria-label', fill(en.viewMenu, { mode: SCALE_OPTION_LABELS[mode] }));
+    scaleChoice.show(mode);
+  };
+  const scaleChoice = createChoice(
     en.scaleControl,
-    SCALE_MODES.map((mode) => ({ value: mode, label: SCALE_OPTION_LABELS[mode] })),
+    SCALE_MODES.map((mode) => ({
+      value: mode,
+      title: SCALE_OPTION_LABELS[mode],
+      text: SCALE_HINTS[mode],
+      picture: discs(SCALE_PICTURES[mode]),
+    })),
     scale.mode,
     (mode) => {
-      scale = createScale(mode);
-      system.setScale(scale);
-      system.setDate(clock.jd);
-      showScale();
+      setScale(mode);
       // Everything has moved and changed size, so the camera re-frames what it was on at once.
       stage.lookAt(currentView());
     },
   );
-  const compare = createCompare(catalogue);
-  mustFind('#compare-slot').append(compare.element);
-  const compareButton = create('button', '', en.compare);
-  compareButton.type = 'button';
-  compareButton.addEventListener('click', () => {
-    if (compare.element.hidden) compare.open();
-    else compare.close();
+  const names = createSwitch(en.showNames, true, (shown) => {
+    markers.setNames(shown);
   });
-  for (const control of [compareButton, names, scaleControl.element, scaleLabel]) {
+  const settings = createSettings(en.settings, en.settingsClose);
+  mustFind('#settings-slot').append(settings.element);
+  const scaleSection = settings.addSection(en.scaleQuestion, scaleChoice.element, names);
+  // The button that opens the menu says which mode is on.
+  const menuButton = create('button', 'view-menu');
+  menuButton.type = 'button';
+  const viewLabel = create('span', '', SCALE_OPTION_LABELS[scale.mode]);
+  menuButton.append(viewLabel, icon('chevron-down'));
+  menuButton.setAttribute(
+    'aria-label',
+    fill(en.viewMenu, { mode: SCALE_OPTION_LABELS[scale.mode] }),
+  );
+  settings.openWith(menuButton);
+
+  const compare = createCompare(catalogue, () => {
+    mainTabs.show(sceneOfId(focus));
+  });
+  mustFind('#compare-slot').append(compare.element);
+  for (const control of [menuButton, scaleSection, scaleLabel]) {
     control.classList.add('solar-only');
   }
   const grownUps = createGrownUps(catalogue, limits);
   mustFind('#grownups-slot').append(grownUps.element);
-  const grownUpsButton = create('button', 'quiet', en.grownUps);
+  const grownUpsButton = create('button', 'icon-button');
   grownUpsButton.type = 'button';
+  grownUpsButton.setAttribute('aria-label', en.grownUps);
+  grownUpsButton.title = en.grownUps;
+  grownUpsButton.append(icon('info'));
   grownUpsButton.addEventListener('click', () => {
     grownUps.open();
   });
-  tools.append(sceneControl.element, compareButton, names, scaleControl.element, grownUpsButton);
+  tools.append(menuButton, grownUpsButton);
 
   const clockControl = createClockControl(
     limits,
@@ -393,11 +449,7 @@ function start(): void {
   const wantedScale = new URLSearchParams(window.location.search).get('scale');
   const linkedScale = SCALE_MODES.find((mode) => mode === wantedScale);
   if (linkedScale) {
-    scale = createScale(linkedScale);
-    system.setScale(scale);
-    system.setDate(clock.jd);
-    scaleControl.show(linkedScale);
-    showScale();
+    setScale(linkedScale);
   }
   if (drawn.some((object) => object.id === wanted) || isBelt(wanted) || isDeep(wanted)) {
     focus = wanted;
@@ -407,7 +459,10 @@ function start(): void {
     system.showDetail(focus);
     stage.lookAt(viewOf(focus));
   }
-  if (new URLSearchParams(window.location.search).has('compare')) compare.open();
+  if (new URLSearchParams(window.location.search).has('compare')) {
+    compare.open();
+    mainTabs.show('compare');
+  }
   if (new URLSearchParams(window.location.search).has('grownups')) grownUps.open();
   showFocus();
 

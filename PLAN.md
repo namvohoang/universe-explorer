@@ -289,6 +289,62 @@ The owner asked for more objects, and for the things people have put in orbit ro
 **Acceptance:** every new object has a cited source for each number, a credited picture or model,
 a card with a recording, and passes the gate.
 
+### Phase 8 — Works on every screen (review of 2026-10-04)
+
+A review at 1440×900, 1024×768 (iPad landscape), 820×1180 (iPad portrait), 390×844 (phone) and
+844×390 (phone landscape) found that the card sits at a fixed offset and covers the tabs or the
+clock once the header wraps, that markers show through the see-through card, that the place row
+is one long mixed list, that the device back button leaves the app, that there is no icon or web
+manifest, and that the first open downloads everything (one 1 MB script, about 33 MB in all).
+
+- [ ] 8.1 Layout shell that cannot overlap. Measure the top bar and the tray with a
+      `ResizeObserver` into `--top-h` and `--bottom-h`; place the card, the view controls and the
+      picture from them, in `dvh`. The card is opaque (`--panel-solid`) and its actions sit in a
+      footer outside the scrolling part. A Playwright check at the five sizes proves that the card
+      meets neither the header nor the tray and that its buttons are on screen.
+- [ ] 8.2 One top bar: brand, main tabs (Solar System · Deep Space · Spaceships · Compare, each
+      with an icon; Compare opens the compare view), then a "View" menu holding the scale mode and
+      the Names switch, and an icon button for grown-ups. "Real sizes" becomes "True sizes", and
+      each mode gets a one-line explanation. The not-to-scale sentence stays on screen. One line
+      from 1024 px wide up.
+- [ ] 8.3 Grouped place row: a pure, tested function maps each place to a group by kind. Solar
+      System: Planets (with the Sun), Dwarf planets, Space rocks. Deep Space: Stars, Star pictures,
+      Galaxies, Space wonders. Spaceships has no groups. Moons and spacecraft show only at the body
+      they go round (Parker Solar Probe at the Sun). Chips carry a colour dot, the row follows the
+      place picked in 3D, and "Whole view" becomes a fit button under + and −. Ring systems are
+      not places.
+- [ ] 8.4 Compact bottom dock: a play/pause icon button, the date and its rate; speeds as a
+      segmented control from 1280 px wide and a menu below that; Today stays. Two rows at most.
+- [ ] 8.5 Phone layout (700 px wide or less): brand and a menu button; a date pill and a scale
+      pill; a bottom tab bar; the card as a bottom sheet that peeks and opens; a settings sheet
+      that traps focus. At 390×844 the 3D view keeps at least 45% of the screen with the sheet peeking.
+- [ ] 8.6 Phone landscape (500 px high or less): the card is a side panel, the controls one
+      column on the right, the place row one line.
+- [ ] 8.7 The URL follows the place: the focus id in the hash (`#saturn`) with `pushState`, read
+      on load and on `popstate`, so the device back button goes up one level. The scale mode stays
+      in `?scale=` and old `?go=` links keep working. Unknown ids fall back to the whole view.
+- [ ] 8.8 First visit and tapping: a pulsing ring on Earth and a "Tap a planet to fly there" hint,
+      gone at the first touch and still under reduced motion; every 3D marker has a 44×44 px tap
+      area. The flag lives in the browser, and the privacy text says so.
+- [ ] 8.9 Card reading help: Next and Previous step through the group; two facts first with a
+      "More facts" button; the sentence being read is highlighted, from timings written when the
+      recordings are made (all cards are recorded again for this).
+- [ ] 8.10 Space passport: the places opened are remembered in the browser only, counted on each
+      group tab and marked on chips, with a "Clear progress" button for grown-ups.
+- [ ] 8.11 Install and icons: favicon, apple-touch-icon, web manifest and theme colour, the icons
+      made here or from a credited NASA picture.
+- [ ] 8.12 Lighter first load: Deep Space, Spaceships and Compare load on demand so no chunk
+      passes 500 kB; the service worker stores the shell and the first view at once and the rest
+      when used or afterwards in the background; the render loop stops when the page is hidden and
+      the pixel ratio drops when frames run slow (it is already capped at 2).
+- [ ] 8.13 Vietnamese (ask the owner first: open decision 3): `vi.ts` with the same keys, a
+      language choice, fonts with Vietnamese letters, Vietnamese recordings, all kid text
+      reviewed by the owner.
+
+**Acceptance:** at all five sizes nothing overlaps and every control is reachable, with 44 px
+targets. Keyboard order is top bar, card, controls, place row. The gate passes and no third-party
+origin is requested. No astronomical data changes.
+
 ## 7. Testing
 
 | Layer | Tests |

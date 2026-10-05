@@ -436,6 +436,9 @@ function start(): void {
     },
   );
   mustFind('#tray').append(clockControl.element, placeRow.element);
+  // On a phone the dock has no room for the speeds, so they are in the settings sheet too.
+  const speedSection = settings.addSection(en.speedQuestion, clockControl.forSettings);
+  speedSection.classList.add('solar-only', 'phone-only');
   watchLayout(mustFind('.top'), mustFind('#tray'));
 
   const markers = createMarkers(

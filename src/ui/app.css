@@ -320,7 +320,7 @@ button.switch {
 .seg button {
   border: 0;
   background: transparent;
-  min-height: 38px;
+  min-height: 44px;
   padding: 0 12px;
 }
 
@@ -627,20 +627,32 @@ body.deep:not(.deep-3d) .view-controls button:not(.back) {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px 16px;
-  padding: 8px 14px;
-  background: var(--panel);
+  gap: 6px 12px;
+  padding: 6px 10px;
+  background: var(--panel-solid);
   border: 1px solid var(--line);
-  border-radius: 22px;
+  border-radius: 999px;
 }
 
 .clock p {
   margin: 0;
 }
 
+button.play-pause {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  padding: 0;
+  background: var(--sun);
+  color: var(--sun-ink);
+  border-color: transparent;
+}
+
 .clock-date {
   font-weight: 700;
-  font-size: 18px;
+  font-size: 17px;
+  white-space: nowrap;
   /* Digits of equal width, so the date does not jiggle as it runs. */
   font-variant-numeric: tabular-nums;
 }
@@ -648,13 +660,46 @@ body.deep:not(.deep-3d) .view-controls button:not(.back) {
 .clock-rate {
   color: var(--ink-dim);
   font-size: 13px;
+  white-space: nowrap;
 }
 
-.clock-buttons {
+.clock-buttons,
+.sheet-speeds {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  align-items: center;
   gap: 8px;
+}
+
+.sheet-speeds {
+  flex-wrap: wrap;
+}
+
+select.speed-menu {
+  display: none;
+  appearance: none;
+  -webkit-appearance: none;
+  font: 700 14px/1 var(--body);
+  color: var(--ink);
+  min-height: 44px;
+  padding: 0 34px 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  /* The arrow is drawn here, as the select's own one is hidden. */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4eedc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")
+      right 10px center / 18px no-repeat,
+    transparent;
+  cursor: pointer;
+}
+
+select.speed-menu:focus-visible {
+  outline: 2px solid var(--sky);
+  outline-offset: 2px;
+}
+
+select.speed-menu option {
+  background: var(--panel-solid);
+  color: var(--ink);
 }
 
 .clock-limit {
@@ -662,6 +707,10 @@ body.deep:not(.deep-3d) .view-controls button:not(.back) {
   text-align: center;
   color: var(--sun);
   font-size: 14px;
+}
+
+.phone-only {
+  display: none;
 }
 
 .card-actions {
@@ -907,6 +956,14 @@ button.quiet {
 }
 
 @media (max-width: 1279px) {
+  .speed-seg {
+    display: none;
+  }
+
+  select.speed-menu {
+    display: block;
+  }
+
   /* Still there for a screen reader, just not drawn. */
   .place-row .tabs button:not([aria-selected='true']) .tab-label {
     position: absolute;

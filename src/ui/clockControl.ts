@@ -8,6 +8,7 @@ import {
 } from '../sim/time';
 import { create } from './dom';
 import { fill, formatDate, formatDateAndHour, yearOf } from './format';
+import { icon } from './icons';
 import { createSegmented } from './segmented';
 import { en } from './strings/en';
 
@@ -19,13 +20,19 @@ const SPEED_LABELS: Readonly<Record<Speed, string>> = {
   fast: en.speedFast,
 };
 
+type Running = Exclude<Speed, 'pause'>;
+const RUNNING = SPEEDS.filter((speed): speed is Running => speed !== 'pause');
+
 export interface ClockControl {
+  /** The dock: a play/pause button, the date, and the speeds in the form the screen has room for. */
   readonly element: HTMLElement;
+  /** The speeds and Today again, for the settings sheet on a phone, where the dock has no room. */
+  readonly forSettings: HTMLElement;
   /** Shows the clock's date, speed and whether it has hit the end of the orbit maps. */
   show(clock: Clock): void;
 }
 
-/** The date the simulation is showing, with speed buttons and a jump back to today. */
+/** The date the simulation is showing, with play and pause, speeds and a jump back to today. */
 export function createClockControl(
   limits: DateLimits | null,
   onSpeed: (speed: Speed) => void,
@@ -44,21 +51,50 @@ export function createClockControl(
   }
   limit.hidden = true;
 
-  const speeds = createSegmented(
-    en.speedControl,
-    SPEEDS.map((speed) => ({ value: speed, label: SPEED_LABELS[speed] })),
-    'normal',
-    onSpeed,
-  );
-  const today = create('button', '', en.today);
-  today.type = 'button';
-  today.addEventListener('click', onToday);
+  // Pausing remembers the speed, so playing again carries on as before.
+  let running: Running = 'normal';
+  let paused = false;
+  const playPause = create('button', 'play-pause');
+  playPause.type = 'button';
+  const playIcon = icon('play');
+  const pauseIcon = icon('pause');
+  playPause.append(playIcon, pauseIcon);
+  playPause.addEventListener('click', () => {
+    onSpeed(paused ? running : 'pause');
+  });
+
+  const options = RUNNING.map((speed) => ({ value: speed, label: SPEED_LABELS[speed] }));
+  const speeds = createSegmented<Running>(en.speedControl, options, running, onSpeed);
+  speeds.element.classList.add('speed-seg');
+  const sheetSpeeds = createSegmented<Running>(en.speedControl, options, running, onSpeed);
+
+  // Where the row of speeds does not fit, the same choice as a drop-down.
+  const menu = create('select', 'speed-menu');
+  menu.setAttribute('aria-label', en.speedControl);
+  for (const speed of RUNNING) {
+    const option = create('option', '', fill(en.speedOption, { speed: SPEED_LABELS[speed] }));
+    option.value = speed;
+    menu.append(option);
+  }
+  menu.addEventListener('change', () => {
+    const picked = RUNNING.find((speed) => speed === menu.value);
+    if (picked) onSpeed(picked);
+  });
+
+  const todayButton = (): HTMLButtonElement => {
+    const today = create('button', '', en.today);
+    today.type = 'button';
+    today.addEventListener('click', onToday);
+    return today;
+  };
 
   const readout = create('div', 'clock-readout');
   readout.append(date, rate);
   const buttons = create('div', 'clock-buttons');
-  buttons.append(speeds.element, today);
-  element.append(readout, buttons, limit);
+  buttons.append(speeds.element, menu, todayButton());
+  element.append(playPause, readout, buttons, limit);
+  const forSettings = create('div', 'sheet-speeds');
+  forSettings.append(sheetSpeeds.element, todayButton());
 
   // Only touch the page when what it shows changes, not every frame.
   let shownDate = '';
@@ -66,6 +102,7 @@ export function createClockControl(
   let shownLimit = false;
   return {
     element,
+    forSettings,
     show(clock) {
       const text = showsHours(clock.speed) ? formatDateAndHour(clock.jd) : formatDate(clock.jd);
       if (text !== shownDate) {
@@ -80,7 +117,16 @@ export function createClockControl(
             : showsHours(clock.speed)
               ? en.rateHourly
               : fill(en.rate, { seconds: Math.round(seconds) });
-        speeds.show(clock.speed);
+        paused = clock.speed === 'pause';
+        if (clock.speed !== 'pause') running = clock.speed;
+        playIcon.style.display = paused ? '' : 'none';
+        pauseIcon.style.display = paused ? 'none' : '';
+        const label = paused ? en.timeStart : en.timeStop;
+        playPause.setAttribute('aria-label', label);
+        playPause.title = label;
+        speeds.show(running);
+        sheetSpeeds.show(running);
+        menu.value = running;
         shownSpeed = clock.speed;
       }
       if (clock.atLimit !== shownLimit) {

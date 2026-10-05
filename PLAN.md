@@ -314,7 +314,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
       they go round (Parker Solar Probe at the Sun). Chips carry a colour dot, the row follows the
       place picked in 3D, and "Whole view" becomes a fit button under + and −. Ring systems are
       not places.
-- [ ] 8.4 Compact bottom dock: a play/pause icon button, the date and its rate; speeds as a
+- [x] 8.4 Compact bottom dock: a play/pause icon button, the date and its rate; speeds as a
       segmented control from 1280 px wide and a menu below that; Today stays. Two rows at most.
 - [ ] 8.5 Phone layout (700 px wide or less): brand and a menu button; a date pill and a scale
       pill; a bottom tab bar; the card as a bottom sheet that peeks and opens; a settings sheet

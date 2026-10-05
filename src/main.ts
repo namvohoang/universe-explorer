@@ -2,12 +2,7 @@ import './ui/fonts';
 import { catalogue } from './data/catalogue';
 import { isSatellite, isShowpiece, type CelestialObject } from './data/types';
 import { distanceForAspect, litSideBearing } from './scene/flight';
-import {
-  PLANET_ENLARGEMENT,
-  createDeepModel,
-  type DeepModel,
-  type DeepModelNote,
-} from './scene/deep';
+import type { DeepModel, DeepModelNote } from './scene/deep';
 import { createSolarSystem } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
@@ -24,7 +19,7 @@ import {
 import { createCard } from './ui/card';
 import { cardModel, isDeepSky } from './ui/cardModel';
 import { createClockControl } from './ui/clockControl';
-import { createCompare } from './ui/compare';
+import type { Compare } from './ui/compare';
 import { create, mustFind } from './ui/dom';
 import { fill } from './ui/format';
 import { createGrownUps } from './ui/grownups';
@@ -223,10 +218,15 @@ function start(): void {
     'craft-model': en.deepNoteCraft,
     'craft-scan': en.deepNoteScan,
     'star-sizes': en.deepNoteStarSizes,
-    'planet-system': fill(en.deepNotePlanetSystem, { times: PLANET_ENLARGEMENT }),
+    'planet-system': en.deepNotePlanetSystem,
   };
+  /** How many times too big the planets of another star are drawn; known once the models load. */
+  let planetEnlargement = 1;
 
-  /** Swaps the 3D view between the solar system and the model of the deep-space object in focus. */
+  /**
+   * Swaps the 3D view between the solar system and the model of the deep-space object in focus.
+   * The code that builds those models is fetched the first time one is needed.
+   */
   const showDeepModel = (pictureUrl: string | null): void => {
     const object = deep.find((candidate) => candidate.id === focus);
     if (deepModelFor === (object?.id ?? null)) return;
@@ -234,20 +234,26 @@ function start(): void {
       stage.scene.remove(deepModel.group);
       deepModel.dispose();
     }
-    const modelFile = object?.media.find((media) => media.role === 'model')?.file;
-    deepModel = object
-      ? createDeepModel(object, {
-          catalogue,
-          pictureUrl,
-          modelUrl: modelFile ? mediaUrl(modelFile) : null,
-          nameOf: displayName,
-        })
-      : null;
+    deepModel = null;
     deepModelFor = object?.id ?? null;
-    system.group.visible = deepModel === null && object === undefined;
-    if (!deepModel) return;
-    stage.scene.add(deepModel.group);
-    frameDeep();
+    system.group.visible = object === undefined;
+    if (!object) return;
+    const modelFile = object.media.find((media) => media.role === 'model')?.file;
+    void import('./scene/deep').then(({ createDeepModel, PLANET_ENLARGEMENT }) => {
+      // The kid may have moved on while the code was on its way.
+      if (deepModelFor !== object.id || deepModel) return;
+      planetEnlargement = PLANET_ENLARGEMENT;
+      deepModel = createDeepModel(object, {
+        catalogue,
+        pictureUrl,
+        modelUrl: modelFile ? mediaUrl(modelFile) : null,
+        nameOf: displayName,
+      });
+      if (!deepModel) return;
+      stage.scene.add(deepModel.group);
+      frameDeep();
+      showDeepNote();
+    });
   };
 
   /** Puts the camera where the whole of the deep-space model is in view. */
@@ -276,10 +282,17 @@ function start(): void {
     placeRow.showVisited(visited, catalogue);
   };
 
+  /** Once a model is on show, the card says what kind of model it is, and the picture shrinks. */
+  const showDeepNote = (): void => {
+    document.body.classList.toggle('deep-3d', deepModel !== null);
+    if (!deepModel) return;
+    card.setNote(fill(DEEP_NOTES[deepModel.note], { times: planetEnlargement }));
+  };
+
   const showFocus = (): void => {
     const base = cardModel(focus, catalogue);
     showDeepModel(base.picture?.url ?? null);
-    const model = deepModel ? { ...base, note: DEEP_NOTES[deepModel.note] } : base;
+    const model = base;
     document.body.classList.toggle('deep-3d', deepModel !== null);
     const row = placeRowFor(focus, null, catalogue);
     const stepName = (step: 1 | -1): string | null => {
@@ -290,10 +303,11 @@ function start(): void {
       previous: stepName(-1),
       next: stepName(1),
     });
+    showDeepNote();
     showRow();
     stamp(focus);
     document.body.classList.toggle('deep', isDeep(focus));
-    if (compare.element.hidden) mainTabs.show(sceneOfId(focus));
+    if (!compare.isOpen()) mainTabs.show(sceneOfId(focus));
     back.hidden = focus === null;
     picture.hidden = model.picture === null;
     if (model.picture) {
@@ -387,7 +401,7 @@ function start(): void {
     if (event.key !== 'Escape') return;
     if (!grownUps.element.hidden) grownUps.close();
     else if (settings.isOpen()) settings.close();
-    else if (!compare.element.hidden) compare.close();
+    else if (compare.isOpen()) compare.close();
     else card.hide();
   });
 
@@ -479,10 +493,33 @@ function start(): void {
   );
   settings.openWith(menuButton);
 
-  const compare = createCompare(catalogue, () => {
-    mainTabs.show(sceneOfId(focus));
-  });
-  mustFind('#compare-slot').append(compare.element);
+  // Compare is built the first time it is opened; its code is not part of the first download.
+  let comparePanel: Compare | null = null;
+  let compareWanted = false;
+  const compare = {
+    isOpen: (): boolean => compareWanted,
+    open(): void {
+      compareWanted = true;
+      if (comparePanel) {
+        comparePanel.open();
+        return;
+      }
+      void import('./ui/compare').then(({ createCompare }) => {
+        if (!comparePanel) {
+          comparePanel = createCompare(catalogue, () => {
+            compareWanted = false;
+            mainTabs.show(sceneOfId(focus));
+          });
+          mustFind('#compare-slot').append(comparePanel.element);
+        }
+        if (compareWanted) comparePanel.open();
+      });
+    },
+    close(): void {
+      compareWanted = false;
+      comparePanel?.close();
+    },
+  };
   for (const control of [menuButton, scaleSection, scaleLabel]) {
     control.classList.add('solar-only');
   }
@@ -649,7 +686,22 @@ function start(): void {
 
 start();
 
-// In the built app, keep a copy of every file on the device so it works with no network.
+// In the built app a service worker keeps the files on the device, so it works with no network.
+// It stores the first view at once. Once the page has settled it is asked to fetch the rest,
+// unless the device is set to save data; then things are stored only as they are used.
+/** How long after loading the rest is asked for, so it never competes with the first view. */
+const FILL_AFTER_MS = 4000;
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   void navigator.serviceWorker.register('./sw.js');
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data === 'filled') document.documentElement.dataset.offline = 'ready';
+  });
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  if (connection?.saveData !== true) {
+    window.setTimeout(() => {
+      void navigator.serviceWorker.ready.then((registration) => {
+        registration.active?.postMessage('fill');
+      });
+    }, FILL_AFTER_MS);
+  }
 }

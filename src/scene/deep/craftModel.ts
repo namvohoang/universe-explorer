@@ -1,6 +1,5 @@
 import { AmbientLight, Box3, DirectionalLight, Group, Mesh, Sphere, type Material } from 'three';
-import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { loadGltf } from '../gltf';
 import type { DeepModel } from './model';
 
 const RADIUS = 10;
@@ -22,9 +21,7 @@ export function createCraftModel(modelUrl: string, scan: boolean): DeepModel {
 
   let disposeModel: (() => void) | null = null;
   let disposed = false;
-  // The larger models are stored compressed (meshopt); the decoder ships with the app.
-  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(modelUrl, (gltf) => {
-    const model = gltf.scene;
+  loadGltf(modelUrl, (model) => {
     const dispose = (): void => {
       model.traverse((part) => {
         if (part instanceof Mesh) {

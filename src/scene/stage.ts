@@ -11,6 +11,7 @@ import {
   type View,
 } from './flight';
 import { pixelsFor } from './projection';
+import { createFrameWatch, lowerPixelRatio } from './quality';
 
 const BACKGROUND = '#05070f';
 const MAX_PIXEL_RATIO = 2;
@@ -88,7 +89,10 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   // Distances span a factor of millions between a planet's surface and the edge of the
   // system, more than an ordinary depth buffer can order correctly.
   const renderer = new WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
-  renderer.setPixelRatio(Math.min(options.pixelRatio, MAX_PIXEL_RATIO));
+  let pixelRatio = Math.min(options.pixelRatio, MAX_PIXEL_RATIO);
+  renderer.setPixelRatio(pixelRatio);
+  // On a device that cannot keep up, draw less sharply instead of stuttering.
+  const watch = createFrameWatch();
 
   const scene = new Scene();
   scene.background = new Color(BACKGROUND);
@@ -165,6 +169,14 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
 
   const frame = (time: number): void => {
     const dt = lastTime === null ? 0 : Math.min((time - lastTime) / 1000, MAX_FRAME_SECONDS);
+    if (lastTime !== null && watch.add(time - lastTime)) {
+      const lower = lowerPixelRatio(pixelRatio);
+      if (lower !== pixelRatio) {
+        pixelRatio = lower;
+        renderer.setPixelRatio(pixelRatio);
+        renderer.setSize(viewWidth, viewHeight, false);
+      }
+    }
     lastTime = time;
     for (const callback of frameCallbacks) callback(dt);
     moveCamera(dt);
@@ -172,6 +184,14 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     camera.updateMatrixWorld();
     for (const callback of cameraCallbacks) callback();
     renderer.render(scene, camera);
+  };
+
+  // Nothing is drawn while the page is out of sight; time does not jump on the way back.
+  let started = false;
+  const onVisibility = (): void => {
+    if (!started) return;
+    lastTime = null;
+    renderer.setAnimationLoop(document.hidden ? null : frame);
   };
 
   return {
@@ -242,9 +262,13 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       renderer.setSize(width, height, false);
     },
     start() {
-      renderer.setAnimationLoop(frame);
+      started = true;
+      if (!document.hidden) renderer.setAnimationLoop(frame);
+      document.addEventListener('visibilitychange', onVisibility);
     },
     dispose() {
+      started = false;
+      document.removeEventListener('visibilitychange', onVisibility);
       renderer.setAnimationLoop(null);
       controls.dispose();
       renderer.dispose();

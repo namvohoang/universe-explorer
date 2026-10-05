@@ -22,6 +22,8 @@ export interface Card {
    * places before and after this one in its row, for the Previous and Next buttons.
    */
   show(model: CardModel, narration: Narration | null, steps: CardSteps): void;
+  /** Replaces the note at the foot of the card, once it is known what the 3D model is. */
+  setNote(note: string): void;
   hide(): void;
 }
 
@@ -253,6 +255,10 @@ export function createCard(
       globe.textContent = model.note ?? '';
       element.hidden = false;
       body.scrollTop = 0;
+    },
+    setNote(note) {
+      globe.hidden = false;
+      globe.textContent = note;
     },
     hide() {
       stopReading();

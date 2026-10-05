@@ -17,9 +17,8 @@ import {
   type Material,
   type Texture,
 } from 'three';
-import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { CelestialObject, RingSystem, SpheroidShape, TriaxialShape } from '../data/types';
+import { loadGltf } from './gltf';
 import { eclipticToScene, northPoleEcliptic, poleOf } from '../sim/frames';
 import { largestRadiusKm, sceneAxes } from '../sim/layout';
 import type { Scale } from '../sim/scale';
@@ -153,9 +152,7 @@ function createGlow(): Sprite {
  * one whatever size the file was made at. Until it arrives (or if it cannot), the sphere stays.
  */
 function loadModel(file: string, sphere: Mesh, onDispose: (dispose: () => void) => void): void {
-  // The larger models are stored compressed (meshopt); the decoder ships with the app.
-  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(mediaUrl(file), (gltf) => {
-    const model = gltf.scene;
+  loadGltf(mediaUrl(file), (model) => {
     const bounds = new Box3().setFromObject(model).getBoundingSphere(new Sphere());
     if (!(bounds.radius > 0)) return;
     const holder = new Group();

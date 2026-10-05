@@ -333,7 +333,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
       group tab and marked on chips, with a "Clear progress" button for grown-ups.
 - [x] 8.11 Install and icons: favicon, apple-touch-icon, web manifest and theme colour, the icons
       made here or from a credited NASA picture.
-- [ ] 8.12 Lighter first load: Deep Space, Spaceships and Compare load on demand so no chunk
+- [x] 8.12 Lighter first load: Deep Space, Spaceships and Compare load on demand so no chunk
       passes 500 kB; the service worker stores the shell and the first view at once and the rest
       when used or afterwards in the background; the render loop stops when the page is hidden and
       the pixel ratio drops when frames run slow (it is already capped at 2).

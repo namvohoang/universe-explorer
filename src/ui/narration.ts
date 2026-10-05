@@ -32,12 +32,32 @@ export function linesFingerprint(lines: readonly string[]): string {
   return hash.toString(16).padStart(8, '0');
 }
 
+/** A recording of a card being read, and the second at which each of its lines starts. */
+export interface Narration {
+  readonly url: string;
+  readonly starts: readonly number[];
+}
+
 /**
- * Where the recording for a card is, or `null` when there is none or it was made for
- * different words than the card now shows.
+ * The recording for a card, or `null` when there is none or it was made for different words
+ * than the card now shows.
  */
-export function narrationUrl(objectId: string | null, lines: readonly string[]): string | null {
+export function narrationFor(objectId: string | null, lines: readonly string[]): Narration | null {
   const entry = NARRATION[objectId ?? SOLAR_SYSTEM_CARD_ID];
   if (entry?.fingerprint !== linesFingerprint(lines)) return null;
-  return mediaUrl(entry.file);
+  return { url: mediaUrl(entry.file), starts: entry.starts };
+}
+
+/** Where the recording for a card is, or `null` (see `narrationFor`). */
+export function narrationUrl(objectId: string | null, lines: readonly string[]): string | null {
+  return narrationFor(objectId, lines)?.url ?? null;
+}
+
+/** Which line is being read at a moment of a recording, given when each line starts. */
+export function lineAt(starts: readonly number[], seconds: number): number {
+  let line = 0;
+  for (let index = 0; index < starts.length; index += 1) {
+    if ((starts[index] ?? Infinity) <= seconds) line = index;
+  }
+  return line;
 }

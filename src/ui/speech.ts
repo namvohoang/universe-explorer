@@ -29,8 +29,11 @@ export function speechLines(model: CardModel): string[] {
 
 /** Something that can read text aloud. */
 export interface Speaker {
-  /** Reads the lines one after another; `onDone` runs when it finishes or is stopped. */
-  speak(lines: readonly string[], onDone: () => void): void;
+  /**
+   * Reads the lines one after another. `onLine` runs as each line starts, and `onDone` when
+   * the reading finishes or is stopped.
+   */
+  speak(lines: readonly string[], onDone: () => void, onLine?: (index: number) => void): void;
   stop(): void;
 }
 
@@ -60,7 +63,7 @@ export function createBrowserSpeaker(): Speaker | null {
     callback?.();
   };
   return {
-    speak(lines, onDone) {
+    speak(lines, onDone, onLine) {
       synth.cancel();
       done = onDone;
       const voices = synth.getVoices();
@@ -70,13 +73,19 @@ export function createBrowserSpeaker(): Speaker | null {
         finish();
         return;
       }
-      const utterance = new SpeechSynthesisUtterance(lines.join(' '));
-      utterance.voice = voice;
-      utterance.lang = voice.lang;
-      utterance.rate = SPEAKING_RATE;
-      utterance.onend = finish;
-      utterance.onerror = finish;
-      synth.speak(utterance);
+      // One utterance a line, so the card can show which line is being read.
+      lines.forEach((line, index) => {
+        const utterance = new SpeechSynthesisUtterance(line);
+        utterance.voice = voice;
+        utterance.lang = voice.lang;
+        utterance.rate = SPEAKING_RATE;
+        utterance.onstart = () => {
+          if (done === onDone) onLine?.(index);
+        };
+        utterance.onerror = finish;
+        if (index === lines.length - 1) utterance.onend = finish;
+        synth.speak(utterance);
+      });
     },
     stop() {
       synth.cancel();

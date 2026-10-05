@@ -757,9 +757,56 @@ select.speed-menu option {
 .card-actions {
   flex: none;
   display: flex;
+  align-items: center;
   gap: 8px;
   padding: 10px 16px 14px;
   border-top: 1px solid var(--line);
+}
+
+.card-actions .step {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 44px;
+  padding: 0 8px;
+  justify-content: center;
+}
+
+.card-actions .step.next {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
+  padding: 0 8px 0 14px;
+}
+
+.card-actions .step.next span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-actions .primary {
+  flex: none;
+}
+
+.more-facts {
+  margin: 8px 0 0 20px;
+  min-height: 44px;
+}
+
+.more-facts + h3 {
+  margin-top: 12px;
+}
+
+/* The line being read aloud. */
+.card .reading {
+  background: rgba(111, 211, 255, 0.16);
+  box-shadow: 0 0 0 4px rgba(111, 211, 255, 0.16);
+  border-radius: 6px;
+  text-decoration: underline;
+  text-decoration-color: var(--sky);
+  text-underline-offset: 3px;
 }
 
 button.primary {
@@ -1042,7 +1089,7 @@ button.quiet {
 /* Parts that exist only for the phone layout below. */
 .card-peek,
 .card .peek-read,
-.phone-menu {
+button.icon-button.phone-menu {
   display: none;
 }
 
@@ -1107,7 +1154,7 @@ button.quiet {
     display: contents;
   }
 
-  .phone-menu {
+  button.icon-button.phone-menu {
     display: grid;
     grid-area: menu;
     justify-self: end;
@@ -1330,7 +1377,7 @@ button.quiet {
     display: none !important;
   }
 
-  .phone-menu {
+  button.icon-button.phone-menu {
     display: grid;
   }
 

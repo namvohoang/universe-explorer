@@ -5,7 +5,7 @@ import { catalogue } from '../data/catalogue';
 import { SOLAR_SYSTEM_CARD_ID } from '../data/content/cards';
 import { NARRATION } from '../data/content/narration';
 import { cardModel } from './cardModel';
-import { linesFingerprint, narratedIds, narrationUrl } from './narration';
+import { lineAt, linesFingerprint, narratedIds, narrationFor, narrationUrl } from './narration';
 import { speechLines } from './speech';
 
 const ROOT = join(import.meta.dirname, '../..');
@@ -26,7 +26,25 @@ describe('narration', () => {
       const lines = speechLines(cardModel(id, catalogue));
       expect(NARRATION[key]?.fingerprint, key).toBe(linesFingerprint(lines));
       expect(narrationUrl(id, lines), key).toMatch(/voice\/.+\.mp3$/);
+      // One start time for each line, beginning at nought and always later than the last.
+      const starts = narrationFor(id, lines)?.starts ?? [];
+      expect(starts.length, key).toBe(lines.length);
+      expect(starts[0], key).toBe(0);
+      expect(
+        [...starts].sort((a, b) => a - b),
+        key,
+      ).toEqual(starts);
+      expect(new Set(starts).size, key).toBe(starts.length);
     }
+  });
+
+  it('tells which line is being read at a moment of the recording', () => {
+    const starts = [0, 1.5, 4.25];
+    expect(lineAt(starts, 0)).toBe(0);
+    expect(lineAt(starts, 1.49)).toBe(0);
+    expect(lineAt(starts, 1.5)).toBe(1);
+    expect(lineAt(starts, 99)).toBe(2);
+    expect(lineAt([], 3)).toBe(0);
   });
 
   it('points only at files that exist', () => {

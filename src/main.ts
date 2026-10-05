@@ -34,11 +34,11 @@ import { mediaUrl } from './ui/mediaUrl';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
 import { createPlaceRow } from './ui/placeRow';
-import { placeRowFor, type Group, type Scene } from './ui/places';
+import { neighbour, placeRowFor, type Group, type Scene } from './ui/places';
 import { discs, icon, type IconName } from './ui/icons';
 import { createChoice, createSettings, createSwitch } from './ui/settings';
 import { createTabs } from './ui/tabs';
-import { narrationUrl } from './ui/narration';
+import { narrationFor } from './ui/narration';
 import { createBrowserSpeaker, speechLines } from './ui/speech';
 import { recall, remember } from './ui/storage';
 import { en } from './ui/strings/en';
@@ -189,9 +189,16 @@ function start(): void {
   };
   const currentView = (): FlyTo => viewOf(focus);
 
-  const card = createCard(() => {
-    card.hide();
-  }, createBrowserSpeaker());
+  const card = createCard(
+    () => {
+      card.hide();
+    },
+    (step) => {
+      const to = neighbour(placeRowFor(focus, null, catalogue), focus, step);
+      if (to) goTo(to.id);
+    },
+    createBrowserSpeaker(),
+  );
   mustFind('#card-slot').append(card.element);
 
   // A group the kid picked by its tab; until the next place is picked the row shows it.
@@ -261,7 +268,15 @@ function start(): void {
     showDeepModel(base.picture?.url ?? null);
     const model = deepModel ? { ...base, note: DEEP_NOTES[deepModel.note] } : base;
     document.body.classList.toggle('deep-3d', deepModel !== null);
-    card.show(model, narrationUrl(focus, speechLines(model)));
+    const row = placeRowFor(focus, null, catalogue);
+    const stepName = (step: 1 | -1): string | null => {
+      const to = neighbour(row, focus, step);
+      return to ? displayName(to) : null;
+    };
+    card.show(model, narrationFor(focus, speechLines(model)), {
+      previous: stepName(-1),
+      next: stepName(1),
+    });
     showRow();
     document.body.classList.toggle('deep', isDeep(focus));
     if (compare.element.hidden) mainTabs.show(sceneOfId(focus));

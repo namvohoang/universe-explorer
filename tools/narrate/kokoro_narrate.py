@@ -117,14 +117,21 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     gap = np.zeros(int(GAP_SECONDS * SAMPLE_RATE), dtype=np.float32)
+    # When each line starts in its recording, in seconds, so the app can show which is being read.
+    starts: dict[str, list[float]] = {}
     for card, phoneme_lines in spoken.items():
         parts = []
+        starts[card] = []
+        length = 0
         for phonemes in phoneme_lines:
             if len(phonemes) > 510:
                 print(f"{card}: a line is too long for the model ({len(phonemes)} phonemes)", file=sys.stderr)
                 return 1
             with torch.no_grad():
-                parts += [model(phonemes, pack[len(phonemes) - 1], SPEED).numpy(), gap]
+                line = model(phonemes, pack[len(phonemes) - 1], SPEED).numpy()
+            starts[card].append(round(length / SAMPLE_RATE, 2))
+            parts += [line, gap]
+            length += len(line) + len(gap)
         audio = np.concatenate(parts[:-1])
         pcm = (np.clip(audio, -1, 1) * 32767).round().astype("<i2").tobytes()
         with tempfile.NamedTemporaryFile(suffix=".wav") as tmp:
@@ -141,25 +148,37 @@ def main() -> int:
         print(f"{card}: {len(audio) / SAMPLE_RATE:.1f} s")
 
     # The manifest lists every recording on disk whose card still exists, with what it says.
+    # A partial run keeps the entries of the cards it did not touch. Prettier rewrites the file
+    # (bare or quoted keys, lists over several lines), so read it however it is laid out.
+    old = {
+        card: (mark, [float(n) for n in times.replace("\n", " ").split(",") if n.strip()])
+        for card, mark, times in re.findall(
+            r"['\"]?([\w-]+)['\"]?:\s*\{\s*file: '[^']+',\s*fingerprint: '([0-9a-f]+)',\s*starts: \[([^\]]*)\],?\s*\}",
+            MANIFEST.read_text(),
+        )
+    }
     entries = []
     for card, lines in cards.items():
-        if (OUT_DIR / f"{card}.mp3").exists():
-            entries.append(f"  {json.dumps(card)}: {{ file: 'public/voice/{card}.mp3', fingerprint: '{fingerprint(lines)}' }},")
-    if wanted:
-        # A partial run keeps the fingerprints of the cards it did not touch.
-        # Prettier rewrites the keys (bare or single-quoted), so read them any way they are written.
-        old = dict(re.findall(r"['\"]?([\w-]+)['\"]?: \{ file: '[^']+', fingerprint: '([0-9a-f]+)' \}", MANIFEST.read_text()))
-        entries = []
-        for card, lines in cards.items():
-            if not (OUT_DIR / f"{card}.mp3").exists():
-                continue
-            mark = fingerprint(lines) if card in wanted else old.get(card)
-            if mark:
-                entries.append(f"  {json.dumps(card)}: {{ file: 'public/voice/{card}.mp3', fingerprint: '{mark}' }},")
+        if not (OUT_DIR / f"{card}.mp3").exists():
+            continue
+        if card in starts:
+            mark, times = fingerprint(lines), starts[card]
+        elif card in old:
+            mark, times = old[card]
+        else:
+            continue
+        entries.append(
+            f"  {json.dumps(card)}: {{ file: 'public/voice/{card}.mp3', fingerprint: '{mark}', starts: {json.dumps(times)} }},"
+        )
     MANIFEST.write_text(
         "// Written by tools/narrate/kokoro_narrate.py. Do not edit by hand.\n"
-        "/** The recording of each card being read aloud, and a fingerprint of the words it says. */\n"
-        "export const NARRATION: Readonly<Record<string, { file: string; fingerprint: string }>> = {\n"
+        "/**\n"
+        " * The recording of each card being read aloud, a fingerprint of the words it says, and the\n"
+        " * second at which each line starts.\n"
+        " */\n"
+        "export const NARRATION: Readonly<\n"
+        "  Record<string, { file: string; fingerprint: string; starts: readonly number[] }>\n"
+        "> = {\n"
         + "\n".join(entries)
         + "\n};\n"
     )

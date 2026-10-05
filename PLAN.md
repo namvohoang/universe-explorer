@@ -326,7 +326,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
 - [x] 8.8 First visit and tapping: a pulsing ring on Earth and a "Tap a planet to fly there" hint,
       gone at the first touch and still under reduced motion; every 3D marker has a 44×44 px tap
       area. The flag lives in the browser, and the privacy text says so.
-- [ ] 8.9 Card reading help: Next and Previous step through the group; two facts first with a
+- [x] 8.9 Card reading help: Next and Previous step through the group; two facts first with a
       "More facts" button; the sentence being read is highlighted, from timings written when the
       recordings are made (all cards are recorded again for this).
 - [ ] 8.10 Space passport: the places opened are remembered in the browser only, counted on each

@@ -41,7 +41,9 @@ for (const screen of SCREENS) {
             if (box) expect(overlap(cardBox, box), what).toBe(false);
           }
           // The card's own buttons are on screen and inside the card, not scrolled out of reach.
-          for (const button of await card.locator(':scope > button, :scope > div > button').all()) {
+          for (const button of await card
+            .locator(':scope > button, .card-head button, .card-actions button')
+            .all()) {
             if (!(await button.isVisible())) continue;
             const box = await boxOf(button);
             expect(box.y).toBeGreaterThanOrEqual(cardBox.y);

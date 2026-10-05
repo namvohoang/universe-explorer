@@ -1,13 +1,27 @@
 import type { CardModel } from './cardModel';
 import { create } from './dom';
+import { fill } from './format';
 import { icon } from './icons';
+import { lineAt, type Narration } from './narration';
 import { speechLines, type Speaker } from './speech';
 import { en } from './strings/en';
 
+/** The names of the places a card's Previous and Next buttons go to; `null` at an end. */
+export interface CardSteps {
+  readonly previous: string | null;
+  readonly next: string | null;
+}
+
+/** How many facts a card shows before its "More facts" button. */
+const FACTS_AT_FIRST = 2;
+
 export interface Card {
   readonly element: HTMLElement;
-  /** `narration` is the address of a recording of this card being read, if there is one. */
-  show(model: CardModel, narration: string | null): void;
+  /**
+   * `narration` is a recording of this card being read, if there is one. `steps` names the
+   * places before and after this one in its row, for the Previous and Next buttons.
+   */
+  show(model: CardModel, narration: Narration | null, steps: CardSteps): void;
   hide(): void;
 }
 
@@ -15,7 +29,11 @@ export interface Card {
 const SHEET = window.matchMedia('(max-width: 700px)');
 
 /** The info card: who this is, a few numbers, a few facts, and what the globe really is. */
-export function createCard(onClose: () => void, speaker: Speaker | null): Card {
+export function createCard(
+  onClose: () => void,
+  onStep: (step: 1 | -1) => void,
+  speaker: Speaker | null,
+): Card {
   const element = create('aside', 'card');
   element.setAttribute('aria-live', 'polite');
   element.hidden = true;
@@ -56,11 +74,32 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   // it; one without falls back to a voice on the device, and with neither the button is hidden.
   const read = create('button', 'primary', en.readToMe);
   read.type = 'button';
+  const previous = create('button', 'step');
+  previous.type = 'button';
+  previous.append(icon('chevron-left'));
+  previous.addEventListener('click', () => {
+    onStep(-1);
+  });
+  const next = create('button', 'step next');
+  next.type = 'button';
+  const nextName = create('span', '');
+  next.append(nextName, icon('chevron-right'));
+  next.addEventListener('click', () => {
+    onStep(1);
+  });
   const actions = create('div', 'card-actions');
-  actions.append(read);
+  actions.append(read, previous, next);
+  // A long list of facts starts short; this button shows the rest.
+  const moreFacts = create('button', 'more-facts', en.moreFacts);
+  moreFacts.type = 'button';
+  const showAllFacts = (): void => {
+    for (const fact of facts.children) fact.removeAttribute('hidden');
+    moreFacts.hidden = true;
+  };
+  moreFacts.addEventListener('click', showAllFacts);
   // The words scroll; the buttons below them stay put, so they are always in reach.
   const body = create('div', 'card-body');
-  body.append(hello, stats, factsTitle, facts, conceptTitle, concept, globe);
+  body.append(hello, stats, factsTitle, facts, moreFacts, conceptTitle, concept, globe);
   element.append(peek, peekRead, head, body, actions);
 
   const setOpen = (open: boolean): void => {
@@ -90,11 +129,29 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   }
 
   let shown: CardModel | null = null;
-  let recording: string | null = null;
+  let recording: Narration | null = null;
   let reading = false;
   const player = new Audio();
+  // The line being read is lit up: the name, the hello, then each fact in turn.
+  let lit: Element | null = null;
+  const light = (line: number | null): void => {
+    const parts: (Element | undefined)[] = [name, hello, ...facts.children];
+    const part = line === null ? null : (parts[line] ?? null);
+    if (part === lit) return;
+    lit?.classList.remove('reading');
+    lit = part;
+    if (!part) return;
+    // A fact still tucked away is brought out to be read.
+    if (part.hasAttribute('hidden')) showAllFacts();
+    part.classList.add('reading');
+    if (part !== name) part.scrollIntoView({ block: 'nearest' });
+  };
+  player.addEventListener('timeupdate', () => {
+    if (reading && recording) light(lineAt(recording.starts, player.currentTime));
+  });
   const setReading = (now: boolean): void => {
     reading = now;
+    if (!now) light(null);
     read.textContent = now ? en.stopReading : en.readToMe;
     const label = now ? en.stopReading : en.readToMe;
     peekRead.setAttribute('aria-label', label);
@@ -113,9 +170,13 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
       setReading(false);
       return;
     }
-    speaker.speak(speechLines(model), () => {
-      setReading(false);
-    });
+    speaker.speak(
+      speechLines(model),
+      () => {
+        setReading(false);
+      },
+      light,
+    );
   };
   player.addEventListener('ended', () => {
     setReading(false);
@@ -133,8 +194,9 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
       return;
     }
     const model = shown;
-    player.src = recording;
+    player.src = recording.url;
     player.currentTime = 0;
+    light(0);
     // If the recording cannot play (not downloaded yet and offline, say), use the device voice.
     player.play().catch(() => {
       speak(model);
@@ -145,12 +207,23 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
 
   return {
     element,
-    show(model, narration) {
+    show(model, narration, steps) {
       stopReading();
       shown = model;
       recording = narration;
       read.hidden = narration === null && speaker === null;
-      actions.hidden = read.hidden;
+      previous.hidden = steps.previous === null;
+      next.hidden = steps.next === null;
+      if (steps.previous !== null) {
+        const label = fill(en.stepPrevious, { name: steps.previous });
+        previous.setAttribute('aria-label', label);
+        previous.title = label;
+      }
+      if (steps.next !== null) {
+        nextName.textContent = steps.next;
+        next.setAttribute('aria-label', fill(en.stepNext, { name: steps.next }));
+      }
+      actions.hidden = read.hidden && previous.hidden && next.hidden;
       peekRead.hidden = read.hidden;
       peekName.textContent = model.name;
       eyebrow.textContent = model.eyebrow;
@@ -163,7 +236,14 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
           return row;
         }),
       );
-      facts.replaceChildren(...model.facts.map((fact) => create('li', '', fact)));
+      facts.replaceChildren(
+        ...model.facts.map((fact, index) => {
+          const item = create('li', '', fact);
+          item.hidden = index >= FACTS_AT_FIRST;
+          return item;
+        }),
+      );
+      moreFacts.hidden = model.facts.length <= FACTS_AT_FIRST;
       factsTitle.hidden = model.facts.length === 0;
       conceptTitle.hidden = model.concept === null;
       concept.hidden = model.concept === null;

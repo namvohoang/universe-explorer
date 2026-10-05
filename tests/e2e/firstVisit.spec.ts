@@ -20,11 +20,14 @@ test('the first visit shows a hint that goes at the first touch and does not com
 test('every marker can be tapped on a spot at least 44 px across', async ({ page }) => {
   await page.goto('/?speed=pause');
   await expect(page.locator('.marker:visible').first()).toBeVisible();
-  const markers = await page.locator('.marker:visible').all();
-  expect(markers.length).toBeGreaterThan(5);
-  for (const marker of markers) {
-    const box = await marker.boundingBox();
-    expect(box?.width).toBeGreaterThanOrEqual(44);
-    expect(box?.height).toBeGreaterThanOrEqual(44);
-  }
+  // Measured in one go: the markers move with the bodies, and some hide as they cross.
+  const sizes = await page.locator('.marker:visible').evaluateAll((markers) =>
+    markers.map((marker) => {
+      const box = marker.getBoundingClientRect();
+      // The marker is moved by a transform, which leaves float noise in the last decimals.
+      return Math.round(Math.min(box.width, box.height) * 100) / 100;
+    }),
+  );
+  expect(sizes.length).toBeGreaterThan(5);
+  for (const size of sizes) expect(size).toBeGreaterThanOrEqual(44);
 });

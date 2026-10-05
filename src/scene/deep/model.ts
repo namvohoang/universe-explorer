@@ -5,6 +5,7 @@ import type { Group } from 'three';
  * was made. None of these is a photo.
  * - `picture-cloud`: points coloured from the real picture; how deep the cloud is, is a guess.
  * - `simulation`: a computer model of what the thing is thought to look like.
+ * - `quiet-black-hole`: a black hole that gives off no light, shown as a dark ball against made-up stars.
  * - `cluster`: every star placed from its measured position and distance.
  * - `star-sizes`: stars at their true sizes next to each other, lined up to compare.
  * - `constellation`: stars of a pattern placed from their measured positions and distances.
@@ -15,6 +16,7 @@ import type { Group } from 'three';
 export type DeepModelNote =
   | 'picture-cloud'
   | 'simulation'
+  | 'quiet-black-hole'
   | 'cluster'
   | 'star-sizes'
   | 'constellation'

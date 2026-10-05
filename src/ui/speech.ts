@@ -10,6 +10,9 @@ export function cleanForSpeech(text: string): string {
       // Names with digits, said the way people say them.
       .replace(/TRAPPIST-1/g, 'Trappist One')
       .replace(/\bM87\b/g, 'M eighty-seven')
+      // A black hole's name ends in a star that is said aloud: "A star".
+      .replace(/\bA\*/g, 'A star')
+      .replace(/\bBH1\b/g, 'B H one')
       // A minus sign is one that starts a number, not a hyphen inside a word.
       .replace(/(^|[\s(])-(\d)/g, '$1minus $2')
       .replace(/\s?°C/g, ' degrees Celsius')

@@ -232,6 +232,11 @@ export interface BlackHole extends ObjectBase {
   readonly kind: 'black-hole';
   readonly shape: HorizonShape;
   readonly sky: SkyPosition;
+  /**
+   * Whether light from gas falling in has been seen. `false` for a quiet black hole, found
+   * only by its pull on a star; left out where the source does not say.
+   */
+  readonly emitsLight?: Sourced<boolean>;
 }
 
 export type CelestialObject =

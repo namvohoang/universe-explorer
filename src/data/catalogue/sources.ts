@@ -813,6 +813,21 @@ export const NASA_VY_CMA_DIMMING: Source = {
   retrieved: '2026-10-04',
 };
 
+export const ESO_SGR_A: Source = {
+  id: 'eso-sgr-a',
+  title:
+    'ESO — Astronomers reveal first image of the black hole at the heart of our galaxy (eso2208-eht-mw)',
+  url: 'https://www.eso.org/public/news/eso2208-eht-mw/',
+  retrieved: '2026-10-05',
+};
+
+export const ESA_GAIA_BLACK_HOLES: Source = {
+  id: 'esa-gaia-black-holes',
+  title: 'ESA — Gaia discovers a new family of black holes',
+  url: 'https://www.esa.int/Science_Exploration/Space_Science/Gaia/Gaia_discovers_a_new_family_of_black_holes',
+  retrieved: '2026-10-05',
+};
+
 export const NASA_BETELGEUSE: Source = {
   id: 'nasa-betelgeuse',
   title: 'NASA Science — What is Betelgeuse? Inside the Strange, Volatile Star',

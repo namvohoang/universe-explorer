@@ -3,7 +3,7 @@ import { isKnown } from '../../data/types';
 import { KM_PER_AU } from '../../sim/constants';
 import { bodyRadiusKm } from '../../sim/layout';
 import { temperatureFromBV } from '../../sim/stars';
-import { createBlackHole } from './blackHole';
+import { createBlackHole, createQuietBlackHole } from './blackHole';
 import { createConstellation } from './constellation';
 import { createCraftModel } from './craftModel';
 import type { DeepModel } from './model';
@@ -48,7 +48,10 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
     const scan = object.media.some((media) => media.role === 'model' && media.kind === 'composite');
     return modelUrl === null ? null : createCraftModel(modelUrl, scan);
   }
-  if (object.kind === 'black-hole') return createBlackHole();
+  if (object.kind === 'black-hole') {
+    // A glowing disc is only drawn where light from one has not been ruled out.
+    return object.emitsLight?.value === false ? createQuietBlackHole() : createBlackHole();
+  }
   if (object.kind === 'constellation') {
     return createConstellation(object.stars.value, object.lines, sun ? nameOf(sun) : '');
   }

@@ -170,3 +170,80 @@ export function createBlackHole(): DeepModel {
     },
   };
 }
+
+/** How far out the marker ring sits, and how far away the made-up background stars are. */
+const MARKER_RADII = 1.7;
+const BACKDROP_NEAR = 14;
+const BACKDROP_FAR = 30;
+const BACKDROP_STARS = 700;
+const QUIET_RADIUS = 5;
+
+/**
+ * A black hole that gives off no light: only a dark ball, which shows as a round gap in the
+ * stars behind it. The stars are made up, to give the dark something to hide, and a thin ring
+ * marks where the ball is. Nothing glows, because nothing has been seen to.
+ */
+export function createQuietBlackHole(): DeepModel {
+  const group = new Group();
+  const horizon = new Mesh(
+    new SphereGeometry(HORIZON, 48, 32),
+    new MeshBasicMaterial({ color: 0x000000 }),
+  );
+  group.add(horizon);
+
+  const markerMaterial = new MeshBasicMaterial({
+    color: 0x6fd3ff,
+    transparent: true,
+    opacity: 0.7,
+    side: DoubleSide,
+    depthWrite: false,
+  });
+  const marker = new Mesh(
+    new RingGeometry(HORIZON * MARKER_RADII, HORIZON * (MARKER_RADII + 0.05), 96, 1),
+    markerMaterial,
+  );
+  group.add(marker);
+
+  const random = seededRandom(1560);
+  const places = new Float32Array(BACKDROP_STARS * 3);
+  for (let n = 0; n < BACKDROP_STARS; n += 1) {
+    // Evenly over a shell all round, so there are stars behind the ball from every side.
+    const height = random() * 2 - 1;
+    const turn = random() * Math.PI * 2;
+    const across = Math.sqrt(1 - height * height);
+    const distance = BACKDROP_NEAR + random() * (BACKDROP_FAR - BACKDROP_NEAR);
+    places[n * 3] = Math.cos(turn) * across * distance;
+    places[n * 3 + 1] = height * distance;
+    places[n * 3 + 2] = Math.sin(turn) * across * distance;
+  }
+  const starGeometry = new BufferGeometry();
+  starGeometry.setAttribute('position', new BufferAttribute(places, 3));
+  const starMaterial = new PointsMaterial({
+    color: 0xdfe6ff,
+    size: 0.16,
+    transparent: true,
+    opacity: 0.85,
+    depthWrite: false,
+  });
+  const stars = new Points(starGeometry, starMaterial);
+  stars.frustumCulled = false;
+  group.add(stars);
+
+  return {
+    group,
+    radius: QUIET_RADIUS,
+    note: 'quiet-black-hole',
+    viewFrom: { x: 0, y: 0.3, z: 1 },
+    update(_dt, camera) {
+      marker.lookAt(camera.x, camera.y, camera.z);
+    },
+    dispose() {
+      horizon.geometry.dispose();
+      horizon.material.dispose();
+      marker.geometry.dispose();
+      markerMaterial.dispose();
+      starGeometry.dispose();
+      starMaterial.dispose();
+    },
+  };
+}

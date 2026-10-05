@@ -5,6 +5,11 @@ import { cardModel } from './cardModel';
 import { cleanForSpeech, pickLocalVoice, speechLines } from './speech';
 
 describe('cleanForSpeech', () => {
+  it('says the star in a black hole’s name and spells out its letters', () => {
+    expect(cleanForSpeech('Sagittarius A* is far away.')).toBe('Sagittarius A star is far away.');
+    expect(cleanForSpeech('Gaia BH1 is close.')).toBe('Gaia B H one is close.');
+  });
+
   it('says minus signs, degrees and units as words', () => {
     expect(cleanForSpeech('nights can drop to -180 °C.')).toBe(
       'nights can drop to minus 180 degrees Celsius.',

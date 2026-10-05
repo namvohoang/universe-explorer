@@ -43,7 +43,9 @@ import {
   NASA_HUBBLE_M87,
   NASA_APOD_SOUTHERN_CROSS,
   NASA_ASTERISMS,
+  ESA_GAIA_BLACK_HOLES,
   ESA_HUBBLE_VY_CMA,
+  ESO_SGR_A,
   ESO_ANTARES,
   NASA_BETELGEUSE,
   NASA_HUBBLE_VY_CMA,
@@ -1583,5 +1585,61 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [SI_DISCOVERY],
+  },
+  {
+    id: 'sagittarius-a',
+    hello: {
+      key: 'cardSagittariusAHello',
+      sourceId: 'eso-sgr-a',
+      quote: 'the massive object that sits at the very centre of our galaxy',
+    },
+    facts: [
+      {
+        key: 'cardSagittariusAFact1',
+        sourceId: 'eso-sgr-a',
+        quote: 'which is four million times more massive than our Sun',
+      },
+      {
+        key: 'cardSagittariusAFact2',
+        sourceId: 'eso-sgr-a',
+        quote: 'the black hole is about 27 000 light-years away from Earth',
+      },
+      {
+        key: 'cardSagittariusAFact3',
+        sourceId: 'eso-sgr-a',
+        quote: 'it appears to us to have about the same size in the sky as a doughnut on the Moon',
+      },
+    ],
+    moons: null,
+    sources: [ESO_SGR_A],
+  },
+  {
+    id: 'gaia-bh1',
+    hello: {
+      key: 'cardGaiaBh1Hello',
+      sourceId: 'esa-gaia-black-holes',
+      quote:
+        'astronomers have discovered not only the closest but also the second closest black hole to Earth',
+    },
+    facts: [
+      {
+        key: 'cardGaiaBh1Fact1',
+        sourceId: 'esa-gaia-black-holes',
+        quote: 'located just 1560 light-years away from us',
+      },
+      {
+        key: 'cardGaiaBh1Fact2',
+        sourceId: 'esa-gaia-black-holes',
+        quote: 'the objects are approximately ten times more massive than our Sun',
+      },
+      {
+        key: 'cardGaiaBh1Fact3',
+        sourceId: 'esa-gaia-black-holes',
+        quote:
+          'The two black holes were discovered by studying the movement of their companion stars.',
+      },
+    ],
+    moons: null,
+    sources: [ESA_GAIA_BLACK_HOLES],
   },
 ];

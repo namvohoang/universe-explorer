@@ -74,6 +74,8 @@ import { proximaCentauri } from './proximaCentauri';
 import { trappist1 } from './trappist1';
 import { milkyWay } from './milkyWay';
 import { m87BlackHole } from './m87BlackHole';
+import { sagittariusA } from './sagittariusA';
+import { gaiaBh1 } from './gaiaBh1';
 import { cassiopeia } from './cassiopeia';
 import { southernCross } from './southernCross';
 import { bigDipper } from './bigDipper';
@@ -138,8 +140,10 @@ export const catalogue: readonly CelestialObject[] = [
   antares,
   betelgeuse,
   orionNebula,
+  gaiaBh1,
   vyCanisMajoris,
   crabNebula,
+  sagittariusA,
   milkyWay,
   andromeda,
   triangulum,

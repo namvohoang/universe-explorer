@@ -282,6 +282,9 @@ The owner asked for more objects, and for the things people have put in orbit ro
       3D scans of the real craft. Each shows the year it was first used, and its size where a
       source gives one. Left out: Galileo (NASA's model is in made-up colours) and Mir (no
       source found yet for its facts).
+- [x] 7.8 More black holes: Sagittarius A* at the centre of our galaxy (the real EHT image, from
+      ESO) and Gaia BH1, the closest known (from ESA). A black hole that gives off no light is
+      drawn dark, with no glowing disc.
 
 **Acceptance:** every new object has a cited source for each number, a credited picture or model,
 a card with a recording, and passes the gate.

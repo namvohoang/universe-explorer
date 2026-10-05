@@ -192,6 +192,7 @@ function start(): void {
   const DEEP_NOTES: Readonly<Record<DeepModelNote, string>> = {
     'picture-cloud': en.deepNotePictureCloud,
     simulation: en.deepNoteSimulation,
+    'quiet-black-hole': en.deepNoteQuietBlackHole,
     cluster: en.deepNoteCluster,
     constellation: en.deepNoteConstellation,
     'craft-model': en.deepNoteCraft,

@@ -281,6 +281,18 @@ export const en = {
     'Our Sun sits beside a small arm called the Orion Arm. Look for the word Sun in the picture.',
   cardMilkyWayFact3:
     "This is an artist's drawing. We live inside the Milky Way, so nobody can photograph all of it.",
+  pictureAltSagittariusA: 'A blurry glowing orange ring with a dark middle, on a black background.',
+  cardSagittariusAHello:
+    'Sagittarius A* is the giant black hole in the middle of our own galaxy, the Milky Way.',
+  cardSagittariusAFact1: 'It is as heavy as four million Suns.',
+  cardSagittariusAFact2: 'It is about 27,000 light-years away.',
+  cardSagittariusAFact3: 'From Earth it looks as small as a doughnut on the Moon would.',
+  pictureAltGaiaBh1:
+    'A map of the whole Milky Way as a bright band across a dark oval, with two markers showing where two black holes are.',
+  cardGaiaBh1Hello: 'Gaia BH1 is the closest black hole to Earth that anyone has found.',
+  cardGaiaBh1Fact1: 'It is 1,560 light-years away.',
+  cardGaiaBh1Fact2: 'It is about ten times as heavy as the Sun.',
+  cardGaiaBh1Fact3: 'Nobody can see it. It was found because the star that goes around it wobbles.',
   pictureAltM87BlackHole:
     'A fuzzy, glowing orange ring around a dark middle, on a black background.',
   nameM87BlackHole: 'The M87 Black Hole',
@@ -305,6 +317,8 @@ export const en = {
   realPicture: 'The real picture. Tap to make it bigger or smaller.',
   deepNotePictureCloud:
     'This 3D cloud is made from the real picture, shown in the corner. How deep the cloud is, is a guess: the picture cannot tell us.',
+  deepNoteQuietBlackHole:
+    'This black hole gives off no light, so nobody can take a picture of it. The model shows a dark ball hiding the stars behind it. The stars are made up, and the blue ring only marks where the ball is.',
   deepNoteSimulation:
     'This is a computer model of what it is thought to look like, not a photo. The real picture is in the corner.',
   deepNoteConstellation:

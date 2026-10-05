@@ -109,6 +109,8 @@ export const en = {
   fitView: 'Fit it all in view',
   closeCard: 'Close card',
   readToMe: 'Read it to me',
+  peekHint: 'Tap to read about',
+  menu: 'Menu',
   stopReading: 'Stop reading',
   coolFacts: 'Cool facts',
   aboutTheGlobe: 'About this globe',

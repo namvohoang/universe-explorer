@@ -993,14 +993,283 @@ button.quiet {
   }
 }
 
+/* Parts that exist only for the phone layout below. */
+.card-peek,
+.card .peek-read,
+.phone-menu {
+  display: none;
+}
+
+.sheet-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--ink-dim);
+}
+
+.sheet-row span {
+  flex: 1;
+  text-align: left;
+}
+
+/* Phone: title and menu on top, tabs along the bottom, the card as a sheet that peeks. */
 @media (max-width: 700px) {
-  #picture {
-    padding: calc(var(--top-h) + 12px) 12px 55dvh;
+  :root {
+    --tabbar-h: calc(64px + env(safe-area-inset-bottom, 0px));
+    --peek-h: 76px;
   }
 
-  .card {
+  .phone-only {
+    display: block;
+  }
+
+  .wide-only,
+  .zoom {
+    display: none !important;
+  }
+
+  .top {
+    left: 12px;
+    right: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'brand menu'
+      'clock view';
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand {
+    grid-area: brand;
+  }
+
+  .brand h1 {
+    font-size: 24px;
+  }
+
+  .brand p {
+    margin-top: 3px;
+    max-width: none;
+    font-size: 12px;
+  }
+
+  .tools {
+    display: contents;
+  }
+
+  .phone-menu {
+    display: grid;
+    grid-area: menu;
+    justify-self: end;
+  }
+
+  .view-menu {
+    grid-area: view;
+    justify-self: end;
+  }
+
+  /* The clock is just a date with play and pause; its speeds are in the menu. */
+  .clock {
+    grid-area: clock;
+    justify-self: start;
+    flex-wrap: nowrap;
+    padding: 0 14px 0 0;
+    gap: 8px;
+  }
+
+  .clock-rate,
+  .clock-buttons {
+    display: none;
+  }
+
+  .clock-date {
+    font-size: 15px;
+  }
+
+  .clock-limit {
+    display: none;
+  }
+
+  /* The main tabs: a bar along the bottom, each an icon over its name. */
+  #main-tabs {
+    position: fixed;
+    z-index: 7;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--tabbar-h);
+    box-sizing: border-box;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--panel-solid);
+    border-top: 1px solid var(--line);
+  }
+
+  #main-tabs .tabs {
+    height: 100%;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 4px;
+  }
+
+  #main-tabs .tabs button {
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 0 2px;
+    border-radius: 14px;
+    font-size: 12px;
+  }
+
+  #main-tabs .tabs button .tab-label {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  /* The place row sits above the peeking card: group tabs on one line, chips on the next. */
+  .tray {
+    left: 8px;
+    right: 8px;
+    bottom: calc(var(--tabbar-h) + var(--peek-h) + 6px);
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .place-row {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+
+  .chips {
+    flex-basis: 100%;
+  }
+
+  .view-controls,
+  body.deep-3d .view-controls {
     top: auto;
-    bottom: calc(var(--bottom-h) + 12px);
-    max-height: min(40dvh, calc(var(--free-h) - 24px));
+    right: 12px;
+    bottom: calc(var(--bottom-h) + 8px);
+    transform: none;
+    gap: 8px;
+  }
+
+  button.round {
+    width: 48px;
+    height: 48px;
+  }
+
+  #picture {
+    padding: calc(var(--top-h) + 12px) 12px calc(var(--bottom-h) + 12px);
+  }
+
+  body.deep-3d #picture:not(.big) {
+    inset: auto auto calc(var(--bottom-h) + 8px) 12px;
+    width: min(150px, 40vw);
+  }
+
+  /* The card: a sheet above the tab bar. */
+  .card {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: var(--tabbar-h);
+    width: auto;
+    height: var(--peek-h);
+    max-height: none;
+    border-radius: 26px 26px 0 0;
+    border-width: 1px 0 0;
+    transition: height 0.2s;
+  }
+
+  .card.open {
+    z-index: 6;
+    height: min(55dvh, calc(100dvh - var(--top-h) - var(--tabbar-h) - 8px));
+  }
+
+  .card:not(.open) .card-head,
+  .card:not(.open) .card-body,
+  .card:not(.open) .card-actions {
+    display: none;
+  }
+
+  .card:not(.open) .card-peek {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 2px;
+    flex: 1;
+    min-height: 0;
+    padding: 12px 76px 8px 18px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    text-align: left;
+  }
+
+  .card-peek .handle {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    width: 44px;
+    height: 5px;
+    margin-left: -22px;
+    border-radius: 999px;
+    background: rgba(160, 180, 255, 0.4);
+  }
+
+  .peek-hint {
+    color: var(--ink-dim);
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  .card-peek strong {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--sun);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .card:not(.open) .peek-read {
+    display: grid;
+    position: absolute;
+    right: 14px;
+    top: 16px;
+    background: var(--sun);
+    color: var(--sun-ink);
+    border-color: transparent;
+  }
+
+  .compare {
+    left: 0;
+    right: 0;
+    bottom: var(--tabbar-h);
+    border-radius: 26px 26px 0 0;
+  }
+
+  /* The settings: a sheet from the bottom, over everything. */
+  .settings {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-height: calc(100dvh - 24px);
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    border-radius: 26px 26px 0 0;
+    z-index: 9;
   }
 }

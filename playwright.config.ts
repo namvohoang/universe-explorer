@@ -11,6 +11,8 @@ export default defineConfig({
     baseURL: `http://localhost:${String(PORT)}`,
     // A fresh build must be what is tested, not a copy an earlier service worker kept.
     serviceWorkers: 'block',
+    // Nothing slides or swoops, so a measurement is never taken halfway through a move.
+    contextOptions: { reducedMotion: 'reduce' },
     launchOptions: {
       // Draw 3D in software, so the checks run on a machine with no graphics card.
       args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader'],

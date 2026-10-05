@@ -316,7 +316,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
       not places.
 - [x] 8.4 Compact bottom dock: a play/pause icon button, the date and its rate; speeds as a
       segmented control from 1280 px wide and a menu below that; Today stays. Two rows at most.
-- [ ] 8.5 Phone layout (700 px wide or less): brand and a menu button; a date pill and a scale
+- [x] 8.5 Phone layout (700 px wide or less): brand and a menu button; a date pill and a scale
       pill; a bottom tab bar; the card as a bottom sheet that peeks and opens; a settings sheet
       that traps focus. At 390×844 the 3D view keeps at least 45% of the screen with the sheet peeking.
 - [ ] 8.6 Phone landscape (500 px high or less): the card is a side panel, the controls one

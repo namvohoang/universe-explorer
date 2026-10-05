@@ -11,6 +11,9 @@ export interface Card {
   hide(): void;
 }
 
+/** The screens on which the card is a sheet at the bottom that peeks and opens. */
+const SHEET = window.matchMedia('(max-width: 700px)');
+
 /** The info card: who this is, a few numbers, a few facts, and what the globe really is. */
 export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   const element = create('aside', 'card');
@@ -29,6 +32,19 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   const head = create('div', 'card-head');
   head.append(titles, close);
 
+  // On a phone the card is a sheet at the bottom. Closed, it peeks: just the name, a way to
+  // open it and a button to hear it. (Shown by the stylesheet only on a small screen.)
+  const peek = create('button', 'card-peek');
+  peek.type = 'button';
+  const peekName = create('strong', '');
+  peek.append(create('span', 'handle'), create('span', 'peek-hint', en.peekHint), peekName);
+  const peekRead = create('button', 'peek-read round');
+  peekRead.type = 'button';
+  const speakerIcon = icon('speaker');
+  const stopIcon = icon('stop');
+  stopIcon.style.display = 'none';
+  peekRead.append(speakerIcon, stopIcon);
+
   const hello = create('p', 'hello');
   const stats = create('dl', 'stats');
   const factsTitle = create('h3', '', en.coolFacts);
@@ -45,7 +61,33 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   // The words scroll; the buttons below them stay put, so they are always in reach.
   const body = create('div', 'card-body');
   body.append(hello, stats, factsTitle, facts, conceptTitle, concept, globe);
-  element.append(head, body, actions);
+  element.append(peek, peekRead, head, body, actions);
+
+  const setOpen = (open: boolean): void => {
+    element.classList.toggle('open', open);
+    peek.setAttribute('aria-expanded', String(open));
+  };
+  setOpen(false);
+  peek.addEventListener('click', () => {
+    setOpen(true);
+    close.focus();
+  });
+  // A swipe down on the top of the open sheet closes it, and a swipe up on the peek opens it.
+  const SWIPE_PIXELS = 30;
+  const grips: readonly HTMLElement[] = [head, peek];
+  for (const grip of grips) {
+    let from: number | null = null;
+    grip.addEventListener('pointerdown', (event) => {
+      from = event.clientY;
+    });
+    grip.addEventListener('pointerup', (event) => {
+      if (from === null) return;
+      const moved = event.clientY - from;
+      from = null;
+      if (grip === head && moved > SWIPE_PIXELS) setOpen(false);
+      if (grip === peek && moved < -SWIPE_PIXELS) setOpen(true);
+    });
+  }
 
   let shown: CardModel | null = null;
   let recording: string | null = null;
@@ -54,6 +96,11 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   const setReading = (now: boolean): void => {
     reading = now;
     read.textContent = now ? en.stopReading : en.readToMe;
+    const label = now ? en.stopReading : en.readToMe;
+    peekRead.setAttribute('aria-label', label);
+    peekRead.title = label;
+    speakerIcon.style.display = now ? 'none' : '';
+    stopIcon.style.display = now ? '' : 'none';
   };
   const stopReading = (): void => {
     if (!reading) return;
@@ -73,7 +120,8 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
   player.addEventListener('ended', () => {
     setReading(false);
   });
-  read.addEventListener('click', () => {
+  setReading(false);
+  const toggleReading = (): void => {
     if (!shown) return;
     if (reading) {
       stopReading();
@@ -91,7 +139,9 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
     player.play().catch(() => {
       speak(model);
     });
-  });
+  };
+  read.addEventListener('click', toggleReading);
+  peekRead.addEventListener('click', toggleReading);
 
   return {
     element,
@@ -101,6 +151,8 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
       recording = narration;
       read.hidden = narration === null && speaker === null;
       actions.hidden = read.hidden;
+      peekRead.hidden = read.hidden;
+      peekName.textContent = model.name;
       eyebrow.textContent = model.eyebrow;
       name.textContent = model.name;
       hello.textContent = model.hello;
@@ -124,7 +176,9 @@ export function createCard(onClose: () => void, speaker: Speaker | null): Card {
     },
     hide() {
       stopReading();
-      element.hidden = true;
+      // A sheet goes back to its peek; a card on a wide screen goes away until the next place.
+      setOpen(false);
+      if (!SHEET.matches) element.hidden = true;
     },
   };
 }

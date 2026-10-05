@@ -31,22 +31,39 @@ for (const screen of SCREENS) {
         await page.goto(`/?speed=pause${place ? `&go=${place}` : ''}`);
         const card = page.locator('.card');
         await expect(card).toBeVisible();
-        const cardBox = await boxOf(card);
-        // The bars are as wide as the screen but see-through; what counts is their contents.
-        for (const part of await page.locator('.top > *, .tray > *').all()) {
-          if (!(await part.isVisible())) continue;
-          const what = (await part.getAttribute('class')) ?? '';
-          expect(overlap(cardBox, await boxOf(part)), what).toBe(false);
-        }
-        // The card's own buttons are on screen and inside the card, not scrolled out of reach.
-        for (const button of await card.locator('.card-head button, .card-actions button').all()) {
-          if (!(await button.isVisible())) continue;
-          const box = await boxOf(button);
-          expect(box.y).toBeGreaterThanOrEqual(cardBox.y);
-          expect(box.y + box.height).toBeLessThanOrEqual(cardBox.y + cardBox.height + 0.5);
-          expect(box.y + box.height).toBeLessThanOrEqual(screen.height);
-          expect(box.height).toBeGreaterThanOrEqual(44);
-        }
+        const check = async (parts: string): Promise<void> => {
+          const cardBox = await boxOf(card);
+          // The bars are as wide as the screen but see-through; what counts is their contents.
+          for (const part of await page.locator(parts).all()) {
+            if (!(await part.isVisible())) continue;
+            const what =
+              (await part.getAttribute('class')) ?? (await part.getAttribute('id')) ?? '';
+            // A wrapper with no box of its own has its children checked through the selector.
+            const box = await part.boundingBox();
+            if (box) expect(overlap(cardBox, box), what).toBe(false);
+          }
+          // The card's own buttons are on screen and inside the card, not scrolled out of reach.
+          for (const button of await card.locator(':scope > button, :scope > div > button').all()) {
+            if (!(await button.isVisible())) continue;
+            const box = await boxOf(button);
+            expect(box.y).toBeGreaterThanOrEqual(cardBox.y);
+            expect(box.y + box.height).toBeLessThanOrEqual(cardBox.y + cardBox.height + 0.5);
+            expect(box.y + box.height).toBeLessThanOrEqual(screen.height);
+            expect(box.height).toBeGreaterThanOrEqual(44);
+          }
+        };
+        await check('.top > *, .tools > *, .tray > *');
+        if (screen.name !== 'phone') return;
+        // On a phone the card is a sheet: opened, it covers the place row but not the bars.
+        await page.locator('.card-peek').click();
+        await expect(page.locator('.card-actions')).toBeVisible();
+        // Wait for the sheet to finish sliding up before measuring it.
+        await expect
+          .poll(async () => (await boxOf(page.locator('.card-actions'))).y + 44)
+          .toBeLessThan(screen.height - 64);
+        await check('.top > *, .tools > *');
+        await page.keyboard.press('Escape');
+        await expect(page.locator('.card-peek')).toBeVisible();
       });
     }
   });
@@ -70,12 +87,48 @@ for (const screen of SCREENS) {
     await page.setViewportSize({ width: screen.width, height: screen.height });
     for (const place of ['', 'saturn', 'andromeda', 'voyager']) {
       await page.goto(`/?speed=pause${place ? `&go=${place}` : ''}`);
-      const row = await boxOf(page.locator('.place-row'));
       // One line of 44 px chips, with a little room for a scroll bar. It never leaves the screen.
-      expect(row.height, place).toBeLessThan(70);
+      const chips = await boxOf(page.locator('.chips'));
+      expect(chips.height, place).toBeLessThan(70);
+      const row = await boxOf(page.locator('.place-row'));
+      // On a phone the group tabs take a line of their own above the chips.
+      expect(row.height, place).toBeLessThan(screen.name === 'phone' ? 120 : 70);
       expect(row.x, place).toBeGreaterThanOrEqual(0);
       expect(row.x + row.width, place).toBeLessThanOrEqual(screen.width);
       await expect(page.locator('.chips button[aria-current="true"]')).toHaveCount(place ? 1 : 0);
     }
   });
 }
+
+test('a phone keeps nearly half the screen for the 3D view', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const place of ['', 'jupiter', 'andromeda']) {
+    await page.goto(`/?speed=pause${place ? `&go=${place}` : ''}`);
+    let top = 0;
+    for (const part of await page.locator('.brand, .phone-menu, .clock, .view-menu').all()) {
+      if (!(await part.isVisible())) continue;
+      const box = await boxOf(part);
+      top = Math.max(top, box.y + box.height);
+    }
+    const row = await boxOf(page.locator('.place-row'));
+    expect((row.y - top) / 844, place).toBeGreaterThanOrEqual(0.45);
+  }
+});
+
+test('the phone menu holds the settings and keeps the Tab key inside', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/?speed=pause');
+  await page.locator('.phone-menu').click();
+  const sheet = page.locator('.settings');
+  await expect(sheet).toBeVisible();
+  await expect(sheet.getByRole('radio')).toHaveCount(3);
+  await expect(sheet.getByRole('switch')).toBeVisible();
+  await expect(sheet.getByRole('button', { name: 'Today' })).toBeVisible();
+  await expect(sheet.getByRole('button', { name: 'For grown-ups' })).toBeVisible();
+  for (let presses = 0; presses < 14; presses += 1) {
+    await page.keyboard.press('Tab');
+    expect(await sheet.evaluate((el) => el.contains(document.activeElement))).toBe(true);
+  }
+  await page.keyboard.press('Escape');
+  await expect(sheet).toBeHidden();
+});

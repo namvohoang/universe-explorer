@@ -424,7 +424,15 @@ function start(): void {
   grownUpsButton.addEventListener('click', () => {
     grownUps.open();
   });
-  tools.append(menuButton, grownUpsButton);
+  // On a phone one menu button opens the settings, and the grown-ups page is a row inside them.
+  const phoneMenu = create('button', 'icon-button phone-menu');
+  phoneMenu.type = 'button';
+  phoneMenu.setAttribute('aria-label', en.menu);
+  phoneMenu.title = en.menu;
+  phoneMenu.append(icon('menu'));
+  settings.openWith(phoneMenu);
+  grownUpsButton.classList.add('wide-only');
+  tools.append(menuButton, grownUpsButton, phoneMenu);
 
   const clockControl = createClockControl(
     limits,
@@ -439,6 +447,23 @@ function start(): void {
   // On a phone the dock has no room for the speeds, so they are in the settings sheet too.
   const speedSection = settings.addSection(en.speedQuestion, clockControl.forSettings);
   speedSection.classList.add('solar-only', 'phone-only');
+  const grownUpsRow = create('button', 'sheet-row');
+  grownUpsRow.type = 'button';
+  grownUpsRow.append(icon('info'), create('span', '', en.grownUps), icon('chevron-right'));
+  grownUpsRow.addEventListener('click', () => {
+    settings.close();
+    grownUps.open();
+  });
+  settings.addSection(null, grownUpsRow).classList.add('phone-only');
+
+  // On a small screen the clock is a pill under the title; otherwise it heads the bottom dock.
+  const smallScreen = window.matchMedia('(max-width: 700px)');
+  const arrange = (): void => {
+    if (smallScreen.matches) mustFind('.top').append(clockControl.element);
+    else mustFind('#tray').prepend(clockControl.element);
+  };
+  smallScreen.addEventListener('change', arrange);
+  arrange();
   watchLayout(mustFind('.top'), mustFind('#tray'));
 
   const markers = createMarkers(

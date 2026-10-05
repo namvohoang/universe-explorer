@@ -14,7 +14,7 @@ import {
   solarSystemStats,
   type Stat,
 } from './stats';
-import { en } from './strings/en';
+import { words } from './strings';
 import { mediaKindLabel } from './strings/media';
 
 /** Everything an info card shows, as plain text ready for the page (and for reading aloud). */
@@ -32,7 +32,7 @@ export interface CardModel {
   readonly picture: { readonly url: string; readonly alt: string; readonly credit: string } | null;
 }
 
-const STRINGS: Readonly<Record<string, string>> = en;
+const STRINGS: Readonly<Record<string, string>> = words;
 
 function text(key: string): string {
   const value = STRINGS[key];
@@ -45,18 +45,18 @@ function placeFromSun(object: CelestialObject, catalogue: readonly CelestialObje
   const planets = catalogue
     .filter((o) => o.kind === 'planet' && o.orbit)
     .sort((a, b) => (a.orbit && b.orbit ? semiMajorAxisKm(a.orbit) - semiMajorAxisKm(b.orbit) : 0));
-  const place = en.ordinals.split(' ')[planets.findIndex((o) => o.id === object.id)];
+  const place = words.ordinals.split(' ')[planets.findIndex((o) => o.id === object.id)];
   if (place === undefined) throw new Error(`${object.id} has no place among the planets`);
   return place;
 }
 
 const DEEP_KIND_LABELS: Partial<Record<CelestialObject['kind'], string>> = {
-  star: en.kindStar,
-  exoplanet: en.kindExoplanet,
-  nebula: en.kindNebula,
-  'star-cluster': en.kindStarCluster,
-  galaxy: en.kindGalaxy,
-  'black-hole': en.kindBlackHole,
+  star: words.kindStar,
+  exoplanet: words.kindExoplanet,
+  nebula: words.kindNebula,
+  'star-cluster': words.kindStarCluster,
+  galaxy: words.kindGalaxy,
+  'black-hole': words.kindBlackHole,
 };
 
 /**
@@ -69,29 +69,29 @@ export function isDeepSky(object: CelestialObject): boolean {
 }
 
 function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
-  if (object.kind === 'constellation') return en.eyebrowConstellation;
+  if (object.kind === 'constellation') return words.eyebrowConstellation;
   if (isDeepSky(object)) {
     const kind = DEEP_KIND_LABELS[object.kind] ?? '';
     // With no distance given, it is the one galaxy we are inside.
     const lightYears = 'sky' in object ? (object.sky?.distanceLy.value ?? null) : null;
-    if (lightYears === null) return fill(en.eyebrowHome, { kind });
-    return fill(en.eyebrowDeep, { kind, distance: formatLightYears(lightYears) });
+    if (lightYears === null) return fill(words.eyebrowHome, { kind });
+    return fill(words.eyebrowDeep, { kind, distance: formatLightYears(lightYears) });
   }
-  if (object.kind === 'star') return en.eyebrowStar;
+  if (object.kind === 'star') return words.eyebrowStar;
   if (object.kind === 'moon') {
     const parent = catalogue.find((o) => o.id === object.parentId);
-    return fill(en.eyebrowMoon, { parent: parent ? displayName(parent) : '' });
+    return fill(words.eyebrowMoon, { parent: parent ? displayName(parent) : '' });
   }
   if (object.kind === 'spacecraft') {
-    if (object.orbit === null) return en.eyebrowSpaceship;
+    if (object.orbit === null) return words.eyebrowSpaceship;
     const parent = catalogue.find((o) => o.id === object.parentId);
-    return fill(en.eyebrowSpacecraft, { parent: parent ? displayName(parent) : '' });
+    return fill(words.eyebrowSpacecraft, { parent: parent ? displayName(parent) : '' });
   }
-  if (object.kind === 'dwarf-planet') return en.eyebrowDwarfPlanet;
-  if (object.kind === 'asteroid') return en.eyebrowAsteroid;
-  if (object.kind === 'belt') return en.eyebrowBelt;
-  if (object.kind === 'comet') return en.eyebrowComet;
-  return fill(en.eyebrowPlanet, { place: placeFromSun(object, catalogue) });
+  if (object.kind === 'dwarf-planet') return words.eyebrowDwarfPlanet;
+  if (object.kind === 'asteroid') return words.eyebrowAsteroid;
+  if (object.kind === 'belt') return words.eyebrowBelt;
+  if (object.kind === 'comet') return words.eyebrowComet;
+  return fill(words.eyebrowPlanet, { place: placeFromSun(object, catalogue) });
 }
 
 function conceptOf(object: CelestialObject): CardModel['concept'] {
@@ -104,8 +104,8 @@ function conceptOf(object: CelestialObject): CardModel['concept'] {
 function globeNote(media: MediaRef | undefined): string | null {
   const label = media === undefined ? null : mediaKindLabel(media.kind);
   if (label === null) return null;
-  const unseen = media?.unseen ? ` ${en.globeUnseen}` : '';
-  return `${en.aboutTheGlobe}: ${label}${unseen}`;
+  const unseen = media?.unseen ? ` ${words.globeUnseen}` : '';
+  return `${words.aboutTheGlobe}: ${label}${unseen}`;
 }
 
 /** The card for one object, or for the whole view when `objectId` is `null`. */
@@ -119,8 +119,8 @@ export function cardModel(
   if (objectId === null) {
     if (!content) throw new Error('There is no card for the whole view');
     return {
-      eyebrow: en.eyebrowSolarSystem,
-      name: en.nameSolarSystem,
+      eyebrow: words.eyebrowSolarSystem,
+      name: words.nameSolarSystem,
       hello: text(content.hello.key),
       stats: solarSystemStats(catalogue),
       facts,
@@ -134,15 +134,15 @@ export function cardModel(
   const picture = object.media.find((media) => media.role === 'picture');
   const drawnNote =
     object.kind === 'belt'
-      ? en.beltNote
+      ? words.beltNote
       : object.kind === 'comet'
-        ? en.cometNote
+        ? words.cometNote
         : object.kind === 'spacecraft'
           ? object.orbit === null
             ? object.media.some((media) => media.role === 'model' && media.kind === 'composite')
-              ? en.deepNoteScan
-              : en.deepNoteCraft
-            : en.spacecraftNote
+              ? words.deepNoteScan
+              : words.deepNoteCraft
+            : words.spacecraftNote
           : globeNote(
               object.media.find((media) => media.role === 'surface-map' || media.role === 'model'),
             );
@@ -163,7 +163,7 @@ export function cardModel(
       ? {
           url: mediaUrl(picture.file),
           alt: text(picture.altKey),
-          credit: fill(en.pictureCredit, { credit: picture.credit ?? '' }),
+          credit: fill(words.pictureCredit, { credit: picture.credit ?? '' }),
         }
       : null,
   };
@@ -175,15 +175,15 @@ export function cardModel(
  */
 function plainHello(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
   if (object.kind === 'dwarf-planet') {
-    return fill(en.helloDwarfPlanet, { name: displayName(object) });
+    return fill(words.helloDwarfPlanet, { name: displayName(object) });
   }
-  if (object.kind === 'asteroid') return fill(en.helloAsteroid, { name: displayName(object) });
+  if (object.kind === 'asteroid') return fill(words.helloAsteroid, { name: displayName(object) });
   if (object.kind === 'constellation') {
-    return fill(en.helloConstellation, { name: displayName(object) });
+    return fill(words.helloConstellation, { name: displayName(object) });
   }
   if (object.kind !== 'moon') throw new Error(`No card for "${object.id}"`);
   const parent = catalogue.find((o) => o.id === object.parentId);
-  return fill(en.helloMoon, {
+  return fill(words.helloMoon, {
     name: displayName(object),
     parent: parent ? displayName(parent) : '',
   });

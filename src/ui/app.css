@@ -17,6 +17,18 @@
   --body: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
 }
 
+/* Vietnamese: fonts that have its letters. The title font is a little bolder to match. */
+:root[lang='vi'] {
+  --display: 'Baloo 2', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+  --body: 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
+}
+
+:root[lang='vi'] h1,
+:root[lang='vi'] h2,
+:root[lang='vi'] .card-peek strong {
+  font-weight: 800;
+}
+
 [hidden] {
   display: none !important;
 }

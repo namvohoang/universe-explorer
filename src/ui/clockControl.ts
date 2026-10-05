@@ -10,14 +10,14 @@ import { create } from './dom';
 import { fill, formatDate, formatDateAndHour, yearOf } from './format';
 import { icon } from './icons';
 import { createSegmented } from './segmented';
-import { en } from './strings/en';
+import { words } from './strings';
 
 const SPEED_LABELS: Readonly<Record<Speed, string>> = {
-  pause: en.speedPause,
-  hourly: en.speedHourly,
-  slow: en.speedSlow,
-  normal: en.speedNormal,
-  fast: en.speedFast,
+  pause: words.speedPause,
+  hourly: words.speedHourly,
+  slow: words.speedSlow,
+  normal: words.speedNormal,
+  fast: words.speedFast,
 };
 
 type Running = Exclude<Speed, 'pause'>;
@@ -44,7 +44,7 @@ export function createClockControl(
   const limit = create('p', 'clock-limit');
   limit.setAttribute('role', 'status');
   if (limits) {
-    limit.textContent = fill(en.dateLimit, {
+    limit.textContent = fill(words.dateLimit, {
       from: yearOf(limits.minJd),
       to: yearOf(limits.maxJd),
     });
@@ -64,15 +64,15 @@ export function createClockControl(
   });
 
   const options = RUNNING.map((speed) => ({ value: speed, label: SPEED_LABELS[speed] }));
-  const speeds = createSegmented<Running>(en.speedControl, options, running, onSpeed);
+  const speeds = createSegmented<Running>(words.speedControl, options, running, onSpeed);
   speeds.element.classList.add('speed-seg');
-  const sheetSpeeds = createSegmented<Running>(en.speedControl, options, running, onSpeed);
+  const sheetSpeeds = createSegmented<Running>(words.speedControl, options, running, onSpeed);
 
   // Where the row of speeds does not fit, the same choice as a drop-down.
   const menu = create('select', 'speed-menu');
-  menu.setAttribute('aria-label', en.speedControl);
+  menu.setAttribute('aria-label', words.speedControl);
   for (const speed of RUNNING) {
-    const option = create('option', '', fill(en.speedOption, { speed: SPEED_LABELS[speed] }));
+    const option = create('option', '', fill(words.speedOption, { speed: SPEED_LABELS[speed] }));
     option.value = speed;
     menu.append(option);
   }
@@ -82,7 +82,7 @@ export function createClockControl(
   });
 
   const todayButton = (): HTMLButtonElement => {
-    const today = create('button', '', en.today);
+    const today = create('button', '', words.today);
     today.type = 'button';
     today.addEventListener('click', onToday);
     return today;
@@ -113,15 +113,15 @@ export function createClockControl(
         const seconds = secondsPerYear(clock.speed);
         rate.textContent =
           seconds === null
-            ? en.ratePaused
+            ? words.ratePaused
             : showsHours(clock.speed)
-              ? en.rateHourly
-              : fill(en.rate, { seconds: Math.round(seconds) });
+              ? words.rateHourly
+              : fill(words.rate, { seconds: Math.round(seconds) });
         paused = clock.speed === 'pause';
         if (clock.speed !== 'pause') running = clock.speed;
         playIcon.style.display = paused ? '' : 'none';
         pauseIcon.style.display = paused ? 'none' : '';
-        const label = paused ? en.timeStart : en.timeStop;
+        const label = paused ? words.timeStart : words.timeStop;
         playPause.setAttribute('aria-label', label);
         playPause.title = label;
         speeds.show(running);

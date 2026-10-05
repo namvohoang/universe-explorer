@@ -1,6 +1,7 @@
 import { unixMsFromJulianDate } from '../sim/time';
+import { locale } from './strings';
 
-const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
+const DATE_FORMAT = new Intl.DateTimeFormat(locale, {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
@@ -12,7 +13,7 @@ export function formatDate(jd: number): string {
   return DATE_FORMAT.format(new Date(unixMsFromJulianDate(jd)));
 }
 
-const HOUR_FORMAT = new Intl.DateTimeFormat('en-GB', {
+const HOUR_FORMAT = new Intl.DateTimeFormat(locale, {
   hour: '2-digit',
   minute: '2-digit',
   hour12: false,

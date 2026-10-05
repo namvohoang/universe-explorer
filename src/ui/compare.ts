@@ -6,12 +6,12 @@ import { icon } from './icons';
 import { fill } from './format';
 import { displayName } from './names';
 import { createSegmented } from './segmented';
-import { en } from './strings/en';
+import { locale, words } from './strings';
 
 /** Drawn width of the largest body in the size line-up, and length of the distance line. */
 const LARGEST_PIXELS = 180;
 const LINE_PIXELS = 3000;
-const NUMBER = new Intl.NumberFormat('en-GB', { maximumSignificantDigits: 2 });
+const NUMBER = new Intl.NumberFormat(locale, { maximumSignificantDigits: 2 });
 
 export interface Compare {
   readonly element: HTMLElement;
@@ -32,7 +32,7 @@ export function createCompare(
   const nameOf = (id: string): string => names.get(id) ?? id;
 
   const element = create('section', 'compare');
-  element.setAttribute('aria-label', en.compare);
+  element.setAttribute('aria-label', words.compare);
   element.hidden = true;
 
   const sizes = create('div', 'compare-sizes');
@@ -54,12 +54,12 @@ export function createCompare(
   const sunNote = create('p', 'compare-note');
   if (sun && largest) {
     const times = (bodyRadiusKm(sun) ?? 0) / (bodyRadiusKm(largest) ?? 1);
-    sunNote.textContent = fill(en.compareSunNote, {
+    sunNote.textContent = fill(words.compareSunNote, {
       times: NUMBER.format(times),
       planet: nameOf(largest.id),
     });
   }
-  sizes.append(create('p', 'compare-lead', en.compareSizesLead), row, sunNote);
+  sizes.append(create('p', 'compare-lead', words.compareSizesLead), row, sunNote);
 
   const distances = create('div', 'compare-distances');
   const scroller = create('div', 'line-scroller');
@@ -78,19 +78,19 @@ export function createCompare(
   });
   scroller.append(line);
   scroller.tabIndex = 0;
-  scroller.setAttribute('aria-label', en.compareDistancesLead);
+  scroller.setAttribute('aria-label', words.compareDistancesLead);
   distances.append(
-    create('p', 'compare-lead', en.compareDistancesLead),
+    create('p', 'compare-lead', words.compareDistancesLead),
     scroller,
-    create('p', 'compare-note', en.compareDistancesNote),
+    create('p', 'compare-note', words.compareDistancesNote),
   );
   distances.hidden = true;
 
   const tabs = createSegmented(
-    en.compare,
+    words.compare,
     [
-      { value: 'sizes', label: en.compareSizes },
-      { value: 'distances', label: en.compareDistances },
+      { value: 'sizes', label: words.compareSizes },
+      { value: 'distances', label: words.compareDistances },
     ],
     'sizes',
     (which) => {
@@ -101,7 +101,7 @@ export function createCompare(
   const close = create('button', 'x');
   close.append(icon('close'));
   close.type = 'button';
-  close.setAttribute('aria-label', en.compareClose);
+  close.setAttribute('aria-label', words.compareClose);
   const head = create('div', 'compare-head');
   head.append(tabs.element, close);
   element.append(head, sizes, distances);

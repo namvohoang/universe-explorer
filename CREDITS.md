@@ -115,13 +115,15 @@ ship with the app.
 
 ## Fonts
 
-Bundled with the app from the npm packages below and served from the app's own origin. Latin
-subset only.
+Bundled with the app from the npm packages below and served from the app's own origin. The
+English fonts ship their Latin subset; the Vietnamese ones their Latin and Vietnamese subsets.
 
 | Font | Used for | Copyright | Licence | Package | Upstream |
 |---|---|---|---|---|---|
 | Atkinson Hyperlegible (400, 700) | Body text | Copyright 2020 Braille Institute of America, Inc. | SIL Open Font License 1.1 — `public/licenses/atkinson-hyperlegible-OFL.txt` | `@fontsource/atkinson-hyperlegible` 5.3.0 | https://github.com/google/fonts |
 | Lilita One (400) | Titles | Copyright (c) 2011 Juan Montoreano (juan@remolacha.biz), with Reserved Font Names "Lilita One" | SIL Open Font License 1.1 — `public/licenses/lilita-one-OFL.txt` | `@fontsource/lilita-one` 5.3.0 | https://github.com/google/fonts |
+| Baloo 2 (800) | Titles in Vietnamese | Copyright 2019 The Baloo 2 Project Authors (https://github.com/EkType/Baloo2) | SIL Open Font License 1.1 — `public/licenses/baloo-2-OFL.txt` | `@fontsource/baloo-2` 5.3.0 | https://github.com/EkType/Baloo2 |
+| Be Vietnam Pro (400, 700) | Body text in Vietnamese | Copyright 2021 The Be Vietnam Pro Project Authors (https://github.com/bettergui/BeVietnamPro) | SIL Open Font License 1.1 — `public/licenses/be-vietnam-pro-OFL.txt` | `@fontsource/be-vietnam-pro` 5.3.0 | https://github.com/bettergui/BeVietnamPro |
 
 Copyright lines and licence texts are taken from each package's `LICENSE` and `metadata.json`.
 

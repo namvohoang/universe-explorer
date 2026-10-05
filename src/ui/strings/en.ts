@@ -71,7 +71,7 @@ export const en = {
     'Universe Explorer has no adverts, no accounts and no tracking. It does not collect or send any information about the person using it.',
   grownUpsKeptTitle: 'What is kept in this browser',
   grownUpsKept:
-    'Two small notes are kept in this browser and never leave the device: that the welcome hint has been seen, and which places have been opened, so they can be ticked off. Neither says who is using the app.',
+    'Three small notes are kept in this browser and never leave the device: that the welcome hint has been seen, which places have been opened, so they can be ticked off, and which language was chosen. None of them says who is using the app.',
   grownUpsClear: 'Clear progress',
   grownUpsCleared: 'Progress cleared.',
   visitedMark: 'You have been here',
@@ -655,6 +655,9 @@ export const en = {
   globeUnseen: 'The plain or blurry part has never been photographed.',
   mediaKindSimulation: 'A computer simulation, not a photo.',
   mediaKindDiagram: 'A diagram, not a photo.',
+  languageQuestion: 'Language',
+  languageEnglish: 'English',
+  languageVietnamese: 'Tiếng Việt',
 } as const;
 
 export type StringKey = keyof typeof en;

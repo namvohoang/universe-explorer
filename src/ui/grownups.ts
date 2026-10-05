@@ -5,7 +5,7 @@ import type { DateLimits } from '../sim/time';
 import { create } from './dom';
 import { fill, yearOf } from './format';
 import { displayName } from './names';
-import { en } from './strings/en';
+import { words } from './strings';
 import { mediaKindLabel } from './strings/media';
 
 export interface GrownUps {
@@ -56,17 +56,17 @@ export function createGrownUps(
 ): GrownUps {
   const element = create('section', 'grownups');
   element.setAttribute('role', 'dialog');
-  element.setAttribute('aria-label', en.grownUps);
+  element.setAttribute('aria-label', words.grownUps);
   element.hidden = true;
 
-  const close = create('button', '', en.grownUpsClose);
+  const close = create('button', '', words.grownUpsClose);
   close.type = 'button';
   const head = create('div', 'grownups-head');
-  head.append(create('h2', '', en.grownUps), close);
+  head.append(create('h2', '', words.grownUps), close);
 
   const accuracy2 = limits
-    ? fill(en.grownUpsAccuracy2, { from: yearOf(limits.minJd), to: yearOf(limits.maxJd) })
-    : en.grownUpsAccuracy2;
+    ? fill(words.grownUpsAccuracy2, { from: yearOf(limits.minJd), to: yearOf(limits.maxJd) })
+    : words.grownUpsAccuracy2;
 
   const pictures = create('ul', '');
   for (const picture of allPictureCredits(catalogue)) {
@@ -85,32 +85,32 @@ export function createGrownUps(
     sources.append(item);
   }
 
-  const clear = create('button', '', en.grownUpsClear);
+  const clear = create('button', '', words.grownUpsClear);
   clear.type = 'button';
   const cleared = create('p', 'notice');
   cleared.setAttribute('role', 'status');
   clear.addEventListener('click', () => {
     onClearProgress();
-    cleared.textContent = en.grownUpsCleared;
+    cleared.textContent = words.grownUpsCleared;
   });
 
   element.append(
     head,
     section(
-      en.grownUpsPrivacyTitle,
-      create('p', '', en.grownUpsPrivacy1),
-      create('p', '', en.grownUpsPrivacy2),
-      create('p', '', en.grownUpsPrivacy3),
+      words.grownUpsPrivacyTitle,
+      create('p', '', words.grownUpsPrivacy1),
+      create('p', '', words.grownUpsPrivacy2),
+      create('p', '', words.grownUpsPrivacy3),
     ),
-    section(en.grownUpsKeptTitle, create('p', '', en.grownUpsKept), clear, cleared),
+    section(words.grownUpsKeptTitle, create('p', '', words.grownUpsKept), clear, cleared),
     section(
-      en.grownUpsAccuracyTitle,
-      create('p', '', en.grownUpsAccuracy1),
+      words.grownUpsAccuracyTitle,
+      create('p', '', words.grownUpsAccuracy1),
       create('p', '', accuracy2),
-      create('p', '', en.grownUpsAccuracy3),
+      create('p', '', words.grownUpsAccuracy3),
     ),
-    section(en.grownUpsPicturesTitle, pictures),
-    section(en.grownUpsSourcesTitle, create('p', 'notice', en.grownUpsLinksNotice), sources),
+    section(words.grownUpsPicturesTitle, pictures),
+    section(words.grownUpsSourcesTitle, create('p', 'notice', words.grownUpsLinksNotice), sources),
   );
 
   const api: GrownUps = {

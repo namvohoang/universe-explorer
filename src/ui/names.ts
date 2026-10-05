@@ -1,7 +1,7 @@
 import type { CelestialObject } from '../data/types';
-import { en } from './strings/en';
+import { words } from './strings';
 
-const STRINGS: Readonly<Record<string, string>> = en;
+const STRINGS: Readonly<Record<string, string>> = words;
 
 /**
  * The name a kid reads: "The Sun", "Halley's Comet", "The Orion Nebula". An object with an

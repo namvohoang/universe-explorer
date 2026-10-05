@@ -6,7 +6,7 @@ import { bodyRadiusKm } from '../sim/layout';
 import { figureDepth } from '../sim/stars';
 import { fill } from './format';
 import { displayName } from './names';
-import { en } from './strings/en';
+import { locale, words } from './strings';
 
 /** One line of a card's fact box: what is measured and its value, both ready to show. */
 export interface Stat {
@@ -20,7 +20,7 @@ const METRES_PER_KM = 1000;
 const OVAL_FROM = 0.05;
 const DAYS_PER_YEAR = 365.25;
 const KELVIN_TO_CELSIUS = 273.15;
-const NUMBER = new Intl.NumberFormat('en-GB');
+const NUMBER = new Intl.NumberFormat(locale);
 
 /** Rounds to a number of significant figures: values on a card are approximate, not exact. */
 function significant(value: number, figures: number): number {
@@ -34,9 +34,9 @@ const show = (value: number, figures: number): string => NUMBER.format(significa
 /** A length of time in the unit a kid would use for it: hours, Earth days or Earth years. */
 export function formatDuration(hours: number): string {
   const days = hours / HOURS_PER_DAY;
-  if (days < 2) return fill(en.valueHours, { n: show(hours, 2) });
-  if (days < 2 * DAYS_PER_YEAR) return fill(en.valueEarthDays, { n: show(days, 3) });
-  return fill(en.valueEarthYears, { n: show(days / DAYS_PER_YEAR, 3) });
+  if (days < 2) return fill(words.valueHours, { n: show(hours, 2) });
+  if (days < 2 * DAYS_PER_YEAR) return fill(words.valueEarthDays, { n: show(days, 3) });
+  return fill(words.valueEarthYears, { n: show(days / DAYS_PER_YEAR, 3) });
 }
 
 /** Below this share of Earth's width, a size in kilometres says more than a fraction of Earth. */
@@ -50,14 +50,14 @@ function spinStat(object: CelestialObject): Stat[] {
     return object.orbit
       ? [
           {
-            label: en.statSpin,
+            label: words.statSpin,
             value: formatDuration(orbitalPeriodDays(object.orbit) * HOURS_PER_DAY),
           },
         ]
       : [];
   }
   const period = shape.orientation.rotationPeriodHours;
-  return isKnown(period) ? [{ label: en.statSpin, value: formatDuration(period.value) }] : [];
+  return isKnown(period) ? [{ label: words.statSpin, value: formatDuration(period.value) }] : [];
 }
 
 function widthStat(object: CelestialObject, earth: CelestialObject): Stat[] {
@@ -65,20 +65,21 @@ function widthStat(object: CelestialObject, earth: CelestialObject): Stat[] {
   const earthRadius = bodyRadiusKm(earth);
   if (radius === null || earthRadius === null) return [];
   const inEarths = radius / earthRadius;
-  let value = fill(en.valueEarths, { n: show(inEarths, 2) });
-  if (object.id === earth.id) value = fill(en.valueKm, { n: show(2 * radius, 4) });
-  else if (inEarths < SMALL_NEXT_TO_EARTH) value = fill(en.valueKmWide, { n: show(2 * radius, 3) });
-  return [{ label: en.statWidth, value }];
+  let value = fill(words.valueEarths, { n: show(inEarths, 2) });
+  if (object.id === earth.id) value = fill(words.valueKm, { n: show(2 * radius, 4) });
+  else if (inEarths < SMALL_NEXT_TO_EARTH)
+    value = fill(words.valueKmWide, { n: show(2 * radius, 3) });
+  return [{ label: words.statWidth, value }];
 }
 
 function moonsStat(card: CardContent | undefined): Stat[] {
-  return card?.moons ? [{ label: en.statMoons, value: NUMBER.format(card.moons.value) }] : [];
+  return card?.moons ? [{ label: words.statMoons, value: NUMBER.format(card.moons.value) }] : [];
 }
 
 function sunlightStat(earth: CelestialObject): Stat[] {
   if (!earth.orbit) return [];
   const minutes = lightTravelSeconds(semiMajorAxisKm(earth.orbit)) / 60;
-  return [{ label: en.statSunlight, value: fill(en.valueMinutes, { n: show(minutes, 1) }) }];
+  return [{ label: words.statSunlight, value: fill(words.valueMinutes, { n: show(minutes, 1) }) }];
 }
 
 /**
@@ -100,8 +101,8 @@ export function objectStats(
       : [
           {
             label: isSatellite(object)
-              ? fill(en.statTripAround, { parent: parentName })
-              : en.statYear,
+              ? fill(words.statTripAround, { parent: parentName })
+              : words.statYear,
             value: formatDuration(orbitalPeriodDays(object.orbit) * HOURS_PER_DAY),
           },
         ];
@@ -110,8 +111,8 @@ export function objectStats(
     const temperature = isKnown(object.effectiveTemperatureK)
       ? [
           {
-            label: en.statSurface,
-            value: fill(en.valueCelsius, {
+            label: words.statSurface,
+            value: fill(words.valueCelsius, {
               n: show(object.effectiveTemperatureK.value - KELVIN_TO_CELSIUS, 2),
             }),
           },
@@ -127,7 +128,7 @@ export function objectStats(
   if (object.kind === 'spacecraft') {
     const parentRadiusKm = parent ? bodyRadiusKm(parent) : null;
     const above = (distanceKm: number): string =>
-      fill(en.valueKm, { n: show(distanceKm - (parentRadiusKm ?? 0), 2) });
+      fill(words.valueKm, { n: show(distanceKm - (parentRadiusKm ?? 0), 2) });
     let height: Stat[] = [];
     if (object.orbit !== null && parentRadiusKm !== null) {
       const a = semiMajorAxisKm(object.orbit);
@@ -135,18 +136,18 @@ export function objectStats(
       // A round path has one height. A long oval one has a nearest and a farthest point.
       height =
         e < OVAL_FROM
-          ? [{ label: en.statHeight, value: above(a) }]
+          ? [{ label: words.statHeight, value: above(a) }]
           : [
-              { label: en.statNearest, value: above(a * (1 - e)) },
-              { label: en.statFarthest, value: above(a * (1 + e)) },
+              { label: words.statNearest, value: above(a * (1 - e)) },
+              { label: words.statFarthest, value: above(a * (1 + e)) },
             ];
     }
     // A craft whose size the sources do not give has no size to show.
     const size: Stat[] = object.shape
       ? [
           {
-            label: en.statLength,
-            value: fill(object.orbit === null ? en.valueMetresEndToEnd : en.valueMetresLong, {
+            label: words.statLength,
+            value: fill(object.orbit === null ? words.valueMetresEndToEnd : words.valueMetresLong, {
               n: show(2 * object.shape.radiiKm.value[0] * METRES_PER_KM, 3),
             }),
           },
@@ -154,7 +155,7 @@ export function objectStats(
       : [];
     // A year is shown as written, with no thousands separator.
     const firstUsed: Stat[] = object.firstUsedYear
-      ? [{ label: en.statFirstUsed, value: String(object.firstUsedYear.value) }]
+      ? [{ label: words.statFirstUsed, value: String(object.firstUsedYear.value) }]
       : [];
     return [...trip, ...height, ...size, ...firstUsed];
   }
@@ -164,8 +165,8 @@ export function objectStats(
         ? []
         : [
             {
-              label: fill(en.statFromParent, { parent: parentName }),
-              value: fill(en.valueKm, { n: show(semiMajorAxisKm(object.orbit), 4) }),
+              label: fill(words.statFromParent, { parent: parentName }),
+              value: fill(words.valueKm, { n: show(semiMajorAxisKm(object.orbit), 4) }),
             },
           ];
     return [...trip, ...spinStat(object), ...distance, ...widthStat(object, earth)];
@@ -174,8 +175,8 @@ export function objectStats(
     const closestAu =
       (semiMajorAxisKm(object.orbit) * (1 - object.orbit.eccentricity.value)) / KM_PER_AU;
     const closest = {
-      label: en.statClosest,
-      value: fill(en.valueTimesEarthOne, { n: show(closestAu, 2) }),
+      label: words.statClosest,
+      value: fill(words.valueTimesEarthOne, { n: show(closestAu, 2) }),
     };
     return [...trip, closest, ...widthStat(object, earth)];
   }
@@ -187,8 +188,8 @@ export function solarSystemStats(catalogue: readonly CelestialObject[]): Stat[] 
   const earth = catalogue.find((o) => o.id === 'earth');
   const planets = catalogue.filter((o) => o.kind === 'planet').length;
   return [
-    { label: en.statPlanets, value: NUMBER.format(planets) },
-    { label: en.statStars, value: en.valueOneSun },
+    { label: words.statPlanets, value: NUMBER.format(planets) },
+    { label: words.statStars, value: words.valueOneSun },
     ...(earth ? sunlightStat(earth) : []),
   ];
 }
@@ -196,11 +197,11 @@ export function solarSystemStats(catalogue: readonly CelestialObject[]): Stat[] 
 /** The fact box for a belt: how many dots are drawn and how far from the Sun it lies. */
 export function beltStats(belt: ObjectOfKind<'belt'>): Stat[] {
   return [
-    { label: en.statDots, value: NUMBER.format(belt.members.value.length) },
+    { label: words.statDots, value: NUMBER.format(belt.members.value.length) },
     {
-      label: en.statBeltSpan,
+      label: words.statBeltSpan,
       // One AU is Earth's distance from the Sun, so a distance in AU is "times Earth's".
-      value: fill(en.valueTimesEarth, {
+      value: fill(words.valueTimesEarth, {
         from: show(belt.shape.innerRadiusAu.value, 2),
         to: show(belt.shape.outerRadiusAu.value, 2),
       }),
@@ -213,8 +214,8 @@ const MILLION = 1_000_000;
 /** A distance in light-years the way a kid would say it: "1,500" or "2.5 million". */
 export function formatLightYears(lightYears: number): string {
   return lightYears >= MILLION
-    ? fill(en.valueMillionLightYears, { n: show(lightYears / MILLION, 2) })
-    : fill(en.valueLightYears, { n: show(lightYears, 3) });
+    ? fill(words.valueMillionLightYears, { n: show(lightYears / MILLION, 2) })
+    : fill(words.valueLightYears, { n: show(lightYears, 3) });
 }
 
 /**
@@ -226,25 +227,25 @@ export function deepSkyStats(object: CelestialObject): Stat[] {
     const depth = figureDepth(object.stars.value);
     if (!depth) return [];
     const star = (one: { name: string; lightYears: number }): string =>
-      fill(en.valueStarAt, { name: one.name, distance: formatLightYears(one.lightYears) });
+      fill(words.valueStarAt, { name: one.name, distance: formatLightYears(one.lightYears) });
     return [
-      { label: en.statNearestStar, value: star(depth.nearest) },
-      { label: en.statFarthestStar, value: star(depth.farthest) },
+      { label: words.statNearestStar, value: star(depth.nearest) },
+      { label: words.statFarthestStar, value: star(depth.farthest) },
     ];
   }
   if (!('sky' in object) || object.sky === null || !isKnown(object.sky.distanceLy)) return [];
   const lightYears = object.sky.distanceLy.value;
   const ago =
     lightYears >= MILLION
-      ? fill(en.valueMillionYearsAgo, { n: show(lightYears / MILLION, 2) })
-      : fill(en.valueYearsAgo, { n: show(lightYears, 3) });
+      ? fill(words.valueMillionYearsAgo, { n: show(lightYears / MILLION, 2) })
+      : fill(words.valueYearsAgo, { n: show(lightYears, 3) });
   const width =
     object.shape?.type === 'extended' && isKnown(object.shape.diameterLy)
-      ? [{ label: en.statWide, value: formatLightYears(object.shape.diameterLy.value) }]
+      ? [{ label: words.statWide, value: formatLightYears(object.shape.diameterLy.value) }]
       : [];
   return [
-    { label: en.statHowFar, value: formatLightYears(lightYears) },
-    { label: en.statLightLeft, value: ago },
+    { label: words.statHowFar, value: formatLightYears(lightYears) },
+    { label: words.statLightLeft, value: ago },
     ...width,
   ];
 }

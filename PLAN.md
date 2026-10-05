@@ -337,9 +337,12 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
       passes 500 kB; the service worker stores the shell and the first view at once and the rest
       when used or afterwards in the background; the render loop stops when the page is hidden and
       the pixel ratio drops when frames run slow (it is already capped at 2).
-- [ ] 8.13 Vietnamese (ask the owner first: open decision 3): `vi.ts` with the same keys, a
-      language choice, fonts with Vietnamese letters, Vietnamese recordings, all kid text
-      reviewed by the owner.
+- [x] 8.13 Vietnamese, as text only (the owner's choice on 2026-10-05: no reading aloud in
+      Vietnamese): `vi.ts` with every key of `en.ts`, a language choice in the settings that is
+      remembered in the browser, fonts with Vietnamese letters (Baloo 2 and Be Vietnam Pro), and
+      numbers and dates written the Vietnamese way. "Read it to me" is hidden in Vietnamese. Tests
+      hold the translation to the English: same keys, same blanks, same numbers. The owner still
+      has to read the Vietnamese through.
 
 **Acceptance:** at all five sizes nothing overlaps and every control is reachable, with 44 px
 targets. Keyboard order is top bar, card, controls, place row. The gate passes and no third-party
@@ -361,7 +364,7 @@ Tolerances are named constants with a comment saying why. They are never widened
 
 1. **Natural voice.** Decided: wanted, since the device voice sounds robotic. See task 6.4.
 2. **Default scale mode.** `easy` (like the prototype) or `true-sizes`.
-3. **Languages.** English only, or English and Vietnamese from the start.
+3. **Languages.** Decided: English and Vietnamese. Vietnamese is text only. See task 8.13.
 4. **Hosting.** Decided: GitHub Pages.
 5. **Supported dates.** Limited by the planet elements chosen in 1.2; the longer-span JPL table
    trades accuracy for range.

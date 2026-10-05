@@ -1,5 +1,5 @@
 import type { MediaKind } from '../../data/types';
-import { en } from './en';
+import { words } from './index';
 
 /**
  * The sentence shown to the kid for a picture that is not a plain photo, or `null` for a
@@ -10,17 +10,17 @@ export function mediaKindLabel(kind: MediaKind): string | null {
     case 'photo':
       return null;
     case 'composite':
-      return en.mediaKindComposite;
+      return words.mediaKindComposite;
     case 'false-colour':
-      return en.mediaKindFalseColour;
+      return words.mediaKindFalseColour;
     case 'artist-concept':
-      return en.mediaKindArtistConcept;
+      return words.mediaKindArtistConcept;
     case 'agency-model':
-      return en.mediaKindAgencyModel;
+      return words.mediaKindAgencyModel;
     case 'simulation':
-      return en.mediaKindSimulation;
+      return words.mediaKindSimulation;
     case 'diagram':
-      return en.mediaKindDiagram;
+      return words.mediaKindDiagram;
     default:
       return kind satisfies never;
   }

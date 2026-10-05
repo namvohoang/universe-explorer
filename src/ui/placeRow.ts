@@ -5,18 +5,18 @@ import { fill } from './format';
 import { icon, type IconName } from './icons';
 import { displayName } from './names';
 import { GROUPS, groupOf, type Group, type PlaceRow } from './places';
-import { en } from './strings/en';
+import { words } from './strings';
 import { createTabs, type Tabs } from './tabs';
 
 export const GROUP_LABELS: Readonly<Record<Group, string>> = {
-  planets: en.groupPlanets,
-  'dwarf-planets': en.groupDwarfPlanets,
-  'space-rocks': en.groupSpaceRocks,
-  stars: en.groupStars,
-  'star-pictures': en.groupStarPictures,
-  galaxies: en.groupGalaxies,
-  'space-wonders': en.groupSpaceWonders,
-  spaceships: en.sceneCraft,
+  planets: words.groupPlanets,
+  'dwarf-planets': words.groupDwarfPlanets,
+  'space-rocks': words.groupSpaceRocks,
+  stars: words.groupStars,
+  'star-pictures': words.groupStarPictures,
+  galaxies: words.groupGalaxies,
+  'space-wonders': words.groupSpaceWonders,
+  spaceships: words.sceneCraft,
 };
 
 const GROUP_ICONS: Readonly<Record<Group, IconName>> = {
@@ -59,7 +59,7 @@ export function createPlaceRow(
 
   const tabsFor = (groups: readonly Group[]): Tabs<Group> =>
     createTabs<Group>(
-      en.groupControl,
+      words.groupControl,
       groups.map((group) => ({
         value: group,
         label: GROUP_LABELS[group],
@@ -72,7 +72,7 @@ export function createPlaceRow(
 
   const chips = create('div', 'chips');
   chips.setAttribute('role', 'group');
-  chips.setAttribute('aria-label', en.places);
+  chips.setAttribute('aria-label', words.places);
   element.append(back, tabs.solar.element, tabs.deep.element, chips);
 
   let shown = '';
@@ -82,7 +82,7 @@ export function createPlaceRow(
       const been = seen.has(button.dataset.id ?? '');
       button.classList.toggle('visited', been);
       // The tick is a shape, not a colour alone, and the tooltip says what it means.
-      if (been) button.title = en.visitedMark;
+      if (been) button.title = words.visitedMark;
       else button.removeAttribute('title');
     }
   };
@@ -93,7 +93,7 @@ export function createPlaceRow(
       back.hidden = row.host === null;
       backTo = row.group;
       backLabel.textContent = GROUP_LABELS[row.group];
-      back.setAttribute('aria-label', fill(en.rowBackTo, { group: GROUP_LABELS[row.group] }));
+      back.setAttribute('aria-label', fill(words.rowBackTo, { group: GROUP_LABELS[row.group] }));
       tabs.solar.element.hidden = row.host !== null || row.scene !== 'solar';
       tabs.deep.element.hidden = row.host !== null || row.scene !== 'deep';
       if (row.scene !== 'craft') tabs[row.scene].show(row.group);
@@ -116,7 +116,7 @@ export function createPlaceRow(
             // After the body itself, say what the rest of the row is.
             return [
               button,
-              create('span', 'row-lead', row.onlyMoons ? en.rowItsMoons : en.rowAroundIt),
+              create('span', 'row-lead', row.onlyMoons ? words.rowItsMoons : words.rowAroundIt),
             ];
           }),
         );
@@ -147,7 +147,7 @@ export function createPlaceRow(
           const count = members.filter((object) => visited.has(object.id)).length;
           tabs[scene].setNote(
             group,
-            count === 0 ? '' : fill(en.visitedCount, { seen: count, all: members.length }),
+            count === 0 ? '' : fill(words.visitedCount, { seen: count, all: members.length }),
           );
         }
       }

@@ -31,13 +31,14 @@ import { displayName } from './ui/names';
 import { createPlaceRow } from './ui/placeRow';
 import { neighbour, placeRowFor, type Group, type Scene } from './ui/places';
 import { discs, icon, type IconName } from './ui/icons';
+import { createSegmented } from './ui/segmented';
 import { createChoice, createSettings, createSwitch } from './ui/settings';
 import { createTabs } from './ui/tabs';
 import { narrationFor } from './ui/narration';
 import { createBrowserSpeaker, speechLines } from './ui/speech';
 import { formatVisited, parseVisited } from './ui/passport';
 import { forget, recall, remember } from './ui/storage';
-import { en } from './ui/strings/en';
+import { LANGUAGES, LANGUAGE_KEY, language, words, type Language } from './ui/strings';
 
 /** Whole-view camera: looking down on the system from the prototype's angle. */
 const HOME_DIRECTION = { x: 0, y: 0.5, z: 1 };
@@ -53,14 +54,14 @@ const GLOW_VIEW_RADII = 40;
 const DEFAULT_SCALE: ScaleMode = 'easy';
 
 const SCALE_OPTION_LABELS: Readonly<Record<ScaleMode, string>> = {
-  true: en.scaleOptionTrue,
-  'true-sizes': en.scaleOptionTrueSizes,
-  easy: en.scaleOptionEasy,
+  true: words.scaleOptionTrue,
+  'true-sizes': words.scaleOptionTrueSizes,
+  easy: words.scaleOptionEasy,
 };
 const SCALE_HINTS: Readonly<Record<ScaleMode, string>> = {
-  true: en.scaleHintTrue,
-  'true-sizes': en.scaleHintTrueSizes,
-  easy: en.scaleHintEasy,
+  true: words.scaleHintTrue,
+  'true-sizes': words.scaleHintTrueSizes,
+  easy: words.scaleHintEasy,
 };
 /** A tiny drawing for each mode: a sun and two planets as discs (x, y, radius). Not data. */
 const SCALE_PICTURES: Readonly<Record<ScaleMode, readonly (readonly [number, number, number])[]>> =
@@ -87,7 +88,8 @@ function start(): void {
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('#stage must be a canvas');
   const tools = mustFind('#tools');
   const scaleLabel = mustFind('#scale-label');
-  mustFind('#title').textContent = en.appTitle;
+  mustFind('#title').textContent = words.appTitle;
+  document.documentElement.lang = language;
 
   const stage = createStage(canvas, {
     pixelRatio: window.devicePixelRatio,
@@ -129,7 +131,7 @@ function start(): void {
   const pictureCredit = mustFind('#picture-credit');
   if (!(pictureImage instanceof HTMLImageElement)) throw new Error('#picture-image must be an img');
   // Beside a 3D model the real picture sits small in the corner; a tap makes it big and back.
-  picture.title = en.realPicture;
+  picture.title = words.realPicture;
   picture.addEventListener('click', () => {
     picture.classList.toggle('big');
   });
@@ -193,7 +195,8 @@ function start(): void {
       const to = neighbour(placeRowFor(focus, null, catalogue), focus, step);
       if (to) goTo(to.id);
     },
-    createBrowserSpeaker(),
+    // The recordings and the device voice are English; other languages are read by eye only.
+    language === 'en' ? createBrowserSpeaker() : null,
   );
   mustFind('#card-slot').append(card.element);
 
@@ -210,15 +213,15 @@ function start(): void {
   let deepModel: DeepModel | null = null;
   let deepModelFor: string | null = null;
   const DEEP_NOTES: Readonly<Record<DeepModelNote, string>> = {
-    'picture-cloud': en.deepNotePictureCloud,
-    simulation: en.deepNoteSimulation,
-    'quiet-black-hole': en.deepNoteQuietBlackHole,
-    cluster: en.deepNoteCluster,
-    constellation: en.deepNoteConstellation,
-    'craft-model': en.deepNoteCraft,
-    'craft-scan': en.deepNoteScan,
-    'star-sizes': en.deepNoteStarSizes,
-    'planet-system': en.deepNotePlanetSystem,
+    'picture-cloud': words.deepNotePictureCloud,
+    simulation: words.deepNoteSimulation,
+    'quiet-black-hole': words.deepNoteQuietBlackHole,
+    cluster: words.deepNoteCluster,
+    constellation: words.deepNoteConstellation,
+    'craft-model': words.deepNoteCraft,
+    'craft-scan': words.deepNoteScan,
+    'star-sizes': words.deepNoteStarSizes,
+    'planet-system': words.deepNotePlanetSystem,
   };
   /** How many times too big the planets of another star are drawn; known once the models load. */
   let planetEnlargement = 1;
@@ -299,7 +302,7 @@ function start(): void {
       const to = neighbour(row, focus, step);
       return to ? displayName(to) : null;
     };
-    card.show(model, narrationFor(focus, speechLines(model)), {
+    card.show(model, language === 'en' ? narrationFor(focus, speechLines(model)) : null, {
       previous: stepName(-1),
       next: stepName(1),
     });
@@ -363,12 +366,12 @@ function start(): void {
   };
 
   const mainTabs = createTabs<Scene | 'compare'>(
-    en.sceneControl,
+    words.sceneControl,
     [
-      { value: 'solar', label: en.sceneSolar, icon: 'sun' },
-      { value: 'deep', label: en.sceneDeep, icon: 'sparkle' },
-      { value: 'craft', label: en.sceneCraft, icon: 'rocket' },
-      { value: 'compare', label: en.compare, icon: 'compare' },
+      { value: 'solar', label: words.sceneSolar, icon: 'sun' },
+      { value: 'deep', label: words.sceneDeep, icon: 'sparkle' },
+      { value: 'craft', label: words.sceneCraft, icon: 'rocket' },
+      { value: 'compare', label: words.compare, icon: 'compare' },
     ],
     'solar',
     (tab) => {
@@ -407,13 +410,13 @@ function start(): void {
 
   // The sentence that says what is and is not to scale is always on screen.
   const showScale = (): void => {
-    scaleLabel.textContent = en[scale.labelKey];
+    scaleLabel.textContent = words[scale.labelKey];
   };
   showScale();
 
   // Big, always-there buttons for getting closer, further, and back out again.
   const viewControls = mustFind('#view-controls');
-  viewControls.setAttribute('aria-label', en.viewControls);
+  viewControls.setAttribute('aria-label', words.viewControls);
   const viewButton = (label: string, picture: IconName, onClick: () => void): HTMLButtonElement => {
     const button = create('button', 'round');
     button.type = 'button';
@@ -425,14 +428,14 @@ function start(): void {
     return button;
   };
   const ZOOM_STEP = 0.6;
-  viewButton(en.zoomIn, 'plus', () => {
+  viewButton(words.zoomIn, 'plus', () => {
     stage.zoom(ZOOM_STEP);
   }).classList.add('zoom');
-  viewButton(en.zoomOut, 'minus', () => {
+  viewButton(words.zoomOut, 'minus', () => {
     stage.zoom(1 / ZOOM_STEP);
   }).classList.add('zoom');
   // Fit shows everything again: the whole solar system, or all of the model on show.
-  viewButton(en.fitView, 'fit', () => {
+  viewButton(words.fitView, 'fit', () => {
     if (isDeep(focus)) frameDeep();
     else if (focus === null) stage.flyTo(wholeView());
     else goTo(null);
@@ -442,7 +445,7 @@ function start(): void {
     const here = catalogue.find((object) => object.id === focus);
     return here && isSatellite(here) ? here.parentId : null;
   };
-  const back = viewButton(en.back, 'back', () => {
+  const back = viewButton(words.back, 'back', () => {
     goTo(backTarget());
   });
   back.classList.add('back');
@@ -458,11 +461,14 @@ function start(): void {
       // See record().
     }
     viewLabel.textContent = SCALE_OPTION_LABELS[mode];
-    menuButton.setAttribute('aria-label', fill(en.viewMenu, { mode: SCALE_OPTION_LABELS[mode] }));
+    menuButton.setAttribute(
+      'aria-label',
+      fill(words.viewMenu, { mode: SCALE_OPTION_LABELS[mode] }),
+    );
     scaleChoice.show(mode);
   };
   const scaleChoice = createChoice(
-    en.scaleControl,
+    words.scaleControl,
     SCALE_MODES.map((mode) => ({
       value: mode,
       title: SCALE_OPTION_LABELS[mode],
@@ -476,12 +482,12 @@ function start(): void {
       stage.lookAt(currentView());
     },
   );
-  const names = createSwitch(en.showNames, true, (shown) => {
+  const names = createSwitch(words.showNames, true, (shown) => {
     markers.setNames(shown);
   });
-  const settings = createSettings(en.settings, en.settingsClose);
+  const settings = createSettings(words.settings, words.settingsClose);
   mustFind('#settings-slot').append(settings.element);
-  const scaleSection = settings.addSection(en.scaleQuestion, scaleChoice.element, names);
+  const scaleSection = settings.addSection(words.scaleQuestion, scaleChoice.element, names);
   // The button that opens the menu says which mode is on.
   const menuButton = create('button', 'view-menu');
   menuButton.type = 'button';
@@ -489,7 +495,7 @@ function start(): void {
   menuButton.append(viewLabel, icon('chevron-down'));
   menuButton.setAttribute(
     'aria-label',
-    fill(en.viewMenu, { mode: SCALE_OPTION_LABELS[scale.mode] }),
+    fill(words.viewMenu, { mode: SCALE_OPTION_LABELS[scale.mode] }),
   );
   settings.openWith(menuButton);
 
@@ -532,8 +538,8 @@ function start(): void {
   mustFind('#grownups-slot').append(grownUps.element);
   const grownUpsButton = create('button', 'icon-button');
   grownUpsButton.type = 'button';
-  grownUpsButton.setAttribute('aria-label', en.grownUps);
-  grownUpsButton.title = en.grownUps;
+  grownUpsButton.setAttribute('aria-label', words.grownUps);
+  grownUpsButton.title = words.grownUps;
   grownUpsButton.append(icon('info'));
   grownUpsButton.addEventListener('click', () => {
     grownUps.open();
@@ -541,8 +547,8 @@ function start(): void {
   // On a phone one menu button opens the settings, and the grown-ups page is a row inside them.
   const phoneMenu = create('button', 'icon-button phone-menu');
   phoneMenu.type = 'button';
-  phoneMenu.setAttribute('aria-label', en.menu);
-  phoneMenu.title = en.menu;
+  phoneMenu.setAttribute('aria-label', words.menu);
+  phoneMenu.title = words.menu;
   phoneMenu.append(icon('menu'));
   settings.openWith(phoneMenu);
   grownUpsButton.classList.add('wide-only');
@@ -559,15 +565,33 @@ function start(): void {
   );
   mustFind('#tray').append(clockControl.element, placeRow.element);
   // On a phone the dock has no room for the speeds, so they are in the settings sheet too.
-  const speedSection = settings.addSection(en.speedQuestion, clockControl.forSettings);
+  const speedSection = settings.addSection(words.speedQuestion, clockControl.forSettings);
   speedSection.classList.add('solar-only', 'phone-only');
   const grownUpsRow = create('button', 'sheet-row');
   grownUpsRow.type = 'button';
-  grownUpsRow.append(icon('info'), create('span', '', en.grownUps), icon('chevron-right'));
+  grownUpsRow.append(icon('info'), create('span', '', words.grownUps), icon('chevron-right'));
   grownUpsRow.addEventListener('click', () => {
     settings.close();
     grownUps.open();
   });
+  // Changing language opens the app again in it; the place in the address is kept.
+  const languageNames: Readonly<Record<Language, string>> = {
+    en: words.languageEnglish,
+    vi: words.languageVietnamese,
+  };
+  const languageChoice = createSegmented<Language>(
+    words.languageQuestion,
+    LANGUAGES.map((value) => ({ value, label: languageNames[value] })),
+    language,
+    (chosen) => {
+      remember(LANGUAGE_KEY, chosen);
+      const address = new URL(window.location.href);
+      address.searchParams.delete('lang');
+      history.replaceState(history.state, '', address.href);
+      window.location.reload();
+    },
+  );
+  settings.addSection(words.languageQuestion, languageChoice.element);
   settings.addSection(null, grownUpsRow).classList.add('phone-only');
 
   // On a small screen the clock is a pill under the title; otherwise it heads the bottom dock.
@@ -585,7 +609,7 @@ function start(): void {
     drawn.map((object) => ({
       id: object.id,
       name: displayName(object),
-      label: `${en.goTo} ${displayName(object)}`,
+      label: `${words.goTo} ${displayName(object)}`,
       parentId: isSatellite(object) ? object.parentId : null,
     })),
     goTo,
@@ -638,7 +662,7 @@ function start(): void {
   // On the very first visit, point at Earth and say what a tap does. Any touch or key ends it.
   if (recall(HINT_SEEN) === null && focus === null) {
     const hint = mustFind('#first-hint');
-    hint.append(icon('hand'), create('span', '', en.firstHint));
+    hint.append(icon('hand'), create('span', '', words.firstHint));
     hint.hidden = false;
     markers.point('earth');
     const endHint = (): void => {

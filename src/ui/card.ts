@@ -4,7 +4,7 @@ import { fill } from './format';
 import { icon } from './icons';
 import { lineAt, type Narration } from './narration';
 import { speechLines, type Speaker } from './speech';
-import { en } from './strings/en';
+import { words } from './strings';
 
 /** The names of the places a card's Previous and Next buttons go to; `null` at an end. */
 export interface CardSteps {
@@ -47,7 +47,7 @@ export function createCard(
   const close = create('button', 'x');
   close.append(icon('close'));
   close.type = 'button';
-  close.setAttribute('aria-label', en.closeCard);
+  close.setAttribute('aria-label', words.closeCard);
   close.addEventListener('click', onClose);
   const head = create('div', 'card-head');
   head.append(titles, close);
@@ -57,7 +57,7 @@ export function createCard(
   const peek = create('button', 'card-peek');
   peek.type = 'button';
   const peekName = create('strong', '');
-  peek.append(create('span', 'handle'), create('span', 'peek-hint', en.peekHint), peekName);
+  peek.append(create('span', 'handle'), create('span', 'peek-hint', words.peekHint), peekName);
   const peekRead = create('button', 'peek-read round');
   peekRead.type = 'button';
   const speakerIcon = icon('speaker');
@@ -67,14 +67,14 @@ export function createCard(
 
   const hello = create('p', 'hello');
   const stats = create('dl', 'stats');
-  const factsTitle = create('h3', '', en.coolFacts);
+  const factsTitle = create('h3', '', words.coolFacts);
   const facts = create('ul', 'facts');
   const conceptTitle = create('h3', '');
   const concept = create('p', 'concept');
   const globe = create('p', 'globe-note');
   // "Read it to me", for kids who are still learning to read. A card with a recording plays
   // it; one without falls back to a voice on the device, and with neither the button is hidden.
-  const read = create('button', 'primary', en.readToMe);
+  const read = create('button', 'primary', words.readToMe);
   read.type = 'button';
   const previous = create('button', 'step');
   previous.type = 'button';
@@ -92,7 +92,7 @@ export function createCard(
   const actions = create('div', 'card-actions');
   actions.append(read, previous, next);
   // A long list of facts starts short; this button shows the rest.
-  const moreFacts = create('button', 'more-facts', en.moreFacts);
+  const moreFacts = create('button', 'more-facts', words.moreFacts);
   moreFacts.type = 'button';
   const showAllFacts = (): void => {
     for (const fact of facts.children) fact.removeAttribute('hidden');
@@ -154,8 +154,8 @@ export function createCard(
   const setReading = (now: boolean): void => {
     reading = now;
     if (!now) light(null);
-    read.textContent = now ? en.stopReading : en.readToMe;
-    const label = now ? en.stopReading : en.readToMe;
+    read.textContent = now ? words.stopReading : words.readToMe;
+    const label = now ? words.stopReading : words.readToMe;
     peekRead.setAttribute('aria-label', label);
     peekRead.title = label;
     speakerIcon.style.display = now ? 'none' : '';
@@ -217,13 +217,13 @@ export function createCard(
       previous.hidden = steps.previous === null;
       next.hidden = steps.next === null;
       if (steps.previous !== null) {
-        const label = fill(en.stepPrevious, { name: steps.previous });
+        const label = fill(words.stepPrevious, { name: steps.previous });
         previous.setAttribute('aria-label', label);
         previous.title = label;
       }
       if (steps.next !== null) {
         nextName.textContent = steps.next;
-        next.setAttribute('aria-label', fill(en.stepNext, { name: steps.next }));
+        next.setAttribute('aria-label', fill(words.stepNext, { name: steps.next }));
       }
       actions.hidden = read.hidden && previous.hidden && next.hidden;
       peekRead.hidden = read.hidden;

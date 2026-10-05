@@ -21,8 +21,6 @@ function overlap(a: Box, b: Box): boolean {
 for (const screen of SCREENS) {
   test.describe(`${screen.name} (${String(screen.width)}×${String(screen.height)})`, () => {
     test.use({ viewport: { width: screen.width, height: screen.height } });
-    // Too little height for a card between the bars: it becomes a side panel in task 8.6.
-    test.fixme(screen.name === 'phone landscape', 'waits for the side panel of task 8.6');
 
     for (const place of PLACES) {
       test(`the card clears the top bar and the tray at ${place || 'the whole view'}`, async ({

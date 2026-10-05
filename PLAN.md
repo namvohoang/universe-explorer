@@ -301,8 +301,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
       `ResizeObserver` into `--top-h` and `--bottom-h`; place the card, the view controls and the
       picture from them, in `dvh`. The card is opaque (`--panel-solid`) and its actions sit in a
       footer outside the scrolling part. A Playwright check at the five sizes proves that the card
-      meets neither the header nor the tray and that its buttons are on screen (phone landscape
-      is switched on in 8.6, when the card gets room there).
+      meets neither the header nor the tray and that its buttons are on screen.
 - [x] 8.2 One top bar: brand, main tabs (Solar System · Deep Space · Spaceships · Compare, each
       with an icon; Compare opens the compare view), then a "View" menu holding the scale mode and
       the Names switch, and an icon button for grown-ups. "Real sizes" becomes "True sizes", and
@@ -319,7 +318,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
 - [x] 8.5 Phone layout (700 px wide or less): brand and a menu button; a date pill and a scale
       pill; a bottom tab bar; the card as a bottom sheet that peeks and opens; a settings sheet
       that traps focus. At 390×844 the 3D view keeps at least 45% of the screen with the sheet peeking.
-- [ ] 8.6 Phone landscape (500 px high or less): the card is a side panel, the controls one
+- [x] 8.6 Phone landscape (500 px high or less): the card is a side panel, the controls one
       column on the right, the place row one line.
 - [ ] 8.7 The URL follows the place: the focus id in the hash (`#saturn`) with `pushState`, read
       on load and on `popstate`, so the device back button goes up one level. The scale mode stays

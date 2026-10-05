@@ -1273,3 +1273,116 @@ button.quiet {
     z-index: 9;
   }
 }
+
+/* Phone on its side: everything on top in one line, the card as a panel down the left. */
+@media (max-height: 500px) and (min-width: 701px) {
+  .phone-only {
+    display: block;
+  }
+
+  .wide-only {
+    display: none !important;
+  }
+
+  .phone-menu {
+    display: grid;
+  }
+
+  .top {
+    top: calc(6px + env(safe-area-inset-top, 0px));
+    left: calc(12px + env(safe-area-inset-left, 0px));
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .brand h1 {
+    font-size: 20px;
+  }
+
+  .brand p {
+    margin-top: 2px;
+    max-width: 22ch;
+    font-size: 11px;
+    line-height: 1.15;
+  }
+
+  /* Icons alone: the names are still read out, and each tab has a tooltip. */
+  .top .tabs button .tab-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .clock {
+    flex-wrap: nowrap;
+    padding: 0 14px 0 0;
+    gap: 8px;
+  }
+
+  .clock-rate,
+  .clock-buttons,
+  .clock-limit {
+    display: none;
+  }
+
+  .clock-date {
+    font-size: 15px;
+  }
+
+  .card {
+    left: calc(12px + env(safe-area-inset-left, 0px));
+    top: calc(var(--top-h) + 8px);
+    width: 320px;
+    max-height: calc(100dvh - var(--top-h) - 16px - env(safe-area-inset-bottom, 0px));
+  }
+
+  .card h2 {
+    font-size: 24px;
+  }
+
+  /* The place row keeps to the right of the panel. */
+  .tray {
+    left: calc(344px + env(safe-area-inset-left, 0px));
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+    align-items: flex-start;
+  }
+
+  .view-controls,
+  body.deep-3d .view-controls {
+    top: calc(var(--top-h) + var(--free-h) / 2);
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    gap: 6px;
+  }
+
+  button.round {
+    width: 44px;
+    height: 44px;
+  }
+
+  #picture {
+    padding-left: 356px;
+  }
+
+  body.deep-3d #picture:not(.big) {
+    right: calc(68px + env(safe-area-inset-right, 0px));
+    width: 150px;
+  }
+
+  .compare {
+    left: calc(344px + env(safe-area-inset-left, 0px));
+    max-height: calc(100dvh - var(--top-h) - 16px);
+  }
+
+  .settings {
+    max-height: calc(100dvh - var(--top-h) - 16px);
+  }
+}

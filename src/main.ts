@@ -457,7 +457,7 @@ function start(): void {
   settings.addSection(null, grownUpsRow).classList.add('phone-only');
 
   // On a small screen the clock is a pill under the title; otherwise it heads the bottom dock.
-  const smallScreen = window.matchMedia('(max-width: 700px)');
+  const smallScreen = window.matchMedia('(max-width: 700px), (max-height: 500px)');
   const arrange = (): void => {
     if (smallScreen.matches) mustFind('.top').append(clockControl.element);
     else mustFind('#tray').prepend(clockControl.element);

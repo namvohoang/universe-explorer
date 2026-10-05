@@ -68,7 +68,7 @@ export const en = {
   grownUpsClose: 'Close',
   grownUpsPrivacyTitle: 'Privacy',
   grownUpsPrivacy1:
-    'Universe Explorer has no adverts, no accounts and no tracking. It does not collect, store or send any information about the person using it.',
+    'Universe Explorer has no adverts, no accounts and no tracking. It does not collect or send any information about the person using it. The one thing it keeps is a note in this browser that the welcome hint has been seen. That note never leaves the device.',
   grownUpsPrivacy2:
     'While it runs it loads nothing from any other website: the pictures, fonts and data all come with the app.',
   grownUpsPrivacy3:
@@ -110,6 +110,7 @@ export const en = {
   closeCard: 'Close card',
   readToMe: 'Read it to me',
   peekHint: 'Tap to read about',
+  firstHint: 'Tap a planet to fly there',
   menu: 'Menu',
   stopReading: 'Stop reading',
   coolFacts: 'Cool facts',

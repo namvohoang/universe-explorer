@@ -40,6 +40,7 @@ import { createChoice, createSettings, createSwitch } from './ui/settings';
 import { createTabs } from './ui/tabs';
 import { narrationUrl } from './ui/narration';
 import { createBrowserSpeaker, speechLines } from './ui/speech';
+import { recall, remember } from './ui/storage';
 import { en } from './ui/strings/en';
 
 /** Whole-view camera: looking down on the system from the prototype's angle. */
@@ -562,6 +563,24 @@ function start(): void {
   }
   if (new URLSearchParams(window.location.search).has('grownups')) grownUps.open();
   showFocus();
+
+  // On the very first visit, point at Earth and say what a tap does. Any touch or key ends it.
+  const HINT_SEEN = 'hint-seen';
+  if (recall(HINT_SEEN) === null && focus === null) {
+    const hint = mustFind('#first-hint');
+    hint.append(icon('hand'), create('span', '', en.firstHint));
+    hint.hidden = false;
+    markers.point('earth');
+    const endHint = (): void => {
+      hint.hidden = true;
+      markers.point(null);
+      remember(HINT_SEEN, 'yes');
+      window.removeEventListener('pointerdown', endHint, true);
+      window.removeEventListener('keydown', endHint, true);
+    };
+    window.addEventListener('pointerdown', endHint, true);
+    window.addEventListener('keydown', endHint, true);
+  }
 
   stage.onFrame((dt) => {
     deepModel?.update(dt, stage.camera.position);

@@ -323,7 +323,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
 - [x] 8.7 The URL follows the place: the focus id in the hash (`#saturn`) with `pushState`, read
       on load and on `popstate`, so the device back button goes up one level. The scale mode stays
       in `?scale=` and old `?go=` links keep working. Unknown ids fall back to the whole view.
-- [ ] 8.8 First visit and tapping: a pulsing ring on Earth and a "Tap a planet to fly there" hint,
+- [x] 8.8 First visit and tapping: a pulsing ring on Earth and a "Tap a planet to fly there" hint,
       gone at the first touch and still under reduced motion; every 3D marker has a 44×44 px tap
       area. The flag lives in the browser, and the privacy text says so.
 - [ ] 8.9 Card reading help: Next and Previous step through the group; two facts first with a

@@ -40,6 +40,8 @@ export interface Markers {
   update(place: (id: string) => MarkerPlace): void;
   /** Shows or hides the names; rings over tiny bodies stay either way. */
   setNames(shown: boolean): void;
+  /** Draws a pulsing ring round one body to say "tap here", or round none. */
+  point(id: string | null): void;
 }
 
 /**
@@ -114,6 +116,11 @@ export function createMarkers(
     },
     setNames(shown) {
       layer.classList.toggle('no-names', !shown);
+    },
+    point(id) {
+      for (const marker of markers) {
+        marker.button.classList.toggle('pointed', marker.target.id === id);
+      }
     },
   };
 }

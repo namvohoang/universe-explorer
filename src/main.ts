@@ -482,7 +482,7 @@ function start(): void {
       stage.lookAt(currentView());
     },
   );
-  const names = createSwitch(words.showNames, true, (shown) => {
+  const names = createSwitch(words.showNames, words.showNamesHint, true, (shown) => {
     markers.setNames(shown);
   });
   const settings = createSettings(words.settings, words.settingsClose);
@@ -492,7 +492,7 @@ function start(): void {
   const menuButton = create('button', 'view-menu');
   menuButton.type = 'button';
   const viewLabel = create('span', '', SCALE_OPTION_LABELS[scale.mode]);
-  menuButton.append(viewLabel, icon('chevron-down'));
+  menuButton.append(icon('ruler'), viewLabel, icon('chevron-down'));
   menuButton.setAttribute(
     'aria-label',
     fill(words.viewMenu, { mode: SCALE_OPTION_LABELS[scale.mode] }),
@@ -569,7 +569,11 @@ function start(): void {
   speedSection.classList.add('solar-only', 'phone-only');
   const grownUpsRow = create('button', 'sheet-row');
   grownUpsRow.type = 'button';
-  grownUpsRow.append(icon('info'), create('span', '', words.grownUps), icon('chevron-right'));
+  grownUpsRow.append(
+    icon('info'),
+    create('span', '', words.grownUps),
+    create('small', '', words.grownUpsHint),
+  );
   grownUpsRow.addEventListener('click', () => {
     settings.close();
     grownUps.open();
@@ -600,6 +604,16 @@ function start(): void {
     if (smallScreen.matches) mustFind('.top').append(clockControl.element);
     else mustFind('#tray').prepend(clockControl.element);
   };
+  // On an upright phone, Fit and Back join the line of group tabs just above the chips.
+  const phoneScreen = window.matchMedia('(max-width: 700px)');
+  const controlsHome = viewControls.nextElementSibling;
+  const arrangeControls = (): void => {
+    if (phoneScreen.matches)
+      placeRow.element.insertBefore(viewControls, placeRow.element.lastChild);
+    else controlsHome?.before(viewControls);
+  };
+  phoneScreen.addEventListener('change', arrangeControls);
+  arrangeControls();
   smallScreen.addEventListener('change', arrange);
   arrange();
   watchLayout(mustFind('.top'), mustFind('#tray'));

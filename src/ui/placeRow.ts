@@ -73,7 +73,8 @@ export function createPlaceRow(
   const chips = create('div', 'chips');
   chips.setAttribute('role', 'group');
   chips.setAttribute('aria-label', words.places);
-  element.append(back, tabs.solar.element, tabs.deep.element, chips);
+  const divider = create('span', 'row-divider');
+  element.append(back, divider, tabs.solar.element, tabs.deep.element, chips);
 
   let shown = '';
   let seen: ReadonlySet<string> = new Set();
@@ -91,6 +92,7 @@ export function createPlaceRow(
     element,
     show(row, current) {
       back.hidden = row.host === null;
+      divider.hidden = row.host === null;
       backTo = row.group;
       backLabel.textContent = GROUP_LABELS[row.group];
       back.setAttribute('aria-label', fill(words.rowBackTo, { group: GROUP_LABELS[row.group] }));

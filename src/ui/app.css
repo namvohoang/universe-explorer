@@ -186,7 +186,7 @@ button:focus-visible {
 .view-menu {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   background: var(--panel-solid);
   white-space: nowrap;
 }
@@ -260,6 +260,33 @@ button.icon-button {
   padding: 8px 14px;
   border-radius: 16px;
   text-align: left;
+}
+
+.choice button[aria-checked='true'] {
+  background: rgba(255, 197, 61, 0.14);
+  color: var(--ink);
+  border-color: var(--sun);
+  box-shadow: inset 0 0 0 1px var(--sun);
+}
+
+.choice .discs {
+  color: var(--sun);
+}
+
+.choice-words span {
+  color: var(--ink-dim);
+}
+
+.switch-words {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+}
+
+.switch-words small {
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--ink-dim);
 }
 
 .choice-words {
@@ -636,8 +663,8 @@ body.deep-3d #picture.big {
 button.round {
   display: grid;
   place-items: center;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   padding: 0;
   background: var(--panel-solid);
 }
@@ -822,6 +849,10 @@ select.speed-menu option {
 }
 
 button.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: var(--sun);
   color: var(--sun-ink);
   border-color: transparent;
@@ -832,6 +863,28 @@ button.primary {
   align-items: center;
   gap: 10px;
   max-width: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  background: var(--panel-solid);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+}
+
+/* Inside the row's panel the tabs sit in a darker well. */
+.place-row .tabs {
+  background: rgba(6, 9, 20, 0.6);
+  border: 0;
+}
+
+.place-row .tabs button {
+  min-height: 44px;
+}
+
+.row-divider {
+  flex: none;
+  width: 1px;
+  height: 28px;
+  background: var(--line);
 }
 
 .place-row .tabs {
@@ -844,7 +897,8 @@ button.primary {
   align-items: center;
   gap: 2px;
   padding: 0 14px 0 8px;
-  background: var(--panel-solid);
+  background: transparent;
+  border-color: transparent;
 }
 
 /* One line of chips; a long one scrolls sideways and never wraps under the card. */
@@ -854,8 +908,8 @@ button.primary {
   gap: 6px;
   min-width: 0;
   overflow-x: auto;
-  padding: 4px;
-  scrollbar-width: thin;
+  padding: 0;
+  scrollbar-width: none;
 }
 
 .chips button {
@@ -892,24 +946,23 @@ button.primary {
 }
 
 .tab-note {
-  font-weight: 400;
+  font-weight: 700;
   font-size: 12px;
-  opacity: 0.85;
+  opacity: 0.65;
   font-variant-numeric: tabular-nums;
 }
 
 .chips button[aria-current='true'] {
-  background: var(--sun);
-  color: var(--sun-ink);
-  border-color: transparent;
-  outline: 2px solid var(--ink);
-  outline-offset: 1px;
+  border-color: var(--sun);
+  box-shadow: inset 0 0 0 1px var(--sun);
 }
 
 .row-lead {
   flex: none;
+  padding: 0 4px;
   color: var(--ink-dim);
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -1140,16 +1193,28 @@ button.icon-button.phone-menu {
   color: var(--ink-dim);
 }
 
+.sheet-row {
+  min-height: 52px;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
 .sheet-row span {
   flex: 1;
   text-align: left;
+}
+
+.sheet-row small {
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--ink-dim);
 }
 
 /* Phone: title and menu on top, tabs along the bottom, the card as a sheet that peeks. */
 @media (max-width: 700px) {
   :root {
     --tabbar-h: calc(64px + env(safe-area-inset-bottom, 0px));
-    --peek-h: 76px;
+    --peek-h: 80px;
   }
 
   .phone-only {
@@ -1257,6 +1322,20 @@ button.icon-button.phone-menu {
     font-size: 12px;
   }
 
+  #main-tabs .tabs button {
+    color: var(--ink-dim);
+  }
+
+  #main-tabs .tabs button[aria-selected='true'] {
+    background: transparent;
+    color: var(--sun);
+  }
+
+  #main-tabs .tabs .icon {
+    width: 24px;
+    height: 24px;
+  }
+
   #main-tabs .tabs button .tab-label {
     position: static;
     width: auto;
@@ -1269,7 +1348,7 @@ button.icon-button.phone-menu {
   .tray {
     left: 8px;
     right: 8px;
-    bottom: calc(var(--tabbar-h) + var(--peek-h) + 6px);
+    bottom: calc(var(--tabbar-h) + var(--peek-h) + 14px);
     align-items: stretch;
     gap: 4px;
   }
@@ -1283,18 +1362,79 @@ button.icon-button.phone-menu {
     flex-basis: 100%;
   }
 
+  /* Fit and Back sit at the end of the group-tab line (moved there by main.ts). */
   .view-controls,
   body.deep-3d .view-controls {
-    top: auto;
-    right: 12px;
-    bottom: calc(var(--bottom-h) + 8px);
+    position: static;
     transform: none;
-    gap: 8px;
+    flex-direction: row;
+    gap: 6px;
+    margin-left: auto;
   }
 
   button.round {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
+  }
+
+  /* On a phone the row is not one pill: tabs and chips each stand alone above the card. */
+  .place-row {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .place-row .tabs {
+    background: var(--panel-solid);
+    border: 1px solid var(--line);
+  }
+
+  .row-divider {
+    display: none;
+  }
+
+  .row-back {
+    background: var(--panel-solid);
+    border-color: var(--line);
+  }
+
+  .chips {
+    order: 3;
+  }
+
+  /* Three option cards side by side, each a little picture over its words. */
+  .choice {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .choice button {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .choice .discs {
+    width: 100%;
+    max-width: 70px;
+    height: 30px;
+  }
+
+  .sheet-speeds .seg {
+    flex: 1 1 100%;
+  }
+
+  .sheet-speeds .seg button {
+    flex: 1;
+    padding: 0 6px;
+  }
+
+  .card-actions .primary,
+  .card-actions .step.next {
+    flex: 1;
+    justify-content: center;
+    margin-left: 0;
   }
 
   #picture {
@@ -1318,6 +1458,15 @@ button.icon-button.phone-menu {
     border-radius: 26px 26px 0 0;
     border-width: 1px 0 0;
     transition: height 0.2s;
+  }
+
+  /* Closed, it floats as a small card of its own just above the tab bar. */
+  .card:not(.open) {
+    left: 8px;
+    right: 8px;
+    bottom: calc(var(--tabbar-h) + 4px);
+    border-radius: 22px;
+    border-width: 1px;
   }
 
   .card.open {

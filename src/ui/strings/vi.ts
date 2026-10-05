@@ -676,6 +676,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   globeUnseen: 'Phần trơn hoặc mờ là phần chưa từng được chụp ảnh.',
   mediaKindSimulation: 'Mô phỏng bằng máy tính, không phải ảnh chụp.',
   mediaKindDiagram: 'Sơ đồ, không phải ảnh chụp.',
+  showNamesHint: 'Nhãn tên bên cạnh mỗi nơi',
+  grownUpsHint: 'Quyền riêng tư · nguồn',
   languageQuestion: 'Ngôn ngữ',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',

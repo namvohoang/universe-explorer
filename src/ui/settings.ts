@@ -145,6 +145,7 @@ export function createChoice<T extends string>(
 /** An on/off switch with its label beside it. */
 export function createSwitch(
   label: string,
+  hint: string,
   initial: boolean,
   onChange: (on: boolean) => void,
 ): HTMLButtonElement {
@@ -152,7 +153,10 @@ export function createSwitch(
   button.type = 'button';
   button.setAttribute('role', 'switch');
   button.setAttribute('aria-checked', String(initial));
-  button.append(create('span', '', label), create('span', 'switch-track'));
+  button.setAttribute('aria-label', label);
+  const wordsBox = create('span', 'switch-words');
+  wordsBox.append(create('span', '', label), create('small', '', hint));
+  button.append(wordsBox, create('span', 'switch-track'));
   button.addEventListener('click', () => {
     const on = button.getAttribute('aria-checked') !== 'true';
     button.setAttribute('aria-checked', String(on));

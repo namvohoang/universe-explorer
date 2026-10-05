@@ -655,6 +655,8 @@ export const en = {
   globeUnseen: 'The plain or blurry part has never been photographed.',
   mediaKindSimulation: 'A computer simulation, not a photo.',
   mediaKindDiagram: 'A diagram, not a photo.',
+  showNamesHint: 'Labels next to each place',
+  grownUpsHint: 'Privacy · sources',
   languageQuestion: 'Language',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',

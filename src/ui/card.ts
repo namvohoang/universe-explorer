@@ -74,7 +74,9 @@ export function createCard(
   const globe = create('p', 'globe-note');
   // "Read it to me", for kids who are still learning to read. A card with a recording plays
   // it; one without falls back to a voice on the device, and with neither the button is hidden.
-  const read = create('button', 'primary', words.readToMe);
+  const read = create('button', 'primary');
+  const readLabel = create('span', '', words.readToMe);
+  read.append(icon('speaker'), readLabel);
   read.type = 'button';
   const previous = create('button', 'step');
   previous.type = 'button';
@@ -154,7 +156,7 @@ export function createCard(
   const setReading = (now: boolean): void => {
     reading = now;
     if (!now) light(null);
-    read.textContent = now ? words.stopReading : words.readToMe;
+    readLabel.textContent = now ? words.stopReading : words.readToMe;
     const label = now ? words.stopReading : words.readToMe;
     peekRead.setAttribute('aria-label', label);
     peekRead.title = label;

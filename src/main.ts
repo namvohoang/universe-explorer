@@ -23,7 +23,6 @@ import {
 } from './sim/time';
 import { createCard } from './ui/card';
 import { cardModel, isDeepSky } from './ui/cardModel';
-import { createChips } from './ui/chips';
 import { createClockControl } from './ui/clockControl';
 import { createCompare } from './ui/compare';
 import { create, mustFind } from './ui/dom';
@@ -33,7 +32,9 @@ import { watchLayout } from './ui/layout';
 import { mediaUrl } from './ui/mediaUrl';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
-import { discs, icon } from './ui/icons';
+import { createPlaceRow } from './ui/placeRow';
+import { placeRowFor, type Group, type Scene } from './ui/places';
+import { discs, icon, type IconName } from './ui/icons';
 import { createChoice, createSettings, createSwitch } from './ui/settings';
 import { createTabs } from './ui/tabs';
 import { narrationUrl } from './ui/narration';
@@ -117,7 +118,6 @@ function start(): void {
   // Everything shown by itself in place of the solar system: deep-space objects, and the
   // spaceships that are only models to look at. Each kind has its own tab.
   const deep = catalogue.filter((object) => isDeepSky(object) || isShowpiece(object));
-  type Scene = 'solar' | 'deep' | 'craft';
   const sceneOf = (object: CelestialObject | undefined): Scene =>
     object === undefined || !deep.includes(object)
       ? 'solar'
@@ -192,25 +192,13 @@ function start(): void {
   }, createBrowserSpeaker());
   mustFind('#card-slot').append(card.element);
 
-  /**
-   * The places on offer: the whole view, the Sun and the planets, plus the moons of whichever
-   * planet the camera is at (or whose moon it is at).
-   */
-  const chipsFor = (id: string | null): { id: string | null; label: string }[] => {
-    if (isDeep(id)) {
-      return deep
-        .filter((object) => sceneOf(object) === sceneOfId(id))
-        .map((object) => ({ id: object.id, label: displayName(object) }));
-    }
-    const here = drawn.find((object) => object.id === id);
-    const planetId = here && isSatellite(here) ? here.parentId : (here?.id ?? null);
-    return [
-      { id: null, label: en.wholeView },
-      ...catalogue
-        .filter((object) => drawn.includes(object) || isBelt(object.id))
-        .filter((object) => !isSatellite(object) || object.parentId === planetId)
-        .map((object) => ({ id: object.id, label: displayName(object) })),
-    ];
+  // A group the kid picked by its tab; until the next place is picked the row shows it.
+  let browse: Group | null = null;
+  const showRow = (): void => {
+    const scene = sceneOfId(focus);
+    // In Deep Space and Spaceships something is always in focus, so its group is known.
+    const row = placeRowFor(focus, browse, catalogue);
+    placeRow.show(scene === row.scene ? row : placeRowFor(focus, null, catalogue), focus);
   };
 
   // The 3D model standing in for the solar system while a deep-space object is picked.
@@ -249,6 +237,12 @@ function start(): void {
     system.group.visible = deepModel === null && object === undefined;
     if (!deepModel) return;
     stage.scene.add(deepModel.group);
+    frameDeep();
+  };
+
+  /** Puts the camera where the whole of the deep-space model is in view. */
+  function frameDeep(): void {
+    if (!deepModel) return;
     const { radius } = deepModel;
     stage.lookAt({
       target: () => ({ x: 0, y: 0, z: 0 }),
@@ -258,7 +252,7 @@ function start(): void {
       maxDistance: Math.max(radius * 8, (deepModel.viewDistance ?? 0) * 2),
       idleTurn: true,
     });
-  };
+  }
 
   const showFocus = (): void => {
     const base = cardModel(focus, catalogue);
@@ -266,7 +260,7 @@ function start(): void {
     const model = deepModel ? { ...base, note: DEEP_NOTES[deepModel.note] } : base;
     document.body.classList.toggle('deep-3d', deepModel !== null);
     card.show(model, narrationUrl(focus, speechLines(model)));
-    chips.show(chipsFor(focus), focus);
+    showRow();
     document.body.classList.toggle('deep', isDeep(focus));
     if (compare.element.hidden) mainTabs.show(sceneOfId(focus));
     back.hidden = focus === null;
@@ -282,6 +276,7 @@ function start(): void {
     compare.close();
     const wasDeep = isDeep(focus);
     focus = id;
+    browse = null;
     if (id !== null && !isDeep(id)) system.showDetail(id);
     // Pictures need no camera move; coming back from one, the camera is put straight in place.
     if (!isDeep(id)) {
@@ -314,7 +309,10 @@ function start(): void {
   );
   mustFind('#main-tabs').append(mainTabs.element);
 
-  const chips = createChips(en.places, goTo);
+  const placeRow = createPlaceRow(goTo, (group) => {
+    browse = group;
+    showRow();
+  });
   window.addEventListener('keydown', (event) => {
     if (event.target instanceof HTMLInputElement) return;
     if (event.key === '+' || event.key === '=') stage.zoom(ZOOM_STEP);
@@ -335,28 +333,35 @@ function start(): void {
   // Big, always-there buttons for getting closer, further, and back out again.
   const viewControls = mustFind('#view-controls');
   viewControls.setAttribute('aria-label', en.viewControls);
-  const viewButton = (label: string, symbol: string, onClick: () => void): HTMLButtonElement => {
-    const button = create('button', 'round', symbol);
+  const viewButton = (label: string, picture: IconName, onClick: () => void): HTMLButtonElement => {
+    const button = create('button', 'round');
     button.type = 'button';
     button.setAttribute('aria-label', label);
     button.title = label;
+    button.append(icon(picture));
     button.addEventListener('click', onClick);
     viewControls.append(button);
     return button;
   };
   const ZOOM_STEP = 0.6;
-  viewButton(en.zoomIn, '+', () => {
+  viewButton(en.zoomIn, 'plus', () => {
     stage.zoom(ZOOM_STEP);
-  });
-  viewButton(en.zoomOut, '−', () => {
+  }).classList.add('zoom');
+  viewButton(en.zoomOut, 'minus', () => {
     stage.zoom(1 / ZOOM_STEP);
+  }).classList.add('zoom');
+  // Fit shows everything again: the whole solar system, or all of the model on show.
+  viewButton(en.fitView, 'fit', () => {
+    if (isDeep(focus)) frameDeep();
+    else if (focus === null) stage.flyTo(wholeView());
+    else goTo(null);
   });
   // Back goes up one level: from a moon to its planet, from anything else to the whole view.
   const backTarget = (): string | null => {
     const here = catalogue.find((object) => object.id === focus);
     return here && isSatellite(here) ? here.parentId : null;
   };
-  const back = viewButton(en.back, '←', () => {
+  const back = viewButton(en.back, 'back', () => {
     goTo(backTarget());
   });
   back.classList.add('back');
@@ -430,7 +435,7 @@ function start(): void {
       clock = withDate(clock, julianDateFromUnixMs(Date.now()), limits);
     },
   );
-  mustFind('#tray').append(clockControl.element, chips.element);
+  mustFind('#tray').append(clockControl.element, placeRow.element);
   watchLayout(mustFind('.top'), mustFind('#tray'));
 
   const markers = createMarkers(

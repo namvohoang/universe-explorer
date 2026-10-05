@@ -308,7 +308,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
       the Names switch, and an icon button for grown-ups. "Real sizes" becomes "True sizes", and
       each mode gets a one-line explanation. The not-to-scale sentence stays on screen. One line
       from 1024 px wide up.
-- [ ] 8.3 Grouped place row: a pure, tested function maps each place to a group by kind. Solar
+- [x] 8.3 Grouped place row: a pure, tested function maps each place to a group by kind. Solar
       System: Planets (with the Sun), Dwarf planets, Space rocks. Deep Space: Stars, Star pictures,
       Galaxies, Space wonders. Spaceships has no groups. Moons and spacecraft show only at the body
       they go round (Parker Solar Probe at the Sun). Chips carry a colour dot, the row follows the

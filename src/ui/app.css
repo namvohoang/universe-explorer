@@ -581,11 +581,18 @@ body.deep-3d #picture.big {
 }
 
 button.round {
+  display: grid;
+  place-items: center;
   width: 56px;
   height: 56px;
   padding: 0;
-  font-size: 28px;
-  line-height: 1;
+  background: var(--panel-solid);
+}
+
+button.round .icon {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.5;
 }
 
 button.round.back {
@@ -671,19 +678,69 @@ button.primary {
   border-color: transparent;
 }
 
+.place-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.place-row .tabs {
+  flex: none;
+}
+
+.row-back {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 14px 0 8px;
+  background: var(--panel-solid);
+}
+
+/* One line of chips; a long one scrolls sideways and never wraps under the card. */
 .chips {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  align-items: center;
   gap: 6px;
-  /* Two rows at most, so a long list never runs under the card; the rest scrolls. */
-  max-height: 86px;
-  overflow-y: auto;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 4px;
+  scrollbar-width: thin;
 }
 
 .chips button {
-  min-height: 40px;
-  padding: 0 14px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px 0 12px;
+  background: var(--panel-solid);
+  white-space: nowrap;
+}
+
+.chips .dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.chips button[aria-current='true'] {
+  background: var(--sun);
+  color: var(--sun-ink);
+  border-color: transparent;
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.row-lead {
+  flex: none;
+  color: var(--ink-dim);
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 .compare {
@@ -849,6 +906,18 @@ button.quiet {
   }
 }
 
+@media (max-width: 1279px) {
+  /* Still there for a screen reader, just not drawn. */
+  .place-row .tabs button:not([aria-selected='true']) .tab-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 1023px) {
   /* Still there for a screen reader, just not drawn. */
   .tabs button:not([aria-selected='true']) .tab-label {
@@ -876,18 +945,5 @@ button.quiet {
     top: auto;
     bottom: calc(var(--bottom-h) + 12px);
     max-height: min(40dvh, calc(var(--free-h) - 24px));
-  }
-
-  .chips {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    max-width: 100%;
-    overflow-x: auto;
-    max-height: none;
-    overflow-y: visible;
-  }
-
-  .chips button {
-    flex: none;
   }
 }

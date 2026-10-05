@@ -64,3 +64,18 @@ for (const screen of SCREENS.filter((candidate) => candidate.width >= 1024)) {
     expect(tools.y).toBeLessThan(title.y + title.height);
   });
 }
+
+for (const screen of SCREENS) {
+  test(`the place row is one line on ${screen.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: screen.width, height: screen.height });
+    for (const place of ['', 'saturn', 'andromeda', 'voyager']) {
+      await page.goto(`/?speed=pause${place ? `&go=${place}` : ''}`);
+      const row = await boxOf(page.locator('.place-row'));
+      // One line of 44 px chips, with a little room for a scroll bar. It never leaves the screen.
+      expect(row.height, place).toBeLessThan(70);
+      expect(row.x, place).toBeGreaterThanOrEqual(0);
+      expect(row.x + row.width, place).toBeLessThanOrEqual(screen.width);
+      await expect(page.locator('.chips button[aria-current="true"]')).toHaveCount(place ? 1 : 0);
+    }
+  });
+}

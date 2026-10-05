@@ -52,6 +52,7 @@ function section(title: string, ...children: HTMLElement[]): HTMLElement {
 export function createGrownUps(
   catalogue: readonly CelestialObject[],
   limits: DateLimits | null,
+  onClearProgress: () => void = () => undefined,
 ): GrownUps {
   const element = create('section', 'grownups');
   element.setAttribute('role', 'dialog');
@@ -84,6 +85,15 @@ export function createGrownUps(
     sources.append(item);
   }
 
+  const clear = create('button', '', en.grownUpsClear);
+  clear.type = 'button';
+  const cleared = create('p', 'notice');
+  cleared.setAttribute('role', 'status');
+  clear.addEventListener('click', () => {
+    onClearProgress();
+    cleared.textContent = en.grownUpsCleared;
+  });
+
   element.append(
     head,
     section(
@@ -92,6 +102,7 @@ export function createGrownUps(
       create('p', '', en.grownUpsPrivacy2),
       create('p', '', en.grownUpsPrivacy3),
     ),
+    section(en.grownUpsKeptTitle, create('p', '', en.grownUpsKept), clear, cleared),
     section(
       en.grownUpsAccuracyTitle,
       create('p', '', en.grownUpsAccuracy1),
@@ -105,6 +116,7 @@ export function createGrownUps(
   const api: GrownUps = {
     element,
     open() {
+      cleared.textContent = '';
       element.hidden = false;
       close.focus();
     },

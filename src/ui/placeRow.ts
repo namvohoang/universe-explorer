@@ -79,7 +79,11 @@ export function createPlaceRow(
   let seen: ReadonlySet<string> = new Set();
   const markSeen = (): void => {
     for (const button of chips.querySelectorAll('button')) {
-      button.classList.toggle('visited', seen.has(button.dataset.id ?? ''));
+      const been = seen.has(button.dataset.id ?? '');
+      button.classList.toggle('visited', been);
+      // The tick is a shape, not a colour alone, and the tooltip says what it means.
+      if (been) button.title = en.visitedMark;
+      else button.removeAttribute('title');
     }
   };
 

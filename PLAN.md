@@ -329,7 +329,7 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
 - [x] 8.9 Card reading help: Next and Previous step through the group; two facts first with a
       "More facts" button; the sentence being read is highlighted, from timings written when the
       recordings are made (all cards are recorded again for this).
-- [ ] 8.10 Space passport: the places opened are remembered in the browser only, counted on each
+- [x] 8.10 Space passport: the places opened are remembered in the browser only, counted on each
       group tab and marked on chips, with a "Clear progress" button for grown-ups.
 - [ ] 8.11 Install and icons: favicon, apple-touch-icon, web manifest and theme colour, the icons
       made here or from a credited NASA picture.

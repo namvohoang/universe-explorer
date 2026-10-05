@@ -858,11 +858,32 @@ button.primary {
 }
 
 .chips .dot {
+  position: relative;
   flex: none;
   width: 12px;
   height: 12px;
   border-radius: 50%;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+/* A place already opened: its dot carries a tick. */
+.chips button.visited .dot::after {
+  content: '';
+  position: absolute;
+  left: 3.5px;
+  top: 1px;
+  width: 3px;
+  height: 6px;
+  border: solid #10131f;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.tab-note {
+  font-weight: 400;
+  font-size: 12px;
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
 }
 
 .chips button[aria-current='true'] {
@@ -1053,6 +1074,10 @@ button.quiet {
   }
 
   /* Still there for a screen reader, just not drawn. */
+  .place-row .tabs button:not([aria-selected='true']) .tab-note {
+    display: none;
+  }
+
   .place-row .tabs button:not([aria-selected='true']) .tab-label {
     position: absolute;
     width: 1px;

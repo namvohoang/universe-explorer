@@ -40,7 +40,8 @@ import { createChoice, createSettings, createSwitch } from './ui/settings';
 import { createTabs } from './ui/tabs';
 import { narrationFor } from './ui/narration';
 import { createBrowserSpeaker, speechLines } from './ui/speech';
-import { recall, remember } from './ui/storage';
+import { formatVisited, parseVisited } from './ui/passport';
+import { forget, recall, remember } from './ui/storage';
 import { en } from './ui/strings/en';
 
 /** Whole-view camera: looking down on the system from the prototype's angle. */
@@ -263,6 +264,18 @@ function start(): void {
     });
   }
 
+  // The space passport: the places opened so far, kept in this browser only.
+  const VISITED = 'visited';
+  const HINT_SEEN = 'hint-seen';
+  let visited = parseVisited(recall(VISITED), new Set(catalogue.map((object) => object.id)));
+  const stamp = (id: string | null): void => {
+    if (id !== null && !visited.has(id)) {
+      visited.add(id);
+      remember(VISITED, formatVisited(visited));
+    }
+    placeRow.showVisited(visited, catalogue);
+  };
+
   const showFocus = (): void => {
     const base = cardModel(focus, catalogue);
     showDeepModel(base.picture?.url ?? null);
@@ -278,6 +291,7 @@ function start(): void {
       next: stepName(1),
     });
     showRow();
+    stamp(focus);
     document.body.classList.toggle('deep', isDeep(focus));
     if (compare.element.hidden) mainTabs.show(sceneOfId(focus));
     back.hidden = focus === null;
@@ -472,7 +486,12 @@ function start(): void {
   for (const control of [menuButton, scaleSection, scaleLabel]) {
     control.classList.add('solar-only');
   }
-  const grownUps = createGrownUps(catalogue, limits);
+  const grownUps = createGrownUps(catalogue, limits, () => {
+    forget(VISITED);
+    forget(HINT_SEEN);
+    visited = new Set();
+    placeRow.showVisited(visited, catalogue);
+  });
   mustFind('#grownups-slot').append(grownUps.element);
   const grownUpsButton = create('button', 'icon-button');
   grownUpsButton.type = 'button';
@@ -580,7 +599,6 @@ function start(): void {
   showFocus();
 
   // On the very first visit, point at Earth and say what a tap does. Any touch or key ends it.
-  const HINT_SEEN = 'hint-seen';
   if (recall(HINT_SEEN) === null && focus === null) {
     const hint = mustFind('#first-hint');
     hint.append(icon('hand'), create('span', '', en.firstHint));

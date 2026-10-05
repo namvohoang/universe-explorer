@@ -31,3 +31,22 @@ test('every marker can be tapped on a spot at least 44 px across', async ({ page
   expect(sizes.length).toBeGreaterThan(5);
   for (const size of sizes) expect(size).toBeGreaterThanOrEqual(44);
 });
+
+test('the places opened are ticked off, counted, and can be cleared', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/?speed=pause#venus');
+  await page.getByRole('button', { name: 'Next: Earth' }).click();
+  await page.locator('.row-back').click();
+  const planets = page.getByRole('tab', { name: /^Planets/ });
+  await expect(planets).toContainText('2/9');
+  await expect(page.locator('.chips button.visited')).toHaveCount(2);
+  // It is still there after closing and opening the app.
+  await page.goto('/?speed=pause');
+  await expect(planets).toContainText('2/9');
+  await page.getByRole('button', { name: 'For grown-ups' }).click();
+  await page.getByRole('button', { name: 'Clear progress' }).click();
+  await expect(page.getByText('Progress cleared.')).toBeVisible();
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await expect(planets).not.toContainText('/9');
+  await expect(page.locator('.chips button.visited')).toHaveCount(0);
+});

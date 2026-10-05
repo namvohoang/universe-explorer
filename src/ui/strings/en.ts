@@ -68,7 +68,13 @@ export const en = {
   grownUpsClose: 'Close',
   grownUpsPrivacyTitle: 'Privacy',
   grownUpsPrivacy1:
-    'Universe Explorer has no adverts, no accounts and no tracking. It does not collect or send any information about the person using it. The one thing it keeps is a note in this browser that the welcome hint has been seen. That note never leaves the device.',
+    'Universe Explorer has no adverts, no accounts and no tracking. It does not collect or send any information about the person using it.',
+  grownUpsKeptTitle: 'What is kept in this browser',
+  grownUpsKept:
+    'Two small notes are kept in this browser and never leave the device: that the welcome hint has been seen, and which places have been opened, so they can be ticked off. Neither says who is using the app.',
+  grownUpsClear: 'Clear progress',
+  grownUpsCleared: 'Progress cleared.',
+  visitedMark: 'You have been here',
   grownUpsPrivacy2:
     'While it runs it loads nothing from any other website: the pictures, fonts and data all come with the app.',
   grownUpsPrivacy3:

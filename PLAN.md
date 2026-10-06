@@ -381,6 +381,14 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       beside the Sun, and Omega Centauri and the Hercules Cluster as clouds of points made from
       their real pictures, since stars that far away cannot be placed one by one. The card
       says the depth of such a cloud is a guess.
+- [~] 9.7 Better surfaces (asked for on 2026-10-06). Done: Titan's ground from NASA's global
+      Cassini map, taken in infrared light through the haze, and the card says so; Deimos as
+      NASA's 3D model with its real shape; Makemake and Eris with the surfaces of NASA's 3D
+      models, labelled as drawings since nobody has seen them up close. Not done: Ida and
+      Psyche stay plain. No site on the trusted list has a map or shape model of Ida, and no
+      spacecraft has reached Psyche yet. NASA's Planetary Data System (Small Bodies Node) is
+      where shape models of asteroids are kept, but it is not on the list and has not been
+      looked at: the owner's decision.
 
 **Acceptance:** as for Phase 7.
 

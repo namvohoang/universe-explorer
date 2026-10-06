@@ -822,7 +822,12 @@ export const en = {
     "A map of Ganymede's surface: dark old ground and lighter grooved ground, with bright craters.",
   mapAltCallisto: "A map of Callisto's surface: dark brown and covered all over in bright craters.",
   mapAltTitan:
-    'A map of Titan as it looks from outside: a smooth orange haze that hides the ground.',
+    'A map of the ground of Titan in shades of grey: dark patches along the middle and brighter land around them. One patch in the north is plain grey.',
+  mapAltEris:
+    'A drawing of what the surface of Eris might look like: pale grey and pink, with many craters.',
+  modelAltMakemake:
+    'A 3D model of Makemake with a drawing of what its surface might look like: reddish brown and rough.',
+  modelAltDeimos: 'A 3D model of Deimos: a lumpy grey rock, smooth in places, with a few craters.',
   mapAltEnceladus:
     "A map of Enceladus's surface: bright ice with craters in the north and long cracks in the south.",
   mapAltTethys: "A map of Tethys's surface: grey ice covered in craters.",
@@ -868,6 +873,8 @@ export const en = {
   mediaKindAgencyModel:
     'From a 3D model made by NASA. NASA does not say whether it is a photo or a drawing.',
   globeUnseen: 'The plain or blurry part has never been photographed.',
+  globeInfrared:
+    'It was taken in infrared light, a kind of light our eyes cannot see, which gets through the thick haze that hides the ground.',
   mediaKindSimulation: 'A computer simulation, not a photo.',
   mediaKindDiagram: 'A diagram, not a photo.',
   showNamesHint: 'Labels next to each place',

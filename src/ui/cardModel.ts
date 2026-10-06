@@ -107,8 +107,9 @@ function conceptOf(object: CelestialObject): CardModel['concept'] {
 function globeNote(media: MediaRef | undefined): string | null {
   const label = media === undefined ? null : mediaKindLabel(media.kind);
   if (label === null) return null;
+  const infrared = media?.infrared ? ` ${words.globeInfrared}` : '';
   const unseen = media?.unseen ? ` ${words.globeUnseen}` : '';
-  return `${words.aboutTheGlobe}: ${label}${unseen}`;
+  return `${words.aboutTheGlobe}: ${label}${infrared}${unseen}`;
 }
 
 /** The card for one object, or for the whole view when `objectId` is `null`. */

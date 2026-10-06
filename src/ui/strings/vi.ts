@@ -857,7 +857,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   mapAltGanymede:
     'Bản đồ bề mặt Ganymede: vùng đất cũ sẫm màu và vùng đất có rãnh sáng hơn, với các hố va chạm sáng.',
   mapAltCallisto: 'Bản đồ bề mặt Callisto: nâu sẫm và phủ kín các hố va chạm sáng.',
-  mapAltTitan: 'Bản đồ Titan nhìn từ bên ngoài: một lớp sương mù màu cam mịn che khuất mặt đất.',
+  mapAltTitan:
+    'Bản đồ mặt đất của Titan với các sắc xám: những mảng tối dọc theo phần giữa và vùng đất sáng hơn bao quanh. Một mảng ở phía bắc có màu xám trơn.',
+  mapAltEris: 'Hình vẽ phỏng đoán bề mặt của Eris: màu xám nhạt và hồng, có nhiều hố va chạm.',
+  modelAltMakemake:
+    'Mô hình 3D của Makemake với hình vẽ phỏng đoán bề mặt của nó: màu nâu đỏ và gồ ghề.',
+  modelAltDeimos:
+    'Mô hình 3D của Deimos: một tảng đá xám lồi lõm, có chỗ nhẵn, với vài hố va chạm.',
   mapAltEnceladus:
     'Bản đồ bề mặt Enceladus: băng sáng với các hố va chạm ở phía bắc và những vết nứt dài ở phía nam.',
   mapAltTethys: 'Bản đồ bề mặt Tethys: băng xám phủ đầy hố va chạm.',
@@ -903,6 +909,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   mediaKindAgencyModel:
     'Lấy từ một mô hình 3D do NASA làm. NASA không nói rõ đó là ảnh chụp hay hình vẽ.',
   globeUnseen: 'Phần trơn hoặc mờ là phần chưa từng được chụp ảnh.',
+  globeInfrared:
+    'Nó được chụp bằng ánh sáng hồng ngoại, một loại ánh sáng mắt ta không thấy được, có thể xuyên qua lớp sương mù dày che mặt đất.',
   mediaKindSimulation: 'Mô phỏng bằng máy tính, không phải ảnh chụp.',
   mediaKindDiagram: 'Sơ đồ, không phải ảnh chụp.',
   showNamesHint: 'Nhãn tên bên cạnh mỗi nơi',

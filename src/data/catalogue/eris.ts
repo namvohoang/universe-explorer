@@ -54,6 +54,14 @@ export const eris: DwarfPlanet = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/maps/eris.webp',
+      kind: 'artist-concept',
+      role: 'surface-map',
+      altKey: 'mapAltEris',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_SBDB_ERIS, NASA_DWARF_ERIS],
 };

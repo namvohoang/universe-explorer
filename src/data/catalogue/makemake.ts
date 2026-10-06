@@ -54,6 +54,14 @@ export const makemake: DwarfPlanet = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/models/makemake.glb',
+      kind: 'artist-concept',
+      role: 'model',
+      altKey: 'modelAltMakemake',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
+    },
+  ],
   sources: [JPL_SBDB_MAKEMAKE, NASA_DWARF_MAKEMAKE],
 };

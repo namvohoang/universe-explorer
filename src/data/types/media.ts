@@ -25,4 +25,6 @@ export interface MediaRef {
   readonly credit?: string;
   /** Set when part of a surface map is blank or blurred because nobody has photographed it. */
   readonly unseen?: true;
+  /** Set when a surface map was taken in infrared light, so it is not what eyes would see. */
+  readonly infrared?: true;
 }

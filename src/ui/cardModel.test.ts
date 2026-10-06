@@ -121,11 +121,21 @@ describe('cardModel', () => {
     expect(cardModel('venus', catalogue).note).toContain(en.mediaKindFalseColour);
     expect(cardModel('earth', catalogue).note).toContain(en.mediaKindComposite);
     expect(cardModel('sun', catalogue).note).toContain(en.mediaKindArtistConcept);
-    expect(cardModel('titan', catalogue).note).toBe(`About this globe: ${en.mediaKindAgencyModel}`);
+    expect(cardModel('io', catalogue).note).toBe(`About this globe: ${en.mediaKindAgencyModel}`);
     // Where part of a map was never photographed, the card says so.
     expect(cardModel('triton', catalogue).note).toContain(en.globeUnseen);
+    // A map taken in light that eyes cannot see says so: Titan's ground hides under haze.
+    expect(cardModel('titan', catalogue).note).toBe(
+      `About this globe: ${en.mediaKindComposite} ${en.globeInfrared} ${en.globeUnseen}`,
+    );
+    // A world nobody has seen up close is a drawing, as a map or as a model, and says so.
+    expect(cardModel('eris', catalogue).note).toBe(
+      `About this globe: ${en.mediaKindArtistConcept}`,
+    );
+    expect(cardModel('makemake', catalogue).note).toContain(en.mediaKindArtistConcept);
+    expect(cardModel('deimos', catalogue).note).toContain(en.mediaKindAgencyModel);
     // A body with no map yet has nothing to explain.
-    expect(cardModel('eris', catalogue).note).toBeNull();
+    expect(cardModel('psyche', catalogue).note).toBeNull();
   });
 
   it('calls the Sun and the Moon by the names kids use', () => {

@@ -56,6 +56,14 @@ export const deimos: Moon = {
     },
     validity: null,
   },
-  media: [],
+  media: [
+    {
+      file: 'public/media/models/deimos.glb',
+      kind: 'agency-model',
+      role: 'model',
+      altKey: 'modelAltDeimos',
+      credit: 'NASA/JPL-Caltech',
+    },
+  ],
   sources: [JPL_HORIZONS_DEIMOS_PERIOD, JPL_SAT_ELEM_MARS, NSSDC_MARS],
 };

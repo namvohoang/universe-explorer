@@ -1,4 +1,5 @@
 import {
+  DEFAULT_SPEED,
   SPEEDS,
   secondsPerYear,
   showsHours,
@@ -52,7 +53,7 @@ export function createClockControl(
   limit.hidden = true;
 
   // Pausing remembers the speed, so playing again carries on as before.
-  let running: Running = 'normal';
+  let running: Running = DEFAULT_SPEED;
   let paused = false;
   const playPause = create('button', 'play-pause');
   playPause.type = 'button';

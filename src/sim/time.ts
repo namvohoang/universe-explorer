@@ -77,6 +77,9 @@ export function clampJd(jd: number, limits: DateLimits | null): number {
 export const SPEEDS = ['pause', 'hourly', 'slow', 'normal', 'fast'] as const;
 export type Speed = (typeof SPEEDS)[number];
 
+/** The speed the app opens at: slow enough to watch planets turn and moons go round. */
+export const DEFAULT_SPEED: Exclude<Speed, 'pause'> = 'hourly';
+
 const NORMAL_SECONDS_PER_YEAR = 20;
 const NORMAL_DAYS_PER_SECOND = DAYS_PER_JULIAN_YEAR / NORMAL_SECONDS_PER_YEAR;
 const HOURS_PER_DAY = 24;
@@ -110,7 +113,11 @@ export interface Clock {
   readonly atLimit: boolean;
 }
 
-export function createClock(jd: number, limits: DateLimits | null, speed: Speed = 'normal'): Clock {
+export function createClock(
+  jd: number,
+  limits: DateLimits | null,
+  speed: Speed = DEFAULT_SPEED,
+): Clock {
   const clamped = clampJd(jd, limits);
   return { jd: clamped, speed, atLimit: clamped !== jd };
 }

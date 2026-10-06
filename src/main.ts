@@ -8,6 +8,7 @@ import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
+  DEFAULT_SPEED,
   SPEEDS,
   advanceClock,
   createClock,
@@ -104,7 +105,7 @@ function start(): void {
   let clock = createClock(
     julianDateFromUnixMs(Number.isNaN(linkedDate) ? Date.now() : linkedDate),
     limits,
-    linkedSpeed ?? 'normal',
+    linkedSpeed ?? DEFAULT_SPEED,
   );
   let scale = createScale(DEFAULT_SCALE);
   const system = createSolarSystem(catalogue, scale);

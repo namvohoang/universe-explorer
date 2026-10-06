@@ -8,6 +8,7 @@ import {
   createClock,
   dateLimits,
   DAYS_PER_SECOND,
+  DEFAULT_SPEED,
   julianDateAtStartOfYear,
   julianDateFromUnixMs,
   secondsPerYear,
@@ -105,9 +106,14 @@ describe('the hourly speed', () => {
 
 describe('clock', () => {
   it('advances by the elapsed real time at the chosen speed', () => {
-    const clock = advanceClock(createClock(150, LIMITS), 2, LIMITS);
+    const clock = advanceClock(createClock(150, LIMITS, 'normal'), 2, LIMITS);
     expect(clock.jd).toBeCloseTo(150 + 2 * DAYS_PER_SECOND.normal, 10);
     expect(clock.atLimit).toBe(false);
+  });
+
+  it('starts at the very slow speed unless told otherwise', () => {
+    expect(DEFAULT_SPEED).toBe('hourly');
+    expect(createClock(150, LIMITS).speed).toBe('hourly');
   });
 
   it('does not move when paused', () => {

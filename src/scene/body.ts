@@ -8,12 +8,12 @@ import {
   MeshStandardMaterial,
   Quaternion,
   SRGBColorSpace,
-  Sphere,
   SphereGeometry,
   Sprite,
   SpriteMaterial,
   TextureLoader,
   Vector3,
+  type BufferGeometry,
   type Material,
   type Texture,
 } from 'three';
@@ -148,19 +148,46 @@ function createGlow(): Sprite {
 }
 
 /**
+ * How far the farthest point of a model is from a centre. The corner of the box round a model
+ * is no measure of it: a ball's box reaches far beyond the ball, and the ball would be drawn
+ * too small.
+ */
+function reachFrom(model: Group, centre: Vector3): number {
+  model.updateWorldMatrix(true, true);
+  const point = new Vector3();
+  let farthest = 0;
+  model.traverse((part) => {
+    if (!(part instanceof Mesh)) return;
+    const positions = (part.geometry as BufferGeometry).getAttribute('position');
+    for (let n = 0; n < positions.count; n += 1) {
+      point.fromBufferAttribute(positions, n).applyMatrix4(part.matrixWorld);
+      farthest = Math.max(farthest, point.distanceToSquared(centre));
+    }
+  });
+  return Math.sqrt(farthest);
+}
+
+/**
  * Loads a body's own 3D model and puts it in place of the plain sphere, sized to a radius of
  * one whatever size the file was made at. Until it arrives (or if it cannot), the sphere stays.
+ * The model goes into `frame`, which is never squashed: a model has the body's shape already.
  */
-function loadModel(file: string, sphere: Mesh, onDispose: (dispose: () => void) => void): void {
+function loadModel(
+  file: string,
+  frame: Group,
+  sphere: Mesh,
+  onDispose: (dispose: () => void) => void,
+): void {
   loadGltf(mediaUrl(file), (model) => {
-    const bounds = new Box3().setFromObject(model).getBoundingSphere(new Sphere());
-    if (!(bounds.radius > 0)) return;
+    const centre = new Box3().setFromObject(model).getCenter(new Vector3());
+    const radius = reachFrom(model, centre);
+    if (!(radius > 0)) return;
     const holder = new Group();
-    holder.scale.setScalar(1 / bounds.radius);
-    model.position.sub(bounds.center);
+    holder.scale.setScalar(1 / radius);
+    model.position.sub(centre);
     holder.add(model);
-    sphere.add(holder);
-    // The sphere keeps turning the model but is no longer drawn itself.
+    frame.add(holder);
+    // The sphere is no longer drawn itself.
     (sphere.material as Material).visible = false;
     onDispose(() => {
       model.traverse((part) => {
@@ -263,6 +290,14 @@ export function createBody(
   flattened.add(mesh);
   tilt.add(flattened);
 
+  // A model stands beside the squashed sphere, not inside it: it has the body's real shape
+  // already, so it is only made the right size and turned the way the sphere is turned.
+  const modelFrame = new Group();
+  tilt.add(modelFrame);
+  const turnModel = (): void => {
+    modelFrame.rotation.y = flattened.rotation.y + mesh.rotation.y;
+  };
+
   const extras: (() => void)[] = [];
   const model = object.media.find((media) => media.role === 'model');
   let modelWanted = model !== undefined;
@@ -270,7 +305,7 @@ export function createBody(
     surface.loadMap();
     if (!model || !modelWanted) return;
     modelWanted = false;
-    loadModel(model.file, mesh, (dispose) => extras.push(dispose));
+    loadModel(model.file, modelFrame, mesh, (dispose) => extras.push(dispose));
   };
   // A spacecraft is nothing like a ball, so no ball is drawn while its model is on the way.
   if (object.kind === 'spacecraft') material.visible = false;
@@ -307,6 +342,7 @@ export function createBody(
     const axes = sceneAxes(shape, next);
     longest = Math.max(axes.x, axes.y, axes.z);
     flattened.scale.set(axes.x, axes.y, axes.z);
+    modelFrame.scale.setScalar(longest);
   };
   setScale(scale);
 
@@ -321,6 +357,7 @@ export function createBody(
     setScale,
     setDate(jd) {
       if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd);
+      turnModel();
     },
     faceTowards(parent) {
       if (!synchronous) return;
@@ -328,6 +365,7 @@ export function createBody(
       facing.set(parent.x, parent.y, parent.z).sub(group.position);
       facing.applyQuaternion(untilt.copy(tilt.quaternion).invert());
       flattened.rotation.y = Math.atan2(-facing.z, facing.x);
+      turnModel();
     },
     setSunPosition(sun) {
       if (!rings) return;

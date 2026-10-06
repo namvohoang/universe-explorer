@@ -48,6 +48,8 @@ const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
 const BODY_VIEW_RADII = 6;
 const BODY_CLOSEST_RADII = 1.8;
+/** A pointer that has moved less than this between two turns of the wheel has not moved. */
+const SAME_SPOT_PIXELS = 6;
 /** How much of the distance is left after one zoom step in. */
 const ZOOM_STEP = 0.6;
 /** A deep-space model is first seen from far enough back to take all of it in. */
@@ -642,6 +644,16 @@ function start(): void {
   arrange();
   watchLayout(mustFind('.top'), mustFind('#tray'));
 
+  // As the view zooms, other bodies slide under a pointer that has not moved. Only a pointer
+  // moved to a body picks it: one that stays put goes on zooming in on the body in view.
+  const wheeledAt = { x: NaN, y: NaN };
+  const pointedAfresh = (event: WheelEvent): boolean => {
+    const moved = Math.hypot(event.clientX - wheeledAt.x, event.clientY - wheeledAt.y);
+    wheeledAt.x = event.clientX;
+    wheeledAt.y = event.clientY;
+    return !(moved < SAME_SPOT_PIXELS);
+  };
+
   const markers = createMarkers(
     mustFind('#markers'),
     drawn.map((object) => ({
@@ -654,10 +666,11 @@ function start(): void {
     (id, event) => {
       event.preventDefault();
       // Zooming in while pointing at another body zooms in on that body, not on the one in view.
-      if (event.deltaY < 0 && id !== focus) goTo(id, false, zoomOnto(id));
+      if (pointedAfresh(event) && event.deltaY < 0 && id !== focus) goTo(id, false, zoomOnto(id));
       else canvas.dispatchEvent(new WheelEvent('wheel', event));
     },
   );
+  canvas.addEventListener('wheel', pointedAfresh, { passive: true });
 
   // A link can open straight onto one place and one scale mode: ?scale=true-sizes#saturn
   const isPlace = (id: string | null): id is string =>

@@ -55,3 +55,29 @@ test('where tap spots overlap, the body nearest the pointer is the one zoomed in
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
   await expect(page.locator('.card h2')).toHaveText('Mars');
 });
+
+test('a body that slides under a still pointer does not take over the zoom', async ({ page }) => {
+  await page.goto('/?speed=pause');
+  // By label, not by role: a marker out of view is hidden, yet can still be sent a wheel.
+  const saturn = page.locator('.marker[aria-label="Go to Saturn"]');
+  const jupiter = page.locator('.marker[aria-label="Go to Jupiter"]');
+  await expect(saturn).toBeVisible();
+  const wheelOn = (marker: typeof saturn, x: number, y: number): Promise<boolean> =>
+    marker.evaluate(
+      (element, at) =>
+        element.dispatchEvent(
+          new WheelEvent('wheel', { deltaY: -100, clientX: at.x, clientY: at.y, cancelable: true }),
+        ),
+      { x, y },
+    );
+  // Far from every body, so the marker the wheel lands on is the one meant.
+  await wheelOn(jupiter, 5, 5);
+  await expect(page.locator('.card h2')).toHaveText('Jupiter');
+  // The pointer has not moved, and now Saturn is under it: the zoom stays with Jupiter.
+  await wheelOn(saturn, 5, 5);
+  await wheelOn(saturn, 7, 6);
+  await expect(page.locator('.card h2')).toHaveText('Jupiter');
+  // Moved onto Saturn, it picks Saturn.
+  await wheelOn(saturn, 60, 5);
+  await expect(page.locator('.card h2')).toHaveText('Saturn');
+});

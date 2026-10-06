@@ -103,6 +103,7 @@ import { milkyWay } from './milkyWay';
 import { m87BlackHole } from './m87BlackHole';
 import { sagittariusA } from './sagittariusA';
 import { gaiaBh1 } from './gaiaBh1';
+import { velaPulsar } from './velaPulsar';
 import { cassiopeia } from './cassiopeia';
 import { scorpius } from './scorpius';
 import { leo } from './leo';
@@ -182,6 +183,7 @@ export const catalogue: readonly CelestialObject[] = [
   helixNebula,
   betelgeuse,
   rigel,
+  velaPulsar,
   orionNebula,
   gaiaBh1,
   ringNebula,

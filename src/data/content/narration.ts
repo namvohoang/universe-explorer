@@ -148,8 +148,8 @@ export const NARRATION: Readonly<
   },
   'proxima-centauri': {
     file: 'public/voice/proxima-centauri.mp3',
-    fingerprint: '1b4d90a6',
-    starts: [0.0, 2.42, 7.5, 10.68, 14.9],
+    fingerprint: '3423fd5c',
+    starts: [0.0, 2.42, 7.5, 15.95, 19.3],
   },
   sirius: {
     file: 'public/voice/sirius.mp3',
@@ -215,6 +215,11 @@ export const NARRATION: Readonly<
     file: 'public/voice/rigel.mp3',
     fingerprint: 'b2a7cb13',
     starts: [0.0, 1.95, 8.65, 12.95, 19.68],
+  },
+  'vela-pulsar': {
+    file: 'public/voice/vela-pulsar.mp3',
+    fingerprint: 'cc1f8dd0',
+    starts: [0.0, 2.35, 7.35, 14.88, 20.95],
   },
   'orion-nebula': {
     file: 'public/voice/orion-nebula.mp3',
@@ -328,7 +333,7 @@ export const NARRATION: Readonly<
   },
   'm87-black-hole': {
     file: 'public/voice/m87-black-hole.mp3',
-    fingerprint: '23ce6070',
+    fingerprint: 'fa476a7c',
     starts: [0.0, 2.95, 7.15, 13.8, 18.0],
   },
   antennae: {

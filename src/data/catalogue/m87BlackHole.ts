@@ -2,7 +2,7 @@
 // Do not edit a number by hand: re-read the source (CLAUDE.md, real numbers only).
 import type { BlackHole } from '../types';
 import { s, unknown } from './helpers';
-import { NASA_FIRST_BLACK_HOLE_IMAGE } from './sources';
+import { NASA_BIGGEST_BLACK_HOLES, NASA_FIRST_BLACK_HOLE_IMAGE } from './sources';
 
 export const m87BlackHole: BlackHole = {
   id: 'm87-black-hole',
@@ -12,7 +12,11 @@ export const m87BlackHole: BlackHole = {
   orbit: null,
   shape: {
     type: 'horizon',
-    massSolarMasses: unknown('The source page gives no mass for this black hole.'),
+    massSolarMasses: s(
+      5.4e9,
+      'nasa-biggest-black-holes',
+      'Source says: M87’s black hole, now with a updated mass of 5.4 billion Suns',
+    ),
   },
   sky: {
     raDeg: unknown('The source used gives no sky position for this object.'),
@@ -32,5 +36,5 @@ export const m87BlackHole: BlackHole = {
       credit: 'Event Horizon Telescope Collaboration',
     },
   ],
-  sources: [NASA_FIRST_BLACK_HOLE_IMAGE],
+  sources: [NASA_FIRST_BLACK_HOLE_IMAGE, NASA_BIGGEST_BLACK_HOLES],
 };

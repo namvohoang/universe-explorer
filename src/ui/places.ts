@@ -26,6 +26,9 @@ export function groupOf(object: CelestialObject): Group | null {
     case 'star':
       // Our own star heads the planets; the others are far away in Deep Space.
       return isDeepSky(object) ? 'stars' : 'planets';
+    case 'neutron-star':
+      // What is left of a star is listed with the stars.
+      return 'stars';
     case 'planet':
       return 'planets';
     case 'dwarf-planet':

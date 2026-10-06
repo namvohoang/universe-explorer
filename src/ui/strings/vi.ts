@@ -279,6 +279,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   kindGalaxy: 'Thiên hà',
   kindStar: 'Ngôi sao',
   kindBlackHole: 'Lỗ đen',
+  kindNeutronStar: 'Sao neutron',
   kindExoplanet: 'Hành tinh của một ngôi sao khác',
   eyebrowHome: '{kind} · nhà của chúng ta',
   cardAntaresHello:
@@ -489,6 +490,19 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Hai vòng của nó lan ra từ giữa, như gợn sóng trên ao khi bạn thả một hòn đá.',
   pictureAltCartwheelGalaxy:
     'Một vòng tròn lớn màu hồng và xanh có nan hoa và phần giữa sáng, giống bánh xe. Hai thiên hà nhỏ hơn nằm bên trái.',
+  nameVelaPulsar: 'Sao xung Vela',
+  cardVelaPulsarHello: 'Sao xung Vela là một sao neutron quay rất nhanh.',
+  cardVelaPulsarFact1:
+    'Sao xung là chấm trắng nhỏ ở giữa bức ảnh. Nó ở cách ta hơn 1.000 năm ánh sáng.',
+  cardVelaPulsarFact2:
+    'Một sao neutron nặng hơn Mặt Trời, nhưng chỉ rộng bằng khoảng một thành phố lớn.',
+  cardVelaPulsarFact3:
+    'Khi nó quay, các đốm sáng của nó lướt vào rồi lướt ra khỏi tầm nhìn, giống như chùm sáng của ngọn hải đăng.',
+  pictureAltVelaPulsar:
+    'Một quầng sáng xanh lam trên nền xanh sẫm, có một chấm trắng nhỏ ở giữa, những vòng cung cong bao quanh và một vệt mờ vươn lên phía bên phải.',
+  conceptNeutronStarTitle: 'Sao neutron là gì?',
+  conceptNeutronStarText:
+    'Sao neutron là phần lõi nhỏ và rất nặng còn lại sau khi một ngôi sao lớn phát nổ.',
   cardNgc5264Hello:
     'NGC 5264 là một thiên hà nhỏ không có hình dạng gọn gàng. Người ta gọi đó là thiên hà vô định hình.',
   cardNgc5264Fact1: 'Nó ở cách ta hơn 15 triệu năm ánh sáng một chút.',
@@ -536,8 +550,9 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Một ngôi sao trắng sáng đứng một mình với bốn tia sáng, trên bầu trời đen lấm tấm những ngôi sao mờ hơn.',
   nameProximaCentauri: 'Proxima Centauri',
   cardProximaCentauriHello: 'Proxima Centauri là ngôi sao gần chúng ta nhất, không kể Mặt Trời.',
-  cardProximaCentauriFact1: 'Nó ở cách ta hơn bốn năm ánh sáng một chút.',
-  cardProximaCentauriFact2: 'Dù vậy, nó quá mờ để thấy được chỉ bằng mắt.',
+  cardProximaCentauriFact1:
+    'Có một hành tinh tên là Proxima b quay quanh nó. Chưa biết hành tinh nào ngoài hệ Mặt Trời ở gần chúng ta hơn.',
+  cardProximaCentauriFact2: 'Nó quá mờ để thấy được chỉ bằng mắt.',
   cardProximaCentauriFact3:
     'Nó là một sao lùn đỏ: loại sao nhỏ nhất và nguội nhất trong các ngôi sao tỏa sáng giống như Mặt Trời.',
   pictureAltTrappist1:
@@ -577,7 +592,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardM87BlackHoleHello: 'Đây là bức ảnh đầu tiên từng chụp được về một lỗ đen.',
   cardM87BlackHoleFact1: 'Nó nằm ở giữa thiên hà M87, cách ta khoảng 55 triệu năm ánh sáng.',
   cardM87BlackHoleFact2: 'Quầng sáng là khí nóng xoáy quanh lỗ đen.',
-  cardM87BlackHoleFact3: 'Ở giữa thiên hà của chúng ta cũng có một lỗ đen khổng lồ.',
+  cardM87BlackHoleFact3:
+    'Nó nặng bằng 5,4 tỉ Mặt Trời. Ngay cả ánh sáng cũng phải mất khoảng hai ngày rưỡi để đi qua cái bóng của nó.',
   conceptBlackHoleTitle: 'Lỗ đen là gì?',
   conceptBlackHoleText:
     'Lỗ đen là nơi lực hấp dẫn kéo mạnh đến mức không gì thoát ra được, kể cả ánh sáng.',

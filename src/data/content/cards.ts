@@ -93,6 +93,8 @@ import {
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_GALAXIES,
+  NASA_BIGGEST_BLACK_HOLES,
+  NASA_EXOPLANET_FACTS,
   NASA_GALAXY_TYPES,
   NASA_HUBBLE_NGC5264,
   ESA_HUBBLE_NGC4866,
@@ -1057,8 +1059,8 @@ export const cards: readonly CardContent[] = [
     facts: [
       {
         key: 'cardProximaCentauriFact1',
-        sourceId: 'nasa-hubble-proxima',
-        quote: 'just over four light-years from Earth',
+        sourceId: 'nasa-exoplanet-facts',
+        quote: 'At only four light-years away, Proxima b is our closest known exoplanet neighbor.',
       },
       {
         key: 'cardProximaCentauriFact2',
@@ -1073,7 +1075,7 @@ export const cards: readonly CardContent[] = [
       },
     ],
     moons: null,
-    sources: [NASA_HUBBLE_PROXIMA, NASA_STAR_TYPES],
+    sources: [NASA_HUBBLE_PROXIMA, NASA_STAR_TYPES, NASA_EXOPLANET_FACTS],
   },
   {
     id: 'trappist-1',
@@ -1152,12 +1154,13 @@ export const cards: readonly CardContent[] = [
       },
       {
         key: 'cardM87BlackHoleFact3',
-        sourceId: 'nasa-first-black-hole-image',
-        quote: 'There is a supermassive black hole at the center of our galaxy',
+        sourceId: 'nasa-biggest-black-holes',
+        quote:
+          'M87’s black hole, now with a updated mass of 5.4 billion Suns. Its shadow is so big that even a beam of light – traveling at 670 million mph (1 billion kph) – would take about two and a half days to cross it.',
       },
     ],
     moons: null,
-    sources: [NASA_FIRST_BLACK_HOLE_IMAGE],
+    sources: [NASA_FIRST_BLACK_HOLE_IMAGE, NASA_BIGGEST_BLACK_HOLES],
   },
   {
     id: 'orion',
@@ -2657,5 +2660,35 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_HUBBLE_MARKARIAN_231],
+  },
+  {
+    id: 'vela-pulsar',
+    hello: {
+      key: 'cardVelaPulsarHello',
+      sourceId: 'nasa-star-types',
+      quote: 'Pulsars: These are a type of rapidly rotating neutron star.',
+    },
+    facts: [
+      {
+        key: 'cardVelaPulsarFact1',
+        sourceId: 'nasa-star-types',
+        quote:
+          'The Vela pulsar is located in the circular white dot in the center of this image captured by NASA’s Chandra X-ray Observatory. The pulsar resides over 1,000 light-years away in the southern constellation Vela.',
+      },
+      {
+        key: 'cardVelaPulsarFact2',
+        sourceId: 'nasa-star-types',
+        quote:
+          'Neutron stars are stellar remnants that pack more mass than the Sun into a sphere about as wide as New York City’s Manhattan Island is long.',
+      },
+      {
+        key: 'cardVelaPulsarFact3',
+        sourceId: 'nasa-star-types',
+        quote:
+          'Bright X-ray hot spots form on the surfaces of these objects. As they rotate, the spots spin in and out of view like the beams of a lighthouse.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_STAR_TYPES],
   },
 ];

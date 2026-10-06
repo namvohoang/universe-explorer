@@ -428,8 +428,14 @@ everything found to be done. Nothing in the app contradicted those pages.
       arms), the elliptical NGC 2865 and Markarian 231, the nearest quasar. NASA's page on
       galaxy types calls the lenticular "NGC 4886"; the ESA/Hubble page the picture comes from
       names it NGC 4866 in its data table, so that name is used.
-- [ ] 10.3 A neutron star (the Vela pulsar), the heaviest black hole found (TON 618) and the
-      nearest exoplanet (Proxima Centauri b), as far as a trusted site has a picture of each.
+- [x] 10.3 A neutron star, a kind of its own: the Vela pulsar, with its real X-ray picture from
+      NASA's page on star types, a card and "What is a neutron star?". On cards already here:
+      Proxima Centauri's planet Proxima b, the nearest known exoplanet, and the mass of M87's
+      black hole (5.4 billion Suns), which the catalogue had as unknown. Left out: TON 618, the
+      heaviest black hole found. The only picture of it on a NASA page is credited to the Sloan
+      Digital Sky Survey, which is not on the trusted list (see §8). Proxima b has no card of
+      its own: NASA's page for it shows a stock drawing of a super-Earth, not of this planet,
+      and no radius is known to draw it from.
 - [ ] 10.4 Big ideas with no object to point at: the Big Bang, dark matter and dark energy,
       told as what scientists know and what they do not know yet.
 
@@ -458,3 +464,6 @@ Tolerances are named constants with a comment saying why. They are never widened
 6. **Models of SpaceX and Chinese craft.** None is published by a source on the trusted list
    (`.claude/rules/media.md`). Either the owner approves another source, with its licence, or
    these craft are shown with an agency's photo in place of a 3D model.
+7. **A picture of TON 618.** The heaviest black hole found has one picture on a NASA page, credited
+   to the Sloan Digital Sky Survey (sdss.org), which is not on the trusted list. Either the owner
+   approves that source, with its licence, or TON 618 stays out.

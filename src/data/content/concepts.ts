@@ -14,6 +14,7 @@ import {
   NASA_MOONS,
   NASA_CONSTELLATIONS,
   NASA_SATELLITE,
+  NASA_STAR_TYPES,
   NASA_WHAT_IS_A_PLANET,
 } from '../catalogue/sources';
 import type { ConceptContent } from '../types';
@@ -154,6 +155,17 @@ export const concepts: readonly ConceptContent[] = [
         'A black hole is a dense, compact object whose gravitational pull is so strong that - within a certain distance of it - nothing can escape, not even light.',
     },
     source: NASA_FIRST_BLACK_HOLE_IMAGE,
+  },
+  {
+    kind: 'neutron-star',
+    titleKey: 'conceptNeutronStarTitle',
+    text: {
+      key: 'conceptNeutronStarText',
+      sourceId: 'nasa-star-types',
+      quote:
+        'The result is a huge explosion called a supernova. The remnant core is a superdense neutron star.',
+    },
+    source: NASA_STAR_TYPES,
   },
   {
     kind: 'exoplanet',

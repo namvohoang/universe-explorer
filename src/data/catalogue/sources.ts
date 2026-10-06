@@ -1231,3 +1231,17 @@ export const NASA_HUBBLE_MARKARIAN_231: Source = {
   url: 'https://science.nasa.gov/asset/hubble/quasar-host-galaxy-markarian-231/',
   retrieved: '2026-10-06',
 };
+
+export const NASA_BIGGEST_BLACK_HOLES: Source = {
+  id: 'nasa-biggest-black-holes',
+  title: 'NASA — NASA Animation Sizes Up the Universe’s Biggest Black Holes',
+  url: 'https://www.nasa.gov/universe/nasa-animation-sizes-up-the-universes-biggest-black-holes/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_EXOPLANET_FACTS: Source = {
+  id: 'nasa-exoplanet-facts',
+  title: 'NASA Science — Exoplanets: Facts',
+  url: 'https://science.nasa.gov/exoplanets/facts/',
+  retrieved: '2026-10-06',
+};

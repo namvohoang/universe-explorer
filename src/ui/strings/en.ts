@@ -263,6 +263,7 @@ export const en = {
   kindGalaxy: 'Galaxy',
   kindStar: 'Star',
   kindBlackHole: 'Black hole',
+  kindNeutronStar: 'Neutron star',
   kindExoplanet: 'Planets of another star',
   eyebrowHome: '{kind} · our home',
   cardAntaresHello: 'Antares is a huge red star in the heart of the Scorpion, a pattern of stars.',
@@ -460,6 +461,19 @@ export const en = {
     'Its two rings spread out from the middle, like ripples in a pond when you drop in a stone.',
   pictureAltCartwheelGalaxy:
     'A big pink and blue ring with spokes and a bright middle, like a wheel. Two smaller galaxies sit to its left.',
+  nameVelaPulsar: 'The Vela Pulsar',
+  cardVelaPulsarHello: 'The Vela pulsar is a neutron star that spins very fast.',
+  cardVelaPulsarFact1:
+    'The pulsar is the small white dot in the middle of the picture. It is more than 1,000 light-years away.',
+  cardVelaPulsarFact2:
+    'A neutron star is heavier than the Sun, but only about as wide as a big city.',
+  cardVelaPulsarFact3:
+    'As it spins, its bright spots swing in and out of view, like the beam of a lighthouse.',
+  pictureAltVelaPulsar:
+    'A bright blue glow on dark blue, with a small white dot in the middle, curved arcs around it and a faint wisp stretching up to the right.',
+  conceptNeutronStarTitle: 'What is a neutron star?',
+  conceptNeutronStarText:
+    'A neutron star is the small, very heavy core left behind when a big star explodes.',
   cardNgc5264Hello:
     'NGC 5264 is a small galaxy with no tidy shape. That is called an irregular galaxy.',
   cardNgc5264Fact1: 'It is just over 15 million light-years away.',
@@ -503,8 +517,9 @@ export const en = {
     'A single bright white star with four spikes of light, on a black sky dotted with fainter stars.',
   nameProximaCentauri: 'Proxima Centauri',
   cardProximaCentauriHello: 'Proxima Centauri is the closest star to us, apart from the Sun.',
-  cardProximaCentauriFact1: 'It is just over four light-years away.',
-  cardProximaCentauriFact2: 'Even so, it is too dim to see with your eyes alone.',
+  cardProximaCentauriFact1:
+    'A planet called Proxima b goes around it. No planet outside our solar system is known to be closer to us.',
+  cardProximaCentauriFact2: 'It is too dim to see with your eyes alone.',
   cardProximaCentauriFact3:
     'It is a red dwarf: the smallest and coolest kind of star that shines like the Sun does.',
   pictureAltTrappist1:
@@ -544,7 +559,8 @@ export const en = {
   cardM87BlackHoleFact1:
     'It sits in the middle of the galaxy M87, about 55 million light-years away.',
   cardM87BlackHoleFact2: 'The glow is hot gas swirling around the black hole.',
-  cardM87BlackHoleFact3: 'There is a giant black hole in the middle of our own galaxy too.',
+  cardM87BlackHoleFact3:
+    'It is as heavy as 5.4 billion Suns. Even light would take about two and a half days to cross its shadow.',
   conceptBlackHoleTitle: 'What is a black hole?',
   conceptBlackHoleText:
     'A black hole is a place where gravity pulls so hard that nothing can get out, not even light.',

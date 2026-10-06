@@ -63,6 +63,7 @@ const DEEP_KIND_LABELS: Partial<Record<CelestialObject['kind'], string>> = {
   'star-cluster': words.kindStarCluster,
   galaxy: words.kindGalaxy,
   'black-hole': words.kindBlackHole,
+  'neutron-star': words.kindNeutronStar,
 };
 
 /**

@@ -29,6 +29,7 @@ export const OBJECT_KINDS = [
   'star-cluster',
   'galaxy',
   'black-hole',
+  'neutron-star',
   'constellation',
 ] as const;
 export type ObjectKind = (typeof OBJECT_KINDS)[number];
@@ -239,6 +240,20 @@ export interface BlackHole extends ObjectBase {
   readonly emitsLight?: Sourced<boolean>;
 }
 
+/**
+ * The crushed core left behind when a big star explodes. NASA lists it among the types of
+ * star, but it no longer shines by fusion and is only a few miles wide, so it is a kind of its own.
+ */
+export interface NeutronStar extends ObjectBase {
+  readonly kind: 'neutron-star';
+  readonly parentId: null;
+  readonly orbit: null;
+  /** Far too small and far away to be seen as more than a point of light. */
+  readonly shape: null;
+  readonly massKg: Measured<number>;
+  readonly sky: SkyPosition;
+}
+
 export type CelestialObject =
   | Star
   | Planet
@@ -254,6 +269,7 @@ export type CelestialObject =
   | StarCluster
   | Galaxy
   | BlackHole
+  | NeutronStar
   | Constellation;
 
 /** The object type for one kind, e.g. `ObjectOfKind<'moon'>` is `Moon`. */

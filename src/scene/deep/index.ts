@@ -115,6 +115,8 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
 
   if (pictureUrl === null) return null;
   if (object.kind === 'nebula') return createPictureCloud(pictureUrl, NEBULA);
+  // A neutron star is a point too small to draw: its picture shows the glowing cloud around it.
+  if (object.kind === 'neutron-star') return createPictureCloud(pictureUrl, NEBULA);
   if (object.kind === 'star-cluster') return createPictureCloud(pictureUrl, BALL_CLUSTER);
   if (object.kind === 'galaxy') {
     if (object.seenFromEarth === 'edge-on') return createPictureCloud(pictureUrl, EDGE_ON_GALAXY);

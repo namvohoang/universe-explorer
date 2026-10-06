@@ -400,7 +400,10 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       the solar system may now show a real picture beside its 3D model. The nucleus is no
       longer a smooth egg: it is long with a narrow waist, as ESA says Giotto found it
       ("peanut-shaped"), with three jets; its small lumps are a drawing, and the card says so,
-      since no trusted site publishes a model of its shape.
+      since no trusted site publishes a model of its shape. While time runs, the gas, dust and
+      jets stream outwards (still under reduced motion and when time is stopped), the jets
+      glow white, and close to the nucleus the glow and tails thin out so the dark nucleus
+      and its bright jets show as in Giotto's picture.
 
 **Acceptance:** as for Phase 7.
 

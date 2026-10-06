@@ -36,6 +36,8 @@ export interface SolarSystem {
   glowRadiusOf(id: string): number;
   /** Tells the scene where the camera is, for effects that change when seen from inside. */
   setViewer(camera: Vec3): void;
+  /** Streams the comets' gas and dust for so many real seconds. */
+  flowTails(seconds: number): void;
   /** Scene radius of a belt's outer edge under the current scale. */
   beltRadius(id: string): number;
   /** Distance from the centre to the farthest body right now. */
@@ -186,6 +188,9 @@ export function createSolarSystem(
     },
     radiusOf: (id) => bodyOf(id).radius(),
     glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,
+    flowTails(seconds) {
+      for (const tail of tails.values()) tail.flow(seconds);
+    },
     setViewer(camera) {
       for (const tail of tails.values()) tail.setViewer(camera);
     },

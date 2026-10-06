@@ -5,6 +5,7 @@ import {
   CanvasTexture,
   Group,
   Matrix4,
+  NormalBlending,
   Points,
   PointsMaterial,
   SRGBColorSpace,
@@ -35,6 +36,8 @@ const GAS = {
   /** Drawn size of one point, as a share of the tail's length. */
   pointSize: 0.014,
   opacity: 0.2,
+  /** How much of the tail's length its gas streams down in a second, while time runs. */
+  flow: 0.07,
   streamers: 7,
   /** How far a streamer leans from straight, as a share of the length at the far end. */
   lean: 0.035,
@@ -45,6 +48,7 @@ const DUST = {
   width: [0.006, 0.05],
   pointSize: 0.024,
   opacity: 0.14,
+  flow: 0.035,
   /** The dust tail is drawn this share of the gas tail's length. */
   length: 0.8,
   /** How readily the slowest and the quickest grains fall behind (see `dustGrain`). */
@@ -58,10 +62,12 @@ const DUST = {
  */
 const JETS = {
   rgb: [0.93, 0.96, 1],
-  points: 2600,
-  width: [0.008, 0.09],
-  pointSize: 0.035,
-  opacity: 0.3,
+  points: 3600,
+  width: [0.01, 0.15],
+  pointSize: 0.045,
+  opacity: 0.16,
+  flow: 0.3,
+  glows: true,
   count: 3,
   /** How far a jet leans from straight at the Sun, as a share of its length at the far end. */
   lean: 0.55,
@@ -70,11 +76,21 @@ const JETS = {
   /** Where along that reach a jet starts: at the ground, not at the middle of the nucleus. */
   from: 0.06,
 } as const;
+/**
+ * The bright haze the jets make on the sunlit side, as in Giotto's close-up, where it outshines
+ * the dark nucleus. Its size, in lengths of the nucleus, and its strength are a drawing.
+ */
+const BLAZE = { size: 5, off: 2.8, opacity: 0.6 } as const;
 const COMA_COLOR = '214, 236, 255';
 /** From this many glow radii away the comet is seen at full strength; closer, it thins out. */
 export const VIEW_FROM_RADII = 4;
 /** How much of the glow is left when the camera is right at the nucleus. */
 const INSIDE_HAZE = 0.06;
+/**
+ * The glow and tails also thin out within this many lengths of the nucleus, however big the
+ * glow is drawn: close up, the dark nucleus and its jets are what there is to see.
+ */
+const CLOSE_UP_LENGTHS = 40;
 /** Below this, two directions are too nearly in line to find one square to both. */
 const SQUARE_ENOUGH = 1e-6;
 
@@ -118,15 +134,30 @@ function softDot(inner: string): CanvasTexture {
   return map;
 }
 
+/** Where a point sits along its tail before it is spread sideways, in the tail's own frame. */
+interface Spot {
+  readonly away: number;
+  readonly behind: number;
+  readonly across: number;
+}
+
 interface TailCloud {
   readonly points: Points<BufferGeometry, PointsMaterial>;
-  readonly style: { readonly pointSize: number; readonly opacity: number };
+  readonly style: { readonly pointSize: number; readonly opacity: number; readonly flow: number };
+  /** Moves every point down the tail by a share of its length; one that reaches the end starts again. */
+  flow(share: number): void;
 }
+
+/** How points are spread along a tail: more near the comet, where it is thickest. */
+const CROWDING = 1.35;
+/** How quickly a tail fades towards its far end. */
+const FADE = 1.5;
 
 /**
  * A tail as points in its own frame: x away from the Sun, y the way dust falls behind, z across,
- * each from 0 to about 1 (one is the tail's length). `place` says where a point `along` the tail
- * sits before it is spread sideways.
+ * each from 0 to about 1 (one is the tail's length). Every point belongs to one `grain` (a
+ * streamer, or a size of dust), picked once; `place` says where a grain is when it is `along`
+ * the tail, before it is spread sideways.
  */
 function createCloud(
   style: {
@@ -135,46 +166,80 @@ function createCloud(
     readonly width: readonly [number, number];
     readonly pointSize: number;
     readonly opacity: number;
+    readonly flow: number;
+    readonly glows?: boolean;
   },
   dot: CanvasTexture,
   seed: number,
-  place: (along: number, random: () => number) => { away: number; behind: number; across: number },
+  pickGrain: (random: () => number) => number,
+  place: (along: number, grain: number) => Spot,
 ): TailCloud {
   const random = seededRandom(seed);
-  const positions = new Float32Array(style.points * 3);
-  const colors = new Float32Array(style.points * 4);
-  for (let n = 0; n < style.points; n += 1) {
-    // More points near the comet, where a tail is thickest, thinning out towards the end.
-    const along = random() ** 1.35;
-    const spot = place(along, random);
-    const spread = style.width[0] + (style.width[1] - style.width[0]) * along;
-    positions[n * 3] = spot.away;
-    positions[n * 3 + 1] = spot.behind + bell(random) * spread;
-    positions[n * 3 + 2] = spot.across + bell(random) * spread;
-    // Thickest at the comet, fading to nothing at the far end.
+  const count = style.points;
+  // What each point is: where it started along the tail, its grain, and its own sideways drift.
+  const starts = new Float32Array(count);
+  const grains = new Float32Array(count);
+  const drift = new Float32Array(count * 2);
+  for (let n = 0; n < count; n += 1) {
+    starts[n] = random();
+    grains[n] = pickGrain(random);
+    drift[n * 2] = bell(random);
+    drift[n * 2 + 1] = bell(random);
+  }
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 4);
+  for (let n = 0; n < count; n += 1) {
     colors[n * 4] = style.rgb[0];
     colors[n * 4 + 1] = style.rgb[1];
     colors[n * 4 + 2] = style.rgb[2];
-    colors[n * 4 + 3] = (1 - along) ** 1.5;
   }
   const geometry = new BufferGeometry();
-  geometry.setAttribute('position', new BufferAttribute(positions, 3));
-  geometry.setAttribute('color', new BufferAttribute(colors, 4));
+  const positionAttribute = new BufferAttribute(positions, 3);
+  const colorAttribute = new BufferAttribute(colors, 4);
+  geometry.setAttribute('position', positionAttribute);
+  geometry.setAttribute('color', colorAttribute);
+
+  let flowed = 0;
+  const lay = (): void => {
+    for (let n = 0; n < count; n += 1) {
+      const along = (((starts[n] ?? 0) + flowed) % 1) ** CROWDING;
+      const spot = place(along, grains[n] ?? 0);
+      const spread = style.width[0] + (style.width[1] - style.width[0]) * along;
+      positions[n * 3] = spot.away;
+      positions[n * 3 + 1] = spot.behind + (drift[n * 2] ?? 0) * spread;
+      positions[n * 3 + 2] = spot.across + (drift[n * 2 + 1] ?? 0) * spread;
+      // Thickest at the comet, fading to nothing at the far end.
+      colors[n * 4 + 3] = (1 - along) ** FADE;
+    }
+    positionAttribute.needsUpdate = true;
+    colorAttribute.needsUpdate = true;
+  };
+  lay();
+
   const material = new PointsMaterial({
     map: dot,
     vertexColors: true,
     transparent: true,
     opacity: 0,
     depthWrite: false,
-    // Ordinary blending, not adding light to light: where points pile up, near the comet or
-    // seen end-on, the tail thickens to its own colour instead of burning out to white.
+    // A tail blends the ordinary way, not adding light to light: where points pile up, near
+    // the comet or seen end-on, it thickens to its own colour instead of burning out to white.
+    // The jets do add up: they are the brightest thing there, and glow white where they start.
+    blending: style.glows ? AdditiveBlending : NormalBlending,
     sizeAttenuation: true,
   });
   const points = new Points(geometry, material);
   points.frustumCulled = false;
   // Its frame is set outright each time the comet moves.
   points.matrixAutoUpdate = false;
-  return { points, style };
+  return {
+    points,
+    style,
+    flow(share) {
+      flowed = (flowed + share) % 1;
+      lay();
+    },
+  };
 }
 
 function createComa(map: CanvasTexture): Sprite {
@@ -199,6 +264,8 @@ export interface CometTail {
   update(comet: Vec3, sun: Vec3, heading: Vec3, distanceAu: number, nucleusRadius: number): void;
   /** Drawn radius of the glow right now, in scene units; 0 when the comet is bare. */
   glowRadius(): number;
+  /** Streams the gas and dust outwards for so many seconds; nothing moves on a bare comet. */
+  flow(seconds: number): void;
   /** Dims the glow and tails as the camera comes inside them, so the nucleus can be seen. */
   setViewer(camera: Vec3): void;
   dispose(): void;
@@ -214,26 +281,42 @@ export function createCometTail(): CometTail {
     behind: bell(streamers) * GAS.lean,
     across: bell(streamers) * GAS.lean,
   }));
-  const gas = createCloud(GAS, dot, 11, (along, random) => {
-    const lean = leans[Math.floor(random() * leans.length)] ?? { behind: 0, across: 0 };
-    return { away: along, behind: lean.behind * along, across: lean.across * along };
-  });
-  const dust = createCloud(DUST, dot, 23, (along, random) => {
-    const lag = DUST.lag[0] + (DUST.lag[1] - DUST.lag[0]) * random();
-    return { ...dustGrain(along, lag), across: 0 };
-  });
+  const gas = createCloud(
+    GAS,
+    dot,
+    11,
+    (random) => Math.floor(random() * leans.length),
+    (along, streamer) => {
+      const lean = leans[streamer] ?? { behind: 0, across: 0 };
+      return { away: along, behind: lean.behind * along, across: lean.across * along };
+    },
+  );
+  const dust = createCloud(
+    DUST,
+    dot,
+    23,
+    (random) => DUST.lag[0] + (DUST.lag[1] - DUST.lag[0]) * random(),
+    (along, lag) => ({ ...dustGrain(along, lag), across: 0 }),
+  );
   // The jets use the same frame turned round: their "away" is towards the Sun.
   const jetLeans = Array.from({ length: JETS.count }, () => ({
     behind: bell(streamers) * JETS.lean,
     across: bell(streamers) * JETS.lean,
   }));
-  const jets = createCloud(JETS, dot, 37, (along, random) => {
-    const lean = jetLeans[Math.floor(random() * jetLeans.length)] ?? { behind: 0, across: 0 };
-    const out = JETS.from + along * (1 - JETS.from);
-    return { away: out, behind: lean.behind * out, across: lean.across * out };
-  });
+  const jets = createCloud(
+    JETS,
+    dot,
+    37,
+    (random) => Math.floor(random() * jetLeans.length),
+    (along, jet) => {
+      const lean = jetLeans[jet] ?? { behind: 0, across: 0 };
+      const out = JETS.from + along * (1 - JETS.from);
+      return { away: out, behind: lean.behind * out, across: lean.across * out };
+    },
+  );
   const coma = createComa(glow);
-  group.add(dust.points, gas.points, coma, jets.points);
+  const blaze = createComa(glow);
+  group.add(dust.points, gas.points, coma, blaze, jets.points);
   const clouds = [gas, dust];
   const towardsSun = new Vector3();
 
@@ -242,6 +325,7 @@ export function createCometTail(): CometTail {
   const across = new Vector3();
   const frame = new Matrix4();
   let comaRadius = 0;
+  let nucleusLength = 0;
   let strengthNow = 0;
   const centre = { x: 0, y: 0, z: 0 };
 
@@ -287,6 +371,11 @@ export function createCometTail(): CometTail {
       jets.points.matrix.copy(frame);
       jets.points.material.size = reach * JETS.pointSize;
       jets.points.material.opacity = JETS.opacity * strength;
+      const length0 = 2 * nucleusRadius;
+      nucleusLength = length0;
+      blaze.position.copy(towardsSun).multiplyScalar(length0 * BLAZE.off);
+      blaze.scale.setScalar(length0 * BLAZE.size);
+      blaze.material.opacity = BLAZE.opacity * strength;
       comaRadius = strength * (COMA_RADIUS_KM / KM_PER_AU) * unitsPerAu;
       coma.scale.setScalar(2 * comaRadius);
       coma.material.opacity = strength;
@@ -295,11 +384,16 @@ export function createCometTail(): CometTail {
       centre.z = comet.z;
     },
     glowRadius: () => comaRadius,
+    flow(seconds) {
+      if (strengthNow === 0) return;
+      for (const cloud of [gas, dust, jets]) cloud.flow(cloud.style.flow * seconds);
+    },
     setViewer(camera) {
       if (comaRadius === 0) return;
       const distance = Math.hypot(camera.x - centre.x, camera.y - centre.y, camera.z - centre.z);
       // Outside the glow everything is at full strength; deep inside it is only a faint haze.
-      const outside = Math.min(1, distance / (comaRadius * VIEW_FROM_RADII));
+      const clear = Math.max(comaRadius * VIEW_FROM_RADII, nucleusLength * CLOSE_UP_LENGTHS);
+      const outside = Math.min(1, distance / clear);
       const dim = INSIDE_HAZE + (1 - INSIDE_HAZE) * outside * outside;
       coma.material.opacity = strengthNow * dim;
       for (const cloud of clouds) {
@@ -314,6 +408,7 @@ export function createCometTail(): CometTail {
       dot.dispose();
       glow.dispose();
       coma.material.dispose();
+      blaze.material.dispose();
     },
   };
 }

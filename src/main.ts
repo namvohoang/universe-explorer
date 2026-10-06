@@ -96,9 +96,10 @@ function start(): void {
   mustFind('#title').textContent = words.appTitle;
   document.documentElement.lang = language;
 
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const stage = createStage(canvas, {
     pixelRatio: window.devicePixelRatio,
-    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    reducedMotion,
   });
 
   const limits = dateLimits(catalogue);
@@ -751,8 +752,11 @@ function start(): void {
     stage.setFieldOfView(
       deepModel?.fieldOfViewDeg?.(stage.camera.position, FIELD_OF_VIEW_DEG) ?? FIELD_OF_VIEW_DEG,
     );
+    const before = clock.jd;
     clock = advanceClock(clock, dt, limits);
     system.setDate(clock.jd);
+    // While time runs, a comet's jets and tails stream; with time stopped they stand still.
+    if (clock.jd !== before && !reducedMotion) system.flowTails(dt);
     clockControl.show(clock);
   });
   stage.onCameraMoved(() => {

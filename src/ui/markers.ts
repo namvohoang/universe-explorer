@@ -3,6 +3,8 @@ import { create } from './dom';
 
 /** A body smaller than this many pixels across gets a ring so it can be found and tapped. */
 const RING_BELOW_PIXELS = 14;
+/** Half the width of a marker's tap spot, which the stylesheet makes 44 pixels across. */
+const TAP_RADIUS_PIXELS = 22;
 /** A moon's marker is hidden while it sits this close to its planet on screen. */
 const CROWDED_PIXELS = 26;
 /** Rough size of a name pill, for telling whether two would overlap. */
@@ -62,20 +64,40 @@ export function createMarkers(
     button.hidden = true;
     const name = create('span', 'marker-name', target.name);
     button.append(name);
-    button.addEventListener('click', () => {
-      onPick(target.id);
+    layer.append(button);
+    return { target, button, name, shown: false, ringed: false, named: true, drop: -1, x: 0, y: 0 };
+  });
+
+  // Where bodies crowd together their tap spots overlap, and the one on top is not always the
+  // one pointed at. The body meant is the one whose middle is nearest the pointer.
+  const nearest = (id: string, event: MouseEvent): string => {
+    let best = id;
+    let bestDistance = Infinity;
+    for (const marker of markers) {
+      if (!marker.shown) continue;
+      const distance = Math.hypot(marker.x - event.clientX, marker.y - event.clientY);
+      if (distance <= TAP_RADIUS_PIXELS && distance < bestDistance) {
+        best = marker.target.id;
+        bestDistance = distance;
+      }
+    }
+    return best;
+  };
+  for (const marker of markers) {
+    const { id } = marker.target;
+    marker.button.addEventListener('click', (event) => {
+      // A press of Enter or Space has no pointer: it means the marker that has the focus.
+      onPick(event.detail === 0 ? id : nearest(id, event));
     });
     // The marker lies on top of its body, so the wheel over a body lands here, not on the canvas.
-    button.addEventListener(
+    marker.button.addEventListener(
       'wheel',
       (event) => {
-        onWheel(target.id, event);
+        onWheel(nearest(id, event), event);
       },
       { passive: false },
     );
-    layer.append(button);
-    return { target, button, name, shown: false, ringed: false, named: true, drop: -1 };
-  });
+  }
 
   return {
     update(place) {
@@ -95,6 +117,8 @@ export function createMarkers(
         }
         if (!visible) continue;
         marker.button.style.transform = `translate(${point.x.toFixed(1)}px, ${point.y.toFixed(1)}px)`;
+        marker.x = point.x;
+        marker.y = point.y;
 
         const ringed = radiusPixels * 2 < RING_BELOW_PIXELS;
         if (ringed !== marker.ringed) {

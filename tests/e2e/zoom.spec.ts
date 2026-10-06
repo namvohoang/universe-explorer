@@ -38,3 +38,20 @@ test('zooming out with the pointer on another body stays with the one in view', 
   await page.mouse.wheel(0, 300);
   await expect(page.locator('.card h2')).toHaveText('Saturn');
 });
+
+test('where tap spots overlap, the body nearest the pointer is the one zoomed in on', async ({
+  page,
+}) => {
+  // On this date Ceres is drawn so near Mars that its tap spot lies on top of the middle of Mars's.
+  await page.goto('/?date=2026-10-06&speed=pause');
+  const mars = page.getByRole('button', { name: 'Go to Mars', exact: true });
+  await expect(mars).toBeVisible();
+  const box = await mars.boundingBox();
+  if (!box) throw new Error('Mars has no marker');
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.wheel(0, -100);
+  await expect(page.locator('.card h2')).toHaveText('Mars');
+  await page.goto('/?date=2026-10-06&speed=pause');
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  await expect(page.locator('.card h2')).toHaveText('Mars');
+});

@@ -460,6 +460,38 @@ export const en = {
     'Its two rings spread out from the middle, like ripples in a pond when you drop in a stone.',
   pictureAltCartwheelGalaxy:
     'A big pink and blue ring with spokes and a bright middle, like a wheel. Two smaller galaxies sit to its left.',
+  cardNgc5264Hello:
+    'NGC 5264 is a small galaxy with no tidy shape. That is called an irregular galaxy.',
+  cardNgc5264Fact1: 'It is just over 15 million light-years away.',
+  cardNgc5264Fact2:
+    'It is a dwarf galaxy. A dwarf galaxy has about a billion stars, far fewer than the Milky Way.',
+  cardNgc5264Fact3:
+    'Scientists think the pull of galaxies nearby gave it its shape. The blue patches are new stars.',
+  pictureAltNgc5264:
+    'A grainy, lopsided patch of pale stars with a few small blue spots, on black space.',
+  cardNgc4866Hello:
+    'NGC 4866 is a lenticular galaxy. It has a flat disc like a spiral galaxy, but no arms.',
+  cardNgc4866Fact1: 'It is about 80 million light-years away.',
+  cardNgc4866Fact2: 'We see it almost from the side.',
+  cardNgc4866Fact3: 'The bright star beside it is not part of it. That star is much closer to us.',
+  pictureAltNgc4866:
+    'A long, smooth, pale streak of light with a bright middle, tilted across black space. A bright star shines to its right.',
+  cardNgc2865Hello:
+    'NGC 2865 is an elliptical galaxy. An elliptical galaxy is shaped like a ball or an egg.',
+  cardNgc2865Fact1: 'It is just over 100 million light-years away.',
+  cardNgc2865Fact2:
+    'Most elliptical galaxies are full of old stars. This one has many young stars as well.',
+  cardNgc2865Fact3: 'The young stars were born after it joined with a spiral galaxy like ours.',
+  pictureAltNgc2865:
+    'A soft, round, pale glow with a bright middle and a faint ring around it, among many small stars.',
+  cardMarkarian231Hello:
+    'Markarian 231 is a galaxy whose middle glows as bright as a star. That glow is called a quasar.',
+  cardMarkarian231Fact1: 'It is 581 million light-years away. No quasar is nearer to Earth.',
+  cardMarkarian231Fact2: 'The glow comes from gas heated by a black hole.',
+  cardMarkarian231Fact3:
+    'Scientists think it has two giant black holes that whirl around each other.',
+  pictureAltMarkarian231:
+    'A lopsided pale blue and brown swirl with a very bright white spot in the middle and faint tails, on black space.',
   pictureAltBetelgeuse:
     'A fuzzy round glow on black: yellow-white in the middle, fading to orange and dark red at the edge.',
   nameBetelgeuse: 'Betelgeuse',

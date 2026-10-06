@@ -489,6 +489,41 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Hai vòng của nó lan ra từ giữa, như gợn sóng trên ao khi bạn thả một hòn đá.',
   pictureAltCartwheelGalaxy:
     'Một vòng tròn lớn màu hồng và xanh có nan hoa và phần giữa sáng, giống bánh xe. Hai thiên hà nhỏ hơn nằm bên trái.',
+  cardNgc5264Hello:
+    'NGC 5264 là một thiên hà nhỏ không có hình dạng gọn gàng. Người ta gọi đó là thiên hà vô định hình.',
+  cardNgc5264Fact1: 'Nó ở cách ta hơn 15 triệu năm ánh sáng một chút.',
+  cardNgc5264Fact2:
+    'Nó là một thiên hà lùn. Một thiên hà lùn có khoảng một tỉ ngôi sao, ít hơn Dải Ngân Hà rất nhiều.',
+  cardNgc5264Fact3:
+    'Các nhà khoa học cho rằng lực hút của những thiên hà gần đó đã tạo nên hình dạng của nó. Các đốm xanh là những ngôi sao mới.',
+  pictureAltNgc5264:
+    'Một mảng sao nhạt, lệch và lấm tấm, có vài đốm xanh nhỏ, trên nền không gian đen.',
+  cardNgc4866Hello:
+    'NGC 4866 là một thiên hà hình thấu kính. Nó có đĩa phẳng như thiên hà xoắn ốc nhưng không có cánh tay.',
+  cardNgc4866Fact1: 'Nó ở cách ta khoảng 80 triệu năm ánh sáng.',
+  cardNgc4866Fact2: 'Chúng ta nhìn thấy nó gần như từ bên cạnh.',
+  cardNgc4866Fact3:
+    'Ngôi sao sáng bên cạnh không thuộc về nó. Ngôi sao ấy ở gần chúng ta hơn nhiều.',
+  pictureAltNgc4866:
+    'Một vệt sáng dài, mịn và nhạt với phần giữa sáng, nằm nghiêng trên nền không gian đen. Một ngôi sao sáng ở bên phải nó.',
+  cardNgc2865Hello:
+    'NGC 2865 là một thiên hà elip. Thiên hà elip có hình như quả bóng hoặc quả trứng.',
+  cardNgc2865Fact1: 'Nó ở cách ta hơn 100 triệu năm ánh sáng một chút.',
+  cardNgc2865Fact2:
+    'Hầu hết các thiên hà elip đầy những ngôi sao già. Thiên hà này còn có nhiều ngôi sao trẻ.',
+  cardNgc2865Fact3:
+    'Các ngôi sao trẻ ra đời sau khi nó nhập với một thiên hà xoắn ốc giống thiên hà của chúng ta.',
+  pictureAltNgc2865:
+    'Một quầng sáng tròn, mềm và nhạt với phần giữa sáng và một vòng mờ bao quanh, giữa nhiều ngôi sao nhỏ.',
+  cardMarkarian231Hello:
+    'Markarian 231 là một thiên hà có phần giữa sáng rực như một ngôi sao. Quầng sáng đó được gọi là chuẩn tinh.',
+  cardMarkarian231Fact1:
+    'Nó ở cách ta 581 triệu năm ánh sáng. Không có chuẩn tinh nào ở gần Trái Đất hơn.',
+  cardMarkarian231Fact2: 'Quầng sáng đến từ khí bị một lỗ đen nung nóng.',
+  cardMarkarian231Fact3:
+    'Các nhà khoa học cho rằng nó có hai lỗ đen khổng lồ quay cuồng quanh nhau.',
+  pictureAltMarkarian231:
+    'Một vòng xoáy lệch màu xanh nhạt và nâu, có một đốm trắng rất sáng ở giữa và những cái đuôi mờ, trên nền không gian đen.',
   pictureAltBetelgeuse:
     'Một quầng sáng tròn mờ nhòe trên nền đen: trắng vàng ở giữa, nhạt dần sang cam và đỏ sẫm ở rìa.',
   nameBetelgeuse: 'Betelgeuse',

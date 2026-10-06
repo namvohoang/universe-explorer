@@ -93,6 +93,11 @@ import {
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_GALAXIES,
+  NASA_GALAXY_TYPES,
+  NASA_HUBBLE_NGC5264,
+  ESA_HUBBLE_NGC4866,
+  NASA_HUBBLE_NGC2865,
+  NASA_HUBBLE_MARKARIAN_231,
   NASA_STAR_TYPES,
   NASA_TRAPPIST1,
   SI_COLUMBIA,
@@ -2533,5 +2538,124 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_WEBB_CARTWHEEL],
+  },
+  {
+    id: 'ngc-5264',
+    hello: {
+      key: 'cardNgc5264Hello',
+      sourceId: 'nasa-hubble-ngc5264',
+      quote:
+        'NGC 5264 clearly possesses an irregular shape — unlike the more common spiral or elliptical galaxies — with knots of blue star formation.',
+    },
+    facts: [
+      {
+        key: 'cardNgc5264Fact1',
+        sourceId: 'nasa-hubble-ngc5264',
+        quote:
+          'a dwarf galaxy located just over 15 million light-years away in the constellation of Hydra',
+      },
+      {
+        key: 'cardNgc5264Fact2',
+        sourceId: 'nasa-hubble-ngc5264',
+        quote:
+          'Dwarf galaxies like NGC 5264 typically possess around a billion stars — just 1 percent of the number of stars found within the Milky Way.',
+      },
+      {
+        key: 'cardNgc5264Fact3',
+        sourceId: 'nasa-hubble-ngc5264',
+        quote:
+          'Astronomers believe that this is due to the gravitational interactions between NGC 5264 and other galaxies nearby. These past flirtations sparked the formation of new generations of stars, which now glow in bright shades of blue.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_NGC5264],
+  },
+  {
+    id: 'ngc-4866',
+    hello: {
+      key: 'cardNgc4866Hello',
+      sourceId: 'nasa-galaxy-types',
+      quote: 'They have the central bulge and disk common to spiral galaxies but no arms.',
+    },
+    facts: [
+      {
+        key: 'cardNgc4866Fact1',
+        sourceId: 'esa-hubble-ngc4866',
+        quote: 'a lenticular galaxy situated about 80 million light-years from Earth',
+      },
+      {
+        key: 'cardNgc4866Fact2',
+        sourceId: 'esa-hubble-ngc4866',
+        quote: 'The galaxy is seen from Earth as almost edge-on',
+      },
+      {
+        key: 'cardNgc4866Fact3',
+        sourceId: 'esa-hubble-ngc4866',
+        quote:
+          'However, this star actually lies much closer to us; in front of the galaxy, along our line of sight.',
+      },
+    ],
+    moons: null,
+    sources: [ESA_HUBBLE_NGC4866, NASA_GALAXY_TYPES],
+  },
+  {
+    id: 'ngc-2865',
+    hello: {
+      key: 'cardNgc2865Hello',
+      sourceId: 'nasa-galaxy-types',
+      quote: 'Elliptical galaxies have shapes that range from completely round to oval.',
+    },
+    facts: [
+      {
+        key: 'cardNgc2865Fact1',
+        sourceId: 'nasa-hubble-ngc2865',
+        quote:
+          'It lies just over 100 million light-years away from us in the constellation of Hydra',
+      },
+      {
+        key: 'cardNgc2865Fact2',
+        sourceId: 'nasa-hubble-ngc2865',
+        quote:
+          'Elliptical galaxies are usually filled with old, dying stars. NGC 2865, however, is relatively youthful and dynamic, with a rapidly rotating disk full of young stars and metal-rich gas.',
+      },
+      {
+        key: 'cardNgc2865Fact3',
+        sourceId: 'nasa-hubble-ngc2865',
+        quote:
+          'The starburst itself was induced by a merger between a spiral galaxy, similar to our galaxy, the Milky Way, and an elliptical galaxy some three times more massive',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_NGC2865, NASA_GALAXY_TYPES],
+  },
+  {
+    id: 'markarian-231',
+    hello: {
+      key: 'cardMarkarian231Hello',
+      sourceId: 'nasa-hubble-markarian-231',
+      quote:
+        'reveals a bright starlike glow in the center of the interacting galaxy Markarian 231, the nearest quasar to Earth',
+    },
+    facts: [
+      {
+        key: 'cardMarkarian231Fact1',
+        sourceId: 'nasa-hubble-markarian-231',
+        quote: 'the nearest quasar to Earth. Located 581 million light-years away',
+      },
+      {
+        key: 'cardMarkarian231Fact2',
+        sourceId: 'nasa-hubble-markarian-231',
+        quote:
+          'Quasars are powered by a central black hole that heats the gas around it to unleash tremendous amounts of energy.',
+      },
+      {
+        key: 'cardMarkarian231Fact3',
+        sourceId: 'nasa-hubble-markarian-231',
+        quote:
+          'Hubble spectroscopic observations infer the presence of two supermassive black holes whirling around each other.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_MARKARIAN_231],
   },
 ];

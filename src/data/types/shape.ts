@@ -113,6 +113,7 @@ export const EXTENDED_STRUCTURES = [
   'cluster',
   'spiral',
   'barred-spiral',
+  'lenticular',
   'elliptical',
   'ring',
   'irregular',

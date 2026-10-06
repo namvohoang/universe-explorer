@@ -57,6 +57,7 @@ SAY: dict[str, str] = {
     "Soyuz": "sˈɔjuz",  # SOY-ooz
     "Ariane": "ˌɑɹiˈɑn",  # ah-ree-AHN
     "Guiana": "ɡiˈɑnə",  # ghee-AH-nuh
+    "Markarian": "mɑɹkˈɑɹiən",  # mar-KAR-ee-un
 }
 
 

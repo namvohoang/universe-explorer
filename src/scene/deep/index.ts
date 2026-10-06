@@ -118,9 +118,10 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
   if (object.kind === 'star-cluster') return createPictureCloud(pictureUrl, BALL_CLUSTER);
   if (object.kind === 'galaxy') {
     if (object.seenFromEarth === 'edge-on') return createPictureCloud(pictureUrl, EDGE_ON_GALAXY);
-    // Only a spiral is a thin disc that can be laid flat and turned.
+    // Only a spiral, or a lenticular with its disc and no arms, is thin enough to be laid flat and turned.
     const { structure } = object.shape;
-    const disc = structure === 'spiral' || structure === 'barred-spiral';
+    const disc =
+      structure === 'spiral' || structure === 'barred-spiral' || structure === 'lenticular';
     return createPictureCloud(pictureUrl, disc ? GALAXY : SHAPELESS_GALAXY);
   }
   return null;

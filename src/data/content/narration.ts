@@ -306,6 +306,11 @@ export const NARRATION: Readonly<
     fingerprint: '0ab0b160',
     starts: [0.0, 2.42, 8.43, 11.8, 17.77],
   },
+  'ngc-5264': {
+    file: 'public/voice/ngc-5264.mp3',
+    fingerprint: 'd247c585',
+    starts: [0.0, 3.25, 12.25, 16.12, 23.55],
+  },
   sombrero: {
     file: 'public/voice/sombrero.mp3',
     fingerprint: '4db10609',
@@ -331,10 +336,25 @@ export const NARRATION: Readonly<
     fingerprint: '156c2760',
     starts: [0.0, 2.58, 7.78, 11.53, 18.35],
   },
+  'ngc-4866': {
+    file: 'public/voice/ngc-4866.mp3',
+    fingerprint: '6e7c239b',
+    starts: [0.0, 3.17, 12.43, 15.85, 18.75],
+  },
+  'ngc-2865': {
+    file: 'public/voice/ngc-2865.mp3',
+    fingerprint: '9a75e8ff',
+    starts: [0.0, 3.3, 11.95, 16.07, 23.02],
+  },
   'cartwheel-galaxy': {
     file: 'public/voice/cartwheel-galaxy.mp3',
     fingerprint: '95a7ade6',
     starts: [0.0, 2.5, 7.72, 11.45, 16.9],
+  },
+  'markarian-231': {
+    file: 'public/voice/markarian-231.mp3',
+    fingerprint: '9291022b',
+    starts: [0.0, 3.15, 12.2, 18.43, 22.1],
   },
   orion: {
     file: 'public/voice/orion.mp3',

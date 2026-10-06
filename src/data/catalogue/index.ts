@@ -72,6 +72,10 @@ import { antares } from './antares';
 import { mira } from './mira';
 import { catsEyeNebula } from './catsEyeNebula';
 import { cartwheelGalaxy } from './cartwheelGalaxy';
+import { ngc5264 } from './ngc5264';
+import { ngc4866 } from './ngc4866';
+import { ngc2865 } from './ngc2865';
+import { markarian231 } from './markarian231';
 import { mir } from './mir';
 import { apolloSoyuz } from './apolloSoyuz';
 import { rosetta } from './rosetta';
@@ -196,12 +200,16 @@ export const catalogue: readonly CelestialObject[] = [
   centaurusA,
   bodesGalaxy,
   cigarGalaxy,
+  ngc5264,
   sombrero,
   whirlpool,
   m87,
   m87BlackHole,
   antennae,
+  ngc4866,
+  ngc2865,
   cartwheelGalaxy,
+  markarian231,
   orion,
   bigDipper,
   southernCross,

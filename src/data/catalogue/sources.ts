@@ -1203,3 +1203,31 @@ export const NASA_EXOPLANETS: Source = {
   url: 'https://science.nasa.gov/exoplanets/',
   retrieved: '2026-10-06',
 };
+
+export const NASA_HUBBLE_NGC5264: Source = {
+  id: 'nasa-hubble-ngc5264',
+  title: 'NASA Science — Hubble Spots an Irregular Island in a Sea of Space',
+  url: 'https://science.nasa.gov/missions/hubble/hubble-spots-an-irregular-island-in-a-sea-of-space/',
+  retrieved: '2026-10-06',
+};
+
+export const ESA_HUBBLE_NGC4866: Source = {
+  id: 'esa-hubble-ngc4866',
+  title: 'ESA/Hubble — A stranger in the crowd (NGC 4866)',
+  url: 'https://esahubble.org/images/potw1328a/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_NGC2865: Source = {
+  id: 'nasa-hubble-ngc2865',
+  title: 'NASA Science — Hubble Views a Young and Dynamic Elliptical Galaxy',
+  url: 'https://science.nasa.gov/centers-and-facilities/goddard/hubble-views-a-young-and-dynamic-elliptical-galaxy/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_MARKARIAN_231: Source = {
+  id: 'nasa-hubble-markarian-231',
+  title: 'NASA Science — Quasar Host Galaxy Markarian 231',
+  url: 'https://science.nasa.gov/asset/hubble/quasar-host-galaxy-markarian-231/',
+  retrieved: '2026-10-06',
+};

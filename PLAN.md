@@ -423,9 +423,11 @@ everything found to be done. Nothing in the app contradicted those pages.
       a red dwarf; and, in "What is an exoplanet?", that more than 6,000 have been found. The
       Milky Way's card no longer says the picture is an artist's drawing in a fact of its own:
       the label on the picture still does.
-- [ ] 10.2 Galaxies of the kinds not shown yet, each from NASA's page on galaxy types and its
-      own picture page: an elliptical, a lenticular (a new structure), an irregular and the
-      nearest quasar.
+- [x] 10.2 Galaxies of the kinds not shown yet, each with its real Hubble picture: the irregular
+      dwarf NGC 5264, the lenticular NGC 4866 (`lenticular` is a new structure: a disc with no
+      arms), the elliptical NGC 2865 and Markarian 231, the nearest quasar. NASA's page on
+      galaxy types calls the lenticular "NGC 4886"; the ESA/Hubble page the picture comes from
+      names it NGC 4866 in its data table, so that name is used.
 - [ ] 10.3 A neutron star (the Vela pulsar), the heaviest black hole found (TON 618) and the
       nearest exoplanet (Proxima Centauri b), as far as a trusted site has a picture of each.
 - [ ] 10.4 Big ideas with no object to point at: the Big Bang, dark matter and dark energy,

@@ -20,6 +20,8 @@ const NEBULA = { depth: 0.16, bulge: 1.2, spin: 0, lay: 'upright' } as const;
 const GALAXY = { depth: 0.012, bulge: 9, spin: 0.02, lay: 'flat' } as const;
 /** A galaxy seen from the side keeps its picture upright: laid flat it would look like a disc it is not. */
 const EDGE_ON_GALAXY = { depth: 0.03, bulge: 2, spin: 0, lay: 'upright' } as const;
+/** A galaxy with no flat disc (a round one, or two caught colliding) is a deep cloud of stars too. */
+const SHAPELESS_GALAXY = { depth: 0.12, bulge: 2, spin: 0, lay: 'upright' } as const;
 
 export interface DeepContext {
   /** The whole catalogue, for the Sun and Earth that other things are measured against. */
@@ -99,10 +101,11 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
   if (pictureUrl === null) return null;
   if (object.kind === 'nebula') return createPictureCloud(pictureUrl, NEBULA);
   if (object.kind === 'galaxy') {
-    return createPictureCloud(
-      pictureUrl,
-      object.seenFromEarth === 'edge-on' ? EDGE_ON_GALAXY : GALAXY,
-    );
+    if (object.seenFromEarth === 'edge-on') return createPictureCloud(pictureUrl, EDGE_ON_GALAXY);
+    // Only a spiral is a thin disc that can be laid flat and turned.
+    const { structure } = object.shape;
+    const disc = structure === 'spiral' || structure === 'barred-spiral';
+    return createPictureCloud(pictureUrl, disc ? GALAXY : SHAPELESS_GALAXY);
   }
   return null;
 }

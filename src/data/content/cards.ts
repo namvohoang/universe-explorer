@@ -2,6 +2,16 @@
 // quote appears in the page as fetched on the source's `retrieved` date, then wrote this file.
 // The sentences themselves are in src/ui/strings/en.ts under each `key`.
 import {
+  NASA_HUBBLE_C34,
+  NASA_HUBBLE_C60_61,
+  NASA_HUBBLE_C63,
+  NASA_HUBBLE_C77,
+  NASA_HUBBLE_C92,
+  NASA_HUBBLE_M16,
+  NASA_HUBBLE_M57,
+  NASA_HUBBLE_M81,
+  NASA_HUBBLE_M82,
+  NASA_WEBB_M82,
   NASA_HUBBLE_C80,
   NASA_HUBBLE_M13,
   NASA_HUBBLE_POLARIS,
@@ -2046,5 +2056,262 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_HUBBLE_C80],
+  },
+  {
+    id: 'bodes-galaxy',
+    hello: {
+      key: 'cardBodesGalaxyHello',
+      sourceId: 'nasa-hubble-m81',
+      quote: 'M81 is one of the brightest galaxies in the night sky',
+    },
+    facts: [
+      {
+        key: 'cardBodesGalaxyFact1',
+        sourceId: 'nasa-hubble-m81',
+        quote: 'It is located 11.6 million light-years from Earth',
+      },
+      {
+        key: 'cardBodesGalaxyFact2',
+        sourceId: 'nasa-hubble-m81',
+        quote: 'A black hole of 70 million solar masses resides at the center of M81',
+      },
+      {
+        key: 'cardBodesGalaxyFact3',
+        sourceId: 'nasa-hubble-m81',
+        quote: 'Through a pair of binoculars, the galaxy appears as a faint patch of light',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M81],
+  },
+  {
+    id: 'cigar-galaxy',
+    hello: {
+      key: 'cardCigarGalaxyHello',
+      sourceId: 'nasa-webb-m82',
+      quote: 'edge-on starburst galaxy Messier 82',
+    },
+    facts: [
+      {
+        key: 'cardCigarGalaxyFact1',
+        sourceId: 'nasa-hubble-m82',
+        quote: 'Located 12 million light-years from Earth',
+      },
+      {
+        key: 'cardCigarGalaxyFact2',
+        sourceId: 'nasa-hubble-m82',
+        quote:
+          'young stars are being born 10 times faster than they are inside our entire Milky Way galaxy',
+      },
+      {
+        key: 'cardCigarGalaxyFact3',
+        sourceId: 'nasa-hubble-m82',
+        quote:
+          'The Cigar galaxy experiences gravitational interactions with its galactic neighbor, M81, causing it to have an extraordinarily high rate of star formation',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M82, NASA_WEBB_M82],
+  },
+  {
+    id: 'centaurus-a',
+    hello: {
+      key: 'cardCentaurusAHello',
+      sourceId: 'nasa-hubble-c77',
+      quote: 'with its prominent, dark dust lane crossing the center',
+    },
+    facts: [
+      {
+        key: 'cardCentaurusAFact1',
+        sourceId: 'nasa-hubble-c77',
+        quote:
+          'Centaurus A is apparently the result of a collision between two otherwise normal galaxies',
+      },
+      {
+        key: 'cardCentaurusAFact2',
+        sourceId: 'nasa-hubble-c77',
+        quote: 'about 11 million light-years away',
+      },
+      {
+        key: 'cardCentaurusAFact3',
+        sourceId: 'nasa-hubble-c77',
+        quote:
+          'leftover cosmic debris is steadily being consumed by a central supermassive black hole',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_C77],
+  },
+  {
+    id: 'antennae',
+    hello: {
+      key: 'cardAntennaeHello',
+      sourceId: 'nasa-hubble-c60-61',
+      quote: 'Caldwell 60 and 61 are a pair of interacting spiral galaxies',
+    },
+    facts: [
+      {
+        key: 'cardAntennaeFact1',
+        sourceId: 'nasa-hubble-c60-61',
+        quote: 'They are located about 65 million light-years away in the Corvus constellation',
+      },
+      {
+        key: 'cardAntennaeFact2',
+        sourceId: 'nasa-hubble-c60-61',
+        quote:
+          'long streamers of stars extending outward into space like a set of antennae, giving the duo their common nickname',
+      },
+      {
+        key: 'cardAntennaeFact3',
+        sourceId: 'nasa-hubble-c60-61',
+        quote: 'the once-separate galaxies will merge into one large elliptical galaxy',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_C60_61],
+  },
+  {
+    id: 'eagle-nebula',
+    hello: {
+      key: 'cardEagleNebulaHello',
+      sourceId: 'nasa-hubble-m16',
+      quote:
+        'are part of an active star-forming region within the nebula and hide newborn stars in their wispy columns',
+    },
+    facts: [
+      {
+        key: 'cardEagleNebulaFact1',
+        sourceId: 'nasa-hubble-m16',
+        quote: 'The aptly named Pillars of Creation, featured in this stunning Hubble image',
+      },
+      {
+        key: 'cardEagleNebulaFact2',
+        sourceId: 'nasa-hubble-m16',
+        quote: 'Stretching roughly 4 to 5 light-years tall',
+      },
+      {
+        key: 'cardEagleNebulaFact3',
+        sourceId: 'nasa-hubble-m16',
+        quote: 'is located 7,000 light-years from Earth in the constellation Serpens',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M16],
+  },
+  {
+    id: 'ring-nebula',
+    hello: {
+      key: 'cardRingNebulaHello',
+      sourceId: 'nasa-hubble-m57',
+      quote: 'to resolve its beautiful ring-like details',
+    },
+    facts: [
+      {
+        key: 'cardRingNebulaFact1',
+        sourceId: 'nasa-hubble-m57',
+        quote: 'is about 2,000 light-years away in the constellation Lyra',
+      },
+      {
+        key: 'cardRingNebulaFact2',
+        sourceId: 'nasa-hubble-m57',
+        quote:
+          'The blue gas in the nebula’s center is actually a football-shaped structure seen end-on',
+      },
+      {
+        key: 'cardRingNebulaFact3',
+        sourceId: 'nasa-hubble-m57',
+        quote:
+          'it requires a moderately-sized telescope to resolve its beautiful ring-like details',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M57],
+  },
+  {
+    id: 'helix-nebula',
+    hello: {
+      key: 'cardHelixNebulaHello',
+      sourceId: 'nasa-hubble-c63',
+      quote: 'A planetary nebula is the glowing gas around a dying, Sun-like star.',
+    },
+    facts: [
+      {
+        key: 'cardHelixNebulaFact1',
+        sourceId: 'nasa-hubble-c63',
+        quote:
+          'At 650 light-years away, the Helix is one of the nearest planetary nebulae to Earth.',
+      },
+      {
+        key: 'cardHelixNebulaFact2',
+        sourceId: 'nasa-hubble-c63',
+        quote: 'with its bright ring stretching across nearly three light-years',
+      },
+      {
+        key: 'cardHelixNebulaFact3',
+        sourceId: 'nasa-hubble-c63',
+        quote: 'the Helix Nebula appears to be nearly half the width of the full moon',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_C63],
+  },
+  {
+    id: 'carina-nebula',
+    hello: {
+      key: 'cardCarinaNebulaHello',
+      sourceId: 'nasa-hubble-c92',
+      quote: 'this strange stellar nursery',
+    },
+    facts: [
+      {
+        key: 'cardCarinaNebulaFact1',
+        sourceId: 'nasa-hubble-c92',
+        quote:
+          'The Carina Nebula lies within our own galaxy, approximately 7,500 light-years away.',
+      },
+      {
+        key: 'cardCarinaNebulaFact2',
+        sourceId: 'nasa-hubble-c92',
+        quote:
+          'Due to the nebula’s enormous size – about 300 light-years – astronomers can only study it in sections',
+      },
+      {
+        key: 'cardCarinaNebulaFact3',
+        sourceId: 'nasa-hubble-c92',
+        quote: 'it is visible in the Carina constellation even with the naked eye',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_C92],
+  },
+  {
+    id: 'veil-nebula',
+    hello: {
+      key: 'cardVeilNebulaHello',
+      sourceId: 'nasa-hubble-c34',
+      quote:
+        'The remains of a star — once 20 times as massive as the Sun — that exploded several thousand years ago',
+    },
+    facts: [
+      {
+        key: 'cardVeilNebulaFact1',
+        sourceId: 'nasa-hubble-c34',
+        quote: 'the Veil Nebula lies about 2,000 light-years away in the constellation Cygnus',
+      },
+      {
+        key: 'cardVeilNebulaFact2',
+        sourceId: 'nasa-hubble-c34',
+        quote:
+          'extending 110 light-years across and covering an area of sky six times larger than the full moon',
+      },
+      {
+        key: 'cardVeilNebulaFact3',
+        sourceId: 'nasa-hubble-c34',
+        quote:
+          'This Hubble image features a small fraction of the supernova remnant: the Veil Nebula.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_C34],
   },
 ];

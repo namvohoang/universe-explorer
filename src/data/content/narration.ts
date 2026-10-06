@@ -196,6 +196,11 @@ export const NARRATION: Readonly<
     fingerprint: '117b1eb6',
     starts: [0.0, 2.2, 8.2, 12.57, 18.2],
   },
+  'helix-nebula': {
+    file: 'public/voice/helix-nebula.mp3',
+    fingerprint: '50d7d4b8',
+    starts: [0.0, 2.42, 8.62, 13.85, 17.8],
+  },
   betelgeuse: {
     file: 'public/voice/betelgeuse.mp3',
     fingerprint: 'd720cf2a',
@@ -216,6 +221,16 @@ export const NARRATION: Readonly<
     fingerprint: 'a561812c',
     starts: [0.0, 2.45, 8.12, 12.22, 15.85],
   },
+  'ring-nebula': {
+    file: 'public/voice/ring-nebula.mp3',
+    fingerprint: '44e5c482',
+    starts: [0.0, 2.27, 7.22, 11.9, 17.48],
+  },
+  'veil-nebula': {
+    file: 'public/voice/veil-nebula.mp3',
+    fingerprint: '72ea945a',
+    starts: [0.0, 2.33, 8.43, 11.8, 19.05],
+  },
   'vy-canis-majoris': {
     file: 'public/voice/vy-canis-majoris.mp3',
     fingerprint: 'd2d0bed5',
@@ -225,6 +240,16 @@ export const NARRATION: Readonly<
     file: 'public/voice/crab-nebula.mp3',
     fingerprint: '262c72d3',
     starts: [0.0, 2.25, 6.78, 14.12, 17.5],
+  },
+  'eagle-nebula': {
+    file: 'public/voice/eagle-nebula.mp3',
+    fingerprint: '55f02fc4',
+    starts: [0.0, 2.3, 8.1, 13.32, 17.23],
+  },
+  'carina-nebula': {
+    file: 'public/voice/carina-nebula.mp3',
+    fingerprint: 'a3fc8bdd',
+    starts: [0.0, 2.38, 8.03, 13.7, 20.3],
   },
   'omega-centauri': {
     file: 'public/voice/omega-centauri.mp3',
@@ -256,6 +281,21 @@ export const NARRATION: Readonly<
     fingerprint: 'c350763d',
     starts: [0.0, 2.77, 9.35, 12.68, 17.57],
   },
+  'centaurus-a': {
+    file: 'public/voice/centaurus-a.mp3',
+    fingerprint: '6de27310',
+    starts: [0.0, 2.38, 8.1, 12.35, 15.9],
+  },
+  'bodes-galaxy': {
+    file: 'public/voice/bodes-galaxy.mp3',
+    fingerprint: 'e5052f02',
+    starts: [0.0, 2.4, 7.42, 11.3, 16.82],
+  },
+  'cigar-galaxy': {
+    file: 'public/voice/cigar-galaxy.mp3',
+    fingerprint: '0ab0b160',
+    starts: [0.0, 2.42, 8.43, 11.8, 17.77],
+  },
   sombrero: {
     file: 'public/voice/sombrero.mp3',
     fingerprint: '4db10609',
@@ -275,6 +315,11 @@ export const NARRATION: Readonly<
     file: 'public/voice/m87-black-hole.mp3',
     fingerprint: '23ce6070',
     starts: [0.0, 2.95, 7.15, 13.8, 18.0],
+  },
+  antennae: {
+    file: 'public/voice/antennae.mp3',
+    fingerprint: '156c2760',
+    starts: [0.0, 2.58, 7.78, 11.53, 18.35],
   },
   orion: {
     file: 'public/voice/orion.mp3',

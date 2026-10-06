@@ -69,6 +69,15 @@ import { whirlpool } from './whirlpool';
 import { m87 } from './m87';
 import { betelgeuse } from './betelgeuse';
 import { antares } from './antares';
+import { bodesGalaxy } from './bodesGalaxy';
+import { cigarGalaxy } from './cigarGalaxy';
+import { centaurusA } from './centaurusA';
+import { antennae } from './antennae';
+import { eagleNebula } from './eagleNebula';
+import { ringNebula } from './ringNebula';
+import { helixNebula } from './helixNebula';
+import { carinaNebula } from './carinaNebula';
+import { veilNebula } from './veilNebula';
 import { rigel } from './rigel';
 import { sirius } from './sirius';
 import { siriusB } from './siriusB';
@@ -158,22 +167,31 @@ export const catalogue: readonly CelestialObject[] = [
   aldebaran,
   pleiades,
   antares,
+  helixNebula,
   betelgeuse,
   rigel,
   orionNebula,
   gaiaBh1,
+  ringNebula,
+  veilNebula,
   vyCanisMajoris,
   crabNebula,
+  eagleNebula,
+  carinaNebula,
   omegaCentauri,
   herculesCluster,
   sagittariusA,
   milkyWay,
   andromeda,
   triangulum,
+  centaurusA,
+  bodesGalaxy,
+  cigarGalaxy,
   sombrero,
   whirlpool,
   m87,
   m87BlackHole,
+  antennae,
   orion,
   bigDipper,
   southernCross,

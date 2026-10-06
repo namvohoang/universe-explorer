@@ -384,6 +384,81 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   nameLeo: 'Chòm Sư Tử',
   nameCygnus: 'Chòm Thiên Nga',
   nameGeminiTwins: 'Chòm Song Tử',
+  nameBodesGalaxy: 'Thiên hà Bode',
+  nameCigarGalaxy: 'Thiên hà Điếu Xì Gà',
+  nameAntennae: 'Thiên hà Râu',
+  nameEagleNebula: 'Tinh vân Đại Bàng',
+  nameRingNebula: 'Tinh vân Chiếc Nhẫn',
+  nameHelixNebula: 'Tinh vân Xoắn Ốc',
+  nameCarinaNebula: 'Tinh vân Thuyền Để',
+  nameVeilNebula: 'Tinh vân Tấm Màn',
+  cardBodesGalaxyHello: 'Thiên hà Bode là một trong những thiên hà sáng nhất trên bầu trời đêm.',
+  cardBodesGalaxyFact1: 'Nó ở cách Trái Đất 11,6 triệu năm ánh sáng.',
+  cardBodesGalaxyFact2: 'Có một lỗ đen nằm ở giữa nó. Lỗ đen ấy nặng bằng 70 triệu Mặt Trời.',
+  cardBodesGalaxyFact3: 'Nhìn qua ống nhòm, nó trông như một vệt sáng mờ.',
+  cardCigarGalaxyHello:
+    'Thiên hà Điếu Xì Gà là một thiên hà mà ta nhìn từ bên cạnh, nên nó trông dài và mảnh.',
+  cardCigarGalaxyFact1: 'Nó ở cách Trái Đất 12 triệu năm ánh sáng.',
+  cardCigarGalaxyFact2:
+    'Gần giữa nó, các ngôi sao mới ra đời nhanh gấp 10 lần so với cả thiên hà của chúng ta.',
+  cardCigarGalaxyFact3: 'Sức hút của hàng xóm, Thiên hà Bode, khiến nó tạo ra nhiều sao đến vậy.',
+  cardCentaurusAHello: 'Centaurus A là một thiên hà có một dải bụi tối vắt ngang qua giữa.',
+  cardCentaurusAFact1: 'Có lẽ nó được tạo ra khi hai thiên hà va vào nhau.',
+  cardCentaurusAFact2: 'Nó ở cách ta khoảng 11 triệu năm ánh sáng.',
+  cardCentaurusAFact3: 'Một lỗ đen khổng lồ ở giữa nó đang từ từ nuốt khí và bụi.',
+  cardAntennaeHello: 'Thiên hà Râu là hai thiên hà đang từ từ lao vào nhau.',
+  cardAntennaeFact1: 'Chúng ở cách ta khoảng 65 triệu năm ánh sáng.',
+  cardAntennaeFact2:
+    'Những dải sao dài vươn ra từ chúng như râu của côn trùng. Tên của chúng là từ đó mà ra.',
+  cardAntennaeFact3: 'Một ngày nào đó hai thiên hà sẽ nhập lại thành một thiên hà lớn.',
+  cardEagleNebulaHello:
+    'Tinh vân Đại Bàng là một đám mây khí và bụi, nơi những ngôi sao mới đang ra đời.',
+  cardEagleNebulaFact1: 'Những cột khí và bụi cao này được gọi là Cột Trụ Sáng Tạo.',
+  cardEagleNebulaFact2: 'Các cột cao chừng 4 đến 5 năm ánh sáng.',
+  cardEagleNebulaFact3: 'Tinh vân này ở cách Trái Đất 7.000 năm ánh sáng.',
+  cardRingNebulaHello:
+    'Tinh vân Chiếc Nhẫn là một đám mây khí phát sáng trông giống một chiếc nhẫn.',
+  cardRingNebulaFact1: 'Nó ở cách ta khoảng 2.000 năm ánh sáng, trong chòm Thiên Cầm, Cây Đàn.',
+  cardRingNebulaFact2:
+    'Khí màu xanh ở giữa thật ra có hình một quả bóng dài chĩa về phía chúng ta.',
+  cardRingNebulaFact3: 'Bạn cần kính thiên văn để thấy chiếc nhẫn của nó.',
+  cardHelixNebulaHello:
+    'Tinh vân Xoắn Ốc là khí phát sáng quanh một ngôi sao sắp tắt, từng giống Mặt Trời.',
+  cardHelixNebulaFact1:
+    'Nó ở cách ta 650 năm ánh sáng, là một trong những tinh vân gần nhất thuộc loại này.',
+  cardHelixNebulaFact2: 'Vòng sáng của nó rộng gần ba năm ánh sáng.',
+  cardHelixNebulaFact3: 'Trên bầu trời, nó trông rộng gần bằng một nửa Mặt Trăng tròn.',
+  cardCarinaNebulaHello:
+    'Tinh vân Thuyền Để là một đám mây khí và bụi khổng lồ, nơi các ngôi sao ra đời.',
+  cardCarinaNebulaFact1: 'Nó ở trong thiên hà của chúng ta, cách ta khoảng 7.500 năm ánh sáng.',
+  cardCarinaNebulaFact2:
+    'Nó rộng khoảng 300 năm ánh sáng, lớn đến mức các nhà khoa học phải nghiên cứu từng phần một.',
+  cardCarinaNebulaFact3: 'Nó đủ sáng để bạn thấy bằng mắt thường.',
+  cardVeilNebulaHello:
+    'Tinh vân Tấm Màn là phần còn lại của một ngôi sao đã nổ tung vài nghìn năm trước.',
+  cardVeilNebulaFact1: 'Nó ở cách ta khoảng 2.000 năm ánh sáng.',
+  cardVeilNebulaFact2:
+    'Nó rộng 110 năm ánh sáng. Trên bầu trời, nó che một vùng rộng gấp sáu lần Mặt Trăng tròn.',
+  cardVeilNebulaFact3: 'Bức ảnh này chỉ cho thấy một phần nhỏ của nó.',
+  pictureAltBodesGalaxy:
+    'Một thiên hà xoắn ốc nhìn nghiêng: phần giữa vàng rực với những nhánh xanh mảnh cuộn quanh.',
+  pictureAltCigarGalaxy:
+    'Một thiên hà dài, mảnh, màu trắng xanh nhìn từ bên cạnh, với những đám mây đỏ phụt ra phía trên và phía dưới phần giữa.',
+  pictureAltCentaurusA:
+    'Cận cảnh một dải bụi nâu sẫm rộng với những mảng hồng, vắt ngang một quầng sao sáng nhạt.',
+  pictureAltAntennae:
+    'Hai thiên hà quấn vào nhau, màu cam ở giữa, với những vòng sao xanh, mây hồng và bụi tối ở giữa chúng.',
+  pictureAltEagleNebula:
+    'Ba cột khí và bụi cao, tối, đứng trước một quầng sáng xanh lục lam, có các ngôi sao xung quanh.',
+  pictureAltRingNebula:
+    'Một vòng khí bầu dục màu cam trên nền đen, bên trong xanh nhạt, ở giữa xanh thẫm.',
+  pictureAltHelixNebula:
+    'Một vòng khí lớn màu cam và đỏ trên nền đen, ở giữa màu xanh, trông như một con mắt.',
+  pictureAltCarinaNebula:
+    'Một cảnh rộng gồm những đám mây cuồn cuộn màu cam, nâu và xanh nhạt, với những nút tối và các ngôi sao sáng.',
+  pictureAltVeilNebula:
+    'Những dải khí mỏng, xoắn, phát sáng màu đỏ, xanh và vàng trên nền không gian đen.',
+  nameCentaurusA: 'Thiên hà Centaurus A',
   pictureAltBetelgeuse:
     'Một quầng sáng tròn mờ nhòe trên nền đen: trắng vàng ở giữa, nhạt dần sang cam và đỏ sẫm ở rìa.',
   nameBetelgeuse: 'Betelgeuse',

@@ -362,7 +362,11 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       clusters to look for with binoculars, Omega Centauri and the Hercules Cluster, with their
       real pictures. Left out: Taurus (no NASA page found for its card) and the Beehive Cluster
       (NASA's Hubble pictures show only its edge).
-- [ ] 9.3 More galaxies and space wonders, each from its agency page with its real picture.
+- [x] 9.3 More galaxies and space wonders, each from its NASA Hubble page with its real picture:
+      Bode's Galaxy, the Cigar Galaxy, Centaurus A and the colliding Antennae; the Eagle Nebula
+      (the Pillars of Creation), the Ring, Helix, Carina and Veil nebulae. A galaxy that is not
+      a spiral is no longer laid flat and turned like a disc. Left out: the Pinwheel Galaxy
+      (its picture carries a credit to a third party).
 - [ ] 9.4 Spaceships from other countries and companies, as far as a trusted source publishes a
       3D model that may be reused.
 

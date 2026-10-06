@@ -360,6 +360,77 @@ export const en = {
     'A black sky crowded with thousands of white, blue and yellow stars, packed closest in the middle.',
   pictureAltOmegaCentauri:
     'A huge round ball of countless tiny stars, tightly packed in the middle and thinning out towards the edge.',
+  nameBodesGalaxy: 'Bode’s Galaxy',
+  nameCigarGalaxy: 'The Cigar Galaxy',
+  nameAntennae: 'The Antennae Galaxies',
+  nameEagleNebula: 'The Eagle Nebula',
+  nameRingNebula: 'The Ring Nebula',
+  nameHelixNebula: 'The Helix Nebula',
+  nameCarinaNebula: 'The Carina Nebula',
+  nameVeilNebula: 'The Veil Nebula',
+  cardBodesGalaxyHello: 'Bode’s Galaxy is one of the brightest galaxies in the night sky.',
+  cardBodesGalaxyFact1: 'It is 11.6 million light-years from Earth.',
+  cardBodesGalaxyFact2: 'A black hole sits in its middle. It is as heavy as 70 million Suns.',
+  cardBodesGalaxyFact3: 'Through binoculars it looks like a faint patch of light.',
+  cardCigarGalaxyHello:
+    'The Cigar Galaxy is a galaxy that we see from the side, so it looks long and thin.',
+  cardCigarGalaxyFact1: 'It is 12 million light-years from Earth.',
+  cardCigarGalaxyFact2:
+    'Near its middle, new stars are born 10 times faster than in our whole galaxy.',
+  cardCigarGalaxyFact3: 'The pull of its neighbour, Bode’s Galaxy, makes it form so many stars.',
+  cardCentaurusAHello: 'Centaurus A is a galaxy with a dark band of dust across its middle.',
+  cardCentaurusAFact1: 'It was probably made when two galaxies crashed together.',
+  cardCentaurusAFact2: 'It is about 11 million light-years away.',
+  cardCentaurusAFact3: 'A giant black hole in its middle is slowly swallowing gas and dust.',
+  cardAntennaeHello: 'The Antennae are two galaxies that are slowly running into each other.',
+  cardAntennaeFact1: 'They are about 65 million light-years away.',
+  cardAntennaeFact2:
+    'Long streams of stars stick out from them like the feelers of an insect. That gave them their name.',
+  cardAntennaeFact3: 'One day the two galaxies will join into one big galaxy.',
+  cardEagleNebulaHello:
+    'The Eagle Nebula is a cloud of gas and dust where new stars are being born.',
+  cardEagleNebulaFact1: 'These tall towers of gas and dust are called the Pillars of Creation.',
+  cardEagleNebulaFact2: 'The pillars are roughly 4 to 5 light-years tall.',
+  cardEagleNebulaFact3: 'The nebula is 7,000 light-years from Earth.',
+  cardRingNebulaHello: 'The Ring Nebula is a cloud of glowing gas that looks like a ring.',
+  cardRingNebulaFact1: 'It is about 2,000 light-years away, in Lyra, the Harp.',
+  cardRingNebulaFact2:
+    'The blue gas in the middle is really shaped like a long ball that points at us.',
+  cardRingNebulaFact3: 'You need a telescope to see its ring.',
+  cardHelixNebulaHello:
+    'The Helix Nebula is glowing gas around a dying star that was once like the Sun.',
+  cardHelixNebulaFact1: 'It is 650 light-years away, one of the nearest of its kind.',
+  cardHelixNebulaFact2: 'Its bright ring is nearly three light-years across.',
+  cardHelixNebulaFact3: 'In the sky it looks nearly half as wide as the full Moon.',
+  cardCarinaNebulaHello: 'The Carina Nebula is a huge cloud of gas and dust where stars are born.',
+  cardCarinaNebulaFact1: 'It is in our own galaxy, about 7,500 light-years away.',
+  cardCarinaNebulaFact2:
+    'It is about 300 light-years wide, so big that scientists study it one piece at a time.',
+  cardCarinaNebulaFact3: 'It is bright enough to see with your eyes alone.',
+  cardVeilNebulaHello:
+    'The Veil Nebula is what is left of a star that blew up several thousand years ago.',
+  cardVeilNebulaFact1: 'It is about 2,000 light-years away.',
+  cardVeilNebulaFact2:
+    'It is 110 light-years across. In the sky it covers six times as much as the full Moon.',
+  cardVeilNebulaFact3: 'This picture shows only a small part of it.',
+  pictureAltBodesGalaxy:
+    'A spiral galaxy seen at a slant: a glowing yellow middle with thin blue arms winding round it.',
+  pictureAltCigarGalaxy:
+    'A long, thin, blue-white galaxy seen from the side, with red clouds bursting out above and below its middle.',
+  pictureAltCentaurusA:
+    'A close view of a wide band of dark brown dust with pink patches, crossing a pale glow of stars.',
+  pictureAltAntennae:
+    'Two tangled galaxies, orange in their middles, with curls of blue stars, pink clouds and dark dust between them.',
+  pictureAltEagleNebula:
+    'Three tall, dark towers of gas and dust standing against a blue-green glow, with stars around them.',
+  pictureAltRingNebula:
+    'An oval ring of orange gas on black, pale blue-green inside, with deep blue in the middle.',
+  pictureAltHelixNebula:
+    'A big ring of orange and red gas on black, with blue in the middle, looking like an eye.',
+  pictureAltCarinaNebula:
+    'A wide view of billowing orange, brown and pale blue clouds with dark knots and bright stars.',
+  pictureAltVeilNebula:
+    'Thin, twisting sheets of glowing gas in red, blue and yellow against black space.',
   pictureAltBetelgeuse:
     'A fuzzy round glow on black: yellow-white in the middle, fading to orange and dark red at the edge.',
   nameBetelgeuse: 'Betelgeuse',

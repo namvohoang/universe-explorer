@@ -1028,3 +1028,73 @@ export const NASA_HUBBLE_C80: Source = {
   url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-80/',
   retrieved: '2026-10-06',
 };
+
+export const NASA_HUBBLE_M81: Source = {
+  id: 'nasa-hubble-m81',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 81',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-81/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_M82: Source = {
+  id: 'nasa-hubble-m82',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 82',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-82/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_WEBB_M82: Source = {
+  id: 'nasa-webb-m82',
+  title: 'NASA Science — NASA’s Webb Pinpoints Millions of Stars Within Cigar Galaxy',
+  url: 'https://science.nasa.gov/missions/webb/nasas-webb-pinpoints-millions-of-stars-within-cigar-galaxy/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_C77: Source = {
+  id: 'nasa-hubble-c77',
+  title: 'NASA Science — Hubble Caldwell Catalog, Caldwell 77 (Centaurus A)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-77/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_C60_61: Source = {
+  id: 'nasa-hubble-c60-61',
+  title: 'NASA Science — Hubble Caldwell Catalog, Caldwell 60/61 (the Antennae galaxies)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-60-61/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_M16: Source = {
+  id: 'nasa-hubble-m16',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 16 (the Eagle Nebula)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-16/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_M57: Source = {
+  id: 'nasa-hubble-m57',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 57 (the Ring Nebula)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-57/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_C63: Source = {
+  id: 'nasa-hubble-c63',
+  title: 'NASA Science — Hubble Caldwell Catalog, Caldwell 63 (the Helix Nebula)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-63/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_C92: Source = {
+  id: 'nasa-hubble-c92',
+  title: 'NASA Science — Hubble Caldwell Catalog, Caldwell 92 (the Carina Nebula)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-92/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_C34: Source = {
+  id: 'nasa-hubble-c34',
+  title: 'NASA Science — Hubble Caldwell Catalog, Caldwell 34 (the Veil Nebula)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-34/',
+  retrieved: '2026-10-06',
+};

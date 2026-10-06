@@ -160,14 +160,17 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardKuiperBeltFact3: 'Một số thế giới ở đó, như Sao Diêm Vương, rộng hơn 1.000 km.',
   cardHalleyHello: 'Sao chổi Halley là một khối băng, khí đóng băng và bụi quay quanh Mặt Trời.',
   cardHalleyFact1:
-    'Khi sao chổi đến gần Mặt Trời, nó ấm lên và mọc ra một đám mây bao quanh, gọi là đầu sao chổi.',
+    'Cứ khoảng 76 năm nó lại quay về. Lần gần nhất người ta thấy nó là năm 1986, và nó sẽ trở lại vào năm 2061.',
   cardHalleyFact2:
-    'Ánh nắng và gió từ Mặt Trời thổi bụi và khí ra khỏi sao chổi, tạo thành một cái đuôi dài và sáng.',
-  cardHalleyFact3: 'Sao chổi Halley không bao giờ đến gần Mặt Trời hơn 89 triệu km.',
+    'Nó là một trong những vật tối nhất trong Hệ Mặt Trời. Nó chỉ phản chiếu 3% ánh sáng chiếu vào nó.',
+  cardHalleyFact3:
+    'Năm 1986, tàu vũ trụ Giotto của châu Âu bay ngang qua và chụp ảnh phần lõi rắn của nó, gọi là nhân.',
+  pictureAltHalley:
+    'Ảnh chụp cận cảnh thật của sao chổi: một khối tối, lồi lõm ở bên phải, với những luồng khí và bụi trắng sáng phun ra về bên trái, phía Mặt Trời.',
   nameHalley: 'Sao chổi Halley',
   eyebrowComet: 'Sao chổi · quay quanh Mặt Trời',
   cometNote:
-    'Quầng sáng và hai cái đuôi là hình vẽ, không phải ảnh chụp. Chúng chỉ đúng hướng của đuôi thật, nhưng kích thước không đúng tỉ lệ. Đường đi được vẽ đúng cho các năm 1950 đến 2050; những lần ghé trước đó đến vào thời điểm hơi khác.',
+    'Quầng sáng, các luồng phun và hai cái đuôi là hình vẽ, không phải ảnh chụp. Chúng chỉ đúng hướng thật, nhưng kích thước không đúng tỉ lệ. Đường đi được vẽ đúng cho các năm 1950 đến 2050; những lần ghé trước đó đến vào thời điểm hơi khác.',
   statClosest: 'Gần Mặt Trời nhất',
   valueTimesEarthOne: '{n} lần khoảng cách của Trái Đất',
   conceptStarTitle: 'Ngôi sao là gì?',

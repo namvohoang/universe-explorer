@@ -145,14 +145,17 @@ export const en = {
   cardKuiperBeltFact3: 'Some of its worlds, like Pluto, are more than 1,000 km wide.',
   cardHalleyHello: "Halley's Comet is a lump of ice, frozen gas and dust that goes around the Sun.",
   cardHalleyFact1:
-    'When a comet gets near the Sun it warms up and grows a cloud around it, called a coma.',
+    'It comes back about every 76 years. It was last seen in 1986 and will return in 2061.',
   cardHalleyFact2:
-    'Sunlight and wind from the Sun blow dust and gas off the comet, making a long, bright tail.',
-  cardHalleyFact3: "Halley's Comet never gets closer to the Sun than 89 million km.",
+    'It is one of the darkest things in the solar system. It reflects only 3% of the light that falls on it.',
+  cardHalleyFact3:
+    'In 1986 the European spacecraft Giotto flew past it and took pictures of its solid middle, the nucleus.',
+  pictureAltHalley:
+    'A real close-up of the comet: a dark, lumpy shape on the right, with bright white jets of gas and dust streaming out to the left, towards the Sun.',
   nameHalley: "Halley's Comet",
   eyebrowComet: 'Comet · goes around the Sun',
   cometNote:
-    'The glow and the two tails are drawn, not photographed. They point the way real tails do, but their size is not to scale. The path shown is right for 1950 to 2050; earlier visits came at slightly different times.',
+    'The glow, the jets and the two tails are drawn, not photographed. They point the way real ones do, but their size is not to scale. The path shown is right for 1950 to 2050; earlier visits came at slightly different times.',
   statClosest: 'Closest to the Sun',
   valueTimesEarthOne: "{n} times Earth's distance",
   conceptStarTitle: 'What is a star?',

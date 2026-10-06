@@ -1168,3 +1168,10 @@ export const NASA_SPACEPLACE_MIRA: Source = {
   url: 'https://spaceplace.nasa.gov/review/posters/GALEX_mira_poster/mira_poster_back_all.pdf',
   retrieved: '2026-10-06',
 };
+
+export const NASA_HALLEY: Source = {
+  id: 'nasa-halley',
+  title: 'NASA Science — 1P/Halley',
+  url: 'https://science.nasa.gov/solar-system/comets/1p-halley/',
+  retrieved: '2026-10-06',
+};

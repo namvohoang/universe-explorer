@@ -147,7 +147,8 @@ export function createSolarSystem(
         if (!comet || !position || !next || !parent) continue;
         const heading = { x: next.x - position.x, y: next.y - position.y, z: next.z - position.z };
         const offset = eclipticOffsetKm(comet, catalogue, jd);
-        tail.update(position, parent, heading, length(offset) / KM_PER_AU);
+        const nucleus = bodies.get(id)?.radius() ?? 0;
+        tail.update(position, parent, heading, length(offset) / KM_PER_AU, nucleus);
       }
     }
     const star = catalogue.find((object) => object.kind === 'star');

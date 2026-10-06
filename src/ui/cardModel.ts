@@ -29,7 +29,13 @@ export interface CardModel {
   /** A line about how the thing is drawn: what the globe's picture really is, or what a belt's dots are. */
   readonly note: string | null;
   /** A picture to show with the card, for things that are not drawn in 3D; otherwise `null`. */
-  readonly picture: { readonly url: string; readonly alt: string; readonly credit: string } | null;
+  readonly picture: {
+    readonly url: string;
+    readonly alt: string;
+    readonly credit: string;
+    /** What the picture is, when it is not a plain photo. */
+    readonly label: string | null;
+  } | null;
 }
 
 const STRINGS: Readonly<Record<string, string>> = words;
@@ -68,7 +74,8 @@ export function isDeepSky(object: CelestialObject): boolean {
   if (object.kind === 'constellation') return true;
   // Nor has every far star one from a trusted source: it is still drawn at its size and colour.
   if (object.kind === 'star' && object.sky !== null) return true;
-  return object.media.some((media) => media.role === 'picture');
+  // Something with a path round the Sun is in the solar system, even with a picture of it.
+  return object.orbit === null && object.media.some((media) => media.role === 'picture');
 }
 
 function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
@@ -162,12 +169,13 @@ export function cardModel(
     facts,
     concept: conceptOf(object),
     // A picture says what it is (photo, joined pictures, colours added) right under itself.
-    note: picture ? mediaKindLabel(picture.kind) : drawnNote,
+    note: picture && isDeepSky(object) ? mediaKindLabel(picture.kind) : drawnNote,
     picture: picture
       ? {
           url: mediaUrl(picture.file),
           alt: text(picture.altKey),
           credit: fill(words.pictureCredit, { credit: picture.credit ?? '' }),
+          label: mediaKindLabel(picture.kind),
         }
       : null,
   };

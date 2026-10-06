@@ -393,6 +393,11 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       clouds of points, a thin straight bluish gas tail in streamers and a wide cream dust tail
       that curves back along the comet's path and fans out; the nucleus is as dark as NASA says
       it is. Directions are real; sizes and brightness are still a drawing, as the card says.
+      From NASA's 1P/Halley page: the real close-up by the Giotto spacecraft sits in the corner
+      (ESA Standard Licence: educational use, with credit), jets burst from the sunlit side
+      as in that picture, the nucleus turns once in 2.2 days, and the card's facts are Halley's
+      own (back in 2061, among the darkest things known, photographed by Giotto). A body of
+      the solar system may now show a real picture beside its 3D model.
 
 **Acceptance:** as for Phase 7.
 

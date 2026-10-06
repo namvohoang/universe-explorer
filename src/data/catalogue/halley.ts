@@ -5,7 +5,7 @@
 // the planets change the comet's path a little on every trip, and one ellipse cannot follow that.
 import type { Comet } from '../types';
 import { s, unknown } from './helpers';
-import { JPL_SBDB_HALLEY } from './sources';
+import { JPL_SBDB_HALLEY, NASA_HALLEY } from './sources';
 
 export const halley: Comet = {
   id: 'halley',
@@ -23,7 +23,11 @@ export const halley: Comet = {
       axialTiltDeg: unknown('The source used gives no tilt for this body.'),
       poleRaDeg: unknown('The source used gives no pole direction for this body.'),
       poleDecDeg: unknown('The source used gives no pole direction for this body.'),
-      rotationPeriodHours: unknown('The source used gives no rotation period for this body.'),
+      rotationPeriodHours: s(
+        52.8,
+        'nasa-halley',
+        'Source says: Length of Day 2.2 Earth Days. In hours (× 24).',
+      ),
       rotation: 'prograde',
     },
   },
@@ -45,6 +49,14 @@ export const halley: Comet = {
     },
     validity: null,
   },
-  media: [],
-  sources: [JPL_SBDB_HALLEY],
+  media: [
+    {
+      file: 'public/media/deep/halley.webp',
+      kind: 'photo',
+      role: 'picture',
+      altKey: 'pictureAltHalley',
+      credit: 'Halley Multicolor Camera Team, Giotto Project, ESA',
+    },
+  ],
+  sources: [JPL_SBDB_HALLEY, NASA_HALLEY],
 };

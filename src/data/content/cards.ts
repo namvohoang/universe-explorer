@@ -2,6 +2,7 @@
 // quote appears in the page as fetched on the source's `retrieved` date, then wrote this file.
 // The sentences themselves are in src/ui/strings/en.ts under each `key`.
 import {
+  NASA_HALLEY,
   NASA_HUBBLE_C6,
   NASA_HUBBLE_MIRA,
   NASA_WEBB_CARTWHEEL,
@@ -761,23 +762,25 @@ export const cards: readonly CardContent[] = [
     facts: [
       {
         key: 'cardHalleyFact1',
-        sourceId: 'nasa-facts-comets',
-        quote: 'A comet warms up as it nears the Sun and develops an atmosphere, or coma.',
+        sourceId: 'nasa-halley',
+        quote:
+          "Halley was last seen in Earth's skies in 1986 and was met in space by an international fleet of spacecraft. It will return in 2061 on its regular 76-year journey around the Sun.",
       },
       {
         key: 'cardHalleyFact2',
-        sourceId: 'nasa-facts-comets',
+        sourceId: 'nasa-halley',
         quote:
-          'The pressure of sunlight and high-speed solar particles (solar wind) can blow the coma dust and gas away from the Sun, sometimes forming a long, bright tail.',
+          'It has an albedo of 0.03, which means that it reflects only 3% of the light that falls on it.',
       },
       {
         key: 'cardHalleyFact3',
-        sourceId: 'nasa-facts-comets',
-        quote: "Halley's comet gets no closer than 55 million miles (89 million kilometers).",
+        sourceId: 'nasa-halley',
+        quote:
+          'In 1986, the European spacecraft Giotto became one of the first spacecraft to encounter and photograph the nucleus of a comet',
       },
     ],
     moons: null,
-    sources: [NASA_FACTS_COMETS],
+    sources: [NASA_FACTS_COMETS, NASA_HALLEY],
   },
   {
     id: 'pleiades',

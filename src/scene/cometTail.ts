@@ -50,6 +50,24 @@ const DUST = {
   /** How readily the slowest and the quickest grains fall behind (see `dustGrain`). */
   lag: [0.12, 0.75],
 } as const;
+/**
+ * Jets of gas and dust burst from the sunlit side of the nucleus, as the Giotto spacecraft's
+ * close-up of Halley shows. How many there are and how far they reach are a drawing.
+ */
+const JETS = {
+  rgb: [0.93, 0.96, 1],
+  points: 2600,
+  width: [0.008, 0.09],
+  pointSize: 0.035,
+  opacity: 0.3,
+  count: 5,
+  /** How far a jet leans from straight at the Sun, as a share of its length at the far end. */
+  lean: 0.55,
+  /** How far the jets reach, in lengths of the nucleus. */
+  reach: 5,
+  /** Where along that reach a jet starts: at the ground, not at the middle of the nucleus. */
+  from: 0.06,
+} as const;
 const COMA_COLOR = '214, 236, 255';
 /** From this many glow radii away the comet is seen at full strength; closer, it thins out. */
 export const VIEW_FROM_RADII = 4;
@@ -174,8 +192,9 @@ export interface CometTail {
    * @param sun where the Sun is, in scene units
    * @param heading which way the comet is moving, in scene units (any length)
    * @param distanceAu the comet's real distance from the Sun
+   * @param nucleusRadius how big the nucleus is drawn, in scene units
    */
-  update(comet: Vec3, sun: Vec3, heading: Vec3, distanceAu: number): void;
+  update(comet: Vec3, sun: Vec3, heading: Vec3, distanceAu: number, nucleusRadius: number): void;
   /** Drawn radius of the glow right now, in scene units; 0 when the comet is bare. */
   glowRadius(): number;
   /** Dims the glow and tails as the camera comes inside them, so the nucleus can be seen. */
@@ -201,9 +220,20 @@ export function createCometTail(): CometTail {
     const lag = DUST.lag[0] + (DUST.lag[1] - DUST.lag[0]) * random();
     return { ...dustGrain(along, lag), across: 0 };
   });
+  // The jets use the same frame turned round: their "away" is towards the Sun.
+  const jetLeans = Array.from({ length: JETS.count }, () => ({
+    behind: bell(streamers) * JETS.lean,
+    across: bell(streamers) * JETS.lean,
+  }));
+  const jets = createCloud(JETS, dot, 37, (along, random) => {
+    const lean = jetLeans[Math.floor(random() * jetLeans.length)] ?? { behind: 0, across: 0 };
+    const out = JETS.from + along * (1 - JETS.from);
+    return { away: out, behind: lean.behind * out, across: lean.across * out };
+  });
   const coma = createComa(glow);
-  group.add(dust.points, gas.points, coma);
+  group.add(dust.points, gas.points, coma, jets.points);
   const clouds = [gas, dust];
+  const towardsSun = new Vector3();
 
   const away = new Vector3();
   const behind = new Vector3();
@@ -222,7 +252,7 @@ export function createCometTail(): CometTail {
 
   return {
     group,
-    update(comet, sun, heading, distanceAu) {
+    update(comet, sun, heading, distanceAu, nucleusRadius) {
       const strength = tailStrength(distanceAu);
       group.visible = strength > 0;
       strengthNow = strength;
@@ -247,6 +277,14 @@ export function createCometTail(): CometTail {
       group.position.set(comet.x, comet.y, comet.z);
       place(gas, length, strength);
       place(dust, length * DUST.length, strength);
+      // The jets are seen from close by, inside the glow, so they are not dimmed with it.
+      const reach = 2 * nucleusRadius * JETS.reach;
+      frame
+        .makeBasis(towardsSun.copy(away).negate(), behind, across)
+        .scale(new Vector3(reach, reach, reach));
+      jets.points.matrix.copy(frame);
+      jets.points.material.size = reach * JETS.pointSize;
+      jets.points.material.opacity = JETS.opacity * strength;
       comaRadius = strength * (COMA_RADIUS_KM / KM_PER_AU) * unitsPerAu;
       coma.scale.setScalar(2 * comaRadius);
       coma.material.opacity = strength;
@@ -267,7 +305,7 @@ export function createCometTail(): CometTail {
       }
     },
     dispose() {
-      for (const cloud of clouds) {
+      for (const cloud of [...clouds, jets]) {
         cloud.points.geometry.dispose();
         cloud.points.material.dispose();
       }

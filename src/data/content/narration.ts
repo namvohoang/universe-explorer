@@ -138,8 +138,8 @@ export const NARRATION: Readonly<
   eris: { file: 'public/voice/eris.mp3', fingerprint: 'e25dad8c', starts: [0.0, 1.98] },
   halley: {
     file: 'public/voice/halley.mp3',
-    fingerprint: '3da67cf2',
-    starts: [0.0, 2.23, 8.53, 14.53, 21.25],
+    fingerprint: '758ac7f2',
+    starts: [0.0, 2.23, 8.53, 17.4, 24.77],
   },
   'kuiper-belt': {
     file: 'public/voice/kuiper-belt.mp3',
@@ -186,15 +186,15 @@ export const NARRATION: Readonly<
     fingerprint: 'bb62e895',
     starts: [0.0, 2.1, 7.72, 13.15, 16.23],
   },
-  pleiades: {
-    file: 'public/voice/pleiades.mp3',
-    fingerprint: '75991607',
-    starts: [0.0, 2.15, 7.72, 13.2, 16.52],
-  },
   mira: {
     file: 'public/voice/mira.mp3',
     fingerprint: '91995e56',
     starts: [0.0, 2.0, 7.05, 11.43, 16.2],
+  },
+  pleiades: {
+    file: 'public/voice/pleiades.mp3',
+    fingerprint: '75991607',
+    starts: [0.0, 2.15, 7.72, 13.2, 16.52],
   },
   antares: {
     file: 'public/voice/antares.mp3',

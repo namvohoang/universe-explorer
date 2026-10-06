@@ -292,7 +292,10 @@ function start(): void {
 
   /** Once a model is on show, the card says what kind of model it is, and the picture shrinks. */
   const showDeepNote = (): void => {
-    document.body.classList.toggle('deep-3d', deepModel !== null);
+    // A real picture sits in the corner beside anything shown in 3D: a deep-space model, or a
+    // body of the solar system that has a picture as well.
+    const beside3d = deepModel !== null || (!isDeep(focus) && !picture.hidden);
+    document.body.classList.toggle('deep-3d', beside3d);
     if (!deepModel) return;
     card.setNote(fill(DEEP_NOTES[deepModel.note], { times: planetEnlargement }));
   };
@@ -301,7 +304,6 @@ function start(): void {
     const base = cardModel(focus, catalogue);
     showDeepModel(base.picture?.url ?? null);
     const model = base;
-    document.body.classList.toggle('deep-3d', deepModel !== null);
     const row = placeRowFor(focus, null, catalogue);
     const stepName = (step: 1 | -1): string | null => {
       const to = neighbour(row, focus, step);
@@ -311,7 +313,6 @@ function start(): void {
       previous: stepName(-1),
       next: stepName(1),
     });
-    showDeepNote();
     showRow();
     stamp(focus);
     document.body.classList.toggle('deep', isDeep(focus));
@@ -321,8 +322,11 @@ function start(): void {
     if (model.picture) {
       pictureImage.src = model.picture.url;
       pictureImage.alt = model.picture.alt;
-      pictureCredit.textContent = [model.picture.credit, base.note].filter(Boolean).join('. ');
+      pictureCredit.textContent = [model.picture.credit, model.picture.label]
+        .filter(Boolean)
+        .join('. ');
     }
+    showDeepNote();
   };
 
   // The address follows the place, so the device's back button works like the Back button here.

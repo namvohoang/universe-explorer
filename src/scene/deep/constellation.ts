@@ -34,6 +34,8 @@ const SUN_MARKER_SIZE = 0.9;
 /** From the Sun the view is narrowed until the pattern is this share of its height. */
 const FILL = 0.5;
 const NARROWEST_DEG = 6;
+/** A wide pattern, like Scorpius, gets a wider view than usual so that all of it is in sight. */
+const WIDEST_DEG = 70;
 /** The Sun's marker is hidden while the viewer stands on it. */
 const HIDE_SUN_WITHIN = 2;
 
@@ -174,12 +176,13 @@ export function createConstellation(
       sunLabel.visible = !near;
     },
     fieldOfViewDeg(camera, usualDeg) {
-      // At the Sun the view is narrowed like a zoom lens, so a small pattern fills the screen
-      // without moving closer (which would bend it out of shape). Turning away from the Sun
-      // widens it again, to take in how deep the pattern really is.
-      const narrow = Math.min(usualDeg, Math.max(NARROWEST_DEG, (2 * spreadDeg) / FILL));
+      // At the Sun the view is narrowed like a zoom lens (or widened for a wide pattern), so
+      // the pattern fills the screen without moving closer or farther, which would bend it out
+      // of shape. Turning away from the Sun brings back the usual view, to take in how deep
+      // the pattern really is.
+      const fitted = Math.min(WIDEST_DEG, Math.max(NARROWEST_DEG, (2 * spreadDeg) / FILL));
       const away = viewer.set(camera.x, camera.y, camera.z).distanceTo(sun) / (typical || 1);
-      return narrow + (usualDeg - narrow) * Math.min(1, away);
+      return fitted + (usualDeg - fitted) * Math.min(1, away);
     },
     dispose() {
       for (const dispose of disposers) dispose();

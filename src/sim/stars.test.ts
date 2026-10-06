@@ -7,9 +7,11 @@ import {
   colorFromTemperature,
   figureDepth,
   figureLayout,
+  middleDirection,
   starPositionPc,
   temperatureFromBpRp,
 } from './stars';
+import { dot, normalize, scale, subtract } from './vec3';
 
 describe('starPositionPc', () => {
   it('puts a star with a parallax of 10 mas 100 parsecs away', () => {
@@ -96,6 +98,31 @@ describe('a star pattern', () => {
     const towardsSun = { x: sun.x / 55, y: sun.y / 55, z: sun.z / 55 };
     expect(near.x / 45).toBeCloseTo(towardsSun.x, 9);
     expect(far.z / 45).toBeCloseTo(-towardsSun.z, 9);
+  });
+
+  it('has its middle in the middle of the pattern on the sky, however far one star is', () => {
+    // Three stars 20 degrees apart along the equator; the last is a hundred times farther.
+    const wide: readonly FigureStar[] = [
+      ['West', 40, 0, 100, 1, 0],
+      ['Mid', 30, 0, 100, 1, 0],
+      ['East', 20, 0, 1, 1, 0],
+    ];
+    const { sun, offsets } = figureLayout(wide);
+    const toMiddle = normalize(scale(sun, -1));
+    const expected = starPositionPc(30, 0, 1000);
+    expect(toMiddle.x).toBeCloseTo(expected.x, 2);
+    expect(toMiddle.y).toBeCloseTo(expected.y, 2);
+    // From the Sun, the two end stars are the same angle from the middle.
+    const angles = offsets.map((o) => Math.acos(dot(normalize(subtract(o, sun)), toMiddle)));
+    expect(angles[0]).toBeCloseTo(angles[2] ?? NaN, 2);
+  });
+
+  it('finds the middle of directions that lie on a circle round it', () => {
+    const ring = [0, 90, 180, 270].map((ra) => normalize(starPositionPc(ra, 60, 1)));
+    const middle = middleDirection(ring);
+    // The steps shrink slowly, so the answer is good to a fraction of a degree: enough to aim a view.
+    expect(middle.z).toBeCloseTo(1, 4);
+    expect(() => middleDirection([])).toThrow(RangeError);
   });
 
   it('names its nearest and farthest stars in light-years', () => {

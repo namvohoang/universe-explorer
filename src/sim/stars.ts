@@ -1,7 +1,7 @@
 import type { ClusterStar, FigureStar } from '../data/types';
 import { degToRad } from './angles';
 import { LIGHT_YEARS_PER_PARSEC } from './constants';
-import type { Vec3 } from './vec3';
+import { add, dot, length, normalize, scale, subtract, type Vec3 } from './vec3';
 
 /** A parallax of one arcsecond puts a star one parsec away; Gaia gives milliarcseconds. */
 const MAS_PARSECS = 1000;
@@ -81,9 +81,28 @@ export function temperatureFromBpRp(bpRp: number): number {
  */
 export const temperatureFromBV = temperatureFromBpRp;
 
-/** A star pattern laid out in space around the middle of its stars, in parsecs. */
+/** How many times the middle of a pattern on the sky is nudged towards its farthest star. */
+const SKY_MIDDLE_STEPS = 200;
+
+/**
+ * The middle of some directions: the direction whose widest angle to any of them is smallest
+ * (the axis of the narrowest cone that holds them all), found by stepping towards whichever
+ * is farthest by ever smaller steps. Each direction is a unit vector.
+ */
+export function middleDirection(directions: readonly Vec3[]): Vec3 {
+  let middle = directions[0];
+  if (!middle) throw new RangeError('The middle of no directions is not defined');
+  for (let step = 1; step <= SKY_MIDDLE_STEPS; step += 1) {
+    const from = middle;
+    const farthest = directions.reduce((a, b) => (dot(b, from) < dot(a, from) ? b : a));
+    middle = normalize(add(from, scale(subtract(farthest, from), 1 / (step + 1))));
+  }
+  return middle;
+}
+
+/** A star pattern laid out in space around its middle, in parsecs. */
 export interface FigureLayout {
-  /** Each star, measured from the middle of them all. */
+  /** Each star, measured from the middle. */
   readonly offsets: Vec3[];
   /** Where the Sun is, measured from the same middle. From there the pattern looks as it does from Earth. */
   readonly sun: Vec3;
@@ -93,25 +112,24 @@ export interface FigureLayout {
   readonly distancesPc: number[];
 }
 
+/**
+ * The middle is the middle of the pattern as seen from the Sun, at the stars' average
+ * distance. So a view from the Sun towards it has the pattern in the centre, however much
+ * farther one star is than the rest.
+ */
 export function figureLayout(stars: readonly FigureStar[]): FigureLayout {
   if (stars.length === 0)
     return { offsets: [], sun: { x: 0, y: 0, z: 0 }, radiusPc: 0, distancesPc: [] };
   const positions = stars.map(([, ra, dec, parallax]) => starPositionPc(ra, dec, parallax));
-  const n = positions.length;
-  const middle = positions.reduce(
-    (sum, p) => ({ x: sum.x + p.x / n, y: sum.y + p.y / n, z: sum.z + p.z / n }),
-    { x: 0, y: 0, z: 0 },
-  );
-  const offsets = positions.map((p) => ({
-    x: p.x - middle.x,
-    y: p.y - middle.y,
-    z: p.z - middle.z,
-  }));
+  const distancesPc = positions.map(length);
+  const average = distancesPc.reduce((sum, d) => sum + d, 0) / distancesPc.length;
+  const middle = scale(middleDirection(positions.map(normalize)), average);
+  const offsets = positions.map((p) => subtract(p, middle));
   return {
     offsets,
-    sun: { x: -middle.x, y: -middle.y, z: -middle.z },
-    radiusPc: Math.max(...offsets.map((o) => Math.hypot(o.x, o.y, o.z))),
-    distancesPc: positions.map((p) => Math.hypot(p.x, p.y, p.z)),
+    sun: scale(middle, -1),
+    radiusPc: Math.max(...offsets.map(length)),
+    distancesPc,
   };
 }
 

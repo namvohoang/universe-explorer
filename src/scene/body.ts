@@ -30,8 +30,12 @@ const SPHERE_SEGMENTS = { width: 64, height: 32 };
 /** Plain colours for a body with no surface map, and while a map is still loading. */
 const UNMAPPED_SURFACE = '#b9b4ab';
 const UNMAPPED_STAR = '#fff1c9';
-/** A comet's nucleus is coated in dark material (NASA: "ice coated with dark organic material"). */
-const COMET_NUCLEUS = '#4a443d';
+/**
+ * A comet's nucleus is among the darkest things known: NASA says Halley's reflects only 3% of
+ * the light that falls on it (science.nasa.gov/solar-system/comets/1p-halley, read 2026-10-06).
+ * Drawn a little lighter than that, or its shape could not be made out at all.
+ */
+const COMET_NUCLEUS = '#2b2723';
 const ANISOTROPY = 4;
 
 const SCENE_UP = new Vector3(0, 1, 0);

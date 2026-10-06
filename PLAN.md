@@ -389,6 +389,10 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       spacecraft has reached Psyche yet. NASA's Planetary Data System (Small Bodies Node) is
       where shape models of asteroids are kept, but it is not on the list and has not been
       looked at: the owner's decision.
+- [x] 9.8 A more real Halley's Comet (asked for on 2026-10-06): the two hard cones are now soft
+      clouds of points, a thin straight bluish gas tail in streamers and a wide cream dust tail
+      that curves back along the comet's path and fans out; the nucleus is as dark as NASA says
+      it is. Directions are real; sizes and brightness are still a drawing, as the card says.
 
 **Acceptance:** as for Phase 7.
 

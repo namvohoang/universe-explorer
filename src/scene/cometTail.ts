@@ -1,76 +1,79 @@
 import {
   AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
   CanvasTexture,
-  Color,
-  ConeGeometry,
-  DoubleSide,
   Group,
-  Mesh,
+  Matrix4,
+  Points,
+  PointsMaterial,
   SRGBColorSpace,
-  ShaderMaterial,
   Sprite,
   SpriteMaterial,
   Vector3,
 } from 'three';
-import { COMA_RADIUS_KM, TAIL_LENGTH_AU, tailDirections, tailStrength } from '../sim/comet';
+import {
+  COMA_RADIUS_KM,
+  TAIL_LENGTH_AU,
+  behindDirection,
+  dustGrain,
+  tailDirections,
+  tailStrength,
+} from '../sim/comet';
 import { KM_PER_AU } from '../sim/constants';
 import type { Vec3 } from '../sim/vec3';
 
-/** Drawing choices: a bluish gas tail, a wider cream dust tail and a pale glow round the nucleus. */
-const GAS = { color: '#7fb6ff', width: 0.05, opacity: 0.55 };
-const DUST = { color: '#f3e3c2', width: 0.16, opacity: 0.4 };
+/**
+ * Drawing choices. The gas tail is thin, straight and bluish, in a few streamers; the dust tail
+ * is wide, cream and curved. Each is a cloud of soft points, as a real tail has no edge.
+ */
+const GAS = {
+  rgb: [0.42, 0.66, 1],
+  points: 2600,
+  /** Half-width at the comet and at the far end, as shares of the tail's length. */
+  width: [0.004, 0.03],
+  /** Drawn size of one point, as a share of the tail's length. */
+  pointSize: 0.014,
+  opacity: 0.2,
+  streamers: 7,
+  /** How far a streamer leans from straight, as a share of the length at the far end. */
+  lean: 0.035,
+} as const;
+const DUST = {
+  rgb: [1, 0.9, 0.72],
+  points: 4200,
+  width: [0.006, 0.05],
+  pointSize: 0.024,
+  opacity: 0.14,
+  /** The dust tail is drawn this share of the gas tail's length. */
+  length: 0.8,
+  /** How readily the slowest and the quickest grains fall behind (see `dustGrain`). */
+  lag: [0.12, 0.75],
+} as const;
 const COMA_COLOR = '214, 236, 255';
-const TOWARDS_TIP = new Vector3(0, -1, 0);
 /** From this many glow radii away the comet is seen at full strength; closer, it thins out. */
 export const VIEW_FROM_RADII = 4;
 /** How much of the glow is left when the camera is right at the nucleus. */
 const INSIDE_HAZE = 0.06;
+/** Below this, two directions are too nearly in line to find one square to both. */
+const SQUARE_ENOUGH = 1e-6;
 
-// A cone that is brightest at the comet and fades to nothing at its far end.
-const VERTEX = /* glsl */ `
-  #include <common>
-  #include <logdepthbuf_pars_vertex>
-  varying float vAlong;
-  void main() {
-    vAlong = -position.y;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    #include <logdepthbuf_vertex>
-  }
-`;
-const FRAGMENT = /* glsl */ `
-  #include <common>
-  #include <logdepthbuf_pars_fragment>
-  uniform vec3 color;
-  uniform float opacity;
-  varying float vAlong;
-  void main() {
-    #include <logdepthbuf_fragment>
-    float fade = pow(1.0 - clamp(vAlong, 0.0, 1.0), 1.6);
-    gl_FragColor = vec4(color, opacity * fade);
-    #include <colorspace_fragment>
-  }
-`;
-
-function createTail(color: string): Mesh<ConeGeometry, ShaderMaterial> {
-  // Unit cone with its point at the origin, opening along −y.
-  const geometry = new ConeGeometry(1, 1, 48, 8, true);
-  geometry.translate(0, -0.5, 0);
-  const material = new ShaderMaterial({
-    uniforms: { color: { value: new Color(color) }, opacity: { value: 0 } },
-    vertexShader: VERTEX,
-    fragmentShader: FRAGMENT,
-    transparent: true,
-    depthWrite: false,
-    side: DoubleSide,
-    blending: AdditiveBlending,
-  });
-  const mesh = new Mesh(geometry, material);
-  mesh.frustumCulled = false;
-  return mesh;
+/** The same made-up numbers every time, so the tails do not change between visits. */
+function seededRandom(seed: number): () => number {
+  let state = seed;
+  return () => {
+    state = (state * 1664525 + 1013904223) % 4294967296;
+    return state / 4294967296;
+  };
 }
 
-function createComa(): Sprite {
-  const size = 128;
+/** A number from a bell curve around nought, mostly within one either way. */
+function bell(random: () => number): number {
+  return (random() + random() + random() + random() - 2) * 1.2;
+}
+
+function softDot(inner: string): CanvasTexture {
+  const size = 64;
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
@@ -84,14 +87,77 @@ function createComa(): Sprite {
       size / 2,
       size / 2,
     );
-    gradient.addColorStop(0, `rgba(${COMA_COLOR}, 0.95)`);
-    gradient.addColorStop(0.25, `rgba(${COMA_COLOR}, 0.4)`);
-    gradient.addColorStop(1, `rgba(${COMA_COLOR}, 0)`);
+    gradient.addColorStop(0, `rgba(${inner}, 0.95)`);
+    gradient.addColorStop(0.25, `rgba(${inner}, 0.4)`);
+    gradient.addColorStop(1, `rgba(${inner}, 0)`);
     context.fillStyle = gradient;
     context.fillRect(0, 0, size, size);
   }
   const map = new CanvasTexture(canvas);
   map.colorSpace = SRGBColorSpace;
+  return map;
+}
+
+interface TailCloud {
+  readonly points: Points<BufferGeometry, PointsMaterial>;
+  readonly style: { readonly pointSize: number; readonly opacity: number };
+}
+
+/**
+ * A tail as points in its own frame: x away from the Sun, y the way dust falls behind, z across,
+ * each from 0 to about 1 (one is the tail's length). `place` says where a point `along` the tail
+ * sits before it is spread sideways.
+ */
+function createCloud(
+  style: {
+    readonly rgb: readonly [number, number, number];
+    readonly points: number;
+    readonly width: readonly [number, number];
+    readonly pointSize: number;
+    readonly opacity: number;
+  },
+  dot: CanvasTexture,
+  seed: number,
+  place: (along: number, random: () => number) => { away: number; behind: number; across: number },
+): TailCloud {
+  const random = seededRandom(seed);
+  const positions = new Float32Array(style.points * 3);
+  const colors = new Float32Array(style.points * 4);
+  for (let n = 0; n < style.points; n += 1) {
+    // More points near the comet, where a tail is thickest, thinning out towards the end.
+    const along = random() ** 1.35;
+    const spot = place(along, random);
+    const spread = style.width[0] + (style.width[1] - style.width[0]) * along;
+    positions[n * 3] = spot.away;
+    positions[n * 3 + 1] = spot.behind + bell(random) * spread;
+    positions[n * 3 + 2] = spot.across + bell(random) * spread;
+    // Thickest at the comet, fading to nothing at the far end.
+    colors[n * 4] = style.rgb[0];
+    colors[n * 4 + 1] = style.rgb[1];
+    colors[n * 4 + 2] = style.rgb[2];
+    colors[n * 4 + 3] = (1 - along) ** 1.5;
+  }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute('position', new BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new BufferAttribute(colors, 4));
+  const material = new PointsMaterial({
+    map: dot,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    // Ordinary blending, not adding light to light: where points pile up, near the comet or
+    // seen end-on, the tail thickens to its own colour instead of burning out to white.
+    sizeAttenuation: true,
+  });
+  const points = new Points(geometry, material);
+  points.frustumCulled = false;
+  // Its frame is set outright each time the comet moves.
+  points.matrixAutoUpdate = false;
+  return { points, style };
+}
+
+function createComa(map: CanvasTexture): Sprite {
   return new Sprite(
     new SpriteMaterial({ map, blending: AdditiveBlending, depthWrite: false, transparent: true }),
   );
@@ -99,7 +165,7 @@ function createComa(): Sprite {
 
 /**
  * What makes a comet look like one near the Sun: a glowing coma round the nucleus, a gas tail
- * pointing straight away from the Sun and a dust tail trailing behind it.
+ * blown straight away from the Sun, and a dust tail that curves back along the comet's path.
  */
 export interface CometTail {
   readonly group: Group;
@@ -119,26 +185,39 @@ export interface CometTail {
 
 export function createCometTail(): CometTail {
   const group = new Group();
-  const gas = createTail(GAS.color);
-  const dust = createTail(DUST.color);
-  const coma = createComa();
-  group.add(dust, gas, coma);
-  const direction = new Vector3();
+  const dot = softDot('255, 255, 255');
+  const glow = softDot(COMA_COLOR);
+  // The gas streams out in a few thin streamers that lean a little apart.
+  const streamers = seededRandom(7);
+  const leans = Array.from({ length: GAS.streamers }, () => ({
+    behind: bell(streamers) * GAS.lean,
+    across: bell(streamers) * GAS.lean,
+  }));
+  const gas = createCloud(GAS, dot, 11, (along, random) => {
+    const lean = leans[Math.floor(random() * leans.length)] ?? { behind: 0, across: 0 };
+    return { away: along, behind: lean.behind * along, across: lean.across * along };
+  });
+  const dust = createCloud(DUST, dot, 23, (along, random) => {
+    const lag = DUST.lag[0] + (DUST.lag[1] - DUST.lag[0]) * random();
+    return { ...dustGrain(along, lag), across: 0 };
+  });
+  const coma = createComa(glow);
+  group.add(dust.points, gas.points, coma);
+  const clouds = [gas, dust];
+
+  const away = new Vector3();
+  const behind = new Vector3();
+  const across = new Vector3();
+  const frame = new Matrix4();
   let comaRadius = 0;
   let strengthNow = 0;
   const centre = { x: 0, y: 0, z: 0 };
 
-  const place = (
-    mesh: Mesh<ConeGeometry, ShaderMaterial>,
-    towards: Vec3,
-    length: number,
-    style: { width: number; opacity: number },
-    strength: number,
-  ): void => {
-    mesh.quaternion.setFromUnitVectors(TOWARDS_TIP, direction.set(towards.x, towards.y, towards.z));
-    mesh.scale.set(length * style.width, length, length * style.width);
-    const { opacity } = mesh.material.uniforms;
-    if (opacity) opacity.value = style.opacity * strength;
+  const place = (cloud: TailCloud, length: number, strength: number): void => {
+    frame.makeBasis(away, behind, across).scale(new Vector3(length, length, length));
+    cloud.points.matrix.copy(frame);
+    cloud.points.material.size = length * cloud.style.pointSize;
+    cloud.points.material.opacity = cloud.style.opacity * strength;
   };
 
   return {
@@ -154,10 +233,20 @@ export function createCometTail(): CometTail {
       // The same stretch the scale gives the comet's distance is given to its glow and tails.
       const unitsPerAu = sceneDistance / distanceAu;
       const length = strength * TAIL_LENGTH_AU * unitsPerAu;
-      const directions = tailDirections(comet, sun, heading);
+      const { gas: outwards } = tailDirections(comet, sun, heading);
+      away.set(outwards.x, outwards.y, outwards.z);
+      const back = behindDirection(comet, sun, heading);
+      if (back) behind.set(back.x, back.y, back.z);
+      else {
+        // With no heading the dust has no side to fall to: any direction square to the tail will do.
+        behind.set(0, 1, 0).cross(away);
+        if (behind.lengthSq() < SQUARE_ENOUGH) behind.set(1, 0, 0).cross(away);
+      }
+      behind.normalize();
+      across.crossVectors(away, behind);
       group.position.set(comet.x, comet.y, comet.z);
-      place(gas, directions.gas, length, GAS, strength);
-      place(dust, directions.dust, length * 0.8, DUST, strength);
+      place(gas, length, strength);
+      place(dust, length * DUST.length, strength);
       comaRadius = strength * (COMA_RADIUS_KM / KM_PER_AU) * unitsPerAu;
       coma.scale.setScalar(2 * comaRadius);
       coma.material.opacity = strength;
@@ -168,25 +257,22 @@ export function createCometTail(): CometTail {
     glowRadius: () => comaRadius,
     setViewer(camera) {
       if (comaRadius === 0) return;
-      const away = Math.hypot(camera.x - centre.x, camera.y - centre.y, camera.z - centre.z);
+      const distance = Math.hypot(camera.x - centre.x, camera.y - centre.y, camera.z - centre.z);
       // Outside the glow everything is at full strength; deep inside it is only a faint haze.
-      const outside = Math.min(1, away / (comaRadius * VIEW_FROM_RADII));
+      const outside = Math.min(1, distance / (comaRadius * VIEW_FROM_RADII));
       const dim = INSIDE_HAZE + (1 - INSIDE_HAZE) * outside * outside;
       coma.material.opacity = strengthNow * dim;
-      for (const [mesh, style] of [
-        [gas, GAS],
-        [dust, DUST],
-      ] as const) {
-        const { opacity } = mesh.material.uniforms;
-        if (opacity) opacity.value = style.opacity * strengthNow * dim;
+      for (const cloud of clouds) {
+        cloud.points.material.opacity = cloud.style.opacity * strengthNow * dim;
       }
     },
     dispose() {
-      for (const mesh of [gas, dust]) {
-        mesh.geometry.dispose();
-        mesh.material.dispose();
+      for (const cloud of clouds) {
+        cloud.points.geometry.dispose();
+        cloud.points.material.dispose();
       }
-      coma.material.map?.dispose();
+      dot.dispose();
+      glow.dispose();
       coma.material.dispose();
     },
   };

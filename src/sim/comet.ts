@@ -1,4 +1,4 @@
-import { add, normalize, scale, subtract, type Vec3 } from './vec3';
+import { add, dot, length, normalize, scale, subtract, type Vec3 } from './vec3';
 
 /**
  * How a comet's glow and tails are drawn. Their directions are real: the gas tail points
@@ -50,4 +50,30 @@ export function tailDirections(comet: Vec3, sun: Vec3, heading: Vec3): TailDirec
   if (speed === 0) return { gas, dust: gas };
   const behind = scale(heading, -DUST_LAG / speed);
   return { gas, dust: normalize(add(gas, behind)) };
+}
+
+/**
+ * Which way dust falls behind a comet: against the way it is moving, with any part of that
+ * towards or away from the Sun left out, so it is square to the gas tail. `null` when the
+ * heading is not known, or the comet is moving straight at or away from the Sun.
+ */
+export function behindDirection(comet: Vec3, sun: Vec3, heading: Vec3): Vec3 | null {
+  const away = normalize(subtract(comet, sun));
+  const across = subtract(heading, scale(away, dot(heading, away)));
+  const size = length(across);
+  return size === 0 ? null : scale(across, -1 / size);
+}
+
+/**
+ * Where a grain of dust is in a comet's tail, as shares of the tail's length: how far it has
+ * been pushed away from the Sun, and how far it has fallen behind the comet. A grain that
+ * left longer ago is farther out and has fallen behind more than in step, so the tail curves;
+ * grains that fall behind at different rates spread the tail into a fan. A drawing of how a
+ * dust tail bends, not a calculation of any one comet's dust.
+ *
+ * @param along how far down the tail the grain is, from 0 (at the comet) to 1 (the far end)
+ * @param lag how readily this grain falls behind, from 0 (not at all: it stays in the gas tail)
+ */
+export function dustGrain(along: number, lag: number): { away: number; behind: number } {
+  return { away: along, behind: lag * along * along };
 }

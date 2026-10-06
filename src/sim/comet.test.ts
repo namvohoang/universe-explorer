@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TAIL_STARTS_AU, tailDirections, tailStrength } from './comet';
+import { TAIL_STARTS_AU, behindDirection, dustGrain, tailDirections, tailStrength } from './comet';
 import { angleBetween, dot, length } from './vec3';
 
 describe('tailStrength', () => {
@@ -47,5 +47,37 @@ describe('tailDirections', () => {
   it('draws both tails together when the heading is not known', () => {
     const { gas, dust } = tailDirections(comet, sun, { x: 0, y: 0, z: 0 });
     expect(dust).toEqual(gas);
+  });
+});
+
+describe('behindDirection', () => {
+  const sun = { x: 0, y: 0, z: 0 };
+  const comet = { x: 2, y: 0, z: 0 };
+
+  it('points against the motion, square to the line from the Sun', () => {
+    const behind = behindDirection(comet, sun, { x: 3, y: 0, z: 5 });
+    expect(behind?.x).toBeCloseTo(0, 12);
+    expect(behind?.z).toBeCloseTo(-1, 12);
+  });
+
+  it('is not defined with no heading, or when heading straight away from the Sun', () => {
+    expect(behindDirection(comet, sun, { x: 0, y: 0, z: 0 })).toBeNull();
+    expect(behindDirection(comet, sun, { x: 4, y: 0, z: 0 })).toBeNull();
+  });
+});
+
+describe('dustGrain', () => {
+  it('starts at the comet and bends back more and more down the tail', () => {
+    expect(dustGrain(0, 0.5)).toEqual({ away: 0, behind: 0 });
+    const near = dustGrain(0.25, 0.5);
+    const far = dustGrain(1, 0.5);
+    expect(far.away).toBe(1);
+    // Four times as far down the tail, the grain is more than four times as far behind.
+    expect(far.behind / near.behind).toBeGreaterThan(far.away / near.away);
+  });
+
+  it('keeps a grain that does not fall behind in line with the gas tail', () => {
+    expect(dustGrain(0.7, 0).behind).toBe(0);
+    expect(dustGrain(0.7, 0.6).behind).toBeGreaterThan(dustGrain(0.7, 0.2).behind);
   });
 });

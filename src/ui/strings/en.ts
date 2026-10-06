@@ -431,6 +431,30 @@ export const en = {
     'A wide view of billowing orange, brown and pale blue clouds with dark knots and bright stars.',
   pictureAltVeilNebula:
     'Thin, twisting sheets of glowing gas in red, blue and yellow against black space.',
+  cardMiraHello: 'Mira is a cool red giant star whose brightness keeps changing.',
+  cardMiraFact1: 'It is about 700 times as wide as the Sun.',
+  cardMiraFact2: 'It swells and shrinks again every 332 days.',
+  cardMiraFact3: 'Its name means the Wonderful.',
+  pictureAltMira:
+    'A blurry glowing blob on black, yellow in the middle and orange and red at the edge. It is not quite round.',
+  nameCatsEyeNebula: 'The Cat’s Eye Nebula',
+  cardCatsEyeNebulaHello:
+    'The Cat’s Eye Nebula is glowing gas thrown off by a star like the Sun as it slowly dies.',
+  cardCatsEyeNebulaFact1: 'It is about 3,000 light-years away, in Draco, the Dragon.',
+  cardCatsEyeNebulaFact2: 'It has eleven or more rings. Each is the edge of a bubble of gas.',
+  cardCatsEyeNebulaFact3: 'The star puffed out a new bubble about every 1,500 years.',
+  pictureAltCatsEyeNebula:
+    'A pale blue and white swirl like an eye, with orange tips, inside many faint rings.',
+  nameCartwheelGalaxy: 'The Cartwheel Galaxy',
+  cardCartwheelGalaxyHello:
+    'The Cartwheel Galaxy is a galaxy that looks like the wheel of a wagon.',
+  cardCartwheelGalaxyFact1: 'It is about 500 million light-years away.',
+  cardCartwheelGalaxyFact2:
+    'It got its shape when a smaller galaxy crashed through a big spiral galaxy.',
+  cardCartwheelGalaxyFact3:
+    'Its two rings spread out from the middle, like ripples in a pond when you drop in a stone.',
+  pictureAltCartwheelGalaxy:
+    'A big pink and blue ring with spokes and a bright middle, like a wheel. Two smaller galaxies sit to its left.',
   pictureAltBetelgeuse:
     'A fuzzy round glow on black: yellow-white in the middle, fading to orange and dark red at the edge.',
   nameBetelgeuse: 'Betelgeuse',

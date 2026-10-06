@@ -20,7 +20,10 @@ const NEBULA = { depth: 0.16, bulge: 1.2, spin: 0, lay: 'upright' } as const;
 const GALAXY = { depth: 0.012, bulge: 9, spin: 0.02, lay: 'flat' } as const;
 /** A galaxy seen from the side keeps its picture upright: laid flat it would look like a disc it is not. */
 const EDGE_ON_GALAXY = { depth: 0.03, bulge: 2, spin: 0, lay: 'upright' } as const;
-/** A galaxy with no flat disc (a round one, or two caught colliding) is a deep cloud of stars too. */
+/**
+ * A galaxy that is not a plain disc (a round one, a ring with galaxies beside it, or two caught
+ * colliding) is a deep cloud of stars too.
+ */
 const SHAPELESS_GALAXY = { depth: 0.12, bulge: 2, spin: 0, lay: 'upright' } as const;
 
 export interface DeepContext {

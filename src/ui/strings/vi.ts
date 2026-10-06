@@ -459,6 +459,31 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   pictureAltVeilNebula:
     'Những dải khí mỏng, xoắn, phát sáng màu đỏ, xanh và vàng trên nền không gian đen.',
   nameCentaurusA: 'Thiên hà Centaurus A',
+  cardMiraHello: 'Mira là một sao khổng lồ đỏ nguội, có độ sáng thay đổi liên tục.',
+  cardMiraFact1: 'Nó rộng gấp khoảng 700 lần Mặt Trời.',
+  cardMiraFact2: 'Cứ 332 ngày nó lại phình ra rồi co lại.',
+  cardMiraFact3: 'Tên của nó có nghĩa là Kỳ Diệu.',
+  pictureAltMira:
+    'Một đốm sáng mờ nhòe trên nền đen, màu vàng ở giữa, màu cam và đỏ ở rìa. Nó không tròn hẳn.',
+  nameCatsEyeNebula: 'Tinh vân Mắt Mèo',
+  cardCatsEyeNebulaHello:
+    'Tinh vân Mắt Mèo là khí phát sáng do một ngôi sao giống Mặt Trời phun ra khi nó chết dần.',
+  cardCatsEyeNebulaFact1:
+    'Nó ở cách ta khoảng 3.000 năm ánh sáng, trong chòm Thiên Long, con Rồng.',
+  cardCatsEyeNebulaFact2: 'Nó có mười một vòng hoặc hơn. Mỗi vòng là mép của một bong bóng khí.',
+  cardCatsEyeNebulaFact3: 'Cứ khoảng 1.500 năm ngôi sao lại thổi ra một bong bóng mới.',
+  pictureAltCatsEyeNebula:
+    'Một xoáy màu trắng và xanh nhạt giống con mắt, hai đầu màu cam, nằm trong nhiều vòng tròn mờ.',
+  nameCartwheelGalaxy: 'Thiên hà Bánh Xe',
+  cardCartwheelGalaxyHello:
+    'Thiên hà Bánh Xe là một thiên hà trông giống bánh của một chiếc xe ngựa.',
+  cardCartwheelGalaxyFact1: 'Nó ở cách ta khoảng 500 triệu năm ánh sáng.',
+  cardCartwheelGalaxyFact2:
+    'Nó có hình dạng này khi một thiên hà nhỏ hơn lao xuyên qua một thiên hà xoắn ốc lớn.',
+  cardCartwheelGalaxyFact3:
+    'Hai vòng của nó lan ra từ giữa, như gợn sóng trên ao khi bạn thả một hòn đá.',
+  pictureAltCartwheelGalaxy:
+    'Một vòng tròn lớn màu hồng và xanh có nan hoa và phần giữa sáng, giống bánh xe. Hai thiên hà nhỏ hơn nằm bên trái.',
   pictureAltBetelgeuse:
     'Một quầng sáng tròn mờ nhòe trên nền đen: trắng vàng ở giữa, nhạt dần sang cam và đỏ sẫm ở rìa.',
   nameBetelgeuse: 'Betelgeuse',

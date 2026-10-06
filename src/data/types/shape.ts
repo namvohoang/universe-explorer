@@ -114,6 +114,7 @@ export const EXTENDED_STRUCTURES = [
   'spiral',
   'barred-spiral',
   'elliptical',
+  'ring',
   'irregular',
 ] as const;
 export type ExtendedStructure = (typeof EXTENDED_STRUCTURES)[number];

@@ -2,6 +2,9 @@
 // quote appears in the page as fetched on the source's `retrieved` date, then wrote this file.
 // The sentences themselves are in src/ui/strings/en.ts under each `key`.
 import {
+  NASA_HUBBLE_C6,
+  NASA_HUBBLE_MIRA,
+  NASA_WEBB_CARTWHEEL,
   ESA_ROSETTA,
   NASA_3D_MIR,
   NASA_APOLLO_SOYUZ,
@@ -2437,5 +2440,91 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_WEBB_OVERVIEW],
+  },
+  {
+    id: 'mira',
+    hello: {
+      key: 'cardMiraHello',
+      sourceId: 'nasa-hubble-mira',
+      quote: 'has evolved into a cool red giant star that is highly variable in brightness',
+    },
+    facts: [
+      {
+        key: 'cardMiraFact1',
+        sourceId: 'nasa-hubble-mira',
+        quote: 'corresponding to a diameter some 700 times larger than our Sun',
+      },
+      {
+        key: 'cardMiraFact2',
+        sourceId: 'nasa-hubble-mira',
+        quote: 'Contracting and expanding every 332 days',
+      },
+      {
+        key: 'cardMiraFact3',
+        sourceId: 'nasa-hubble-mira',
+        quote: 'He called it Mira, meaning "The Wonderful."',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_MIRA],
+  },
+  {
+    id: 'cats-eye-nebula',
+    hello: {
+      key: 'cardCatsEyeNebulaHello',
+      sourceId: 'nasa-hubble-c6',
+      quote: 'planetary nebulae reflect the very slow death of a Sun-like star',
+    },
+    facts: [
+      {
+        key: 'cardCatsEyeNebulaFact1',
+        sourceId: 'nasa-hubble-c6',
+        quote:
+          'Located about 3,000 light-years away, Caldwell 6 is located in the constellation Draco',
+      },
+      {
+        key: 'cardCatsEyeNebulaFact2',
+        sourceId: 'nasa-hubble-c6',
+        quote:
+          "Each of the eleven or more concentric rings, or shells, around the Cat's Eye is actually the edge of a spherical bubble seen projected onto the sky",
+      },
+      {
+        key: 'cardCatsEyeNebulaFact3',
+        sourceId: 'nasa-hubble-c6',
+        quote: 'material ejected in regular episodes 1,500 years apart',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_C6],
+  },
+  {
+    id: 'cartwheel-galaxy',
+    hello: {
+      key: 'cardCartwheelGalaxyHello',
+      sourceId: 'nasa-webb-cartwheel',
+      quote: 'Its appearance, much like that of the wheel of a wagon',
+    },
+    facts: [
+      {
+        key: 'cardCartwheelGalaxyFact1',
+        sourceId: 'nasa-webb-cartwheel',
+        quote:
+          'The Cartwheel Galaxy, located about 500 million light-years away in the Sculptor constellation, is a rare sight.',
+      },
+      {
+        key: 'cardCartwheelGalaxyFact2',
+        sourceId: 'nasa-webb-cartwheel',
+        quote:
+          'a high-speed collision between a large spiral galaxy and a smaller galaxy not visible in this image',
+      },
+      {
+        key: 'cardCartwheelGalaxyFact3',
+        sourceId: 'nasa-webb-cartwheel',
+        quote:
+          'These two rings expand outwards from the center of the collision, like ripples in a pond after a stone is tossed into it.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_WEBB_CARTWHEEL],
   },
 ];

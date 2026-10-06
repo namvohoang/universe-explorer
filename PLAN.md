@@ -373,6 +373,10 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       Europe and Canada, all as NASA's own models. Left out: SpaceX and China. No site on the
       trusted list publishes a model of their craft (ESA's Sci Fleet models may not be copied),
       so they wait for the decision in §8.
+- [x] 9.5 Three more by name (asked for on 2026-10-06): Mira (Omicron Ceti), a red giant whose
+      light keeps changing; the Cat's Eye Nebula (NGC 6543); and the Cartwheel Galaxy
+      (ESO 350-40), which adds `ring` to the structures a galaxy can have. Mira is shown by its
+      Hubble picture, not as a tinted model: its source gives no temperature.
 
 **Acceptance:** as for Phase 7.
 

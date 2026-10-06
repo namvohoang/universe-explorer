@@ -69,6 +69,9 @@ import { whirlpool } from './whirlpool';
 import { m87 } from './m87';
 import { betelgeuse } from './betelgeuse';
 import { antares } from './antares';
+import { mira } from './mira';
+import { catsEyeNebula } from './catsEyeNebula';
+import { cartwheelGalaxy } from './cartwheelGalaxy';
 import { mir } from './mir';
 import { apolloSoyuz } from './apolloSoyuz';
 import { rosetta } from './rosetta';
@@ -169,6 +172,7 @@ export const catalogue: readonly CelestialObject[] = [
   trappist1,
   pegasi51,
   aldebaran,
+  mira,
   pleiades,
   antares,
   helixNebula,
@@ -178,6 +182,7 @@ export const catalogue: readonly CelestialObject[] = [
   gaiaBh1,
   ringNebula,
   veilNebula,
+  catsEyeNebula,
   vyCanisMajoris,
   crabNebula,
   eagleNebula,
@@ -196,6 +201,7 @@ export const catalogue: readonly CelestialObject[] = [
   m87,
   m87BlackHole,
   antennae,
+  cartwheelGalaxy,
   orion,
   bigDipper,
   southernCross,

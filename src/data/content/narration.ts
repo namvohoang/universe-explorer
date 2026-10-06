@@ -191,6 +191,11 @@ export const NARRATION: Readonly<
     fingerprint: '75991607',
     starts: [0.0, 2.15, 7.72, 13.2, 16.52],
   },
+  mira: {
+    file: 'public/voice/mira.mp3',
+    fingerprint: '91995e56',
+    starts: [0.0, 2.0, 7.05, 11.43, 16.2],
+  },
   antares: {
     file: 'public/voice/antares.mp3',
     fingerprint: '117b1eb6',
@@ -230,6 +235,11 @@ export const NARRATION: Readonly<
     file: 'public/voice/veil-nebula.mp3',
     fingerprint: '72ea945a',
     starts: [0.0, 2.33, 8.43, 11.8, 19.05],
+  },
+  'cats-eye-nebula': {
+    file: 'public/voice/cats-eye-nebula.mp3',
+    fingerprint: '8973d460',
+    starts: [0.0, 2.4, 9.2, 14.43, 19.65],
   },
   'vy-canis-majoris': {
     file: 'public/voice/vy-canis-majoris.mp3',
@@ -320,6 +330,11 @@ export const NARRATION: Readonly<
     file: 'public/voice/antennae.mp3',
     fingerprint: '156c2760',
     starts: [0.0, 2.58, 7.78, 11.53, 18.35],
+  },
+  'cartwheel-galaxy': {
+    file: 'public/voice/cartwheel-galaxy.mp3',
+    fingerprint: '95a7ade6',
+    starts: [0.0, 2.5, 7.72, 11.45, 16.9],
   },
   orion: {
     file: 'public/voice/orion.mp3',

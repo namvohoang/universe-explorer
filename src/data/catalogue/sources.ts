@@ -1017,7 +1017,7 @@ export const NASA_HUBBLE_POLARIS: Source = {
 
 export const NASA_HUBBLE_M13: Source = {
   id: 'nasa-hubble-m13',
-  title: 'NASA Science — Hubble Messier Catalog, Messier 13',
+  title: 'NASA Science — Hubble Messier Catalog,  13',
   url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-13/',
   retrieved: '2026-10-06',
 };
@@ -1138,5 +1138,26 @@ export const NASA_WEBB_OVERVIEW: Source = {
   id: 'nasa-webb-overview',
   title: 'NASA Science — James Webb Space Telescope, About Webb',
   url: 'https://science.nasa.gov/mission/webb/about-overview/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_MIRA: Source = {
+  id: 'nasa-hubble-mira',
+  title: 'NASA Science — Hubble Separates Stars in the Mira Binary System',
+  url: 'https://science.nasa.gov/missions/hubble/hubble-separates-stars-in-the-mira-binary-system/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_C6: Source = {
+  id: 'nasa-hubble-c6',
+  title: 'NASA Science — Hubble Caldwell Catalog, Caldwell 6 (the Cat’s Eye Nebula)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-6/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_WEBB_CARTWHEEL: Source = {
+  id: 'nasa-webb-cartwheel',
+  title: 'NASA Science — Webb Captures Stellar Gymnastics in the Cartwheel Galaxy',
+  url: 'https://science.nasa.gov/missions/webb/webb-captures-stellar-gymnastics-in-the-cartwheel-galaxy/',
   retrieved: '2026-10-06',
 };

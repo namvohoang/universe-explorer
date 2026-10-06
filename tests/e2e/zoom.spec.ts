@@ -34,7 +34,11 @@ test('zooming out with the pointer on another body stays with the one in view', 
   await page.getByRole('button', { name: 'Zoom out' }).click();
   await page.getByRole('button', { name: 'Zoom out' }).click();
   const other = page.locator('.marker:visible:not([aria-label="Go to Saturn"])').first();
-  await other.hover();
+  // The pointer goes there by its place on screen: at some hours another moon's marker lies
+  // on top of this one, and whichever is on top, the zoom must stay with Saturn.
+  const box = await other.boundingBox();
+  if (!box) throw new Error('No other body has a marker');
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.wheel(0, 300);
   await expect(page.locator('.card h2')).toHaveText('Saturn');
 });

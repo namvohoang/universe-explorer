@@ -53,6 +53,7 @@ export function createMarkers(
   layer: HTMLElement,
   targets: readonly MarkerTarget[],
   onPick: (id: string) => void,
+  onWheel: (id: string, event: WheelEvent) => void,
 ): Markers {
   const markers = targets.map((target) => {
     const button = create('button', 'marker');
@@ -64,6 +65,14 @@ export function createMarkers(
     button.addEventListener('click', () => {
       onPick(target.id);
     });
+    // The marker lies on top of its body, so the wheel over a body lands here, not on the canvas.
+    button.addEventListener(
+      'wheel',
+      (event) => {
+        onWheel(target.id, event);
+      },
+      { passive: false },
+    );
     layer.append(button);
     return { target, button, name, shown: false, ringed: false, named: true, drop: -1 };
   });

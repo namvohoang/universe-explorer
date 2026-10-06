@@ -41,6 +41,8 @@ export interface FlyTo {
   readonly maxDistance: number;
   /** Turn slowly around the target when idle (ignored with reduced motion). */
   readonly idleTurn: boolean;
+  /** How long the move takes; the usual flight time when left out. */
+  readonly seconds?: number;
 }
 
 /** Where a point of the scene lands on screen. */
@@ -144,6 +146,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       request.distance,
       request.direction,
       instant || options.reducedMotion,
+      request.seconds,
     );
     previousTarget = target;
     // Hands off while flying, and no zoom limit to fight the move.

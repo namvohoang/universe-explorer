@@ -1,7 +1,7 @@
 import './ui/fonts';
 import { catalogue } from './data/catalogue';
 import { isSatellite, isShowpiece, type CelestialObject } from './data/types';
-import { distanceForAspect, litSideBearing } from './scene/flight';
+import { ZOOM_SECONDS, distanceForAspect, litSideBearing, zoomedDistance } from './scene/flight';
 import type { DeepModel, DeepModelNote } from './scene/deep';
 import { createSolarSystem } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
@@ -48,6 +48,8 @@ const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
 const BODY_VIEW_RADII = 6;
 const BODY_CLOSEST_RADII = 1.8;
+/** How much of the distance is left after one zoom step in. */
+const ZOOM_STEP = 0.6;
 /** A deep-space model is first seen from far enough back to take all of it in. */
 const DEEP_FRAMING = 2.5;
 /** A glowing comet is first seen from this many glow radii away. */
@@ -351,7 +353,29 @@ function start(): void {
     }
   };
 
-  const goTo = (id: string | null, fromHistory = false): void => {
+  /** The view one zoom step closer to a body, seen from where the camera already is. */
+  const zoomOnto = (id: string): FlyTo => {
+    const view = bodyView(id);
+    const body = system.positionOf(id);
+    const offset = {
+      x: stage.camera.position.x - body.x,
+      y: stage.camera.position.y - body.y,
+      z: stage.camera.position.z - body.z,
+    };
+    return {
+      ...view,
+      distance: zoomedDistance(
+        Math.hypot(offset.x, offset.y, offset.z),
+        ZOOM_STEP,
+        view.minDistance,
+        view.maxDistance,
+      ),
+      direction: offset,
+      seconds: ZOOM_SECONDS,
+    };
+  };
+
+  const goTo = (id: string | null, fromHistory = false, view?: FlyTo): void => {
     compare.close();
     const wasDeep = isDeep(focus);
     focus = id;
@@ -361,7 +385,7 @@ function start(): void {
     // Pictures need no camera move; coming back from one, the camera is put straight in place.
     if (!isDeep(id)) {
       if (wasDeep) stage.lookAt(currentView());
-      else stage.flyTo(currentView());
+      else stage.flyTo(view ?? currentView());
     }
     showFocus();
   };
@@ -428,7 +452,6 @@ function start(): void {
     viewControls.append(button);
     return button;
   };
-  const ZOOM_STEP = 0.6;
   viewButton(words.zoomIn, 'plus', () => {
     stage.zoom(ZOOM_STEP);
   }).classList.add('zoom');
@@ -628,16 +651,12 @@ function start(): void {
       parentId: isSatellite(object) ? object.parentId : null,
     })),
     goTo,
-  );
-  // A marker lies on top of its body, so the wheel over a body lands on the marker. Hand it to
-  // the canvas, or the kid could not zoom while pointing at the very thing they want to see.
-  mustFind('#markers').addEventListener(
-    'wheel',
-    (event) => {
+    (id, event) => {
       event.preventDefault();
-      canvas.dispatchEvent(new WheelEvent('wheel', event));
+      // Zooming in while pointing at another body zooms in on that body, not on the one in view.
+      if (event.deltaY < 0 && id !== focus) goTo(id, false, zoomOnto(id));
+      else canvas.dispatchEvent(new WheelEvent('wheel', event));
     },
-    { passive: false },
   );
 
   // A link can open straight onto one place and one scale mode: ?scale=true-sizes#saturn

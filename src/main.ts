@@ -670,7 +670,16 @@ function start(): void {
       else canvas.dispatchEvent(new WheelEvent('wheel', event));
     },
   );
-  canvas.addEventListener('wheel', pointedAfresh, { passive: true });
+  canvas.addEventListener(
+    'wheel',
+    (event) => {
+      pointedAfresh(event);
+      // While the camera is flying the controls let the wheel through, and a pinch on a trackpad
+      // would then make the browser magnify the whole page, pushing the card off the screen.
+      event.preventDefault();
+    },
+    { passive: false },
+  );
 
   // A link can open straight onto one place and one scale mode: ?scale=true-sizes#saturn
   const isPlace = (id: string | null): id is string =>

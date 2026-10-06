@@ -81,3 +81,23 @@ test('a body that slides under a still pointer does not take over the zoom', asy
   await wheelOn(saturn, 60, 5);
   await expect(page.locator('.card h2')).toHaveText('Saturn');
 });
+
+test.describe('with the camera flying', () => {
+  test.use({ reducedMotion: 'no-preference' });
+
+  test('a pinch on the view never magnifies the page instead', async ({ page }) => {
+    await page.goto('/?speed=pause');
+    // The view turns slowly while idle, so the marker never holds still for an ordinary click.
+    await page.getByRole('button', { name: 'Go to Saturn' }).dispatchEvent('click');
+    await expect(page.locator('.card h2')).toHaveText('Saturn');
+    // A pinch on a trackpad arrives as the wheel with Ctrl held; left alone, the browser zooms the page.
+    const leftAlone = await page
+      .locator('#stage')
+      .evaluate((canvas) =>
+        canvas.dispatchEvent(
+          new WheelEvent('wheel', { deltaY: -10, ctrlKey: true, cancelable: true, bubbles: true }),
+        ),
+      );
+    expect(leftAlone).toBe(false);
+  });
+});

@@ -16,6 +16,7 @@ import {
   NASA_SATELLITE,
   NASA_STAR_TYPES,
   NASA_WHAT_IS_A_PLANET,
+  NASA_WHAT_IS_THE_UNIVERSE,
 } from '../catalogue/sources';
 import type { ConceptContent } from '../types';
 
@@ -166,6 +167,17 @@ export const concepts: readonly ConceptContent[] = [
         'The result is a huge explosion called a supernova. The remnant core is a superdense neutron star.',
     },
     source: NASA_STAR_TYPES,
+  },
+  {
+    kind: 'universe',
+    titleKey: 'conceptUniverseTitle',
+    text: {
+      key: 'conceptUniverseText',
+      sourceId: 'nasa-what-is-the-universe',
+      quote:
+        'The universe is everything. It includes all of space, and all the matter and energy that space contains.',
+    },
+    source: NASA_WHAT_IS_THE_UNIVERSE,
   },
   {
     kind: 'exoplanet',

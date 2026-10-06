@@ -31,6 +31,7 @@ export const OBJECT_KINDS = [
   'black-hole',
   'neutron-star',
   'constellation',
+  'universe',
 ] as const;
 export type ObjectKind = (typeof OBJECT_KINDS)[number];
 
@@ -254,6 +255,19 @@ export interface NeutronStar extends ObjectBase {
   readonly sky: SkyPosition;
 }
 
+/**
+ * The whole universe: all of space and everything in it. It is not a thing somewhere in the
+ * sky, so it has no position, no distance and no outside to look at it from.
+ */
+export interface Universe extends ObjectBase {
+  readonly kind: 'universe';
+  readonly parentId: null;
+  readonly orbit: null;
+  readonly shape: null;
+  /** How long ago it began. */
+  readonly ageYears: Measured<number>;
+}
+
 export type CelestialObject =
   | Star
   | Planet
@@ -270,7 +284,8 @@ export type CelestialObject =
   | Galaxy
   | BlackHole
   | NeutronStar
-  | Constellation;
+  | Constellation
+  | Universe;
 
 /** The object type for one kind, e.g. `ObjectOfKind<'moon'>` is `Moon`. */
 export type ObjectOfKind<K extends ObjectKind> = Extract<CelestialObject, { kind: K }>;

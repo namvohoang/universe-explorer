@@ -280,6 +280,9 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   kindStar: 'Ngôi sao',
   kindBlackHole: 'Lỗ đen',
   kindNeutronStar: 'Sao neutron',
+  eyebrowUniverse: 'Tất cả những gì tồn tại',
+  statAge: 'Bao nhiêu tuổi',
+  valueBillionYears: '{n} tỉ năm',
   kindExoplanet: 'Hành tinh của một ngôi sao khác',
   eyebrowHome: '{kind} · nhà của chúng ta',
   cardAntaresHello:
@@ -503,6 +506,20 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   conceptNeutronStarTitle: 'Sao neutron là gì?',
   conceptNeutronStarText:
     'Sao neutron là phần lõi nhỏ và rất nặng còn lại sau khi một ngôi sao lớn phát nổ.',
+  nameUniverse: 'Vũ trụ',
+  cardUniverseHello:
+    'Bức hình này là bản đồ ánh sáng cổ xưa nhất trong vũ trụ, nhìn khắp bầu trời.',
+  cardUniverseFact1:
+    'Khoảng 13,8 tỉ năm trước, vũ trụ bắt đầu lớn lên rất nhanh. Các nhà khoa học gọi đó là Vụ Nổ Lớn.',
+  cardUniverseFact2:
+    'Mọi thứ ta nhìn thấy chỉ là khoảng 5 phần trong 100 phần của vũ trụ. Phần còn lại gọi là vật chất tối và năng lượng tối.',
+  cardUniverseFact3:
+    'Vũ trụ đang lớn lên ngày càng nhanh. Thứ khiến nó làm vậy được gọi là năng lượng tối. Các nhà khoa học chưa biết nó là gì.',
+  pictureAltUniverse:
+    'Một bản đồ hình bầu dục lấm tấm khắp nơi những mảng xanh lam, xanh lục, vàng và đỏ. Mỗi màu cho thấy một chỗ ấm hơn hoặc lạnh hơn một chút xíu.',
+  conceptUniverseTitle: 'Vũ trụ là gì?',
+  conceptUniverseText:
+    'Vũ trụ là tất cả: toàn bộ không gian, cùng mọi ngôi sao, hành tinh và thiên hà ở trong đó.',
   cardNgc5264Hello:
     'NGC 5264 là một thiên hà nhỏ không có hình dạng gọn gàng. Người ta gọi đó là thiên hà vô định hình.',
   cardNgc5264Fact1: 'Nó ở cách ta hơn 15 triệu năm ánh sáng một chút.',

@@ -40,6 +40,7 @@ function kindOf(object: CelestialObject): ObjectKind {
     case 'black-hole':
     case 'neutron-star':
     case 'constellation':
+    case 'universe':
       return object.kind;
     default:
       return object satisfies never;

@@ -236,7 +236,8 @@ describe('concepts', () => {
   it('says what kind of thing every place is', () => {
     for (const place of places) {
       const { concept } = cardModel(place.id, catalogue);
-      expect(concept?.title, place.id).toMatch(/^What is an? .+\?$/);
+      // There is only one universe, so its question says "the".
+      expect(concept?.title, place.id).toMatch(/^What is (an?|the) .+\?$/);
       expect(concept?.text, place.id).toMatch(/\S/);
     }
     expect(cardModel('titan', catalogue).concept?.title).toBe('What is a moon?');

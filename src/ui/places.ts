@@ -45,6 +45,7 @@ export function groupOf(object: CelestialObject): Group | null {
     case 'nebula':
     case 'black-hole':
     case 'exoplanet':
+    case 'universe':
       return 'space-wonders';
     case 'spacecraft':
       // One shown only as a model is a place of its own; one in orbit is listed at its planet.

@@ -361,6 +361,11 @@ export const NARRATION: Readonly<
     fingerprint: '9291022b',
     starts: [0.0, 3.15, 12.2, 18.43, 22.1],
   },
+  universe: {
+    file: 'public/voice/universe.mp3',
+    fingerprint: '788d3360',
+    starts: [0.0, 2.17, 7.97, 16.52, 26.27],
+  },
   orion: {
     file: 'public/voice/orion.mp3',
     fingerprint: '05d2742a',

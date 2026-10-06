@@ -264,6 +264,9 @@ export const en = {
   kindStar: 'Star',
   kindBlackHole: 'Black hole',
   kindNeutronStar: 'Neutron star',
+  eyebrowUniverse: 'Everything there is',
+  statAge: 'How old',
+  valueBillionYears: '{n} billion years',
   kindExoplanet: 'Planets of another star',
   eyebrowHome: '{kind} · our home',
   cardAntaresHello: 'Antares is a huge red star in the heart of the Scorpion, a pattern of stars.',
@@ -474,6 +477,20 @@ export const en = {
   conceptNeutronStarTitle: 'What is a neutron star?',
   conceptNeutronStarText:
     'A neutron star is the small, very heavy core left behind when a big star explodes.',
+  nameUniverse: 'The Universe',
+  cardUniverseHello:
+    'This picture is a map of the oldest light in the universe, seen all around the sky.',
+  cardUniverseFact1:
+    'About 13.8 billion years ago the universe began to grow very fast. Scientists call that the big bang.',
+  cardUniverseFact2:
+    'Everything we can see is only about 5 parts in every 100 of the universe. The rest is called dark matter and dark energy.',
+  cardUniverseFact3:
+    'The universe is growing faster and faster. What makes it do that is called dark energy. Scientists do not know yet what it is.',
+  pictureAltUniverse:
+    'An oval map speckled all over with blue, green, yellow and red patches. Each colour shows a spot that was a tiny bit warmer or cooler.',
+  conceptUniverseTitle: 'What is the universe?',
+  conceptUniverseText:
+    'The universe is everything: all of space, and all the stars, planets and galaxies in it.',
   cardNgc5264Hello:
     'NGC 5264 is a small galaxy with no tidy shape. That is called an irregular galaxy.',
   cardNgc5264Fact1: 'It is just over 15 million light-years away.',

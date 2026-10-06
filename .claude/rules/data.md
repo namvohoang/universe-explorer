@@ -12,7 +12,7 @@ Rules for the object catalogue in `src/data/` and the orbit, time and scale math
 
 - `CelestialObject` is a discriminated union on `kind`. Cover the full set a kid will meet:
   `star`, `planet`, `dwarf-planet`, `moon`, `asteroid`, `comet`, `ring-system`, `belt`
-  (asteroid belt, Kuiper belt), `exoplanet`, `nebula`, `star-cluster`, `galaxy`, `black-hole`, `neutron-star`.
+  (asteroid belt, Kuiper belt), `exoplanet`, `nebula`, `star-cluster`, `galaxy`, `black-hole`, `neutron-star`, `universe`.
   Add a kind rather than bending an existing one.
 - Each kind has one kid-facing explanation of the concept (what a moon is, what a comet is),
   separate from the facts of any one object.

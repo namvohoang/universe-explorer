@@ -81,6 +81,7 @@ export function isDeepSky(object: CelestialObject): boolean {
 
 function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[]): string {
   if (object.kind === 'constellation') return words.eyebrowConstellation;
+  if (object.kind === 'universe') return words.eyebrowUniverse;
   if (isDeepSky(object)) {
     const kind = DEEP_KIND_LABELS[object.kind] ?? '';
     // With no distance given, it is the one galaxy we are inside.

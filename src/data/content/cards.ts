@@ -93,6 +93,9 @@ import {
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_GALAXIES,
+  NASA_COSMIC_HISTORY,
+  NASA_DARK_ENERGY,
+  NASA_DARK_MATTER,
   NASA_BIGGEST_BLACK_HOLES,
   NASA_EXOPLANET_FACTS,
   NASA_GALAXY_TYPES,
@@ -2690,5 +2693,36 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_STAR_TYPES],
+  },
+  {
+    id: 'universe',
+    hello: {
+      key: 'cardUniverseHello',
+      sourceId: 'nasa-cosmic-history',
+      quote:
+        'Scientists used nine years of data from NASA’s Wilkinson Microwave Anisotropy Probe to create this detailed, all-sky image of the cosmic microwave background. The image reveals 13.8-billion-year-old temperature fluctuations (shown as different colors) – seeds that grew into the galaxies we see today.',
+    },
+    facts: [
+      {
+        key: 'cardUniverseFact1',
+        sourceId: 'nasa-dark-energy',
+        quote:
+          'Some 13.8 billion years ago, the universe began with a rapid expansion we call the big bang.',
+      },
+      {
+        key: 'cardUniverseFact2',
+        sourceId: 'nasa-dark-matter',
+        quote:
+          'scientists estimate that ordinary matter makes up only about 5% of the universe, while dark matter makes up about 27%. (The rest is thought to be dark energy, which is its own mystery).',
+      },
+      {
+        key: 'cardUniverseFact3',
+        sourceId: 'nasa-dark-energy',
+        quote:
+          "The short answer is: We don't know. But we do know that it exists, it’s making the universe expand at an accelerating rate",
+      },
+    ],
+    moons: null,
+    sources: [NASA_COSMIC_HISTORY, NASA_DARK_ENERGY, NASA_DARK_MATTER],
   },
 ];

@@ -436,8 +436,12 @@ everything found to be done. Nothing in the app contradicted those pages.
       Digital Sky Survey, which is not on the trusted list (see §8). Proxima b has no card of
       its own: NASA's page for it shows a stock drawing of a super-Earth, not of this planet,
       and no radius is known to draw it from.
-- [ ] 10.4 Big ideas with no object to point at: the Big Bang, dark matter and dark energy,
-      told as what scientists know and what they do not know yet.
+- [x] 10.4 The biggest ideas, on one card for the universe itself (a kind of its own, last in
+      Space wonders): the big bang 13.8 billion years ago, the 5 parts in 100 that can be seen,
+      dark matter and dark energy, and that scientists do not know yet what dark energy is.
+      Its picture is NASA's map of the oldest light, from the WMAP spacecraft, labelled as
+      colours added. It has no 3D model: the map shows the whole sky around us, not a thing
+      that can be turned and looked at from outside.
 
 **Acceptance:** as for Phase 7.
 

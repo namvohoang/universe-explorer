@@ -210,6 +210,7 @@ export function beltStats(belt: ObjectOfKind<'belt'>): Stat[] {
 }
 
 const MILLION = 1_000_000;
+const BILLION = 1_000_000_000;
 
 /** A distance in light-years the way a kid would say it: "1,500" or "2.5 million". */
 export function formatLightYears(lightYears: number): string {
@@ -223,6 +224,13 @@ export function formatLightYears(lightYears: number): string {
  * year, so the distance in light-years is also how many years ago the light we see set out.
  */
 export function deepSkyStats(object: CelestialObject): Stat[] {
+  if (object.kind === 'universe') {
+    if (!isKnown(object.ageYears)) return [];
+    const billions = object.ageYears.value / BILLION;
+    return [
+      { label: words.statAge, value: fill(words.valueBillionYears, { n: show(billions, 3) }) },
+    ];
+  }
   if (object.kind === 'constellation') {
     const depth = figureDepth(object.stars.value);
     if (!depth) return [];

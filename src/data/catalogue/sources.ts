@@ -1245,3 +1245,31 @@ export const NASA_EXOPLANET_FACTS: Source = {
   url: 'https://science.nasa.gov/exoplanets/facts/',
   retrieved: '2026-10-06',
 };
+
+export const NASA_COSMIC_HISTORY: Source = {
+  id: 'nasa-cosmic-history',
+  title: 'NASA Science — Cosmic History',
+  url: 'https://science.nasa.gov/universe/overview/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_DARK_MATTER: Source = {
+  id: 'nasa-dark-matter',
+  title: 'NASA Science — Dark Matter',
+  url: 'https://science.nasa.gov/dark-matter/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_DARK_ENERGY: Source = {
+  id: 'nasa-dark-energy',
+  title: 'NASA Science — Dark Energy',
+  url: 'https://science.nasa.gov/dark-energy/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_WHAT_IS_THE_UNIVERSE: Source = {
+  id: 'nasa-what-is-the-universe',
+  title: 'NASA Science — What is the Universe?',
+  url: 'https://science.nasa.gov/exoplanets/what-is-the-universe/',
+  retrieved: '2026-10-06',
+};

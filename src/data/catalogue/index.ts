@@ -76,6 +76,7 @@ import { ngc5264 } from './ngc5264';
 import { ngc4866 } from './ngc4866';
 import { ngc2865 } from './ngc2865';
 import { markarian231 } from './markarian231';
+import { universe } from './universe';
 import { mir } from './mir';
 import { apolloSoyuz } from './apolloSoyuz';
 import { rosetta } from './rosetta';
@@ -212,6 +213,7 @@ export const catalogue: readonly CelestialObject[] = [
   ngc2865,
   cartwheelGalaxy,
   markarian231,
+  universe,
   orion,
   bigDipper,
   southernCross,

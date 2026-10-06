@@ -986,3 +986,45 @@ export const NASA_APOD_HYADES: Source = {
   url: 'https://science.nasa.gov/image-article/apod-2020-january-22-the-hyades-star-cluster/',
   retrieved: '2026-10-06',
 };
+
+export const NASA_NSN_SCORPIUS: Source = {
+  id: 'nasa-nsn-scorpius',
+  title: 'NASA Science, Night Sky Network — July’s Night Sky Notes: Spy the Scorpion',
+  url: 'https://science.nasa.gov/solar-system/skywatching/night-sky-network/july2025-night-sky-notes/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_NSN_LEO: Source = {
+  id: 'nasa-nsn-leo',
+  title: 'NASA Science, Night Sky Network — Celestial Wonders in Leo',
+  url: 'https://science.nasa.gov/solar-system/skywatching/night-sky-network/celestial-wonders-in-leo/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_NSN_DENEB: Source = {
+  id: 'nasa-nsn-deneb',
+  title: 'NASA Science, Night Sky Network — Summer Triangle Corner: Deneb',
+  url: 'https://science.nasa.gov/solar-system/skywatching/night-sky-network/summer-triangle-corner-deneb/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_POLARIS: Source = {
+  id: 'nasa-hubble-polaris',
+  title: 'NASA Science — There’s More to the North Star Than Meets the Eye',
+  url: 'https://science.nasa.gov/missions/hubble/theres-more-to-the-north-star-than-meets-the-eye/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_M13: Source = {
+  id: 'nasa-hubble-m13',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 13',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-13/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_HUBBLE_C80: Source = {
+  id: 'nasa-hubble-c80',
+  title: 'NASA Science — Hubble Caldwell Catalog, Caldwell 80 (Omega Centauri)',
+  url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-80/',
+  retrieved: '2026-10-06',
+};

@@ -318,6 +318,48 @@ export const en = {
   pictureAltVega:
     'A wide blue glow of dust around a dark round patch in the middle, where the star’s own light was blocked out.',
   pictureAlt51Pegasi: 'A dark sky full of faint stars, with one brighter white star in the middle.',
+  cardScorpiusHello:
+    'Scorpius is a pattern of stars that people see as a scorpion with a curled tail.',
+  cardScorpiusFact1: 'The red star Antares is called the heart of the scorpion.',
+  cardScorpiusFact2:
+    'Some island peoples of the Pacific Ocean see the same stars as a giant fish hook.',
+  cardScorpiusFact3: 'On a clear night, try to follow the curve of its tail.',
+  cardLeoHello: 'Leo is a pattern of stars that people see as a lion.',
+  cardLeoFact1: 'The front of it looks like a question mark written backwards.',
+  cardLeoFact2: 'The bright star Regulus is the dot of that question mark.',
+  cardLeoFact3:
+    'The question mark is the head and mane of the lion. A triangle of stars is its back end.',
+  cardCygnusHello: 'Cygnus is a pattern of stars that people see as a swan.',
+  cardCygnusFact1: 'Its brightest stars make a cross, so people also call it the Northern Cross.',
+  cardCygnusFact2: 'Its brightest star is Deneb. That name means the tail.',
+  cardCygnusFact3: 'The star Albireo is the beak of the swan. It is lovely in a telescope.',
+  cardGeminiTwinsHello:
+    'Gemini is a pattern of stars that people see as twins. Two bright stars are their heads.',
+  cardGeminiTwinsFact1:
+    'The two heads are the stars Castor and Pollux. Pollux is the brighter one.',
+  cardGeminiTwinsFact2: 'Castor looks like one star, but it is really six stars together.',
+  cardGeminiTwinsFact3: 'To find the twins, look above the head of Orion.',
+  cardLittleDipperHello:
+    'The Little Dipper is a pattern of stars. It is part of a constellation, the Little Bear.',
+  cardLittleDipperFact1:
+    'One of its stars is Polaris, the North Star. It sits almost exactly above the north of Earth.',
+  cardLittleDipperFact2: 'Long ago, sailors used the North Star to find their way.',
+  cardLittleDipperFact3: 'The North Star is really three stars close together.',
+  nameLittleDipper: 'The Little Dipper',
+  nameHerculesCluster: 'The Hercules Cluster',
+  cardHerculesClusterHello: 'The Hercules Cluster is a ball of more than 100,000 stars.',
+  cardHerculesClusterFact1: 'It is 25,000 light-years from Earth.',
+  cardHerculesClusterFact2: 'You can spot it with binoculars. July is the easiest time.',
+  cardHerculesClusterFact3: 'Its stars are so crowded that two can sometimes run into each other.',
+  cardOmegaCentauriHello:
+    'Omega Centauri is the biggest and brightest ball of stars in our galaxy.',
+  cardOmegaCentauriFact1: 'It holds around 10 million stars.',
+  cardOmegaCentauriFact2: 'It is about 17,000 light-years away and about 450 light-years wide.',
+  cardOmegaCentauriFact3: 'It is so bright that you can see it with your eyes alone.',
+  pictureAltHerculesCluster:
+    'A black sky crowded with thousands of white, blue and yellow stars, packed closest in the middle.',
+  pictureAltOmegaCentauri:
+    'A huge round ball of countless tiny stars, tightly packed in the middle and thinning out towards the edge.',
   pictureAltBetelgeuse:
     'A fuzzy round glow on black: yellow-white in the middle, fading to orange and dark red at the edge.',
   nameBetelgeuse: 'Betelgeuse',

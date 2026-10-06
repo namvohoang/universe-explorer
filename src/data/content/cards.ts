@@ -2,6 +2,12 @@
 // quote appears in the page as fetched on the source's `retrieved` date, then wrote this file.
 // The sentences themselves are in src/ui/strings/en.ts under each `key`.
 import {
+  NASA_HUBBLE_C80,
+  NASA_HUBBLE_M13,
+  NASA_HUBBLE_POLARIS,
+  NASA_NSN_DENEB,
+  NASA_NSN_LEO,
+  NASA_NSN_SCORPIUS,
   ESA_HUBBLE_SIRIUS,
   NASA_51_PEGASI,
   NASA_APOD_HYADES,
@@ -1844,5 +1850,201 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_APOD_HYADES, NASA_APOD_TAURUS],
+  },
+  {
+    id: 'scorpius',
+    hello: {
+      key: 'cardScorpiusHello',
+      sourceId: 'nasa-nsn-scorpius',
+      quote:
+        'a familiar constellation rises with the galactic core of the Milky Way each evening: Scorpius the Scorpion',
+    },
+    facts: [
+      {
+        key: 'cardScorpiusFact1',
+        sourceId: 'nasa-nsn-scorpius',
+        quote:
+          'referred to as “the heart of the scorpion,” this supergiant has a distinct reddish hue and is visible to the naked eye',
+      },
+      {
+        key: 'cardScorpiusFact2',
+        sourceId: 'nasa-nsn-scorpius',
+        quote: "several Polynesian cultures see the same stars as the demigod Māui's fishhook",
+      },
+      {
+        key: 'cardScorpiusFact3',
+        sourceId: 'nasa-nsn-scorpius',
+        quote: 'On a clear night, can you trail the curve of the tail?',
+      },
+    ],
+    moons: null,
+    sources: [NASA_NSN_SCORPIUS],
+  },
+  {
+    id: 'leo',
+    hello: {
+      key: 'cardLeoHello',
+      sourceId: 'nasa-nsn-leo',
+      quote: 'forms the constellation of Leo the Lion',
+    },
+    facts: [
+      {
+        key: 'cardLeoFact1',
+        sourceId: 'nasa-nsn-leo',
+        quote: 'Leo’s distinctive forward sickle, or “reverse question mark,” is easy to spot',
+      },
+      {
+        key: 'cardLeoFact2',
+        sourceId: 'nasa-nsn-leo',
+        quote: 'the bright star Regulus, the “period” in the reverse question mark',
+      },
+      {
+        key: 'cardLeoFact3',
+        sourceId: 'nasa-nsn-leo',
+        quote:
+          'the forward-facing sickle being the lion’s head and mane, and the rear triangle its hindquarters',
+      },
+    ],
+    moons: null,
+    sources: [NASA_NSN_LEO],
+  },
+  {
+    id: 'cygnus',
+    hello: {
+      key: 'cardCygnusHello',
+      sourceId: 'nasa-nsn-deneb',
+      quote: 'Bird constellations abound in the night sky, including Cygnus, the majestic swan.',
+    },
+    facts: [
+      {
+        key: 'cardCygnusFact1',
+        sourceId: 'nasa-nsn-deneb',
+        quote: 'you may only see the brightest stars, sometimes called the Northern Cross',
+      },
+      {
+        key: 'cardCygnusFact2',
+        sourceId: 'nasa-nsn-deneb',
+        quote: 'is an Arabic word meaning the tail',
+      },
+      {
+        key: 'cardCygnusFact3',
+        sourceId: 'nasa-nsn-deneb',
+        quote:
+          'While the bright beak star Albireo is easy to pick out, a telescope will let its true beauty shine!',
+      },
+    ],
+    moons: null,
+    sources: [NASA_NSN_DENEB],
+  },
+  {
+    id: 'gemini-twins',
+    hello: {
+      key: 'cardGeminiTwinsHello',
+      sourceId: 'nasa-nsn-gemini',
+      quote: 'the bright stars Castor and Pollux, the “heads” of the Gemini Twins',
+    },
+    facts: [
+      {
+        key: 'cardGeminiTwinsFact1',
+        sourceId: 'nasa-nsn-gemini',
+        quote: 'Pollux is the brighter of Gemini’s two “head” stars',
+      },
+      {
+        key: 'cardGeminiTwinsFact2',
+        sourceId: 'nasa-nsn-gemini',
+        quote: 'Castor is actually a six-star system',
+      },
+      {
+        key: 'cardGeminiTwinsFact3',
+        sourceId: 'nasa-nsn-gemini',
+        quote: 'just look above Orion’s “head” to see Gemini’s “feet.”',
+      },
+    ],
+    moons: null,
+    sources: [NASA_NSN_GEMINI],
+  },
+  {
+    id: 'little-dipper',
+    hello: {
+      key: 'cardLittleDipperHello',
+      sourceId: 'nasa-asterisms',
+      quote: 'The Little Dipper is part of the constellation Ursa Minor, the little bear.',
+    },
+    facts: [
+      {
+        key: 'cardLittleDipperFact1',
+        sourceId: 'nasa-hubble-polaris',
+        quote:
+          "Polaris's location very close to the position of Earth's north celestial pole in Ursa Minor",
+      },
+      {
+        key: 'cardLittleDipperFact2',
+        sourceId: 'nasa-hubble-polaris',
+        quote: 'a steady, solitary point of light that guided sailors in ages past',
+      },
+      {
+        key: 'cardLittleDipperFact3',
+        sourceId: 'nasa-hubble-polaris',
+        quote: 'The North Star is actually a triple star system.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_ASTERISMS, NASA_HUBBLE_POLARIS],
+  },
+  {
+    id: 'hercules-cluster',
+    hello: {
+      key: 'cardHerculesClusterHello',
+      sourceId: 'nasa-hubble-m13',
+      quote: 'over 100,000 stars whirl within the globular cluster M13',
+    },
+    facts: [
+      {
+        key: 'cardHerculesClusterFact1',
+        sourceId: 'nasa-hubble-m13',
+        quote: 'Located 25,000 light-years from Earth',
+      },
+      {
+        key: 'cardHerculesClusterFact2',
+        sourceId: 'nasa-hubble-m13',
+        quote: 'can be spotted with a pair of binoculars most easily in July',
+      },
+      {
+        key: 'cardHerculesClusterFact3',
+        sourceId: 'nasa-hubble-m13',
+        quote:
+          'These stars are so crowded that they can, at times, run into each other and even form a new star.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_M13],
+  },
+  {
+    id: 'omega-centauri',
+    hello: {
+      key: 'cardOmegaCentauriHello',
+      sourceId: 'nasa-hubble-c80',
+      quote: 'the biggest and brightest ball of stars in our galaxy',
+    },
+    facts: [
+      {
+        key: 'cardOmegaCentauriFact1',
+        sourceId: 'nasa-hubble-c80',
+        quote: 'is home to around 10 million stars',
+      },
+      {
+        key: 'cardOmegaCentauriFact2',
+        sourceId: 'nasa-hubble-c80',
+        quote:
+          'Located about 17,000 light-years away from Earth toward the Centaurus constellation, the cluster has a diameter of about 450 light-years.',
+      },
+      {
+        key: 'cardOmegaCentauriFact3',
+        sourceId: 'nasa-hubble-c80',
+        quote: 'It’s so bright that it can easily be seen with the unaided eye',
+      },
+    ],
+    moons: null,
+    sources: [NASA_HUBBLE_C80],
   },
 ];

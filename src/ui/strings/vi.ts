@@ -339,6 +339,51 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   pictureAltVega:
     'Một quầng bụi rộng màu xanh lam quanh một mảng tròn tối ở giữa, nơi ánh sáng của ngôi sao đã được che đi.',
   pictureAlt51Pegasi: 'Một bầu trời tối đầy sao mờ, với một ngôi sao trắng sáng hơn ở giữa.',
+  cardScorpiusHello: 'Bọ Cạp là một hình sao mà người ta thấy giống con bọ cạp có cái đuôi cong.',
+  cardScorpiusFact1: 'Ngôi sao đỏ Antares được gọi là trái tim của con bọ cạp.',
+  cardScorpiusFact2:
+    'Một số dân tộc trên các đảo ở Thái Bình Dương thấy những ngôi sao này là một cái lưỡi câu khổng lồ.',
+  cardScorpiusFact3: 'Vào một đêm trời quang, hãy thử dõi theo đường cong của cái đuôi.',
+  cardLeoHello: 'Sư Tử là một hình sao mà người ta thấy giống con sư tử.',
+  cardLeoFact1: 'Phần đầu của nó trông như một dấu hỏi viết ngược.',
+  cardLeoFact2: 'Ngôi sao sáng Regulus là dấu chấm của dấu hỏi ấy.',
+  cardLeoFact3: 'Dấu hỏi là đầu và bờm của sư tử. Một tam giác sao là phần thân sau của nó.',
+  cardCygnusHello: 'Thiên Nga là một hình sao mà người ta thấy giống con thiên nga.',
+  cardCygnusFact1:
+    'Những ngôi sao sáng nhất của nó xếp thành chữ thập, nên còn được gọi là Bắc Thập Tự.',
+  cardCygnusFact2: 'Ngôi sao sáng nhất của nó là Deneb. Tên ấy có nghĩa là cái đuôi.',
+  cardCygnusFact3: 'Ngôi sao Albireo là cái mỏ của thiên nga. Nhìn qua kính thiên văn, nó rất đẹp.',
+  cardGeminiTwinsHello:
+    'Song Tử là một hình sao mà người ta thấy giống hai anh em sinh đôi. Hai ngôi sao sáng là hai cái đầu.',
+  cardGeminiTwinsFact1: 'Hai cái đầu là hai ngôi sao Castor và Pollux. Pollux sáng hơn.',
+  cardGeminiTwinsFact2: 'Castor trông như một ngôi sao, nhưng thật ra là sáu ngôi sao ở cùng nhau.',
+  cardGeminiTwinsFact3: 'Muốn tìm hai anh em sinh đôi, hãy nhìn phía trên đầu của Orion.',
+  cardLittleDipperHello: 'Bắc Đẩu Nhỏ là một hình sao. Nó thuộc một chòm sao tên là Gấu Nhỏ.',
+  cardLittleDipperFact1:
+    'Một ngôi sao của nó là Polaris, sao Bắc Cực. Nó nằm gần như ngay phía trên cực bắc của Trái Đất.',
+  cardLittleDipperFact2: 'Ngày xưa, các thủy thủ dùng sao Bắc Cực để tìm đường.',
+  cardLittleDipperFact3: 'Sao Bắc Cực thật ra là ba ngôi sao ở sát nhau.',
+  nameLittleDipper: 'Chòm Bắc Đẩu Nhỏ',
+  nameHerculesCluster: 'Cụm sao Vũ Tiên',
+  cardHerculesClusterHello: 'Cụm sao Vũ Tiên là một quả cầu gồm hơn 100.000 ngôi sao.',
+  cardHerculesClusterFact1: 'Nó ở cách Trái Đất 25.000 năm ánh sáng.',
+  cardHerculesClusterFact2: 'Bạn có thể thấy nó bằng ống nhòm. Tháng 7 là lúc dễ thấy nhất.',
+  cardHerculesClusterFact3:
+    'Các ngôi sao của nó chen chúc đến mức đôi khi hai ngôi sao va vào nhau.',
+  cardOmegaCentauriHello:
+    'Omega Centauri là quả cầu sao lớn nhất và sáng nhất trong thiên hà của chúng ta.',
+  cardOmegaCentauriFact1: 'Nó chứa khoảng 10 triệu ngôi sao.',
+  cardOmegaCentauriFact2:
+    'Nó ở cách ta khoảng 17.000 năm ánh sáng và rộng khoảng 450 năm ánh sáng.',
+  cardOmegaCentauriFact3: 'Nó sáng đến mức bạn có thể thấy nó bằng mắt thường.',
+  pictureAltHerculesCluster:
+    'Một bầu trời đen chi chít hàng nghìn ngôi sao trắng, xanh và vàng, dày nhất ở giữa.',
+  pictureAltOmegaCentauri:
+    'Một quả cầu tròn khổng lồ gồm vô số ngôi sao li ti, dày đặc ở giữa và thưa dần ra phía rìa.',
+  nameScorpius: 'Chòm Bọ Cạp',
+  nameLeo: 'Chòm Sư Tử',
+  nameCygnus: 'Chòm Thiên Nga',
+  nameGeminiTwins: 'Chòm Song Tử',
   pictureAltBetelgeuse:
     'Một quầng sáng tròn mờ nhòe trên nền đen: trắng vàng ở giữa, nhạt dần sang cam và đỏ sẫm ở rìa.',
   nameBetelgeuse: 'Betelgeuse',

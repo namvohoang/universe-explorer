@@ -226,6 +226,16 @@ export const NARRATION: Readonly<
     fingerprint: '262c72d3',
     starts: [0.0, 2.25, 6.78, 14.12, 17.5],
   },
+  'omega-centauri': {
+    file: 'public/voice/omega-centauri.mp3',
+    fingerprint: '4488a3bd',
+    starts: [0.0, 2.35, 8.05, 11.28, 17.7],
+  },
+  'hercules-cluster': {
+    file: 'public/voice/hercules-cluster.mp3',
+    fingerprint: 'c6c2e45d',
+    starts: [0.0, 2.45, 7.83, 11.5, 16.35],
+  },
   'sagittarius-a': {
     file: 'public/voice/sagittarius-a.mp3',
     fingerprint: '56483e5e',
@@ -285,6 +295,31 @@ export const NARRATION: Readonly<
     file: 'public/voice/cassiopeia.mp3',
     fingerprint: 'ec3fb3ed',
     starts: [0.0, 2.17, 7.17, 11.53, 16.27],
+  },
+  'little-dipper': {
+    file: 'public/voice/little-dipper.mp3',
+    fingerprint: '83bbbf68',
+    starts: [0.0, 2.17, 8.53, 15.5, 19.95],
+  },
+  leo: {
+    file: 'public/voice/leo.mp3',
+    fingerprint: 'be6aec71',
+    starts: [0.0, 1.95, 6.42, 10.62, 15.1],
+  },
+  'gemini-twins': {
+    file: 'public/voice/gemini-twins.mp3',
+    fingerprint: '858a214f',
+    starts: [0.0, 2.0, 8.62, 14.18, 19.2],
+  },
+  scorpius: {
+    file: 'public/voice/scorpius.mp3',
+    fingerprint: '6506acc9',
+    starts: [0.0, 2.12, 8.15, 12.57, 18.8],
+  },
+  cygnus: {
+    file: 'public/voice/cygnus.mp3',
+    fingerprint: '0863440e',
+    starts: [0.0, 2.02, 6.78, 12.32, 16.73],
   },
   gemini: {
     file: 'public/voice/gemini.mp3',

@@ -84,6 +84,13 @@ import { m87BlackHole } from './m87BlackHole';
 import { sagittariusA } from './sagittariusA';
 import { gaiaBh1 } from './gaiaBh1';
 import { cassiopeia } from './cassiopeia';
+import { scorpius } from './scorpius';
+import { leo } from './leo';
+import { cygnus } from './cygnus';
+import { geminiTwins } from './geminiTwins';
+import { littleDipper } from './littleDipper';
+import { herculesCluster } from './herculesCluster';
+import { omegaCentauri } from './omegaCentauri';
 import { southernCross } from './southernCross';
 import { bigDipper } from './bigDipper';
 import { orion } from './orion';
@@ -157,6 +164,8 @@ export const catalogue: readonly CelestialObject[] = [
   gaiaBh1,
   vyCanisMajoris,
   crabNebula,
+  omegaCentauri,
+  herculesCluster,
   sagittariusA,
   milkyWay,
   andromeda,
@@ -169,6 +178,11 @@ export const catalogue: readonly CelestialObject[] = [
   bigDipper,
   southernCross,
   cassiopeia,
+  littleDipper,
+  leo,
+  geminiTwins,
+  scorpius,
+  cygnus,
   gemini,
   saturnV,
   columbia,

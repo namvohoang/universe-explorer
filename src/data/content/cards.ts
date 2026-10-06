@@ -92,6 +92,8 @@ import {
   NASA_PSYCHE,
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
+  NASA_GALAXIES,
+  NASA_STAR_TYPES,
   NASA_TRAPPIST1,
   SI_COLUMBIA,
   SI_DISCOVERY,
@@ -1060,12 +1062,13 @@ export const cards: readonly CardContent[] = [
       },
       {
         key: 'cardProximaCentauriFact3',
-        sourceId: 'nasa-hubble-proxima',
-        quote: 'at only about an eighth of the mass of the Sun',
+        sourceId: 'nasa-star-types',
+        quote:
+          'Red dwarfs are the smallest main sequence stars – just a fraction of the Sun’s size and mass. They’re also the coolest',
       },
     ],
     moons: null,
-    sources: [NASA_HUBBLE_PROXIMA],
+    sources: [NASA_HUBBLE_PROXIMA, NASA_STAR_TYPES],
   },
   {
     id: 'trappist-1',
@@ -1115,12 +1118,13 @@ export const cards: readonly CardContent[] = [
       },
       {
         key: 'cardMilkyWayFact3',
-        sourceId: 'nasa-milky-way',
-        quote: "The annotated artist's concept illustrates the new view of the Milky Way.",
+        sourceId: 'nasa-galaxies',
+        quote:
+          'It’s a spiral galaxy with a disk of stars spanning more than 100,000 light-years. Earth is located along one of the galaxy’s spiral arms, about halfway from the center. Our solar system takes about 240 million years to orbit the Milky Way just once.',
       },
     ],
     moons: null,
-    sources: [NASA_MILKY_WAY],
+    sources: [NASA_MILKY_WAY, NASA_GALAXIES],
   },
   {
     id: 'm87-black-hole',

@@ -12,7 +12,10 @@ export const andromeda: Galaxy = {
   orbit: null,
   shape: {
     type: 'extended',
-    structure: 'spiral',
+    // The Hubble page says only "Spiral Galaxy". NASA's page on galaxy types (NASA_GALAXY_TYPES
+    // in sources.ts) says: "Both the Milky Way and the Andromeda galaxies belong to a subtype
+    // known as barred spirals".
+    structure: 'barred-spiral',
     diameterLy: unknown('The source used gives no size for this object.'),
   },
   sky: {
@@ -21,7 +24,7 @@ export const andromeda: Galaxy = {
     distanceLy: s(
       2.5e6,
       'nasa-hubble-m31',
-      'Source says: making it the nearest galaxy to our own Milky Way',
+      'Source says: only 2.5 million light-years from Earth, making it the nearest galaxy to our own Milky Way',
     ),
   },
   media: [

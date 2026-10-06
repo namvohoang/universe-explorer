@@ -1017,7 +1017,7 @@ export const NASA_HUBBLE_POLARIS: Source = {
 
 export const NASA_HUBBLE_M13: Source = {
   id: 'nasa-hubble-m13',
-  title: 'NASA Science — Hubble Messier Catalog,  13',
+  title: 'NASA Science — Hubble Messier Catalog, Messier 13',
   url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-13/',
   retrieved: '2026-10-06',
 };
@@ -1173,5 +1173,33 @@ export const NASA_HALLEY: Source = {
   id: 'nasa-halley',
   title: 'NASA Science — 1P/Halley',
   url: 'https://science.nasa.gov/solar-system/comets/1p-halley/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_GALAXIES: Source = {
+  id: 'nasa-galaxies',
+  title: 'NASA Science — Galaxies',
+  url: 'https://science.nasa.gov/universe/galaxies/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_GALAXY_TYPES: Source = {
+  id: 'nasa-galaxy-types',
+  title: 'NASA Science — Galaxy Types',
+  url: 'https://science.nasa.gov/universe/galaxies/types/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_STAR_TYPES: Source = {
+  id: 'nasa-star-types',
+  title: 'NASA Science — Star Types',
+  url: 'https://science.nasa.gov/universe/stars/types/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_EXOPLANETS: Source = {
+  id: 'nasa-exoplanets',
+  title: 'NASA Science — Exoplanets',
+  url: 'https://science.nasa.gov/exoplanets/',
   retrieved: '2026-10-06',
 };

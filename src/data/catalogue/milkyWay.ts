@@ -1,8 +1,8 @@
 // Values are copied from the page in `sources`, by script, on the `retrieved` date.
 // Do not edit a number by hand: re-read the source (CLAUDE.md, real numbers only).
 import type { Galaxy } from '../types';
-import { unknown } from './helpers';
-import { NASA_MILKY_WAY } from './sources';
+import { s } from './helpers';
+import { NASA_GALAXIES } from './sources';
 
 export const milkyWay: Galaxy = {
   id: 'milky-way',
@@ -13,7 +13,11 @@ export const milkyWay: Galaxy = {
   shape: {
     type: 'extended',
     structure: 'barred-spiral',
-    diameterLy: unknown('The source used gives no size for this object.'),
+    diameterLy: s(
+      100000,
+      'nasa-galaxies',
+      'Source says: a disk of stars spanning more than 100,000 light-years',
+    ),
   },
   sky: null,
   media: [
@@ -25,5 +29,5 @@ export const milkyWay: Galaxy = {
       credit: 'NASA/JPL-Caltech/R. Hurt (SSC/Caltech)',
     },
   ],
-  sources: [NASA_MILKY_WAY],
+  sources: [NASA_GALAXIES],
 };

@@ -411,6 +411,28 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
 
 **Acceptance:** as for Phase 7.
 
+### Phase 10 — Checked against NASA's Universe pages (asked for on 2026-10-06)
+
+The owner asked for the catalogue to be checked against https://science.nasa.gov/universe/ and
+its pages on stars, galaxies, black holes, exoplanets, dark matter and dark energy, and for
+everything found to be done. Nothing in the app contradicted those pages.
+
+- [x] 10.1 What NASA's pages now say about things already here: the Milky Way's size (more than
+      100,000 light-years) and how long the Sun takes to go round it (about 240 million years);
+      Andromeda as a barred spiral, as NASA's page on galaxy types calls it; Proxima Centauri as
+      a red dwarf; and, in "What is an exoplanet?", that more than 6,000 have been found. The
+      Milky Way's card no longer says the picture is an artist's drawing in a fact of its own:
+      the label on the picture still does.
+- [ ] 10.2 Galaxies of the kinds not shown yet, each from NASA's page on galaxy types and its
+      own picture page: an elliptical, a lenticular (a new structure), an irregular and the
+      nearest quasar.
+- [ ] 10.3 A neutron star (the Vela pulsar), the heaviest black hole found (TON 618) and the
+      nearest exoplanet (Proxima Centauri b), as far as a trusted site has a picture of each.
+- [ ] 10.4 Big ideas with no object to point at: the Big Bang, dark matter and dark energy,
+      told as what scientists know and what they do not know yet.
+
+**Acceptance:** as for Phase 7.
+
 ## 7. Testing
 
 | Layer | Tests |

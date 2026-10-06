@@ -148,7 +148,7 @@ export const NARRATION: Readonly<
   },
   'proxima-centauri': {
     file: 'public/voice/proxima-centauri.mp3',
-    fingerprint: '6ac3e811',
+    fingerprint: '1b4d90a6',
     starts: [0.0, 2.42, 7.5, 10.68, 14.9],
   },
   sirius: {
@@ -278,7 +278,7 @@ export const NARRATION: Readonly<
   },
   'milky-way': {
     file: 'public/voice/milky-way.mp3',
-    fingerprint: 'db08726b',
+    fingerprint: 'f98f0971',
     starts: [0.0, 2.2, 7.42, 13.07, 19.93],
   },
   andromeda: {

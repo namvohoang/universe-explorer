@@ -473,7 +473,8 @@ export const en = {
   cardProximaCentauriHello: 'Proxima Centauri is the closest star to us, apart from the Sun.',
   cardProximaCentauriFact1: 'It is just over four light-years away.',
   cardProximaCentauriFact2: 'Even so, it is too dim to see with your eyes alone.',
-  cardProximaCentauriFact3: 'It is small for a star: only about an eighth as heavy as the Sun.',
+  cardProximaCentauriFact3:
+    'It is a red dwarf: the smallest and coolest kind of star that shines like the Sun does.',
   pictureAltTrappist1:
     "An artist's drawing of seven small planets in a row, in browns, greys and blues, beside a dim red star.",
   nameTrappist1: 'The TRAPPIST-1 Planets',
@@ -491,7 +492,7 @@ export const en = {
   cardMilkyWayFact2:
     'Our Sun sits beside a small arm called the Orion Arm. Look for the word Sun in the picture.',
   cardMilkyWayFact3:
-    "This is an artist's drawing. We live inside the Milky Way, so nobody can photograph all of it.",
+    'It is more than 100,000 light-years wide. The Sun takes about 240 million years to go around it once.',
   pictureAltSagittariusA: 'A blurry glowing orange ring with a dark middle, on a black background.',
   cardSagittariusAHello:
     'Sagittarius A* is the giant black hole in the middle of our own galaxy, the Milky Way.',
@@ -516,7 +517,8 @@ export const en = {
   conceptBlackHoleText:
     'A black hole is a place where gravity pulls so hard that nothing can get out, not even light.',
   conceptExoplanetTitle: 'What is an exoplanet?',
-  conceptExoplanetText: 'An exoplanet is a planet that goes around a star other than our Sun.',
+  conceptExoplanetText:
+    'An exoplanet is a planet that goes around a star other than our Sun. Scientists have found more than 6,000 of them so far.',
   statHowFar: 'How far away',
   statLightLeft: 'The light you see left it',
   statWide: 'Width',

@@ -504,7 +504,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardProximaCentauriFact1: 'Nó ở cách ta hơn bốn năm ánh sáng một chút.',
   cardProximaCentauriFact2: 'Dù vậy, nó quá mờ để thấy được chỉ bằng mắt.',
   cardProximaCentauriFact3:
-    'So với các ngôi sao thì nó nhỏ: chỉ nặng bằng khoảng một phần tám Mặt Trời.',
+    'Nó là một sao lùn đỏ: loại sao nhỏ nhất và nguội nhất trong các ngôi sao tỏa sáng giống như Mặt Trời.',
   pictureAltTrappist1:
     'Hình vẽ của họa sĩ về bảy hành tinh nhỏ xếp thành hàng, màu nâu, xám và xanh lam, bên cạnh một ngôi sao đỏ mờ.',
   nameTrappist1: 'Các hành tinh TRAPPIST-1',
@@ -523,7 +523,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardMilkyWayFact2:
     'Mặt Trời của chúng ta nằm cạnh một cánh tay nhỏ tên là Cánh tay Orion. Hãy tìm chữ Sun trong hình.',
   cardMilkyWayFact3:
-    'Đây là hình vẽ của họa sĩ. Chúng ta sống bên trong Dải Ngân Hà nên không ai chụp được toàn bộ nó.',
+    'Nó rộng hơn 100.000 năm ánh sáng. Mặt Trời mất khoảng 240 triệu năm để đi hết một vòng quanh nó.',
   pictureAltSagittariusA: 'Một vòng sáng màu cam mờ nhòe với phần giữa tối, trên nền đen.',
   cardSagittariusAHello:
     'Sagittarius A* là lỗ đen khổng lồ ở giữa thiên hà của chính chúng ta, Dải Ngân Hà.',
@@ -548,7 +548,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Lỗ đen là nơi lực hấp dẫn kéo mạnh đến mức không gì thoát ra được, kể cả ánh sáng.',
   conceptExoplanetTitle: 'Ngoại hành tinh là gì?',
   conceptExoplanetText:
-    'Ngoại hành tinh là một hành tinh quay quanh một ngôi sao khác, không phải Mặt Trời của chúng ta.',
+    'Ngoại hành tinh là một hành tinh quay quanh một ngôi sao khác, không phải Mặt Trời của chúng ta. Đến nay các nhà khoa học đã tìm thấy hơn 6.000 ngoại hành tinh.',
   statHowFar: 'Cách ta bao xa',
   statLightLeft: 'Ánh sáng bạn thấy đã rời nó',
   statWide: 'Chiều rộng',

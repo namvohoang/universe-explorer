@@ -3,6 +3,7 @@
 // `retrieved` date. The sentences themselves are in src/ui/strings/en.ts.
 import {
   NASA_DWARF_PLANETS,
+  NASA_EXOPLANETS,
   NASA_FACTS_ASTEROIDS,
   NASA_FACTS_COMETS,
   NASA_FACTS_SUN,
@@ -13,7 +14,6 @@ import {
   NASA_MOONS,
   NASA_CONSTELLATIONS,
   NASA_SATELLITE,
-  NASA_TRAPPIST1,
   NASA_WHAT_IS_A_PLANET,
 } from '../catalogue/sources';
 import type { ConceptContent } from '../types';
@@ -160,9 +160,10 @@ export const concepts: readonly ConceptContent[] = [
     titleKey: 'conceptExoplanetTitle',
     text: {
       key: 'conceptExoplanetText',
-      sourceId: 'nasa-trappist-1',
-      quote: 'the seven rocky exoplanets orbiting the TRAPPIST-1 star',
+      sourceId: 'nasa-exoplanets',
+      quote:
+        'An exoplanet is any planet beyond our solar system. Most of them orbit other stars, but some free-floating exoplanets, called rogue planets, are untethered to any star. We’ve confirmed more than 6,000 exoplanets, out of the billions that we believe exist.',
     },
-    source: NASA_TRAPPIST1,
+    source: NASA_EXOPLANETS,
   },
 ];

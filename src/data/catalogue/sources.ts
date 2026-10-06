@@ -1161,3 +1161,10 @@ export const NASA_WEBB_CARTWHEEL: Source = {
   url: 'https://science.nasa.gov/missions/webb/webb-captures-stellar-gymnastics-in-the-cartwheel-galaxy/',
   retrieved: '2026-10-06',
 };
+
+export const NASA_SPACEPLACE_MIRA: Source = {
+  id: 'nasa-spaceplace-mira',
+  title: 'NASA Space Place — Mira: A Real Shooting Star! (GALEX poster, PDF)',
+  url: 'https://spaceplace.nasa.gov/review/posters/GALEX_mira_poster/mira_poster_back_all.pdf',
+  retrieved: '2026-10-06',
+};

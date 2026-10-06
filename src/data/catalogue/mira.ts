@@ -1,12 +1,8 @@
 // Values are copied from the pages in `sources`, by script, on the `retrieved` date.
 // Do not edit a number by hand: re-read the source (CLAUDE.md, real numbers only).
-// The source gives no temperature. The colour in the Hipparcos Catalogue (B−V 0.966 for HIP
-// 10826) would tint it like a far warmer star than the cool red giant the source describes,
-// and the source says its light is highly variable. So no colour is recorded, and the star is
-// shown by its picture, not as a tinted model.
 import type { Star } from '../types';
 import { s, unknown } from './helpers';
-import { ESA_HIPPARCOS, NASA_HUBBLE_MIRA } from './sources';
+import { ESA_HIPPARCOS, NASA_HUBBLE_MIRA, NASA_SPACEPLACE_MIRA } from './sources';
 
 export const mira: Star = {
   id: 'mira',
@@ -16,7 +12,11 @@ export const mira: Star = {
   orbit: null,
   shape: null,
   massKg: unknown('The source used gives no mass for this star.'),
-  effectiveTemperatureK: unknown('The source calls it a cool red giant and gives no temperature.'),
+  effectiveTemperatureK: s(
+    3000,
+    'nasa-spaceplace-mira',
+    'Source says: it has a surface temperature of only 3,000 degrees Kelvin',
+  ),
   radiusInSuns: s(
     700,
     'nasa-hubble-mira',
@@ -41,5 +41,5 @@ export const mira: Star = {
       credit: 'Margarita Karovska (Harvard-Smithsonian Center for Astrophysics) and NASA',
     },
   ],
-  sources: [ESA_HIPPARCOS, NASA_HUBBLE_MIRA],
+  sources: [ESA_HIPPARCOS, NASA_HUBBLE_MIRA, NASA_SPACEPLACE_MIRA],
 };

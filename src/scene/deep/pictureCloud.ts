@@ -31,6 +31,11 @@ export interface CloudOptions {
    * up like a painting with the depth behind it (a nebula).
    */
   readonly lay: 'flat' | 'upright';
+  /**
+   * Gives every point from one spot of the picture the same depth. For a picture of separate
+   * stars: spread in depth, each star would be smeared into a streak.
+   */
+  readonly depthPerSpot?: boolean;
 }
 
 function softDot(): CanvasTexture {
@@ -116,11 +121,12 @@ export function createPictureCloud(url: string, options: CloudOptions): DeepMode
         const light = Math.max(r, g, b);
         const wanted = weightOf(light) * pointsPerWeight;
         const count = Math.floor(wanted) + (random() < wanted % 1 ? 1 : 0);
+        const spotDepth = options.depthPerSpot && count > 0 ? bell(random) : null;
         for (let n = 0; n < count; n++) {
           const thickness = options.depth * (1 + options.bulge * light * light);
           const across = (x + random() - width / 2) * scale;
           const down = (y + random() - height / 2) * scale;
-          const deep = bell(random) * thickness * 2 * HALF_WIDTH;
+          const deep = (spotDepth ?? bell(random)) * thickness * 2 * HALF_WIDTH;
           if (options.lay === 'flat') positions.push(across, deep, down);
           else positions.push(across, -down, deep);
           // The pixel's own colour, lifted a little: each point is small and see-through.

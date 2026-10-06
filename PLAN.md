@@ -375,8 +375,12 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       so they wait for the decision in §8.
 - [x] 9.5 Three more by name (asked for on 2026-10-06): Mira (Omicron Ceti), a red giant whose
       light keeps changing; the Cat's Eye Nebula (NGC 6543); and the Cartwheel Galaxy
-      (ESO 350-40), which adds `ring` to the structures a galaxy can have. Mira is shown by its
-      Hubble picture, not as a tinted model: its source gives no temperature.
+      (ESO 350-40), which adds `ring` to the structures a galaxy can have. Mira's
+      temperature comes from a NASA Space Place poster.
+- [x] 9.6 Everything in Deep Space has a 3D model (asked for on 2026-10-06): Mira at its size
+      beside the Sun, and Omega Centauri and the Hercules Cluster as clouds of points made from
+      their real pictures, since stars that far away cannot be placed one by one. The card
+      says the depth of such a cloud is a guess.
 
 **Acceptance:** as for Phase 7.
 

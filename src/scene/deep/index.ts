@@ -26,6 +26,18 @@ const EDGE_ON_GALAXY = { depth: 0.03, bulge: 2, spin: 0, lay: 'upright' } as con
  */
 const SHAPELESS_GALAXY = { depth: 0.12, bulge: 2, spin: 0, lay: 'upright' } as const;
 
+/**
+ * A far star cluster whose stars are too distant to place one by one: a ball, as deep in the
+ * middle as it is wide, thinning out towards the edge like the picture does.
+ */
+const BALL_CLUSTER = {
+  depth: 0.1,
+  bulge: 2.5,
+  spin: 0,
+  lay: 'upright',
+  depthPerSpot: true,
+} as const;
+
 export interface DeepContext {
   /** The whole catalogue, for the Sun and Earth that other things are measured against. */
   readonly catalogue: readonly CelestialObject[];
@@ -103,6 +115,7 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
 
   if (pictureUrl === null) return null;
   if (object.kind === 'nebula') return createPictureCloud(pictureUrl, NEBULA);
+  if (object.kind === 'star-cluster') return createPictureCloud(pictureUrl, BALL_CLUSTER);
   if (object.kind === 'galaxy') {
     if (object.seenFromEarth === 'edge-on') return createPictureCloud(pictureUrl, EDGE_ON_GALAXY);
     // Only a spiral is a thin disc that can be laid flat and turned.

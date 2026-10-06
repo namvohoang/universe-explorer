@@ -2,6 +2,12 @@
 // quote appears in the page as fetched on the source's `retrieved` date, then wrote this file.
 // The sentences themselves are in src/ui/strings/en.ts under each `key`.
 import {
+  ESA_ROSETTA,
+  NASA_3D_MIR,
+  NASA_APOLLO_SOYUZ,
+  NASA_MIR_FIRST_MODULE,
+  NASA_SHUTTLE_MIR,
+  NASA_WEBB_OVERVIEW,
   NASA_HUBBLE_C34,
   NASA_HUBBLE_C60_61,
   NASA_HUBBLE_C63,
@@ -2313,5 +2319,123 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_HUBBLE_C34],
+  },
+  {
+    id: 'mir',
+    hello: {
+      key: 'cardMirHello',
+      sourceId: 'nasa-3d-mir',
+      quote:
+        'The Russian Space Station Mir endured 15 years in orbit, three times its planned lifetime.',
+    },
+    facts: [
+      {
+        key: 'cardMirFact1',
+        sourceId: 'nasa-mir-first-module',
+        quote: '19, 1986, the Soviet Union launched the first module of the Mir space station',
+      },
+      {
+        key: 'cardMirFact2',
+        sourceId: 'nasa-shuttle-mir',
+        quote: 'Mir hosted 125 cosmonauts and astronauts from 12 countries',
+      },
+      {
+        key: 'cardMirFact3',
+        sourceId: 'nasa-3d-mir',
+        quote: 'It raised the first crop of wheat to be grown from seed to seed in outer space.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_3D_MIR, NASA_MIR_FIRST_MODULE, NASA_SHUTTLE_MIR],
+  },
+  {
+    id: 'apollo-soyuz',
+    hello: {
+      key: 'cardApolloSoyuzHello',
+      sourceId: 'nasa-apollo-soyuz',
+      quote:
+        'brought together two former spaceflight rivals: the United States and the Soviet Union',
+    },
+    facts: [
+      {
+        key: 'cardApolloSoyuzFact1',
+        sourceId: 'nasa-apollo-soyuz',
+        quote:
+          'On July 15, 1975, an Apollo spacecraft launched carrying a crew of three and docked two days later on July 17, with a Soyuz spacecraft and its crew of two.',
+      },
+      {
+        key: 'cardApolloSoyuzFact2',
+        sourceId: 'nasa-apollo-soyuz',
+        quote:
+          'For nearly two days, the two ships remained docked for joint activities and experiments.',
+      },
+      {
+        key: 'cardApolloSoyuzFact3',
+        sourceId: 'nasa-apollo-soyuz',
+        quote:
+          'The docking module was designed and constructed by NASA to serve as an airlock and transfer corridor between the two craft.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_APOLLO_SOYUZ],
+  },
+  {
+    id: 'rosetta',
+    hello: {
+      key: 'cardRosettaHello',
+      sourceId: 'esa-rosetta',
+      quote: 'Rosetta made the most detailed study of a comet ever attempted.',
+    },
+    facts: [
+      {
+        key: 'cardRosettaFact1',
+        sourceId: 'esa-rosetta',
+        quote:
+          'Rosetta was the first mission ever to orbit a comet’s nucleus and land a probe on its surface.',
+      },
+      {
+        key: 'cardRosettaFact2',
+        sourceId: 'esa-rosetta',
+        quote:
+          'Rosetta launched on 2 March 2004 by an Ariane-5 G+ from Europe’s spaceport in Kourou, French Guiana.',
+      },
+      {
+        key: 'cardRosettaFact3',
+        sourceId: 'esa-rosetta',
+        quote:
+          'The main spacecraft measured 2.8 x 2.1 x 2.0 m with two 14 metre long solar panels.',
+      },
+    ],
+    moons: null,
+    sources: [ESA_ROSETTA],
+  },
+  {
+    id: 'webb',
+    hello: {
+      key: 'cardWebbHello',
+      sourceId: 'nasa-webb-overview',
+      quote: 'Webb is the largest telescope ever placed in space.',
+    },
+    facts: [
+      {
+        key: 'cardWebbFact1',
+        sourceId: 'nasa-webb-overview',
+        quote:
+          'Webb is an International Collaboration including NASA, the European Space Agency (ESA), and the Canadian Space Agency (CSA).',
+      },
+      {
+        key: 'cardWebbFact2',
+        sourceId: 'nasa-webb-overview',
+        quote: 'Webb was launched on Dec 25, 2021 on from French Guiana on an Arianne 5 rocket.',
+      },
+      {
+        key: 'cardWebbFact3',
+        sourceId: 'nasa-webb-overview',
+        quote:
+          'Webb’s biggest feature is a tennis court sized five-layer sunshield that attenuates heat from the Sun more than a million times.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_WEBB_OVERVIEW],
   },
 ];

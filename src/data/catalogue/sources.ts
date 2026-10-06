@@ -1098,3 +1098,45 @@ export const NASA_HUBBLE_C34: Source = {
   url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-34/',
   retrieved: '2026-10-06',
 };
+
+export const NASA_3D_MIR: Source = {
+  id: 'nasa-3d-mir',
+  title: 'NASA Science — 3D Resources, Mir',
+  url: 'https://science.nasa.gov/3d-resources/mir/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_MIR_FIRST_MODULE: Source = {
+  id: 'nasa-mir-first-module',
+  title: 'NASA — 35 Years Ago: Launch of Mir Space Station’s First Module',
+  url: 'https://www.nasa.gov/history/35-years-ago-launch-of-mir-space-stations-first-module/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_SHUTTLE_MIR: Source = {
+  id: 'nasa-shuttle-mir',
+  title: 'NASA — Shuttle-Mir',
+  url: 'https://www.nasa.gov/space-shuttle/shuttle-mir/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_APOLLO_SOYUZ: Source = {
+  id: 'nasa-apollo-soyuz',
+  title: 'NASA — Apollo-Soyuz Test Project',
+  url: 'https://www.nasa.gov/apollo-soyuz-test-project/',
+  retrieved: '2026-10-06',
+};
+
+export const ESA_ROSETTA: Source = {
+  id: 'esa-rosetta',
+  title: 'ESA — Rosetta overview',
+  url: 'https://www.esa.int/Science_Exploration/Space_Science/Rosetta_overview',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_WEBB_OVERVIEW: Source = {
+  id: 'nasa-webb-overview',
+  title: 'NASA Science — James Webb Space Telescope, About Webb',
+  url: 'https://science.nasa.gov/mission/webb/about-overview/',
+  retrieved: '2026-10-06',
+};

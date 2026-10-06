@@ -681,6 +681,42 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardNewHorizonsFact3: 'Đến năm 2024, nó đã ở xa Mặt Trời gấp 60 lần so với Trái Đất.',
   modelAltNewHorizons:
     'Mô hình 3D của New Horizons: một thân dẹt hình tam giác bọc lá vàng, có chảo trắng tròn ở trên.',
+  nameMir: 'Trạm vũ trụ Mir',
+  cardMirHello: 'Mir là một trạm vũ trụ của Nga. Nó ở trên quỹ đạo suốt 15 năm.',
+  cardMirFact1:
+    'Phần đầu tiên của nó được phóng năm 1986 bởi Liên Xô, đất nước mà khi ấy Nga là một phần.',
+  cardMirFact2: 'Tổng cộng có 125 nhà du hành vũ trụ từ 12 nước đã ở trên đó.',
+  cardMirFact3: 'Lúa mì đã được trồng trên đó từ hạt đến hạt, lần đầu tiên trong vũ trụ.',
+  modelAltMir:
+    'Mô hình 3D của trạm Mir: những căn phòng hình ống dài nối thành hình chữ thập, với các tấm pin mặt trời phẳng chìa ra.',
+  nameApolloSoyuz: 'Apollo–Soyuz',
+  cardApolloSoyuzHello:
+    'Trong chuyến bay Apollo–Soyuz, một tàu vũ trụ Mỹ và một tàu Liên Xô đã nối với nhau trong vũ trụ.',
+  cardApolloSoyuzFact1:
+    'Chuyện xảy ra vào tháng 7 năm 1975. Ba người Mỹ bay trong tàu Apollo và hai nhà du hành Liên Xô trong tàu Soyuz.',
+  cardApolloSoyuzFact2: 'Hai con tàu nối với nhau gần hai ngày.',
+  cardApolloSoyuzFact3:
+    'Phần tối màu ở giữa là một đường hầm do NASA chế tạo, để hai phi hành đoàn sang thăm nhau.',
+  modelAltApolloSoyuz:
+    'Mô hình 3D của hai tàu vũ trụ nối mũi vào nhau: tàu Apollo hình nón màu bạc và tàu Soyuz màu xanh lục có hai tấm pin mặt trời.',
+  nameRosetta: 'Tàu Rosetta',
+  cardRosettaHello:
+    'Rosetta là một tàu vũ trụ của châu Âu, đã nghiên cứu một sao chổi kỹ hơn bao giờ hết.',
+  cardRosettaFact1:
+    'Nó là tàu vũ trụ đầu tiên bay quanh một sao chổi và thả một trạm đổ bộ xuống đó.',
+  cardRosettaFact2: 'Nó được phóng năm 2004 bằng tên lửa Ariane 5.',
+  cardRosettaFact3: 'Nó có hai tấm pin mặt trời, mỗi tấm dài 14 mét, để tạo ra điện từ ánh nắng.',
+  modelAltRosetta:
+    'Mô hình 3D của tàu Rosetta: một chiếc hộp nhỏ tối màu có đĩa ăng-ten, nằm giữa hai tấm pin mặt trời rất dài.',
+  nameWebb: 'Kính viễn vọng không gian Webb',
+  cardWebbHello:
+    'Kính viễn vọng không gian James Webb là kính viễn vọng lớn nhất từng được đưa vào vũ trụ.',
+  cardWebbFact1: 'NASA chế tạo nó cùng với các cơ quan vũ trụ của châu Âu và Canada.',
+  cardWebbFact2: 'Nó được phóng năm 2021 bằng tên lửa Ariane 5 từ Guiana thuộc Pháp.',
+  cardWebbFact3:
+    'Tấm chắn nắng của nó to bằng một sân quần vợt. Nó che sức nóng của Mặt Trời cho kính.',
+  modelAltWebb:
+    'Mô hình 3D của kính Webb: một tấm gương vàng lớn ghép từ các mảnh sáu cạnh, đứng trên một tấm chắn nắng rộng màu bạc.',
   nameCuriosity: 'Xe tự hành Curiosity',
   cardCuriosityHello: 'Curiosity là một xe tự hành: một chiếc xe rô-bốt chạy trên Sao Hỏa.',
   cardCuriosityFact1: 'Nó to cỡ một chiếc ô tô.',

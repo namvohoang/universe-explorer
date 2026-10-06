@@ -367,8 +367,12 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       (the Pillars of Creation), the Ring, Helix, Carina and Veil nebulae. A galaxy that is not
       a spiral is no longer laid flat and turned like a disc. Left out: the Pinwheel Galaxy
       (its picture carries a credit to a third party).
-- [ ] 9.4 Spaceships from other countries and companies, as far as a trusted source publishes a
-      3D model that may be reused.
+- [x] 9.4 Spaceships from other countries, as far as a trusted source publishes a 3D model that
+      may be reused: Russia's Mir space station, the Soviet Soyuz joined to an American Apollo
+      (Apollo–Soyuz), Europe's comet chaser Rosetta, and the Webb telescope that NASA built with
+      Europe and Canada, all as NASA's own models. Left out: SpaceX and China. No site on the
+      trusted list publishes a model of their craft (ESA's Sci Fleet models may not be copied),
+      so they wait for the decision in §8.
 
 **Acceptance:** as for Phase 7.
 
@@ -392,3 +396,6 @@ Tolerances are named constants with a comment saying why. They are never widened
 4. **Hosting.** Decided: GitHub Pages.
 5. **Supported dates.** Limited by the planet elements chosen in 1.2; the longer-span JPL table
    trades accuracy for range.
+6. **Models of SpaceX and Chinese craft.** None is published by a source on the trusted list
+   (`.claude/rules/media.md`). Either the owner approves another source, with its licence, or
+   these craft are shown with an agency's photo in place of a 3D model.

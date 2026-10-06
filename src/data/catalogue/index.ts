@@ -69,6 +69,10 @@ import { whirlpool } from './whirlpool';
 import { m87 } from './m87';
 import { betelgeuse } from './betelgeuse';
 import { antares } from './antares';
+import { mir } from './mir';
+import { apolloSoyuz } from './apolloSoyuz';
+import { rosetta } from './rosetta';
+import { webb } from './webb';
 import { bodesGalaxy } from './bodesGalaxy';
 import { cigarGalaxy } from './cigarGalaxy';
 import { centaurusA } from './centaurusA';
@@ -212,4 +216,8 @@ export const catalogue: readonly CelestialObject[] = [
   cassini,
   newHorizons,
   curiosity,
+  apolloSoyuz,
+  mir,
+  rosetta,
+  webb,
 ];

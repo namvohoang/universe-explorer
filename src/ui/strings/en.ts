@@ -648,6 +648,40 @@ export const en = {
   cardNewHorizonsFact3: 'By 2024 it was 60 times as far from the Sun as Earth is.',
   modelAltNewHorizons:
     'A 3D model of New Horizons: a flat, triangle-shaped body wrapped in gold foil, with a round white dish on top.',
+  nameMir: 'The Mir Space Station',
+  cardMirHello: 'Mir was a Russian space station. It stayed in orbit for 15 years.',
+  cardMirFact1:
+    'Its first part was launched in 1986 by the Soviet Union, the country Russia was then part of.',
+  cardMirFact2: 'In all, 125 space travellers from 12 countries stayed on it.',
+  cardMirFact3: 'Wheat was grown on it from seed to seed, for the first time in space.',
+  modelAltMir:
+    'A 3D model of Mir: long tube-shaped rooms joined in a cross, with flat solar panels sticking out.',
+  nameApolloSoyuz: 'Apollo–Soyuz',
+  cardApolloSoyuzHello:
+    'In Apollo–Soyuz, an American spaceship and a Soviet one joined together in space.',
+  cardApolloSoyuzFact1:
+    'It happened in July 1975. Three Americans flew in Apollo and two Soviet cosmonauts in Soyuz.',
+  cardApolloSoyuzFact2: 'The two ships stayed joined for nearly two days.',
+  cardApolloSoyuzFact3:
+    'The dark part in the middle was a tunnel built by NASA, so the crews could visit each other.',
+  modelAltApolloSoyuz:
+    'A 3D model of two spaceships joined nose to nose: a silver Apollo cone and a green Soyuz with two solar panels.',
+  nameRosetta: 'Rosetta',
+  cardRosettaHello:
+    'Rosetta was a European spacecraft that studied a comet more closely than ever before.',
+  cardRosettaFact1: 'It was the first spacecraft to go round a comet and to put a lander on one.',
+  cardRosettaFact2: 'It was launched in 2004 on an Ariane 5 rocket.',
+  cardRosettaFact3: 'It had two solar panels, each 14 metres long, to make power from sunlight.',
+  modelAltRosetta:
+    'A 3D model of Rosetta: a small dark box with a dish, between two very long solar panels.',
+  nameWebb: 'The Webb Space Telescope',
+  cardWebbHello: 'The James Webb Space Telescope is the largest telescope ever placed in space.',
+  cardWebbFact1: 'NASA built it together with the space agencies of Europe and Canada.',
+  cardWebbFact2: 'It was launched in 2021 on an Ariane 5 rocket from French Guiana.',
+  cardWebbFact3:
+    'Its sun shield is as big as a tennis court. It keeps the heat of the Sun off the telescope.',
+  modelAltWebb:
+    'A 3D model of the Webb telescope: a big gold mirror made of six-sided pieces, standing on a wide silver sun shield.',
   nameCuriosity: 'The Curiosity Rover',
   cardCuriosityHello: 'Curiosity is a rover: a robot car that drives around on Mars.',
   cardCuriosityFact1: 'It is about the size of a car.',

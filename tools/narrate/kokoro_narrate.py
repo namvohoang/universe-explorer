@@ -53,6 +53,10 @@ SAY: dict[str, str] = {
     "Majoris": "məʤˈɔɹɪs",  # muh-JOR-iss
     "Pegasi": "pˈɛɡəsˌI",  # PEG-uh-sigh
     "Bode’s": "bˈOdəz",  # BOH-duz
+    "Mir": "mˈɪɹ",  # MEER
+    "Soyuz": "sˈɔjuz",  # SOY-ooz
+    "Ariane": "ˌɑɹiˈɑn",  # ah-ree-AHN
+    "Guiana": "ɡiˈɑnə",  # ghee-AH-nuh
 }
 
 

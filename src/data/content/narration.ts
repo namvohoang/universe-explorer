@@ -421,4 +421,24 @@ export const NARRATION: Readonly<
     fingerprint: '816034ba',
     starts: [0.0, 2.52, 8.03, 10.78, 15.5],
   },
+  'apollo-soyuz': {
+    file: 'public/voice/apollo-soyuz.mp3',
+    fingerprint: '4ffff290',
+    starts: [0.0, 2.45, 9.05, 17.52, 21.25],
+  },
+  mir: {
+    file: 'public/voice/mir.mp3',
+    fingerprint: '37459c01',
+    starts: [0.0, 2.45, 7.92, 15.4, 21.38],
+  },
+  rosetta: {
+    file: 'public/voice/rosetta.mp3',
+    fingerprint: '0307ca72',
+    starts: [0.0, 2.02, 8.6, 14.12, 19.0],
+  },
+  webb: {
+    file: 'public/voice/webb.mp3',
+    fingerprint: 'ecb5a302',
+    starts: [0.0, 2.6, 8.65, 14.15, 20.23],
+  },
 };

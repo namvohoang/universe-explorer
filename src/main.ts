@@ -629,6 +629,16 @@ function start(): void {
     })),
     goTo,
   );
+  // A marker lies on top of its body, so the wheel over a body lands on the marker. Hand it to
+  // the canvas, or the kid could not zoom while pointing at the very thing they want to see.
+  mustFind('#markers').addEventListener(
+    'wheel',
+    (event) => {
+      event.preventDefault();
+      canvas.dispatchEvent(new WheelEvent('wheel', event));
+    },
+    { passive: false },
+  );
 
   // A link can open straight onto one place and one scale mode: ?scale=true-sizes#saturn
   const isPlace = (id: string | null): id is string =>

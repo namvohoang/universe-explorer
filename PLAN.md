@@ -404,6 +404,10 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       jets stream outwards (still under reduced motion and when time is stopped), the jets
       glow white, and close to the nucleus the glow and tails thin out so the dark nucleus
       and its bright jets show as in Giotto's picture.
+- [x] 9.9 Models stand still until asked (asked for on 2026-10-06): a model in Deep Space or
+      Spaceships no longer turns by itself. A tap on it, or the new turn button under the zoom
+      buttons, starts a slow turn; another stops it. A phone has no room for the button, so
+      there the tap alone does it. The whole view of the solar system still turns gently.
 
 **Acceptance:** as for Phase 7.
 

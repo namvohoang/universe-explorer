@@ -25,6 +25,7 @@ const ICONS = {
   pause: ['M8 5v14M16 5v14'],
   fit: [circle(12, 12, 3), 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5'],
   ruler: ['M3 17L17 3l4 4L7 21z', 'M7 13l2 2M10 10l2 2M13 7l2 2'],
+  turn: ['M20 12a8 8 0 11-2.6-5.9', 'M20 4v4.5h-4.5'],
   plus: ['M12 5v14M5 12h14'],
   minus: ['M5 12h14'],
   back: ['M19 12H5M11 6l-6 6 6 6'],

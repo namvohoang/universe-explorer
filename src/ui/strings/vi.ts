@@ -125,6 +125,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   rowBackTo: 'Quay lại {group}',
   visitedCount: '{seen}/{all}',
   fitView: 'Thu hết vào tầm nhìn',
+  turnView: 'Xoay chậm một vòng',
+  stopTurning: 'Dừng xoay',
   closeCard: 'Đóng thẻ',
   readToMe: 'Đọc cho em nghe',
   peekHint: 'Chạm để đọc về',

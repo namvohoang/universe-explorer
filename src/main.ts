@@ -52,6 +52,9 @@ const BODY_CLOSEST_RADII = 1.8;
 const SAME_SPOT_PIXELS = 6;
 /** How much of the distance is left after one zoom step in. */
 const ZOOM_STEP = 0.6;
+/** A press on a model counts as a tap if it moves no farther and lasts no longer than this. */
+const TAP_SLOP_PX = 6;
+const TAP_MS = 400;
 /** A deep-space model is first seen from far enough back to take all of it in. */
 const DEEP_FRAMING = 2.5;
 /** A glowing comet is first seen from this many glow radii away. */
@@ -265,6 +268,19 @@ function start(): void {
     });
   };
 
+  // A model in Deep Space or Spaceships turns only when asked to.
+  let turning = false;
+  let turnButton: HTMLButtonElement | null = null;
+  const setTurning = (on: boolean): void => {
+    turning = on;
+    stage.setTurning(on);
+    if (!turnButton) return;
+    const label = on ? words.stopTurning : words.turnView;
+    turnButton.setAttribute('aria-pressed', String(on));
+    turnButton.setAttribute('aria-label', label);
+    turnButton.title = label;
+  };
+
   /** Puts the camera where the whole of the deep-space model is in view. */
   function frameDeep(): void {
     if (!deepModel) return;
@@ -275,8 +291,10 @@ function start(): void {
       direction: deepModel.viewFrom,
       minDistance: radius * 0.12,
       maxDistance: Math.max(radius * 8, (deepModel.viewDistance ?? 0) * 2),
-      idleTurn: true,
+      // It stands still until the kid sets it turning, with a tap on it or the turn button.
+      idleTurn: false,
     });
+    setTurning(false);
   }
 
   // The space passport: the places opened so far, kept in this browser only.
@@ -471,6 +489,11 @@ function start(): void {
     else if (focus === null) stage.flyTo(wholeView());
     else goTo(null);
   });
+  turnButton = viewButton(words.turnView, 'turn', () => {
+    if (deepModel) setTurning(!turning);
+  });
+  turnButton.classList.add('turn');
+  turnButton.setAttribute('aria-pressed', 'false');
   // Back goes up one level: from a moon to its planet, from anything else to the whole view.
   const backTarget = (): string | null => {
     const here = catalogue.find((object) => object.id === focus);
@@ -675,6 +698,18 @@ function start(): void {
       else canvas.dispatchEvent(new WheelEvent('wheel', event));
     },
   );
+  // A tap on a model (a press that neither drags nor lingers) starts or stops its slow turn.
+  let pressed: { x: number; y: number; at: number } | null = null;
+  canvas.addEventListener('pointerdown', (event) => {
+    pressed = { x: event.clientX, y: event.clientY, at: event.timeStamp };
+  });
+  canvas.addEventListener('pointerup', (event) => {
+    const from = pressed;
+    pressed = null;
+    if (!from || !deepModel || !isDeep(focus)) return;
+    const moved = Math.hypot(event.clientX - from.x, event.clientY - from.y);
+    if (moved <= TAP_SLOP_PX && event.timeStamp - from.at <= TAP_MS) setTurning(!turning);
+  });
   canvas.addEventListener(
     'wheel',
     (event) => {

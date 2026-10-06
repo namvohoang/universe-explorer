@@ -75,6 +75,11 @@ export interface Stage {
   lookAt(request: FlyTo): void;
   /** Moves the camera towards (factor below 1) or away from what it is looking at. */
   zoom(factor: number): void;
+  /**
+   * Starts or stops the slow turn round what the camera is looking at. Asked for outright by
+   * the viewer, so it turns even under reduced motion; flying somewhere else stops it.
+   */
+  setTurning(on: boolean): void;
   /** Registers work to do before each frame is drawn; `dt` is real seconds since the last. */
   onFrame(callback: (dt: number) => void): void;
   /** Registers work to do once the camera has moved for the frame, e.g. placing labels. */
@@ -256,6 +261,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
         ZOOM_SECONDS,
       );
       controls.enabled = false;
+    },
+    setTurning(on) {
+      controls.autoRotate = on;
     },
     onFrame: (callback) => {
       frameCallbacks.push(callback);

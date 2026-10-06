@@ -113,6 +113,8 @@ export const en = {
   rowBackTo: 'Back to {group}',
   visitedCount: '{seen}/{all}',
   fitView: 'Fit it all in view',
+  turnView: 'Turn it round slowly',
+  stopTurning: 'Stop turning',
   closeCard: 'Close card',
   readToMe: 'Read it to me',
   peekHint: 'Tap to read about',

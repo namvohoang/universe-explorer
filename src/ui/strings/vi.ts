@@ -291,6 +291,54 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   pictureAltAntares: 'Một quả cầu cam mờ nhòe với những mảng sáng hơn và tối hơn, trên nền đen.',
   pictureAltVyCanisMajoris:
     'Một điểm sáng chói với đám mây rộng, mỏng manh bao quanh, có màu lục, vàng, hồng và tím.',
+  cardRigelHello:
+    'Rigel là một ngôi sao xanh lam rất sáng. Nó là bàn chân của Thợ Săn Orion, một hình sao trên trời.',
+  cardRigelFact1: 'Nó rộng gấp khoảng 74 lần Mặt Trời.',
+  cardRigelFact2:
+    'Bề mặt của nó nóng hơn Betelgeuse màu đỏ hàng nghìn độ. Vì vậy nó tỏa sáng màu trắng xanh.',
+  cardRigelFact3: 'Nó ở cách ta khoảng 860 năm ánh sáng.',
+  cardSiriusHello:
+    'Sirius là ngôi sao sáng nhất trên bầu trời đêm. Người ta gọi nó là sao Thiên Lang.',
+  cardSiriusFact1: 'Nó rộng khoảng 2,4 triệu ki-lô-mét. Như thế là rộng hơn Mặt Trời.',
+  cardSiriusFact2:
+    'Bề mặt của nó khoảng 10.000 độ C, nóng hơn Mặt Trời. Nó tỏa sáng màu trắng xanh.',
+  cardSiriusFact3:
+    'Nó ở cách ta 8,6 năm ánh sáng. Đó là một trong những ngôi sao gần Trái Đất nhất.',
+  cardSiriusBHello:
+    'Sirius B là một ngôi sao tí hon, mờ, quay quanh sao Sirius sáng chói. Nó là một sao lùn trắng.',
+  cardSiriusBFact1: 'Nó rộng khoảng 12.000 ki-lô-mét. Như thế là nhỏ hơn Trái Đất!',
+  cardSiriusBFact2: 'Nó tí hon, nhưng chứa lượng vật chất gần bằng cả Mặt Trời.',
+  cardSiriusBFact3:
+    'Sao lùn trắng là phần còn lại khi một ngôi sao như Mặt Trời dùng hết nhiên liệu.',
+  cardVegaHello:
+    'Vega là ngôi sao sáng nhất trong chòm Thiên Cầm, Cây Đàn, một hình sao nhỏ trên trời.',
+  cardVegaFact1: 'Nó rộng gần gấp ba lần Mặt Trời.',
+  cardVegaFact2: 'Nó là một góc của Tam Giác Mùa Hè, nên là một trong những ngôi sao dễ tìm nhất.',
+  cardVegaFact3: 'Khoảng 14.000 năm trước, Vega từng là sao Bắc Cực.',
+  cardPolluxHello:
+    'Pollux là ngôi sao sáng hơn trong hai ngôi sao làm đầu của hai anh em sinh đôi, chòm Song Tử.',
+  cardPolluxFact1: 'Nó ở cách ta khoảng 34 năm ánh sáng.',
+  cardPolluxFact2: 'Có một hành tinh quay quanh nó. Hành tinh ấy nặng hơn hai lần Sao Mộc.',
+  cardPolluxFact3:
+    'Muốn tìm nó, hãy kẻ một đường từ Rigel qua Betelgeuse rồi đi tiếp đến chòm Song Tử.',
+  card51PegasiHello: '51 Pegasi là một ngôi sao rất giống Mặt Trời của chúng ta.',
+  card51PegasiFact1:
+    'Năm 1995, người ta tìm thấy một hành tinh quay quanh nó: hành tinh đầu tiên quanh một sao giống Mặt Trời.',
+  card51PegasiFact2: 'Hành tinh ấy quay một vòng quanh ngôi sao chỉ trong bốn ngày.',
+  card51PegasiFact3: 'Nó ở cách Trái Đất 51 năm ánh sáng.',
+  cardAldebaranHello:
+    'Aldebaran là một ngôi sao màu cam. Người ta coi nó là con mắt của chòm Kim Ngưu, con Bò.',
+  cardAldebaranFact1: 'Nó là ngôi sao sáng nhất của chòm Kim Ngưu và sáng thứ 15 trên bầu trời.',
+  cardAldebaranFact2: 'Nó ở cách ta 65 năm ánh sáng.',
+  cardAldebaranFact3:
+    'Trông nó như nằm trong một nhóm sao tên là Hyades, nhưng nhóm sao ấy ở xa hơn nhiều.',
+  pictureAltSirius:
+    'Một ngôi sao trắng xanh chói lòa với bốn tia sáng dài. Một chấm tí hon, Sirius B, nằm ở phía dưới bên trái.',
+  pictureAltSiriusB:
+    'Hình vẽ một quả cầu trắng phát sáng bên cạnh Trái Đất. Hai thứ to gần bằng nhau.',
+  pictureAltVega:
+    'Một quầng bụi rộng màu xanh lam quanh một mảng tròn tối ở giữa, nơi ánh sáng của ngôi sao đã được che đi.',
+  pictureAlt51Pegasi: 'Một bầu trời tối đầy sao mờ, với một ngôi sao trắng sáng hơn ở giữa.',
   pictureAltBetelgeuse:
     'Một quầng sáng tròn mờ nhòe trên nền đen: trắng vàng ở giữa, nhạt dần sang cam và đỏ sẫm ở rìa.',
   nameBetelgeuse: 'Betelgeuse',

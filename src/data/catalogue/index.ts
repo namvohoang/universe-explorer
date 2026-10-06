@@ -69,6 +69,13 @@ import { whirlpool } from './whirlpool';
 import { m87 } from './m87';
 import { betelgeuse } from './betelgeuse';
 import { antares } from './antares';
+import { rigel } from './rigel';
+import { sirius } from './sirius';
+import { siriusB } from './siriusB';
+import { vega } from './vega';
+import { pollux } from './pollux';
+import { pegasi51 } from './pegasi51';
+import { aldebaran } from './aldebaran';
 import { vyCanisMajoris } from './vyCanisMajoris';
 import { proximaCentauri } from './proximaCentauri';
 import { trappist1 } from './trappist1';
@@ -135,10 +142,17 @@ export const catalogue: readonly CelestialObject[] = [
   halley,
   kuiperBelt,
   proximaCentauri,
+  sirius,
+  siriusB,
+  vega,
+  pollux,
   trappist1,
+  pegasi51,
+  aldebaran,
   pleiades,
   antares,
   betelgeuse,
+  rigel,
   orionNebula,
   gaiaBh1,
   vyCanisMajoris,

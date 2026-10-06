@@ -915,3 +915,74 @@ export const NASA_EXOPLANET_ARCHIVE: Source = {
   url: 'https://exoplanetarchive.ipac.caltech.edu/',
   retrieved: '2026-10-04',
 };
+
+export const NASA_APOD_RIGEL: Source = {
+  id: 'nasa-apod-rigel',
+  title: 'NASA Science — APOD: 2023 April 7, Rigel Wide',
+  url: 'https://science.nasa.gov/image-article/apod-2023-april-7-rigel-wide/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_ORION_STORY: Source = {
+  id: 'nasa-orion-story',
+  title: 'NASA Science — Discovering the Universe Through the Constellation Orion',
+  url: 'https://science.nasa.gov/universe/stories/quick-reads/discovering-the-universe-through-the-constellation-orion/',
+  retrieved: '2026-10-06',
+};
+
+export const ESA_HUBBLE_SIRIUS: Source = {
+  id: 'esa-hubble-sirius',
+  title: "ESA/Hubble — Astronomers use Hubble to 'weigh' Dog Star's companion (heic0516)",
+  url: 'https://esahubble.org/news/heic0516/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_APOD_VEGA: Source = {
+  id: 'nasa-apod-vega',
+  title: 'NASA Science — APOD: 1997 July 15, Vega',
+  url: 'https://science.nasa.gov/image-article/apod-1997-july-15-vega/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_NSN_VEGA: Source = {
+  id: 'nasa-nsn-vega',
+  title: 'NASA Science, Night Sky Network — Summer Triangle Corner: Vega',
+  url: 'https://science.nasa.gov/solar-system/skywatching/night-sky-network/summer-triangle-corner-vega/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_NSN_GEMINI: Source = {
+  id: 'nasa-nsn-gemini',
+  title: 'NASA Science, Night Sky Network — Find the Twins: Gemini Constellation',
+  url: 'https://science.nasa.gov/solar-system/skywatching/night-sky-network/gemini-constellation/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_51_PEGASI: Source = {
+  id: 'nasa-51-pegasi',
+  title: 'NASA Science — Nobel Winners Changed Our Understanding with Exoplanet Discovery',
+  url: 'https://science.nasa.gov/universe/exoplanets/nobel-winners-changed-our-understanding-with-exoplanet-discovery/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_APOD_TAURUS: Source = {
+  id: 'nasa-apod-taurus',
+  title: 'NASA Science — APOD: 2019 January 7, Stars, Meteors, and a Comet in Taurus',
+  url: 'https://science.nasa.gov/image-article/apod-2019-january-7-stars-meteors-and-a-comet-in-taurus/',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_EXOPLANET_ARCHIVE_STARS: Source = {
+  id: 'nasa-exoplanet-archive-stars',
+  title:
+    'NASA Exoplanet Archive — Planetary Systems Composite Parameters: radius (st_rad), temperature (st_teff) and spectral type of the host stars alf Tau (Aldebaran), HD 62509 (Pollux) and 51 Peg',
+  url: 'https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+hostname,hd_name,st_rad,st_teff,st_spectype+from+pscomppars+where+hd_name+in+(%27HD+29139%27,%27HD+62509%27,%27HD+217014%27)&format=csv',
+  retrieved: '2026-10-06',
+};
+
+export const NASA_APOD_HYADES: Source = {
+  id: 'nasa-apod-hyades',
+  title: 'NASA Science — APOD: 2020 January 22, The Hyades Star Cluster',
+  url: 'https://science.nasa.gov/image-article/apod-2020-january-22-the-hyades-star-cluster/',
+  retrieved: '2026-10-06',
+};

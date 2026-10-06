@@ -2,6 +2,15 @@
 // quote appears in the page as fetched on the source's `retrieved` date, then wrote this file.
 // The sentences themselves are in src/ui/strings/en.ts under each `key`.
 import {
+  ESA_HUBBLE_SIRIUS,
+  NASA_51_PEGASI,
+  NASA_APOD_HYADES,
+  NASA_APOD_RIGEL,
+  NASA_APOD_TAURUS,
+  NASA_APOD_VEGA,
+  NASA_NSN_GEMINI,
+  NASA_NSN_VEGA,
+  NASA_ORION_STORY,
   NASA_FACTS_ASTEROIDS,
   NASA_FACTS_COMETS,
   NASA_FACTS_EARTH,
@@ -1641,5 +1650,199 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [ESA_GAIA_BLACK_HOLES],
+  },
+  {
+    id: 'rigel',
+    hello: {
+      key: 'cardRigelHello',
+      sourceId: 'nasa-apod-rigel',
+      quote: 'Brilliant, blue, supergiant star Rigel marks the foot of Orion the Hunter',
+    },
+    facts: [
+      {
+        key: 'cardRigelFact1',
+        sourceId: 'nasa-apod-rigel',
+        quote: 'extends to about 74 times the solar radius',
+      },
+      {
+        key: 'cardRigelFact2',
+        sourceId: 'nasa-orion-story',
+        quote:
+          'Its surface is thousands of degrees hotter than Betelgeuse, though, making it shine blue-white rather than red.',
+      },
+      {
+        key: 'cardRigelFact3',
+        sourceId: 'nasa-apod-rigel',
+        quote: 'Some 860 light-years away',
+      },
+    ],
+    moons: null,
+    sources: [NASA_APOD_RIGEL, NASA_ORION_STORY],
+  },
+  {
+    id: 'sirius',
+    hello: {
+      key: 'cardSiriusHello',
+      sourceId: 'esa-hubble-sirius',
+      quote:
+        'the nearest white-dwarf star is buried in the glow of the brightest star in the nighttime sky',
+    },
+    facts: [
+      {
+        key: 'cardSiriusFact1',
+        sourceId: 'esa-hubble-sirius',
+        quote:
+          'Sirius itself has a mass of two times that of the Sun and a diameter of 2.4 million kilometres.',
+      },
+      {
+        key: 'cardSiriusFact2',
+        sourceId: 'esa-hubble-sirius',
+        quote: 'Sirius itself has a surface temperature of 10,000 degrees C.',
+      },
+      {
+        key: 'cardSiriusFact3',
+        sourceId: 'esa-hubble-sirius',
+        quote: 'At 8.6 light-years away, Sirius is one of the nearest known stars to Earth.',
+      },
+    ],
+    moons: null,
+    sources: [ESA_HUBBLE_SIRIUS],
+  },
+  {
+    id: 'sirius-b',
+    hello: {
+      key: 'cardSiriusBHello',
+      sourceId: 'esa-hubble-sirius',
+      quote: 'the nearest white dwarf, Sirius B, companion of the brightest star in the sky',
+    },
+    facts: [
+      {
+        key: 'cardSiriusBFact1',
+        sourceId: 'esa-hubble-sirius',
+        quote: 'Sirius B has a diameter of 12,000 kilometres, less than the size of Earth',
+      },
+      {
+        key: 'cardSiriusBFact2',
+        sourceId: 'esa-hubble-sirius',
+        quote: 'despite being smaller than the Earth, has a mass that is 98% that of our own Sun',
+      },
+      {
+        key: 'cardSiriusBFact3',
+        sourceId: 'esa-hubble-sirius',
+        quote: 'White dwarfs are the leftover remnants of stars similar to our Sun.',
+      },
+    ],
+    moons: null,
+    sources: [ESA_HUBBLE_SIRIUS],
+  },
+  {
+    id: 'vega',
+    hello: {
+      key: 'cardVegaHello',
+      sourceId: 'nasa-nsn-vega',
+      quote: 'Vega is the brightest star in the small Greek constellation of Lyra, the harp.',
+    },
+    facts: [
+      {
+        key: 'cardVegaFact1',
+        sourceId: 'nasa-apod-vega',
+        quote: 'has a diameter almost three times that of our Sun',
+      },
+      {
+        key: 'cardVegaFact2',
+        sourceId: 'nasa-nsn-vega',
+        quote: 'making Vega one of the easiest stars to find for novice stargazers',
+      },
+      {
+        key: 'cardVegaFact3',
+        sourceId: 'nasa-nsn-vega',
+        quote:
+          'Ancient humans from 14,000 years ago likely knew Vega for another reason: it was the Earth’s northern pole star!',
+      },
+    ],
+    moons: null,
+    sources: [NASA_APOD_VEGA, NASA_NSN_VEGA],
+  },
+  {
+    id: 'pollux',
+    hello: {
+      key: 'cardPolluxHello',
+      sourceId: 'nasa-nsn-gemini',
+      quote: 'Pollux is the brighter of Gemini’s two “head” stars',
+    },
+    facts: [
+      {
+        key: 'cardPolluxFact1',
+        sourceId: 'nasa-nsn-gemini',
+        quote: 'is located about 34 light-years away from our Solar System',
+      },
+      {
+        key: 'cardPolluxFact2',
+        sourceId: 'nasa-nsn-gemini',
+        quote: 'Pollux even possesses a planet, Pollux b, with a mass over twice that of Jupiter.',
+      },
+      {
+        key: 'cardPolluxFact3',
+        sourceId: 'nasa-nsn-gemini',
+        quote:
+          'Keep going, and you will end up between the bright stars Castor and Pollux, the “heads” of the Gemini Twins.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_NSN_GEMINI],
+  },
+  {
+    id: '51-pegasi',
+    hello: {
+      key: 'card51PegasiHello',
+      sourceId: 'nasa-51-pegasi',
+      quote: 'the first detection of a planet orbiting a star like our Sun',
+    },
+    facts: [
+      {
+        key: 'card51PegasiFact1',
+        sourceId: 'nasa-51-pegasi',
+        quote: 'was the first exoplanet discovered orbiting a Sun-like star in 1995',
+      },
+      {
+        key: 'card51PegasiFact2',
+        sourceId: 'nasa-51-pegasi',
+        quote: 'takes only four days to complete one orbit',
+      },
+      {
+        key: 'card51PegasiFact3',
+        sourceId: 'nasa-51-pegasi',
+        quote: "It's 51 light-years from Earth.",
+      },
+    ],
+    moons: null,
+    sources: [NASA_51_PEGASI],
+  },
+  {
+    id: 'aldebaran',
+    hello: {
+      key: 'cardAldebaranHello',
+      sourceId: 'nasa-apod-taurus',
+      quote: 'considered to be the eye of the Bull',
+    },
+    facts: [
+      {
+        key: 'cardAldebaranFact1',
+        sourceId: 'nasa-apod-taurus',
+        quote: 'the brightest star in Taurus and the 15th brightest star in the sky',
+      },
+      {
+        key: 'cardAldebaranFact2',
+        sourceId: 'nasa-apod-hyades',
+        quote: 'at 65 light-years away, is now known to be unrelated to the Hyades cluster',
+      },
+      {
+        key: 'cardAldebaranFact3',
+        sourceId: 'nasa-apod-hyades',
+        quote: 'unrelated to the Hyades cluster, which lies about 150 light-years away',
+      },
+    ],
+    moons: null,
+    sources: [NASA_APOD_HYADES, NASA_APOD_TAURUS],
   },
 ];

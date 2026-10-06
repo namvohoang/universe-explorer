@@ -151,10 +151,40 @@ export const NARRATION: Readonly<
     fingerprint: '6ac3e811',
     starts: [0.0, 2.42, 7.5, 10.68, 14.9],
   },
+  sirius: {
+    file: 'public/voice/sirius.mp3',
+    fingerprint: 'be85947c',
+    starts: [0.0, 2.02, 7.55, 13.47, 20.32],
+  },
+  'sirius-b': {
+    file: 'public/voice/sirius-b.mp3',
+    fingerprint: '55223037',
+    starts: [0.0, 2.2, 8.88, 14.12, 19.18],
+  },
+  vega: {
+    file: 'public/voice/vega.mp3',
+    fingerprint: '474e25f6',
+    starts: [0.0, 1.98, 7.7, 11.5, 17.93],
+  },
+  pollux: {
+    file: 'public/voice/pollux.mp3',
+    fingerprint: '577af776',
+    starts: [0.0, 1.98, 7.75, 11.07, 16.68],
+  },
   'trappist-1': {
     file: 'public/voice/trappist-1.mp3',
     fingerprint: '0f6c8bb2',
     starts: [0.0, 2.67, 7.78, 10.85, 14.05],
+  },
+  '51-pegasi': {
+    file: 'public/voice/51-pegasi.mp3',
+    fingerprint: 'a011c054',
+    starts: [0.0, 2.5, 6.67, 14.0, 18.07],
+  },
+  aldebaran: {
+    file: 'public/voice/aldebaran.mp3',
+    fingerprint: 'bb62e895',
+    starts: [0.0, 2.1, 7.72, 13.15, 16.23],
   },
   pleiades: {
     file: 'public/voice/pleiades.mp3',
@@ -170,6 +200,11 @@ export const NARRATION: Readonly<
     file: 'public/voice/betelgeuse.mp3',
     fingerprint: 'd720cf2a',
     starts: [0.0, 2.25, 7.83, 12.2, 17.27],
+  },
+  rigel: {
+    file: 'public/voice/rigel.mp3',
+    fingerprint: 'b2a7cb13',
+    starts: [0.0, 1.95, 8.65, 12.95, 19.68],
   },
   'orion-nebula': {
     file: 'public/voice/orion-nebula.mp3',

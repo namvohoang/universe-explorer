@@ -348,6 +348,23 @@ manifest, and that the first open downloads everything (one 1 MB script, about 3
 targets. Keyboard order is top bar, card, controls, place row. The gate passes and no third-party
 origin is requested. No astronomical data changes.
 
+### Phase 9 — More of everything (asked for on 2026-10-06)
+
+The owner asked for stars of every colour, more star pictures to compare with what a telescope
+shows, more galaxies and space wonders, and spaceships from other countries and companies.
+
+- [x] 9.1 Stars of every colour: blue Rigel, blue-white Sirius and Vega, the white dwarf Sirius B
+      (smaller than Earth), Sun-like 51 Pegasi, and the orange giants Pollux and Aldebaran, each
+      at true size beside the Sun and tinted from its measured temperature or colour. A far star
+      with no picture on a trusted site (Rigel, Pollux, Aldebaran) is shown by its model alone.
+- [ ] 9.2 More star pictures: constellations a kid can find in the sky, from Hipparcos, and star
+      clusters a small telescope shows, with their real pictures.
+- [ ] 9.3 More galaxies and space wonders, each from its agency page with its real picture.
+- [ ] 9.4 Spaceships from other countries and companies, as far as a trusted source publishes a
+      3D model that may be reused.
+
+**Acceptance:** as for Phase 7.
+
 ## 7. Testing
 
 | Layer | Tests |

@@ -204,6 +204,9 @@ describe('deep-sky cards', () => {
       expect(card.facts).toHaveLength(3);
       // A star pattern is drawn from its measured stars and has no picture of its own.
       if (object.kind === 'constellation') expect(object.stars.value.length).toBeGreaterThan(3);
+      // A star with no trusted picture is still drawn, at its size, from its measurements.
+      else if (object.kind === 'star' && card.picture === null)
+        expect(object.radiusInSuns?.value ?? null).not.toBeNull();
       else expect(card.picture).not.toBeNull();
     }
   });

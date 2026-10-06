@@ -12,6 +12,8 @@ export function narratedIds(catalogue: readonly CelestialObject[]): (string | nu
       bodyRadiusKm(object) !== null ||
       object.kind === 'belt' ||
       object.kind === 'constellation' ||
+      // A far star has a card even when no trusted picture of it exists.
+      (object.kind === 'star' && object.sky !== null) ||
       isShowpiece(object) ||
       object.media.some((media) => media.role === 'picture'),
   );

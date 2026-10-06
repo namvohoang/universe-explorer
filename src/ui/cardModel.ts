@@ -65,7 +65,10 @@ const DEEP_KIND_LABELS: Partial<Record<CelestialObject['kind'], string>> = {
  */
 export function isDeepSky(object: CelestialObject): boolean {
   // A star pattern has no picture of its own: its stars are the picture.
-  return object.kind === 'constellation' || object.media.some((media) => media.role === 'picture');
+  if (object.kind === 'constellation') return true;
+  // Nor has every far star one from a trusted source: it is still drawn at its size and colour.
+  if (object.kind === 'star' && object.sky !== null) return true;
+  return object.media.some((media) => media.role === 'picture');
 }
 
 function eyebrow(object: CelestialObject, catalogue: readonly CelestialObject[]): string {

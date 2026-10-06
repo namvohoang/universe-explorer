@@ -274,6 +274,50 @@ export const en = {
     'A fuzzy orange ball with brighter and darker patches on it, on a black background.',
   pictureAltVyCanisMajoris:
     'A bright point of light with a wide, wispy cloud around it, coloured green, yellow, pink and purple.',
+  cardRigelHello:
+    'Rigel is a bright blue star. It marks the foot of Orion the Hunter, a pattern of stars.',
+  cardRigelFact1: 'It is about 74 times as wide as the Sun.',
+  cardRigelFact2:
+    'Its surface is thousands of degrees hotter than red Betelgeuse. That makes it shine blue-white.',
+  cardRigelFact3: 'It is about 860 light-years away.',
+  cardSiriusHello: 'Sirius is the brightest star in the night sky. People call it the Dog Star.',
+  cardSiriusFact1: 'It is about 2.4 million kilometres wide. That is wider than the Sun.',
+  cardSiriusFact2:
+    'Its surface is about 10,000 degrees Celsius, hotter than the Sun. It shines blue-white.',
+  cardSiriusFact3: 'It is 8.6 light-years away. That makes it one of the nearest stars to Earth.',
+  cardSiriusBHello:
+    'Sirius B is a tiny, faint star that goes round bright Sirius. It is a white dwarf.',
+  cardSiriusBFact1: 'It is about 12,000 kilometres wide. That is smaller than Earth!',
+  cardSiriusBFact2: 'It is tiny, but it has almost as much stuff in it as the whole Sun.',
+  cardSiriusBFact3: 'A white dwarf is what is left when a star like the Sun has used up its fuel.',
+  cardVegaHello: 'Vega is the brightest star in Lyra, the Harp, a small pattern of stars.',
+  cardVegaFact1: 'It is almost three times as wide as the Sun.',
+  cardVegaFact2:
+    'It is one corner of the Summer Triangle, so it is one of the easiest stars to find.',
+  cardVegaFact3: 'About 14,000 years ago, Vega was the North Star.',
+  cardPolluxHello:
+    'Pollux is the brighter of the two stars that are the heads of the Twins, Gemini.',
+  cardPolluxFact1: 'It is about 34 light-years away.',
+  cardPolluxFact2: 'A planet goes round it. The planet is more than twice as heavy as Jupiter.',
+  cardPolluxFact3:
+    'To find it, draw a line from Rigel through Betelgeuse and keep going to the Twins.',
+  card51PegasiHello: '51 Pegasi is a star much like our Sun.',
+  card51PegasiFact1:
+    'In 1995 a planet was found going round it: the first found round a star like the Sun.',
+  card51PegasiFact2: 'That planet goes round the star in only four days.',
+  card51PegasiFact3: 'It is 51 light-years from Earth.',
+  cardAldebaranHello: 'Aldebaran is an orange star. People see it as the eye of the Bull, Taurus.',
+  cardAldebaranFact1: 'It is the brightest star in Taurus and the 15th brightest star in the sky.',
+  cardAldebaranFact2: 'It is 65 light-years away.',
+  cardAldebaranFact3:
+    'It seems to sit in a group of stars called the Hyades, but that group is much farther away.',
+  pictureAltSirius:
+    'A dazzling blue-white star with four long spikes of light. A tiny dot, Sirius B, sits at the lower left.',
+  pictureAltSiriusB:
+    'A drawing of a glowing white ball next to Earth. The two are almost the same size.',
+  pictureAltVega:
+    'A wide blue glow of dust around a dark round patch in the middle, where the star’s own light was blocked out.',
+  pictureAlt51Pegasi: 'A dark sky full of faint stars, with one brighter white star in the middle.',
   pictureAltBetelgeuse:
     'A fuzzy round glow on black: yellow-white in the middle, fading to orange and dark red at the edge.',
   nameBetelgeuse: 'Betelgeuse',

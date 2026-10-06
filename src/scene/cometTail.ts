@@ -51,8 +51,10 @@ const DUST = {
   lag: [0.12, 0.75],
 } as const;
 /**
- * Jets of gas and dust burst from the sunlit side of the nucleus, as the Giotto spacecraft's
- * close-up of Halley shows. How many there are and how far they reach are a drawing.
+ * Jets of gas and dust burst from the sunlit side of the nucleus. ESA says of Giotto at Halley:
+ * "At least three bright jets could be seen spewing out material from the warmer sunlit side"
+ * (sci.esa.int/web/giotto/-/31878-halley, read 2026-10-06). Where they stand and how far they
+ * reach are a drawing.
  */
 const JETS = {
   rgb: [0.93, 0.96, 1],
@@ -60,7 +62,7 @@ const JETS = {
   width: [0.008, 0.09],
   pointSize: 0.035,
   opacity: 0.3,
-  count: 5,
+  count: 3,
   /** How far a jet leans from straight at the Sun, as a share of its length at the far end. */
   lean: 0.55,
   /** How far the jets reach, in lengths of the nucleus. */

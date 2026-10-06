@@ -155,7 +155,7 @@ export const en = {
   nameHalley: "Halley's Comet",
   eyebrowComet: 'Comet · goes around the Sun',
   cometNote:
-    'The glow, the jets and the two tails are drawn, not photographed. They point the way real ones do, but their size is not to scale. The path shown is right for 1950 to 2050; earlier visits came at slightly different times.',
+    'The glow, the jets and the two tails are drawn, not photographed. They point the way real ones do, but their size is not to scale. The long shape of the comet with a narrow middle is real; the small lumps on it are drawn. The path shown is right for 1950 to 2050; earlier visits came at slightly different times.',
   statClosest: 'Closest to the Sun',
   valueTimesEarthOne: "{n} times Earth's distance",
   conceptStarTitle: 'What is a star?',

@@ -170,7 +170,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   nameHalley: 'Sao chổi Halley',
   eyebrowComet: 'Sao chổi · quay quanh Mặt Trời',
   cometNote:
-    'Quầng sáng, các luồng phun và hai cái đuôi là hình vẽ, không phải ảnh chụp. Chúng chỉ đúng hướng thật, nhưng kích thước không đúng tỉ lệ. Đường đi được vẽ đúng cho các năm 1950 đến 2050; những lần ghé trước đó đến vào thời điểm hơi khác.',
+    'Quầng sáng, các luồng phun và hai cái đuôi là hình vẽ, không phải ảnh chụp. Chúng chỉ đúng hướng thật, nhưng kích thước không đúng tỉ lệ. Dáng dài thắt ở giữa của sao chổi là thật; những chỗ lồi lõm nhỏ trên nó là hình vẽ. Đường đi được vẽ đúng cho các năm 1950 đến 2050; những lần ghé trước đó đến vào thời điểm hơi khác.',
   statClosest: 'Gần Mặt Trời nhất',
   valueTimesEarthOne: '{n} lần khoảng cách của Trái Đất',
   conceptStarTitle: 'Ngôi sao là gì?',

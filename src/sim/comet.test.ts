@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { TAIL_STARTS_AU, behindDirection, dustGrain, tailDirections, tailStrength } from './comet';
+import {
+  TAIL_STARTS_AU,
+  behindDirection,
+  dustGrain,
+  nucleusRelief,
+  tailDirections,
+  tailStrength,
+} from './comet';
 import { angleBetween, dot, length } from './vec3';
 
 describe('tailStrength', () => {
@@ -79,5 +86,27 @@ describe('dustGrain', () => {
   it('keeps a grain that does not fall behind in line with the gas tail', () => {
     expect(dustGrain(0.7, 0).behind).toBe(0);
     expect(dustGrain(0.7, 0.6).behind).toBeGreaterThan(dustGrain(0.7, 0.2).behind);
+  });
+});
+
+describe('nucleusRelief', () => {
+  it('is narrower at the waist than at either end', () => {
+    const waist = nucleusRelief({ x: 0, y: 1, z: 0 }).width;
+    const off = Math.SQRT1_2;
+    expect(waist).toBeLessThan(nucleusRelief({ x: off, y: off, z: 0 }).width);
+    expect(waist).toBeLessThan(nucleusRelief({ x: -off, y: off, z: 0 }).width);
+  });
+
+  it('keeps the lumps small next to the body, so its real length and width still show', () => {
+    for (let n = 0; n < 200; n += 1) {
+      const a = n * 2.399963;
+      const z = 1 - (2 * n + 1) / 200;
+      const r = Math.sqrt(1 - z * z);
+      const { width, height } = nucleusRelief({ x: r * Math.cos(a), y: r * Math.sin(a), z });
+      expect(height).toBeGreaterThan(0.84);
+      expect(height).toBeLessThan(1.16);
+      expect(width).toBeGreaterThan(0.6);
+      expect(width).toBeLessThan(1.15);
+    }
   });
 });

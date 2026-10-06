@@ -397,7 +397,10 @@ shows, more galaxies and space wonders, and spaceships from other countries and 
       (ESA Standard Licence: educational use, with credit), jets burst from the sunlit side
       as in that picture, the nucleus turns once in 2.2 days, and the card's facts are Halley's
       own (back in 2061, among the darkest things known, photographed by Giotto). A body of
-      the solar system may now show a real picture beside its 3D model.
+      the solar system may now show a real picture beside its 3D model. The nucleus is no
+      longer a smooth egg: it is long with a narrow waist, as ESA says Giotto found it
+      ("peanut-shaped"), with three jets; its small lumps are a drawing, and the card says so,
+      since no trusted site publishes a model of its shape.
 
 **Acceptance:** as for Phase 7.
 

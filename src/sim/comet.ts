@@ -77,3 +77,58 @@ export function behindDirection(comet: Vec3, sun: Vec3, heading: Vec3): Vec3 | n
 export function dustGrain(along: number, lag: number): { away: number; behind: number } {
   return { away: along, behind: lag * along * along };
 }
+
+/**
+ * How a comet's nucleus is drawn: long, with a narrower waist between two lumpy ends. ESA says
+ * the Giotto spacecraft found Halley's nucleus to be "a dark, peanut-shaped body, about 15 km
+ * long and 7 to 10 km wide" (sci.esa.int/web/giotto/-/31878-halley, read 2026-10-06). The waist
+ * and the two ends follow that; the smaller lumps and hollows are a drawing, since no trusted
+ * site publishes a model of its shape.
+ */
+const NUCLEUS = {
+  /** How much narrower the waist is than the ends, as a share. */
+  waist: 0.3,
+  /** How far along the body the waist reaches, as a share of its half-length. */
+  waistReach: 0.38,
+  /** How much fatter one end is than the other. */
+  lopsided: 0.14,
+  /** How high the lumps stand and how deep the hollows go, as a share of the width. */
+  lumps: 0.16,
+} as const;
+
+/** Made-up waves that add up to lumps: [direction x, y, z, how many across, where it starts]. */
+const LUMP_WAVES: readonly (readonly [number, number, number, number, number])[] = [
+  [0.8, 0.5, 0.33, 2.1, 0.4],
+  [-0.3, 0.9, 0.31, 3.3, 1.7],
+  [0.45, -0.4, 0.8, 4.2, 2.9],
+  [-0.7, -0.6, 0.39, 5.6, 0.9],
+  [0.2, 0.3, -0.93, 7.3, 4.1],
+  [-0.55, 0.25, -0.8, 9.1, 2.2],
+  [0.62, 0.7, -0.35, 12.7, 5.3],
+  [-0.15, -0.8, -0.58, 16.4, 0.2],
+  [0.9, -0.2, 0.39, 21.3, 3.6],
+  [-0.4, 0.55, 0.73, 27.9, 1.1],
+];
+
+/**
+ * How far the ground of a comet's nucleus is from its middle in one direction, next to a
+ * smooth body of the same length and width (1 is the smooth body's own surface, and x is the
+ * long way).
+ *
+ * @param direction a unit vector from the middle of the nucleus
+ * @returns how much to stretch the two short ways and the whole, in that direction
+ */
+export function nucleusRelief(direction: Vec3): { width: number; height: number } {
+  // Narrow in the middle of the long way, and one end a little fatter than the other.
+  const waist = 1 - NUCLEUS.waist * Math.exp(-((direction.x / NUCLEUS.waistReach) ** 2));
+  const width = waist * (1 + NUCLEUS.lopsided * direction.x);
+  let lumps = 0;
+  let total = 0;
+  for (const [x, y, z, across, start] of LUMP_WAVES) {
+    const weight = 1 / across;
+    lumps +=
+      weight * Math.sin(across * (x * direction.x + y * direction.y + z * direction.z) + start);
+    total += weight;
+  }
+  return { width, height: 1 + NUCLEUS.lumps * (lumps / total) };
+}

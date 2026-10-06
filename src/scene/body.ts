@@ -19,6 +19,7 @@ import {
 } from 'three';
 import type { CelestialObject, RingSystem, SpheroidShape, TriaxialShape } from '../data/types';
 import { loadGltf } from './gltf';
+import { createNucleusGeometry } from './nucleus';
 import { eclipticToScene, northPoleEcliptic, poleOf } from '../sim/frames';
 import { largestRadiusKm, sceneAxes } from '../sim/layout';
 import type { Scale } from '../sim/scale';
@@ -35,7 +36,7 @@ const UNMAPPED_STAR = '#fff1c9';
  * the light that falls on it (science.nasa.gov/solar-system/comets/1p-halley, read 2026-10-06).
  * Drawn a little lighter than that, or its shape could not be made out at all.
  */
-const COMET_NUCLEUS = '#2b2723';
+const COMET_NUCLEUS = '#3d3731';
 const ANISOTROPY = 4;
 
 const SCENE_UP = new Vector3(0, 1, 0);
@@ -285,7 +286,11 @@ export function createBody(
   }
   group.add(tilt);
 
-  const geometry = new SphereGeometry(1, SPHERE_SEGMENTS.width, SPHERE_SEGMENTS.height);
+  // A comet's nucleus is nothing like a smooth ball.
+  const geometry =
+    object.kind === 'comet'
+      ? createNucleusGeometry()
+      : new SphereGeometry(1, SPHERE_SEGMENTS.width, SPHERE_SEGMENTS.height);
   const surface = createSurface(object);
   const { material, lit } = surface;
   // The proportions live on a holder so the spinning mesh inside stays a unit sphere.

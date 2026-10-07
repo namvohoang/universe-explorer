@@ -1204,6 +1204,10 @@ body.watching .view-controls .turn {
   line-height: 1.4;
 }
 
+.watch-text.reading {
+  color: var(--sun);
+}
+
 .watch-path {
   margin: 8px 0 0;
   color: var(--sky);

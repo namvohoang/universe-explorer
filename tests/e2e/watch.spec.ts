@@ -166,6 +166,14 @@ test.describe('a story', () => {
     await expect(page.locator('.watch-path')).toBeHidden();
   });
 
+  test('offers to read the part on show aloud, in English only', async ({ page }) => {
+    await page.goto('/#watch/moon-phases');
+    await expect(page.getByRole('button', { name: 'Read it to me' })).toBeVisible();
+    await page.goto('/?lang=vi#watch/moon-phases');
+    await expect(page.locator('.watch-caption h2')).toHaveText('Các pha của Mặt Trăng');
+    await expect(page.locator('.watch-read')).toBeHidden();
+  });
+
   test('lets the camera loose and takes it back', async ({ page }) => {
     await page.goto('/#watch/moon-phases');
     const look = page.getByRole('button', { name: 'Look around' });

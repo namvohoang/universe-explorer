@@ -11,6 +11,9 @@ import {
   type StoryTimes,
 } from '../sim/story';
 import { create } from './dom';
+import { narrationFor } from './narration';
+import type { Speaker } from './speech';
+import { lineSpan, storyLines, storyNarrationId } from './storyLines';
 import { fill, formatDateAndHour, formatDateAndMinute, formatDateAndSecond } from './format';
 import { icon, type IconName } from './icons';
 import { formatVisited, parseVisited } from './passport';
@@ -44,6 +47,10 @@ const text = (key: string): string => (words as Readonly<Record<string, string>>
 export interface WatchHost {
   /** Starts with nothing moving and no swooping, as the device asks. */
   readonly reducedMotion: boolean;
+  /** A voice on the device to read a part aloud, or `null` when there is none or the words are not English. */
+  readonly speaker: Speaker | null;
+  /** Whether recordings may be played: only where the words shown are the English they were made from. */
+  readonly recordings: boolean;
   /**
    * Aims the camera for a chapter: held where the chapter says, or (`free`) on the whole stage
    * with the camera loose.
@@ -118,9 +125,15 @@ export function createWatch(host: WatchHost): Watch {
   const marks = create('div', 'watch-marks');
   const track = create('div', 'watch-track');
   track.append(marks, scrubber);
+  // Reading the part on show aloud.
+  const read = create('button', 'watch-read');
+  read.type = 'button';
+  const speakerIcon = icon('speaker');
+  const stopIcon = icon('stop');
+  read.append(speakerIcon, stopIcon);
   const look = button('watch-look', 'eye');
   look.setAttribute('aria-pressed', 'false');
-  controls.append(previous, playPause, next, track, look);
+  controls.append(previous, playPause, next, track, read, look);
 
   // What else there is to watch.
   const row = create('div', 'place-row watch-row');
@@ -159,6 +172,65 @@ export function createWatch(host: WatchHost): Watch {
     }
   };
   countWatched();
+
+  const player = new Audio();
+  /** Where in a recording the part being read ends; `null` when it runs to the end. */
+  let readUntil: number | null = null;
+  let reading = false;
+  const setReading = (now: boolean): void => {
+    reading = now;
+    sentence.classList.toggle('reading', now);
+    name(read, now ? words.stopReading : words.readToMe);
+    read.setAttribute('aria-pressed', String(now));
+    speakerIcon.style.display = now ? 'none' : '';
+    stopIcon.style.display = now ? '' : 'none';
+  };
+  const stopReading = (): void => {
+    if (!reading) return;
+    player.pause();
+    host.speaker?.stop();
+    setReading(false);
+  };
+  player.addEventListener('timeupdate', () => {
+    if (reading && readUntil !== null && player.currentTime >= readUntil) stopReading();
+  });
+  player.addEventListener('ended', () => {
+    setReading(false);
+  });
+  /** Reads the part on show: from the story's recording if there is one, else with the device voice. */
+  const readPart = (): void => {
+    if (!story || shownChapter < 0) return;
+    const lines = storyLines(story);
+    // The first line of a story's reading is its name; the parts follow.
+    const line = shownChapter + 1;
+    const withVoice = (): void => {
+      const said = lines[line];
+      if (!host.speaker || said === undefined) {
+        setReading(false);
+        return;
+      }
+      host.speaker.speak([said], () => {
+        setReading(false);
+      });
+    };
+    setReading(true);
+    const recording = host.recordings ? narrationFor(storyNarrationId(story), lines) : null;
+    if (!recording) {
+      withVoice();
+      return;
+    }
+    const span = lineSpan(recording.starts, line);
+    readUntil = span.to;
+    player.src = recording.url;
+    player.currentTime = span.from;
+    // If the recording cannot play (not downloaded yet and offline, say), use the device voice.
+    player.play().catch(withVoice);
+  };
+  read.addEventListener('click', () => {
+    if (reading) stopReading();
+    else readPart();
+  });
+  setReading(false);
 
   let story: Story | null = null;
   let times: StoryTimes | null = null;
@@ -218,6 +290,8 @@ export function createWatch(host: WatchHost): Watch {
     const chapter = story.chapters[index];
     if (!chapter) return;
     if (index !== shownChapter) {
+      // A reading belongs to the part it was started on.
+      stopReading();
       shownChapter = index;
       sentence.textContent = text(chapter.text.key);
       step.textContent = fill(words.watchStep, { n: index + 1, count: story.chapters.length });
@@ -275,6 +349,10 @@ export function createWatch(host: WatchHost): Watch {
     groupTabs.show(group);
     showChips();
     title.textContent = text(picked.titleKey);
+    // Read aloud only where there is something to read it with.
+    read.hidden =
+      host.speaker === null &&
+      !(host.recordings && narrationFor(storyNarrationId(picked), storyLines(picked)));
     // What kind of path it is, or what else in the story is a drawing.
     // A story's own note says it better than the general one for its kind of path.
     const note =
@@ -347,6 +425,7 @@ export function createWatch(host: WatchHost): Watch {
     close() {
       element.hidden = true;
       playing = false;
+      stopReading();
     },
     tick(realSeconds) {
       if (times && playing) {

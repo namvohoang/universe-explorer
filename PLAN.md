@@ -672,8 +672,13 @@ recorded last.
       it, and the screen says "Station: real path. Shuttle: a drawing." The launch two days
       earlier is told in words. (NASA's catalogue page gives the launch hour in the wrong time
       zone; NASA's mission page is used.)
-- [ ] 12.12 Recordings for the captions, Vietnamese text, and a note on the grown-ups' page
-      about what "real path" and "drawing" mean.
+- [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
+      what in a story is real and what is drawn, with the stories' sources; and "Read it to
+      me" on each part of a story, in English, with the voice on the device. The recording
+      tool now writes out the stories' lines as well (`tools/narrate/lines.ts`, under
+      `story-<id>`), and a story plays its own part of a recording once one exists.
+      Left: the recordings themselves. Kokoro is not installed on the machine this was built
+      on, so `tools/narrate/kokoro_narrate.py` has still to be run for the fifteen stories.
 
 **Acceptance:** every story's times and numbers have a cited source; a craft or body always
 sits on its drawn path; every staged or enlarged thing carries its label on screen; each story

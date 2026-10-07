@@ -884,6 +884,9 @@ function start(): void {
         if (!watchPanel) {
           watchPanel = createWatch({
             reducedMotion,
+            // The recordings and the device voice are English; other languages are read by eye only.
+            speaker: language === 'en' ? createBrowserSpeaker() : null,
+            recordings: language === 'en',
             aim(story, chapter, free) {
               watchFieldDeg =
                 chapter.standAtId === undefined || free

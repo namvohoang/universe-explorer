@@ -927,6 +927,14 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Trái Đất đi tiếp quanh Mặt Trời. Nửa vòng nữa, nó sẽ lại gặp vệt bụi.',
   storyMeteorShowerOctober:
     'Tháng Mười, Trái Đất lại gặp bụi của sao chổi Halley. Rất nhiều sao băng trong một đêm được gọi là mưa sao băng.',
+  storyAuroraTitle: 'Cực quang',
+  storyAuroraNote: 'Các vòng xanh là hình vẽ.',
+  storyAuroraWind:
+    'Mặt Trời luôn thổi một luồng gió gồm những hạt tí hon ra không gian. Một số hạt trút xuống gần đỉnh và đáy của thế giới.',
+  storyAuroraGlowingAir:
+    'Ở trên cao, các hạt va vào không khí và làm nó phát sáng. Ánh sáng đó là cực quang. Người ta thấy nó nhiều nhất trong một vòng quanh vùng cực bắc.',
+  storyAuroraSouthToo:
+    'Quanh vùng cực nam cũng có một vòng như thế. Ánh sáng xanh là của khí ô-xy, ở cao khoảng 100 km trên mặt đất.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

@@ -34,6 +34,8 @@ export interface Chapter {
   readonly standAtId?: string;
   /** Stands close to what is looked at, in place of showing the whole stage. */
   readonly closeUp?: boolean;
+  /** With `closeUp`: stands over this pole of the body, on its night side, in place of its sunlit side. */
+  readonly over?: 'north' | 'south';
   /**
    * When set, the camera is held on the line from this actor to the one looked at, so the kid
    * sees it as from there (the Moon as seen from Earth). Left out, the whole stage is shown.
@@ -125,6 +127,22 @@ export interface StoryShadow {
   readonly throughAir?: boolean;
 }
 
+/**
+ * The two rings round a world's magnetic poles where auroras are most often seen. The rings
+ * are drawn as glowing bands; how bright they are, and that they are even all the way round,
+ * is a drawing, and the story must say so with `noteKey`.
+ */
+export interface StoryAurora {
+  /** Catalogue id of the world. */
+  readonly onId: string;
+  /** Where its north geomagnetic pole is: [longitude (degrees east), latitude (degrees north, from the centre)]. */
+  readonly northPole: Sourced<readonly [lonDegEast: number, latDegNorth: number]>;
+  /** How far from each geomagnetic pole the band lies: [nearest, farthest], in degrees. */
+  readonly fromPoleDeg: Sourced<readonly [nearest: number, farthest: number]>;
+  /** How high the glow is: [lowest, highest], in km above the ground. */
+  readonly heightKm: Sourced<readonly [lowest: number, highest: number]>;
+}
+
 /** A spacecraft that flies in a story. It is drawn as a named point: at true scale it is too small to see. */
 export interface StoryCraft {
   readonly id: string;
@@ -161,6 +179,8 @@ export interface Story {
   readonly dustAlongId?: string;
   /** Key, in the UI strings, of a sentence shown with the story about what in it is a drawing. */
   readonly noteKey?: string;
+  /** Auroral rings drawn round a world's magnetic poles. */
+  readonly aurora?: StoryAurora;
   /** Shadows drawn from one body onto another. */
   readonly shadows?: readonly StoryShadow[];
   /** Bodies turned, for this story, to face the way they really did, keyed by catalogue id. */

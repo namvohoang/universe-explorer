@@ -1,5 +1,6 @@
 import type { Story } from '../types';
 import { apollo11Landing } from './apollo11Landing';
+import { aurora } from './aurora';
 import { apollo11Launch } from './apollo11Launch';
 import { artemis1 } from './artemis1';
 import { artemis2 } from './artemis2';
@@ -21,6 +22,7 @@ export const stories: readonly Story[] = [
   lunarEclipse,
   halleyTail,
   meteorShower,
+  aurora,
   saturnRings,
   apollo11Launch,
   apollo11Landing,

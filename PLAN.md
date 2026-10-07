@@ -615,9 +615,15 @@ recorded last.
       strewn round the comet's path out to 0.17 AU, a width NASA does not give, so the screen
       says "The dust is a drawing: real dust is tiny." Not shown: the streaks in the sky as
       seen from the ground.
-- [ ] 12.7 Aurora: particles from the Sun steered by Earth's magnetism to a ring round each
-      pole, where the air glows. Nothing in the catalogue describes Earth's magnetism, so the
-      lines and particles are a diagram, labelled; NASA photos from the space station, credited.
+- [x] 12.7 Aurora: a glowing green band round each of Earth's geomagnetic poles, seen from
+      over the north and then the south on a winter's day. The poles' places and how far from
+      them the bands lie are NOAA's (the World Magnetic Model for 2025.0; "between 15° and 25°
+      from the geomagnetic poles"), the height of the green glow is NASA's, and Earth is turned
+      the way it will face, so the northern band lies over Greenland and northern Canada. NOAA
+      is not on the list of preferred sources; it is the agency that publishes the model.
+      That the bands are evenly bright all the way round is a drawing, and the screen says so.
+      Not done: the wind from the Sun and Earth's magnetism are told in words, not drawn, and
+      no NASA photo from the space station is shown (a story has no place for a picture yet).
 - [x] 12.8 `tools/horizons/fetchPath.ts` (position and velocity in km and km/s into
       `src/data/paths/`, thinned to the fewest samples that still draw every one left out to
       within 1 km, with some of those left out kept as a test fixture) and

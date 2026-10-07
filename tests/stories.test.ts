@@ -20,6 +20,7 @@ import { apollo11Landing } from '../src/data/stories/apollo11Landing';
 import { apollo11Launch } from '../src/data/stories/apollo11Launch';
 import { artemis1 } from '../src/data/stories/artemis1';
 import { artemis2 } from '../src/data/stories/artemis2';
+import { aurora } from '../src/data/stories/aurora';
 import { halleyTail } from '../src/data/stories/halleyTail';
 import { lunarEclipse } from '../src/data/stories/lunarEclipse';
 import { meteorShower } from '../src/data/stories/meteorShower';
@@ -596,6 +597,33 @@ describe('the meteor shower', () => {
 
   it('says on screen that the dust is a drawing', () => {
     expect(meteorShower.noteKey).toBe('storyMeteorShowerNote');
+  });
+});
+
+describe('the aurora', () => {
+  it('draws its bands where NOAA says auroras are most active, at the height NASA gives', () => {
+    const drawn = aurora.aurora ?? fail();
+    // NOAA: "bands of greatest activity occur between 15° and 25° from the geomagnetic poles".
+    expect(drawn.fromPoleDeg.value).toEqual([15, 25]);
+    // NOAA: the dipole's axis "is currently inclined at 9.21° to Earth's rotation axis".
+    expect(90 - drawn.northPole.value[1]).toBeCloseTo(9.21, 2);
+    // NASA: green "occurs roughly between 60 to 120 miles (100-200 km) altitude".
+    expect(drawn.heightKm.value).toEqual([100, 200]);
+  });
+
+  it('says on screen that the rings are a drawing, and turns Earth to face as it will', () => {
+    expect(aurora.noteKey).toBe('storyAuroraNote');
+    expect(aurora.turned?.earth?.atJd.value).toBe(aurora.chapters[0]?.atJd.value);
+  });
+
+  it('is told on a day when the far north is in the dark', () => {
+    const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+    if (earth.shape?.type !== 'spheroid') throw new Error('Earth is a spheroid');
+    const pole = northPoleEcliptic(poleOf(earth.shape.orientation) ?? fail());
+    const jd = aurora.chapters[0]?.atJd.value ?? NaN;
+    const toSun = normalize(scale(eclipticOffsetKm(earth, catalogue, jd), -1));
+    // The Sun stands over a southern latitude: the north pole leans away from it.
+    expect(dot(toSun, pole)).toBeLessThan(-0.3);
   });
 });
 

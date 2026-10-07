@@ -121,6 +121,20 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
         errors.push(`story ${story.id}: draws dust but has no note to say it is a drawing`);
       }
     }
+    if (story.aurora) {
+      if (!story.actorIds.includes(story.aurora.onId)) {
+        errors.push(
+          `story ${story.id}: draws an aurora on "${story.aurora.onId}", not one of its actors`,
+        );
+      }
+      const [nearest, farthest] = story.aurora.fromPoleDeg.value;
+      if (!(nearest > 0 && farthest > nearest && farthest < 90)) {
+        errors.push(`story ${story.id}: the aurora’s band is not between its pole and its equator`);
+      }
+      if (story.noteKey === undefined) {
+        errors.push(`story ${story.id}: draws an aurora but has no note to say it is a drawing`);
+      }
+    }
     for (const shadow of story.shadows ?? []) {
       for (const id of [shadow.casterId, shadow.onId]) {
         if (!story.actorIds.includes(id)) {

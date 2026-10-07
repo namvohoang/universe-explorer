@@ -17,6 +17,7 @@ import {
 } from '../sim/layout';
 import type { Scale } from '../sim/scale';
 import { add, length, subtract, type Vec3 } from '../sim/vec3';
+import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
@@ -86,6 +87,10 @@ export interface SolarSystem {
    * puts everything back.
    */
   setTracks(tracks: Tracks | null): void;
+  /** Draws the two auroral bands of a body, riding round with its ground; `null` takes them away. */
+  setAurora(onId: string | null, shape: AuroraShape | null): void;
+  /** Which way a body's north pole points, as a unit vector in scene axes. */
+  northOf(id: string): Vec3;
   /**
    * Strews dust along the part of this object's path that lies near its star: a drawing of
    * the trail a comet leaves. `null` takes it away.
@@ -168,6 +173,7 @@ export function createSolarSystem(
   const DUST_PATH_POINTS = 24_000;
   const DUST_SPECKS_PER_POINT = 5;
   let dust: DustTrail | null = null;
+  let aurora: AuroraRings | null = null;
   let currentScale = scale;
   let tracks: Tracks | null = null;
   let shownIds: ReadonlySet<string> | null = null;
@@ -329,6 +335,23 @@ export function createSolarSystem(
       }
       bodies.get(id)?.loadDetail();
     },
+    setAurora(onId, shape) {
+      if (aurora) {
+        aurora.group.removeFromParent();
+        aurora.dispose();
+        aurora = null;
+      }
+      const body = onId === null ? undefined : bodies.get(onId);
+      if (!body || !shape) return;
+      aurora = createAuroraRings(shape);
+      body.frame.add(aurora.group);
+    },
+    northOf(id) {
+      const { frame } = bodyOf(id);
+      frame.updateWorldMatrix(true, false);
+      const north = inWorld.set(0, 1, 0).transformDirection(frame.matrixWorld);
+      return { x: north.x, y: north.y, z: north.z };
+    },
     setDust(alongId, jd) {
       if (dust) {
         group.remove(dust.points);
@@ -389,6 +412,7 @@ export function createSolarSystem(
       for (const tail of tails.values()) tail.dispose();
       for (const { trail } of trails.values()) trail.dispose();
       dust?.dispose();
+      aurora?.dispose();
     },
   };
 }

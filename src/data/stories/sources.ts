@@ -288,3 +288,26 @@ export const NASA_ETA_AQUARIIDS: Source = {
   url: 'https://science.nasa.gov/solar-system/meteors-meteorites/eta-aquarids/',
   retrieved: '2026-10-07',
 };
+
+export const NOAA_GEOMAGNETIC_POLES: Source = {
+  id: 'noaa-geomagnetic-poles',
+  title:
+    'NOAA National Centers for Environmental Information — Wandering of the Geomagnetic Poles: the geomagnetic poles for 2025.0 from the World Magnetic Model, and where the auroral ovals lie',
+  url: 'https://www.ncei.noaa.gov/products/wandering-geomagnetic-poles',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_AURORAS: Source = {
+  id: 'nasa-auroras',
+  title: 'NASA Science — Auroras',
+  url: 'https://science.nasa.gov/sun/auroras/',
+  retrieved: '2026-10-07',
+};
+
+export const JPL_HORIZONS_TURN_AURORA_2027_EARTH: Source = {
+  id: 'jpl-horizons-turn-aurora2027earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2027-01-15 00:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272461420.500800745%27',
+  retrieved: '2026-10-07',
+};

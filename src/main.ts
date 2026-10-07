@@ -60,6 +60,10 @@ const STAGE_DIRECTION = { x: 0, y: 1, z: 0.45 };
 const STAGE_FRAMING = 2.6;
 /** How many of its own radii away a body stands when a story looks at it close up. */
 const CLOSE_UP_RADII = 12;
+/** How far a view from over a pole leans towards the night side, against one for straight overhead. */
+const NIGHT_LEAN = 0.45;
+/** How many of its own radii away a body stands when a story looks down on one of its poles. */
+const POLE_VIEW_RADII = 5;
 /**
  * How much of the sky a telescope view takes in, top to bottom, in degrees: between two and
  * three times the width of the full Moon as seen from Earth.
@@ -656,6 +660,18 @@ function start(): void {
   let watchActors: ReadonlySet<string> | null = null;
   const watchAddress = (story: Story): string =>
     `${window.location.pathname}${window.location.search}#watch/${story.id}`;
+  /** A bearing from over one pole of a body, leaning to its night side, where an aurora shows. */
+  const overPole = (id: string, pole: 'north' | 'south'): Vec3 => {
+    const north = system.northOf(id);
+    const sign = pole === 'north' ? 1 : -1;
+    const night = subtract(system.positionOf(id), system.positionOf('sun'));
+    const far = length(night) || 1;
+    return {
+      x: sign * north.x + (NIGHT_LEAN * night.x) / far,
+      y: sign * north.y + (NIGHT_LEAN * night.y) / far,
+      z: sign * north.z + (NIGHT_LEAN * night.z) / far,
+    };
+  };
   /** The view a chapter asks for: held on a line between two actors, or the whole stage. */
   const watchView = (story: Story, chapter: Chapter, free: boolean): FlyTo => {
     const stand = chapter.standAtId;
@@ -711,14 +727,16 @@ function start(): void {
       // Something with a glow that grows (a comet near the Sun) is stood back from as it grows.
       const distanceNow = (): number =>
         Math.max(
-          system.radiusOf(seen) * CLOSE_UP_RADII,
+          system.radiusOf(seen) * (chapter.over ? POLE_VIEW_RADII : CLOSE_UP_RADII),
           system.glowRadiusOf(seen) * GLOW_VIEW_RADII,
         );
       return {
         target: () => system.positionOf(seen),
         distance: distanceNow(),
         ...(system.glowRadiusOf(seen) > 0 || tailed.has(seen) ? { distanceNow } : {}),
-        direction: litSideBearing(system.positionOf(seen), system.positionOf('sun')),
+        direction: chapter.over
+          ? overPole(seen, chapter.over)
+          : litSideBearing(system.positionOf(seen), system.positionOf('sun')),
         minDistance: system.radiusOf(seen) * BODY_CLOSEST_RADII,
         maxDistance: Infinity,
         idleTurn: false,
@@ -786,6 +804,24 @@ function start(): void {
       craftTags.set(id, tag);
     }
   };
+  /** Draws a story's auroral bands, from where the story says the magnetic pole is. */
+  const showAurora = (story: Story): void => {
+    const { aurora } = story;
+    const world = catalogue.find((object) => object.id === aurora?.onId);
+    const radiusKm = world ? bodyRadiusKm(world) : null;
+    if (!aurora || radiusKm === null) {
+      system.setAurora(null, null);
+      return;
+    }
+    const [lonDegEast, latDeg] = aurora.northPole.value;
+    const [lowest, highest] = aurora.heightKm.value;
+    system.setAurora(aurora.onId, {
+      northPole: bodyFramePoint({ lonDegEast, latDeg, altitudeKm: 0 }, radiusKm),
+      fromPoleDeg: aurora.fromPoleDeg.value,
+      // Drawn at the middle of the heights the glow is found at.
+      radius: (radiusKm + (lowest + highest) / 2) / radiusKm,
+    });
+  };
   /** The things that grow a glow and tails. */
   const tailed = new Set(catalogue.filter((object) => object.kind === 'comet').map((o) => o.id));
   const watch = {
@@ -819,6 +855,7 @@ function start(): void {
               watchActors = new Set(story.actorIds);
               system.showOnly(watchActors);
               const craft = story.craft ?? [];
+              showAurora(story);
               system.setDust(story.dustAlongId ?? null, story.chapters[0]?.atJd.value ?? clock.jd);
               system.setTracks(
                 craft.length === 0 && !story.tracked && !story.turned && !story.shadows
@@ -869,6 +906,7 @@ function start(): void {
       system.showOnly(null);
       system.setTracks(null);
       system.setDust(null, clock.jd);
+      system.setAurora(null, null);
       tagCraft([]);
       document.body.classList.remove('watching');
       system.setDate(clock.jd);

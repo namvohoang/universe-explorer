@@ -1186,6 +1186,14 @@ export const en = {
     'Earth moves on round the Sun. Halfway round, it will meet the trail again.',
   storyMeteorShowerOctober:
     'In October, Earth meets the dust of Halley’s Comet once more. Lots of shooting stars in one night is called a meteor shower.',
+  storyAuroraTitle: 'An aurora',
+  storyAuroraNote: 'The green rings are a drawing.',
+  storyAuroraWind:
+    'The Sun blows a wind of tiny particles into space, all the time. Some rain down near the top and the bottom of the world.',
+  storyAuroraGlowingAir:
+    'High up, the particles hit the air and make it glow. That glow is an aurora. It is seen most in a ring round the far north.',
+  storyAuroraSouthToo:
+    'There is a ring round the far south too. The green light comes from oxygen, about 100 km above the ground.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

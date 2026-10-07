@@ -2,10 +2,12 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../src/data/catalogue';
+import type { PathSample, Story } from '../src/data/types';
 import { bodyRadiusKm, scenePositions } from '../src/sim/layout';
-import { pathPositionKm } from '../src/sim/trajectory';
+import { drawnThrough, pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
+import { apollo11Launch } from '../src/data/stories/apollo11Launch';
 import { artemis1 } from '../src/data/stories/artemis1';
 import { artemis2 } from '../src/data/stories/artemis2';
 import { moonPhases } from '../src/data/stories/moonPhases';
@@ -68,13 +70,17 @@ describe('Artemis I and II', () => {
     JSON.parse(
       readFileSync(join(import.meta.dirname, 'fixtures', `${name}.heldout.json`), 'utf8'),
     ) as HeldOut;
-  const orion = artemis1.craft?.[0]?.path.samples.value ?? [];
+  const samplesOf = (story: Story): readonly PathSample[] => {
+    const path = story.craft?.[0]?.path;
+    return path && 'samples' in path ? path.samples.value : [];
+  };
+  const orion = samplesOf(artemis1);
   const moon = artemis1.tracked?.moon?.samples.value ?? [];
 
   it.each([
     ['artemis1Orion', orion],
     ['artemis1Moon', moon],
-    ['artemis2Orion', artemis2.craft?.[0]?.path.samples.value ?? []],
+    ['artemis2Orion', samplesOf(artemis2)],
     ['artemis2Moon', artemis2.tracked?.moon?.samples.value ?? []],
   ] as const)('draws %s through JPL Horizons samples it was not given', (name, samples) => {
     const checks = heldOut(name).samples;
@@ -113,7 +119,8 @@ describe('Artemis I and II', () => {
 
 describe('Artemis II', () => {
   it('goes round the Moon at the distance and the minute JPL gives', () => {
-    const orion = artemis2.craft?.[0]?.path.samples.value ?? [];
+    const path = artemis2.craft?.[0]?.path;
+    const orion = path && 'samples' in path ? path.samples.value : [];
     const moon = artemis2.tracked?.moon?.samples.value ?? [];
     let nearestKm = Infinity;
     let nearestJd = 0;
@@ -129,6 +136,46 @@ describe('Artemis II', () => {
     expect(Math.abs(nearestKm - 8282)).toBeLessThan(5);
     const threeHours = 3 / 24;
     expect(Math.abs(nearestJd - (pass.atJd.value + threeHours)) * 1440).toBeLessThan(3);
+  });
+});
+
+describe('the launch of Apollo 11', () => {
+  const path = apollo11Launch.craft?.[0]?.path;
+  const points = path && 'points' in path ? path.points.value : [];
+  const samples = drawnThrough(points);
+  const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+  const groundKm = bodyRadiusKm(earth) ?? 0;
+  const heightKm = (jd: number): number => {
+    const place = pathPositionKm(samples, jd);
+    return Math.hypot(place.x, place.y, place.z) - groundKm;
+  };
+
+  it('starts on the ground and ends at the height of the orbit NASA gives', () => {
+    const [first, last] = [points[0], points[points.length - 1]];
+    if (!first || !last) throw new Error('the path has places');
+    // Within the 21 km by which Earth's radius differs between its equator and its poles.
+    expect(Math.abs(heightKm(first[0]))).toBeLessThan(21);
+    // NASA's table: 103.176 nautical miles at Earth orbit insertion, which is 191 km.
+    expect(heightKm(last[0])).toBeGreaterThan(191 - 21);
+    expect(heightKm(last[0])).toBeLessThan(191 + 21);
+  });
+
+  it('never dips under the ground on the curve drawn between the known places', () => {
+    const [start, end] = [apollo11Launch.chapters[0]?.atJd.value ?? 0, apollo11Launch.endJd.value];
+    for (let jd = start; jd <= end; jd += 1 / 86_400) {
+      expect(heightKm(jd), String(jd)).toBeGreaterThan(-21);
+    }
+  });
+
+  it('starts each part at one of the known places, so nothing told happens on a drawn stretch', () => {
+    const known = new Set(points.map((point) => point[0]));
+    for (const chapter of apollo11Launch.chapters) expect(known.has(chapter.atJd.value)).toBe(true);
+    expect(known.has(apollo11Launch.endJd.value)).toBe(true);
+  });
+
+  it('turns Earth by a direction of length one', () => {
+    const [x, y, z] = apollo11Launch.turned?.earth?.primeMeridian.value ?? [0, 0, 0];
+    expect(Math.hypot(x, y, z)).toBeCloseTo(1, 6);
   });
 });
 

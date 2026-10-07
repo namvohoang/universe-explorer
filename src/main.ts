@@ -12,7 +12,7 @@ import type { DeepModel, DeepModelNote } from './scene/deep';
 import { createSolarSystem } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
-import { pathPositionKm } from './sim/trajectory';
+import { drawnThrough, pathPositionKm } from './sim/trajectory';
 import { length, subtract, type Vec3 } from './sim/vec3';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
@@ -58,6 +58,13 @@ const STAGE_DIRECTION = { x: 0, y: 1, z: 0.45 };
 const STAGE_FRAMING = 2.6;
 /** How many of its own radii away a body stands when a story looks at it close up. */
 const CLOSE_UP_RADII = 12;
+/**
+ * A spacecraft has no size to stand back from, so a close-up of one stands this many radii of
+ * the body it is leaving away from it, far enough to see the ground curve under its path.
+ */
+const CRAFT_CLOSE_UP_RADII = 0.55;
+/** How far to the south of straight overhead that view is taken from, to show the climb side-on. */
+const CRAFT_VIEW_SOUTH = 1.1;
 /** Camera distance that frames a sphere of radius 1 with a little room around it. */
 const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
@@ -651,6 +658,20 @@ function start(): void {
         idleTurn: false,
       };
     }
+    const flown = (story.craft ?? []).find((craft) => craft.id === chapter.lookAtId);
+    if (chapter.closeUp === true && flown) {
+      const ground = flown.path.centreId;
+      const up = subtract(system.positionOf(flown.id), system.positionOf(ground));
+      const height = length(up) || 1;
+      return {
+        target: () => system.positionOf(flown.id),
+        distance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII,
+        direction: { x: up.x / height, y: up.y / height - CRAFT_VIEW_SOUTH, z: up.z / height },
+        minDistance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII * 0.1,
+        maxDistance: system.radiusOf(ground) * CLOSE_UP_RADII,
+        idleTurn: false,
+      };
+    }
     if (chapter.closeUp === true) {
       const seen = chapter.lookAtId;
       return {
@@ -729,9 +750,15 @@ function start(): void {
               system.showOnly(watchActors);
               const craft = story.craft ?? [];
               system.setTracks(
-                craft.length === 0 && !story.tracked
+                craft.length === 0 && !story.tracked && !story.turned
                   ? null
                   : {
+                      turns: new Map(
+                        Object.entries(story.turned ?? {}).map(([id, turn]) => {
+                          const [x, y, z] = turn.primeMeridian.value;
+                          return [id, { atJd: turn.atJd.value, towards: { x, y, z } }];
+                        }),
+                      ),
                       bodies: new Map(
                         Object.entries(story.tracked ?? {}).map(([id, path]) => [
                           id,
@@ -741,7 +768,9 @@ function start(): void {
                       craft: craft.map(({ id, path }) => ({
                         id,
                         centreId: path.centreId,
-                        samples: path.samples.value,
+                        // A path known at a few places only has a curve drawn through them.
+                        samples:
+                          'samples' in path ? path.samples.value : drawnThrough(path.points.value),
                       })),
                     },
               );

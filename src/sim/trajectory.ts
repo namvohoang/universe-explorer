@@ -1,4 +1,4 @@
-import type { PathSample } from '../data/types';
+import type { PathPoint, PathSample } from '../data/types';
 import { SECONDS_PER_DAY } from './constants';
 import { length, subtract, type Vec3 } from './vec3';
 
@@ -47,6 +47,21 @@ export function pathPositionKm(samples: readonly PathSample[], jd: number): Vec3
   const from = samples[low];
   const to = samples[high];
   return from && to ? positionBetweenKm(from, to, jd) : positionOf(first);
+}
+
+/**
+ * Samples to draw a smooth curve through a few known places: each place is given the speed
+ * of a straight run from the place before it to the place after it (or to its one neighbour,
+ * at an end). The speeds are a way of drawing, not measurements.
+ */
+export function drawnThrough(points: readonly PathPoint[]): PathSample[] {
+  return points.map((point, index) => {
+    const before = points[index - 1] ?? point;
+    const after = points[index + 1] ?? point;
+    const seconds = (after[0] - before[0]) * SECONDS_PER_DAY;
+    const speed = (i: 1 | 2 | 3): number => (seconds > 0 ? (after[i] - before[i]) / seconds : 0);
+    return [point[0], point[1], point[2], point[3], speed(1), speed(2), speed(3)];
+  });
 }
 
 /** The farthest a path gets from its centre, in km. */

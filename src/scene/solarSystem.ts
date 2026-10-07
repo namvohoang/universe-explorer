@@ -2,7 +2,7 @@ import { AmbientLight, Group, PointLight } from 'three';
 import type { CelestialObject, PathSample, RingSystem } from '../data/types';
 import { isShowpiece } from '../data/types';
 import { J2000_JD, KM_PER_AU } from '../sim/constants';
-import { poleOf } from '../sim/frames';
+import { eclipticToScene, poleOf } from '../sim/frames';
 import { sceneDistance } from '../sim/belt';
 import {
   bodyRadiusKm,
@@ -36,6 +36,8 @@ export interface TrackedCraft {
 
 export interface Tracks {
   readonly bodies: TrackedOffsets;
+  /** Bodies turned to face the way they really did: a direction in the ecliptic frame at a date. */
+  readonly turns: ReadonlyMap<string, { readonly atJd: number; readonly towards: Vec3 }>;
   readonly craft: readonly TrackedCraft[];
 }
 
@@ -237,6 +239,10 @@ export function createSolarSystem(
       }
       trails.clear();
       tracks = next;
+      for (const [id, body] of bodies) {
+        const turn = next?.turns.get(id);
+        body.setTurn(turn ? { atJd: turn.atJd, towards: eclipticToScene(turn.towards) } : null);
+      }
       for (const craft of next?.craft ?? []) {
         const trail = createTrail(craft.samples);
         trails.set(craft.id, { craft, trail });

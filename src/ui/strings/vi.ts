@@ -846,6 +846,16 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Orion vòng qua phía bên kia của Mặt Trăng. Đây là lúc nó ở xa Trái Đất nhất.',
   storyArtemis2ComingHome: 'Giờ các phi hành gia đang trên đường trở về Trái Đất.',
   storyArtemis2Landing: 'Orion thả phần mang động cơ của nó. Rồi nó hạ xuống biển bằng dù.',
+  storyApollo11LaunchTitle: 'Apollo 11: phóng lên',
+  craftApollo11: 'Apollo 11',
+  storyApollo11LaunchLiftoff:
+    'Rời bệ phóng! Tầng thứ nhất của Saturn V có những động cơ mạnh nhất. Nó phải nâng cả tên lửa đầy nhiên liệu.',
+  storyApollo11LaunchFirstStageAway:
+    'Tầng thứ nhất đã đốt hết nhiên liệu. Nó tách ra và rơi xuống biển. Động cơ của tầng thứ hai nổ máy.',
+  storyApollo11LaunchSecondStageAway:
+    'Tầng thứ hai cũng tách ra. Tầng thứ ba đẩy thêm cú cuối cùng.',
+  storyApollo11LaunchInOrbit:
+    'Động cơ tắt. Apollo 11 đã vào quỹ đạo. Giờ nó bay vòng quanh Trái Đất.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',
@@ -861,7 +871,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchStoryView: 'Về góc nhìn của câu chuyện',
   watchClose: 'Thôi xem',
   watchPathTracked: 'Đây là đường bay thật của con tàu.',
-  watchPathStaged: 'Giờ giấc là thật. Đường bay là hình vẽ.',
+  watchPathStaged: 'Đường nối giữa các vị trí thật là hình vẽ.',
   storyMoonPhasesTitle: 'Các pha của Mặt Trăng',
   storyMoonPhasesNew:
     'Đây là trăng non, nhìn từ Trái Đất. Mặt Trời chiếu sáng nửa bên kia của Mặt Trăng. Nửa quay về phía chúng ta thì tối.',

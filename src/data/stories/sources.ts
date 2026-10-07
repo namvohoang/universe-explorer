@@ -77,3 +77,26 @@ export const NASA_ARTEMIS_II: Source = {
   url: 'https://www.nasa.gov/mission/artemis-ii/',
   retrieved: '2026-10-07',
 };
+
+export const NASA_SP4029_APOLLO_11_ASCENT: Source = {
+  id: 'nasa-sp4029-apollo11-ascent',
+  title:
+    'NASA SP-2000-4029, Apollo by the Numbers — Apollo 11 ascent phase: time, altitude, latitude and longitude at each event of the climb to orbit',
+  url: 'https://www.nasa.gov/wp-content/uploads/static/history/SP-4029/Apollo_11d_Ascent_Phase.htm',
+  retrieved: '2026-10-07',
+};
+
+export const JPL_HORIZONS_EARTH_TURN_APOLLO_11_ASCENT: Source = {
+  id: 'jpl-horizons-earth-turn-apollo11ascent',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at Apollo 11’s liftoff (1969-07-16 13:32:00.63 UTC), ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272440419.064356217%27',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_SATURN_V_STUDENTS: Source = {
+  id: 'nasa-saturn-v-students',
+  title: 'NASA — What Was the Saturn V? (Grades 5-8)',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-was-the-saturn-v-grades-5-8/',
+  retrieved: '2026-10-07',
+};

@@ -610,9 +610,15 @@ recorded last.
       seen close up, the way home, and the landing. The times of the burn, the pass and the
       dropping of the service module are from Horizons' data sheet for the flight; a test
       holds the drawn pass to the sheet's distance and minute.
-- [ ] 12.11 Staged flights: how a rocket reaches space (the Saturn V's stages, times from
-      NASA's Apollo reports), Apollo 11's landing (with the S-IVB's real path as a side note),
-      and a shuttle joining the space station, seen from the station.
+- [~] 12.11 Staged flights. Done: the launch of Apollo 11. The ten places the Saturn V passes
+      through, with their times, are rows of NASA's own table of the climb (SP-2000-4029);
+      JPL Horizons turns each place on the ground into a place in space
+      (`tools/horizons/fetchAscent.ts`), and the app draws a curve through them, so the screen
+      says "The line between real places is a drawing." For this story Earth is turned the way
+      it really faced, from Horizons, so the rocket leaves Florida: the catalogue knows how
+      fast Earth spins but not which side faced where. One row of the table is left out as a
+      misprint (a longitude west of the pad). The rocket is a named point, and the time is
+      shown to the second. Left: Apollo 11's landing and a shuttle joining the space station.
 - [ ] 12.12 Recordings for the captions, Vietnamese text, and a note on the grown-ups' page
       about what "real path" and "drawing" mean.
 

@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import type { PathSample } from '../data/types';
+import type { PathPoint, PathSample } from '../data/types';
 import { SECONDS_PER_DAY } from './constants';
-import { pathPositionKm, pathReachKm, positionBetweenKm, thinPath } from './trajectory';
+import {
+  drawnThrough,
+  pathPositionKm,
+  pathReachKm,
+  positionBetweenKm,
+  thinPath,
+} from './trajectory';
 
 // Placeholder paths for testing the maths, not astronomy.
 /** A straight run along x at 1 km/s, sampled once a day. */
@@ -80,5 +86,32 @@ describe('thinPath', () => {
       const drawn = pathPositionKm(kept, sample[0]);
       expect(Math.hypot(drawn.x - sample[1], drawn.y - sample[2])).toBeLessThanOrEqual(tolerance);
     }
+  });
+});
+
+describe('drawnThrough', () => {
+  const points: readonly PathPoint[] = [
+    [0, 0, 0, 0],
+    [1, 100, 50, 0],
+    [3, 400, 50, 0],
+  ];
+
+  it('passes through every place at its instant', () => {
+    const samples = drawnThrough(points);
+    for (const [jd, x, y] of points) {
+      const drawn = pathPositionKm(samples, jd);
+      expect(drawn.x).toBeCloseTo(x, 9);
+      expect(drawn.y).toBeCloseTo(y, 9);
+    }
+  });
+
+  it('gives a middle place the speed of a straight run between its neighbours', () => {
+    const [, middle] = drawnThrough(points);
+    expect(middle?.[4]).toBeCloseTo(400 / (3 * SECONDS_PER_DAY), 12);
+    expect(middle?.[5]).toBeCloseTo(50 / (3 * SECONDS_PER_DAY), 12);
+  });
+
+  it('stands still when it is given one place only', () => {
+    expect(drawnThrough([[5, 1, 2, 3]])).toEqual([[5, 1, 2, 3, 0, 0, 0]]);
   });
 });

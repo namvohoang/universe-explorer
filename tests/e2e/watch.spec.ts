@@ -23,6 +23,7 @@ const STORIES = [
   ['moon-phases', 'The Moon’s phases'],
   ['artemis-1', 'Artemis I: round the Moon'],
   ['artemis-2', 'Artemis II: with astronauts'],
+  ['apollo-11-launch', 'Apollo 11: the launch'],
 ] as const;
 
 for (const screen of SCREENS) {
@@ -162,5 +163,19 @@ test.describe('a space flight', () => {
     await expect(page.locator('.watch-path')).toBeHidden();
     await expect(page.locator('.craft-tag')).toHaveCount(0);
     await expect(page).toHaveURL(/#watch\/moon-phases$/);
+  });
+
+  test('that is drawn between known places says so, and is told to the second', async ({
+    page,
+  }) => {
+    await page.goto('/#watch/apollo-11-launch');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'The line between real places is a drawing.',
+    );
+    await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:32:01');
+    await expect(page.locator('.craft-tag')).toHaveText('Apollo 11');
+    await page.getByRole('slider').focus();
+    await page.keyboard.press('End');
+    await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:43:49');
   });
 });

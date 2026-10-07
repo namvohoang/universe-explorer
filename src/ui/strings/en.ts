@@ -1073,7 +1073,7 @@ export const en = {
   watchStoryView: 'Back to the story view',
   watchClose: 'Stop watching',
   watchPathTracked: 'This is the real path the spaceship flew.',
-  watchPathStaged: 'The times are real. The path is a drawing.',
+  watchPathStaged: 'The line between real places is a drawing.',
   storyMoonPhasesTitle: 'The Moon’s phases',
   storyMoonPhasesNew:
     'This is a new Moon, seen from Earth. The Sun lights the far side of the Moon. The side facing us is dark.',
@@ -1105,6 +1105,16 @@ export const en = {
   storyArtemis2ComingHome: 'Now the astronauts are on their way back to Earth.',
   storyArtemis2Landing:
     'Orion drops the part that carried its engine. Then it lands in the sea under parachutes.',
+  storyApollo11LaunchTitle: 'Apollo 11: the launch',
+  craftApollo11: 'Apollo 11',
+  storyApollo11LaunchLiftoff:
+    'Liftoff! The first stage of the Saturn V has the strongest engines. It has to lift the whole rocket, full of fuel.',
+  storyApollo11LaunchFirstStageAway:
+    'The first stage has burned all its fuel. It drops away and falls into the sea. The engines of the second stage fire.',
+  storyApollo11LaunchSecondStageAway:
+    'The second stage drops away too. The third stage gives the last push.',
+  storyApollo11LaunchInOrbit:
+    'The engine stops. Apollo 11 is in orbit. Now it goes round and round Earth.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

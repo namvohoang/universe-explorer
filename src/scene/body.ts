@@ -101,6 +101,11 @@ export interface Body {
   /** Turns the body to where it is at this date. */
   setDate(jd: number): void;
   /**
+   * Turns the body so that its latitude 0, longitude 0 points along `towards` (scene axes) at
+   * `atJd`, and spins on from there. `null` goes back to spinning from an unknown start.
+   */
+  setTurn(turn: { readonly atJd: number; readonly towards: Vec3 } | null): void;
+  /**
    * For a body that keeps one face to its parent: turns that face (and its longest axis)
    * towards where the parent is now. Does nothing for a body that spins freely.
    */
@@ -333,6 +338,9 @@ export function createBody(
   const centre = new Vector3();
   const inverse = mesh.matrixWorld.clone();
 
+  /** Added to the spin so that the right side faces the right way; 0 when that is not known. */
+  let turnOffset = 0;
+
   let longest = 0;
   const setScale = (next: Scale): void => {
     const axes = sceneAxes(shape, next);
@@ -353,8 +361,16 @@ export function createBody(
     },
     setScale,
     setDate(jd) {
-      if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd);
+      if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd) + turnOffset;
       turnModel();
+    },
+    setTurn(turn) {
+      turnOffset = 0;
+      if (!turn || synchronous) return;
+      // The direction seen in the tilted frame; the map's longitude 0 lies along the mesh's +x.
+      facing.set(turn.towards.x, turn.towards.y, turn.towards.z);
+      facing.applyQuaternion(untilt.copy(tilt.quaternion).invert());
+      turnOffset = Math.atan2(-facing.z, facing.x) - spinAngleRad(shape.orientation, turn.atJd);
     },
     faceTowards(parent) {
       if (!synchronous) return;

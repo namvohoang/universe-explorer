@@ -52,12 +52,36 @@ export interface SampledPath {
   readonly samples: Sourced<readonly PathSample[]>;
 }
 
+/** A place something was at one instant: [Julian date (UTC), x, y, z (km)], as for `PathSample`. */
+export type PathPoint = readonly [jd: number, xKm: number, yKm: number, zKm: number];
+
+/**
+ * A path known only at a few instants, each a real place at a real time from an agency's
+ * table. The app draws a smooth curve through them; what lies between is a drawing.
+ */
+export interface StagedPath {
+  readonly centreId: string;
+  /** Earliest first. */
+  readonly points: Sourced<readonly PathPoint[]>;
+}
+
+/**
+ * Which way a body was turned at one instant: the direction (a unit vector in the ecliptic
+ * frame of J2000) of the point at latitude 0, longitude 0 on it. The catalogue knows how fast
+ * a body spins but not which side faced where; a rocket leaving the ground needs the ground
+ * in the right place.
+ */
+export interface BodyTurn {
+  readonly atJd: Sourced<number>;
+  readonly primeMeridian: Sourced<readonly [x: number, y: number, z: number]>;
+}
+
 /** A spacecraft that flies in a story. It is drawn as a named point: at true scale it is too small to see. */
 export interface StoryCraft {
   readonly id: string;
   /** Key of its name in the UI strings. */
   readonly nameKey: string;
-  readonly path: SampledPath;
+  readonly path: SampledPath | StagedPath;
 }
 
 /** Something that happens, played on a real clock: a sky event or a space flight. */
@@ -81,5 +105,7 @@ export interface Story {
    * the moon to the kilometre.
    */
   readonly tracked?: Readonly<Record<string, SampledPath>>;
+  /** Bodies turned, for this story, to face the way they really did, keyed by catalogue id. */
+  readonly turned?: Readonly<Record<string, BodyTurn>>;
   readonly sources: readonly Source[];
 }

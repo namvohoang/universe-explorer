@@ -2,7 +2,7 @@
  * Checks the stories of the Watch screen beyond what the types can: sources resolve, chapters
  * run forwards in time, and everything a story draws is in the catalogue. Pure: takes the records.
  */
-import type { SampledPath, Story } from '../../src/data/types';
+import type { SampledPath, StagedPath, Story } from '../../src/data/types';
 import { sourceErrors } from './catalogue';
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -50,12 +50,12 @@ function chapterErrors(story: Story): string[] {
 function pathErrors(
   story: Story,
   name: string,
-  path: SampledPath,
+  path: SampledPath | StagedPath,
   known: ReadonlySet<string>,
 ): string[] {
   const errors: string[] = [];
   const at = `story ${story.id}: path of "${name}"`;
-  const samples = path.samples.value;
+  const samples = 'samples' in path ? path.samples.value : path.points.value;
   if (!known.has(path.centreId)) {
     errors.push(`${at} is measured from "${path.centreId}", not in the catalogue`);
   }
@@ -92,6 +92,15 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
     const craft = story.craft ?? [];
     if (story.path === 'tracked' && craft.length === 0) {
       errors.push(`story ${story.id}: says its path is tracked but flies no tracked craft`);
+    }
+    // A path drawn between a few known places must never be passed off as the path flown.
+    if (story.path !== 'staged' && craft.some((one) => 'points' in one.path)) {
+      errors.push(`story ${story.id}: flies a craft on a drawn path but does not say it is staged`);
+    }
+    for (const id of Object.keys(story.turned ?? {})) {
+      if (!story.actorIds.includes(id)) {
+        errors.push(`story ${story.id}: turns "${id}", not one of its actors`);
+      }
     }
     for (const one of craft) {
       if (!ID.test(one.id))

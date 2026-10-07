@@ -1,0 +1,21 @@
+{
+  "name": "apollo11Ascent",
+  "centre": "399",
+  "centreId": "earth",
+  "rangeZeroUtc": "1969-07-16T13:32:00Z",
+  "tableUrl": "https://www.nasa.gov/wp-content/uploads/static/history/SP-4029/Apollo_11d_Ascent_Phase.htm",
+  "sourceId": "nasa-sp4029-apollo11-ascent",
+  "note": "Rows of NASA SP-2000-4029 'Apollo by the Numbers', Apollo 11 ascent phase: event, ground elapsed time (s), altitude (n mi), geocentric latitude (deg N), longitude (deg E). The row 'S-IC center engine cutoff' is left out: its longitude, -81.1517, is west of the launch pad while the rows either side are east of it, so it is taken for a misprint and not guessed at.",
+  "rows": [
+    ["Liftoff", 0.63, 0.032, 28.447, -80.6041],
+    ["Mach 1 achieved", 66.3, 4.236, 28.4523, -80.5853],
+    ["Maximum dynamic pressure", 83.0, 7.326, 28.4624, -80.5499],
+    ["S-IC outboard engine cutoff", 161.63, 35.701, 28.7007, -79.6908],
+    ["S-IC/S-II separation", 162.3, 36.029, 28.7046, -79.6764],
+    ["S-II center engine cutoff", 460.62, 97.28, 30.9513, -69.4309],
+    ["S-II outboard engine cutoff", 548.22, 101.142, 31.7089, -64.1983],
+    ["S-II/S-IVB separation", 549.0, 101.175, 31.7152, -64.1467],
+    ["S-IVB 1st burn cutoff", 699.33, 103.202, 32.4865, -53.4588],
+    ["Earth orbit insertion", 709.33, 103.176, 32.5027, -52.6491]
+  ]
+}

@@ -28,6 +28,24 @@ export function formatDateAndHour(jd: number): string {
   return `${DATE_FORMAT.format(new Date(hour))}, ${HOUR_FORMAT.format(new Date(hour))}`;
 }
 
+const SECOND_FORMAT = new Intl.DateTimeFormat(locale, {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+  timeZone: 'UTC',
+});
+
+/**
+ * A Julian date as a day and the time to the second, e.g. "16 July 1969, 13:32:00", in world
+ * time (UTC): for something that is over in minutes, like a rocket's climb.
+ */
+export function formatDateAndSecond(jd: number): string {
+  // To the whole second, rounding away the last digits a Julian date cannot hold.
+  const second = Math.round(unixMsFromJulianDate(jd) / 1000) * 1000;
+  return `${DATE_FORMAT.format(new Date(second))}, ${SECOND_FORMAT.format(new Date(second))}`;
+}
+
 /** The calendar year a Julian date falls in. */
 export function yearOf(jd: number): number {
   return new Date(unixMsFromJulianDate(jd)).getUTCFullYear();

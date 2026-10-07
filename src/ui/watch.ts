@@ -10,7 +10,7 @@ import {
   type StoryTimes,
 } from '../sim/story';
 import { create } from './dom';
-import { fill, formatDateAndHour } from './format';
+import { fill, formatDateAndHour, formatDateAndSecond } from './format';
 import { icon, type IconName } from './icons';
 import { words } from './strings';
 import { createTabs } from './tabs';
@@ -189,7 +189,11 @@ export function createWatch(host: WatchHost): Watch {
       aim = true;
     }
     if (aim) host.aim(story, chapter, free);
-    const label = formatDateAndHour(jd);
+    // A story that is over within a day is told to the second; a longer one to the hour.
+    const label =
+      times.endJd - (times.chapterJds[0] ?? jd) < 1
+        ? formatDateAndSecond(jd)
+        : formatDateAndHour(jd);
     if (label !== shownDate) {
       shownDate = label;
       date.textContent = label;

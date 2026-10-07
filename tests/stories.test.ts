@@ -23,6 +23,7 @@ import { halleyTail } from '../src/data/stories/halleyTail';
 import { lunarEclipse } from '../src/data/stories/lunarEclipse';
 import { solarEclipse } from '../src/data/stories/solarEclipse';
 import { moonPhases } from '../src/data/stories/moonPhases';
+import { saturnRings } from '../src/data/stories/saturnRings';
 import { seasons } from '../src/data/stories/seasons';
 
 /**
@@ -472,6 +473,48 @@ describe('Halley’s tail', () => {
       expect(sunDistanceAu(middle)).toBeLessThan(sunDistanceAu(middle + days));
     }
     expect(tailStrength(sunDistanceAu(middle))).toBe(1);
+  });
+});
+
+describe('Saturn’s rings', () => {
+  const saturn = catalogue.find((object) => object.id === 'saturn') ?? fail();
+  if (saturn.shape?.type !== 'spheroid') throw new Error('Saturn is a spheroid');
+  const { orientation } = saturn.shape;
+  const pole = northPoleEcliptic(poleOf(orientation) ?? fail());
+  /** How far Earth stands above (+) or below the plane of the rings, seen from Saturn, in degrees. */
+  const openingDeg = (jd: number): number => {
+    const earth = eclipticOffsetKm(
+      catalogue.find((o) => o.id === 'earth') ?? fail(),
+      catalogue,
+      jd,
+    );
+    const toEarth = normalize(subtract(earth, eclipticOffsetKm(saturn, catalogue, jd)));
+    return (Math.asin(dot(toEarth, pole)) * 180) / Math.PI;
+  };
+  const start = (id: string): number =>
+    saturnRings.chapters.find((chapter) => chapter.id === id)?.atJd.value ?? NaN;
+  /**
+   * How far from edge-on the rings may be on the day NASA gives for the crossing, in degrees.
+   * The planets here follow JPL's approximate orbits, good to a minute of arc or so; near a
+   * crossing the rings' opening changes by a tenth of a degree in about four days.
+   */
+  const EDGE_ON_TOLERANCE_DEG = 0.1;
+
+  it('shows the rings edge-on on the day NASA gives for the crossing', () => {
+    expect(Math.abs(openingDeg(start('edge-on')))).toBeLessThan(EDGE_ON_TOLERANCE_DEG);
+  });
+
+  it('shows one face wide open at the start and the other at the end, as wide as Saturn’s tilt allows', () => {
+    const tiltDeg = orientation.axialTiltDeg.value ?? fail();
+    // Earth's own path adds or takes away up to a degree or so of Saturn's tilt.
+    expect(openingDeg(start('wide-open'))).toBeGreaterThan(tiltDeg - 1);
+    expect(openingDeg(saturnRings.endJd.value)).toBeLessThan(-(tiltDeg - 1));
+    for (const days of [-200, 200]) {
+      expect(openingDeg(start('wide-open'))).toBeGreaterThan(openingDeg(start('wide-open') + days));
+      expect(openingDeg(saturnRings.endJd.value)).toBeLessThan(
+        openingDeg(saturnRings.endJd.value + days),
+      );
+    }
   });
 });
 

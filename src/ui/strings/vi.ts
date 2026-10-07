@@ -905,6 +905,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Gần Mặt Trời rồi! Ánh nắng và một luồng gió từ Mặt Trời thổi khí và bụi thành những cái đuôi dài.',
   storyHalleyTailLeaving:
     'Giờ sao chổi đang rời đi. Đuôi của nó vẫn chỉ ra xa Mặt Trời, nên chúng ở phía trước nó.',
+  storySaturnRingsTitle: 'Vành Sao Thổ quay nghiêng',
+  storySaturnRingsWideOpen:
+    'Đây là Sao Thổ nhìn từ Trái Đất. Sao Thổ nghiêng, nên ta thấy vành của nó mở rộng. Hãy xem vành khép dần qua nhiều năm.',
+  storySaturnRingsEdgeOn:
+    'Giờ Trái Đất nằm ngang với vành. Vành mỏng đến mức, nhìn từ cạnh, nó như biến mất.',
+  storySaturnRingsOtherSide:
+    'Vành lại mở ra, và giờ ta thấy mặt bên kia của nó. Chuyện này xảy ra khoảng 15 năm một lần.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

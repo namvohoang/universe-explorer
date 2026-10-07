@@ -1164,6 +1164,13 @@ export const en = {
     'Close to the Sun! Sunlight and a wind from the Sun blow the gas and dust away into long tails.',
   storyHalleyTailLeaving:
     'Now the comet is leaving. Its tails still point away from the Sun, so they go in front of it.',
+  storySaturnRingsTitle: 'Saturn’s rings turn edge-on',
+  storySaturnRingsWideOpen:
+    'This is Saturn seen from Earth. Saturn is tilted, so we see its rings tipped wide open. Watch them close up over the years.',
+  storySaturnRingsEdgeOn:
+    'Now Earth is level with the rings. They are so thin that, seen from the edge, they seem to vanish.',
+  storySaturnRingsOtherSide:
+    'The rings open again, and now we see their other side. This happens about every 15 years.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

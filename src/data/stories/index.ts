@@ -6,6 +6,7 @@ import { artemis2 } from './artemis2';
 import { halleyTail } from './halleyTail';
 import { lunarEclipse } from './lunarEclipse';
 import { moonPhases } from './moonPhases';
+import { saturnRings } from './saturnRings';
 import { seasons } from './seasons';
 import { solarEclipse } from './solarEclipse';
 
@@ -16,6 +17,7 @@ export const stories: readonly Story[] = [
   solarEclipse,
   lunarEclipse,
   halleyTail,
+  saturnRings,
   apollo11Launch,
   apollo11Landing,
   artemis1,

@@ -597,10 +597,14 @@ recorded last.
       shadow within a quarter of a degree of NASA's table of its path; tests hold both. The
       lunar eclipse is two or three minutes shorter than NASA's, which draws Earth's shadow a
       little bigger for its air. How red the Moon glows in the shadow is a drawing choice.
-- [ ] 12.5 A supermoon (the Moon's stretched orbit: a full Moon at its nearest beside one at its
-      farthest, the ratio from the catalogue; the word is not an official one and the card says
-      so), Halley's tail growing near the Sun, Mars going backwards in Earth's sky, and
-      Saturn's rings seen edge-on.
+- [~] 12.5 Done: Halley's Comet growing its glow and tails as it rounds the Sun in 1986 (the
+      camera backs away as the glow grows; a test holds "too cold to have a tail" to the days
+      the app draws none), and Saturn's rings seen from Earth from 2017 to 2032, closing to a
+      line and opening again. On the catalogue's own orbits and pole Earth crosses the plane of
+      the rings on 23 March 2025, the very day NASA gives; a test holds it there.
+      Left: a supermoon (it needs a view from Earth itself, narrowed like a telescope, so the
+      Moon's size can be seen to change, and the Moon's real distance from JPL Horizons) and
+      Mars going backwards in Earth's sky (it needs a track drawn across the stars).
 - [ ] 12.6 A meteor shower: Earth crossing the dust a comet leaves along its path. Halley if
       NASA's pages name it as a shower's comet, since its orbit is here. First a test of how
       near the comet's orbit passes Earth's; the dust and the streaks are a drawing, labelled.

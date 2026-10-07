@@ -24,6 +24,7 @@ const STORIES = [
   ['seasons', 'The seasons'],
   ['solar-eclipse', 'A solar eclipse'],
   ['halley-tail', 'A comet grows its tail'],
+  ['saturn-rings', 'Saturn’s rings turn edge-on'],
   ['lunar-eclipse', 'A lunar eclipse'],
   ['artemis-1', 'Artemis I: round the Moon'],
   ['artemis-2', 'Artemis II: with astronauts'],

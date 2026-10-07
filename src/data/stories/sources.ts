@@ -222,3 +222,24 @@ export const NASA_COMETS_FACTS: Source = {
   url: 'https://science.nasa.gov/solar-system/comets/facts/',
   retrieved: '2026-10-07',
 };
+
+export const NASA_APOD_SATURN_RING_PLANE: Source = {
+  id: 'nasa-apod-saturn-ring-plane',
+  title: 'NASA Astronomy Picture of the Day, 2025 November 16 — Crossing Saturn’s Ring Plane',
+  url: 'https://apod.nasa.gov/apod/ap251116.html',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_APOD_DIONE_RHEA: Source = {
+  id: 'nasa-apod-dione-rhea-ring-transit',
+  title: 'NASA Astronomy Picture of the Day, 2025 November 22 — Dione and Rhea Ring Transit',
+  url: 'https://apod.nasa.gov/apod/ap251122.html',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_SATURN_FACTS: Source = {
+  id: 'nasa-saturn-facts',
+  title: 'NASA Science — Saturn: Facts',
+  url: 'https://science.nasa.gov/saturn/facts/',
+  retrieved: '2026-10-07',
+};

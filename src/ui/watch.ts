@@ -159,6 +159,8 @@ export function createWatch(host: WatchHost): Watch {
           return chip;
         }),
     );
+    // A long row scrolls sideways: the story on show is brought into sight.
+    chips.querySelector('[aria-current]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
   const showPlay = (): void => {

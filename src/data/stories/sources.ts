@@ -46,3 +46,34 @@ export const NASA_ARTEMIS_I_SPLASHDOWN: Source = {
   url: 'https://www.nasa.gov/missions/artemis/artemis-1/splashdown-nasas-orion-returns-to-earth-after-historic-moon-mission/',
   retrieved: '2026-10-07',
 };
+
+export const JPL_HORIZONS_PATH_ARTEMIS_2_ORION: Source = {
+  id: 'jpl-horizons-path-artemis2orion',
+  title:
+    'JPL Horizons — position and velocity of Artemis II (-1024, the Orion spacecraft, from NASA/JSC navigation) from the centre of Earth every 10 minutes, 2026-04-02 02:10 to 2026-04-10 23:50 TDB, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-1024%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%272%27&CSV_FORMAT=%27YES%27&START_TIME=%272026-04-02+02%3A10%27&STOP_TIME=%272026-04-10+23%3A50%27&STEP_SIZE=%2710m%27',
+  retrieved: '2026-10-07',
+};
+
+export const JPL_HORIZONS_PATH_ARTEMIS_2_MOON: Source = {
+  id: 'jpl-horizons-path-artemis2moon',
+  title:
+    'JPL Horizons — position and velocity of the Moon (301) from the centre of Earth every 10 minutes, 2026-04-02 02:10 to 2026-04-10 23:50 TDB, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27301%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%272%27&CSV_FORMAT=%27YES%27&START_TIME=%272026-04-02+02%3A10%27&STOP_TIME=%272026-04-10+23%3A50%27&STEP_SIZE=%2710m%27',
+  retrieved: '2026-10-07',
+};
+
+export const JPL_HORIZONS_ARTEMIS_2: Source = {
+  id: 'jpl-horizons-artemis-2',
+  title:
+    'JPL Horizons — data sheet for Artemis II (-1024): background and major events with their times',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-1024%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27NO%27',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_ARTEMIS_II: Source = {
+  id: 'nasa-artemis-ii',
+  title: 'NASA — Artemis II',
+  url: 'https://www.nasa.gov/mission/artemis-ii/',
+  retrieved: '2026-10-07',
+};

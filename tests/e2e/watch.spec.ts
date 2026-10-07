@@ -22,6 +22,7 @@ function overlap(a: Box, b: Box): boolean {
 const STORIES = [
   ['moon-phases', 'The Moon’s phases'],
   ['artemis-1', 'Artemis I: round the Moon'],
+  ['artemis-2', 'Artemis II: with astronauts'],
 ] as const;
 
 for (const screen of SCREENS) {

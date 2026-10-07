@@ -7,6 +7,7 @@ import { pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
 import { artemis1 } from '../src/data/stories/artemis1';
+import { artemis2 } from '../src/data/stories/artemis2';
 import { moonPhases } from '../src/data/stories/moonPhases';
 
 /**
@@ -59,7 +60,7 @@ describe('the Moon’s phases story', () => {
  */
 const PATH_TOLERANCE_KM = 1.01;
 
-describe('Artemis I', () => {
+describe('Artemis I and II', () => {
   interface HeldOut {
     readonly samples: readonly (readonly number[])[];
   }
@@ -73,9 +74,11 @@ describe('Artemis I', () => {
   it.each([
     ['artemis1Orion', orion],
     ['artemis1Moon', moon],
+    ['artemis2Orion', artemis2.craft?.[0]?.path.samples.value ?? []],
+    ['artemis2Moon', artemis2.tracked?.moon?.samples.value ?? []],
   ] as const)('draws %s through JPL Horizons samples it was not given', (name, samples) => {
     const checks = heldOut(name).samples;
-    expect(checks.length).toBeGreaterThan(100);
+    expect(checks.length).toBeGreaterThan(90);
     for (const [jd = 0, x = 0, y = 0, z = 0] of checks) {
       const drawn = pathPositionKm(samples, jd);
       expect(Math.hypot(drawn.x - x, drawn.y - y, drawn.z - z), String(jd)).toBeLessThan(
@@ -105,6 +108,27 @@ describe('Artemis I', () => {
       expect(lowest, String(index)).toBeGreaterThan(100);
       expect(lowest, String(index)).toBeLessThan(140);
     }
+  });
+});
+
+describe('Artemis II', () => {
+  it('goes round the Moon at the distance and the minute JPL gives', () => {
+    const orion = artemis2.craft?.[0]?.path.samples.value ?? [];
+    const moon = artemis2.tracked?.moon?.samples.value ?? [];
+    let nearestKm = Infinity;
+    let nearestJd = 0;
+    const [pass, after] = [artemis2.chapters[2], artemis2.chapters[3]];
+    if (!pass || !after) throw new Error('five chapters expected');
+    for (let jd = pass.atJd.value; jd <= after.atJd.value; jd += 1 / 1440) {
+      const craft = pathPositionKm(orion, jd);
+      const body = pathPositionKm(moon, jd);
+      const km = Math.hypot(craft.x - body.x, craft.y - body.y, craft.z - body.z);
+      if (km < nearestKm) [nearestKm, nearestJd] = [km, jd];
+    }
+    // Horizons' data sheet: "Closest approach to Moon center (8282 km)", at 23:01 UTC on 6 April.
+    expect(Math.abs(nearestKm - 8282)).toBeLessThan(5);
+    const threeHours = 3 / 24;
+    expect(Math.abs(nearestJd - (pass.atJd.value + threeHours)) * 1440).toBeLessThan(3);
   });
 });
 

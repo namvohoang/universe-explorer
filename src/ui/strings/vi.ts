@@ -838,6 +838,14 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Đây là lúc Orion ở xa Trái Đất nhất. Chưa có con tàu nào làm để chở người từng đi xa đến thế.',
   storyArtemis1SecondPass: 'Orion bay sát qua Mặt Trăng lần thứ hai, rồi quay về nhà.',
   storyArtemis1Home: 'Orion bay về Trái Đất. Cuối cùng nó chậm lại và hạ xuống biển bằng dù.',
+  storyArtemis2Title: 'Artemis II: có phi hành gia',
+  storyArtemis2RoundEarth:
+    'Trên tàu Orion có bốn phi hành gia: Reid, Victor, Christina và Jeremy. Trước hết họ bay một vòng lớn quanh Trái Đất.',
+  storyArtemis2ToTheMoon: 'Orion nổ máy khoảng sáu phút. Cú đẩy đó đưa nó bay về phía Mặt Trăng.',
+  storyArtemis2RoundTheMoon:
+    'Orion vòng qua phía bên kia của Mặt Trăng. Đây là lúc nó ở xa Trái Đất nhất.',
+  storyArtemis2ComingHome: 'Giờ các phi hành gia đang trên đường trở về Trái Đất.',
+  storyArtemis2Landing: 'Orion thả phần mang động cơ của nó. Rồi nó hạ xuống biển bằng dù.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

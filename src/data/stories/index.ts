@@ -1,6 +1,7 @@
 import type { Story } from '../types';
 import { artemis1 } from './artemis1';
+import { artemis2 } from './artemis2';
 import { moonPhases } from './moonPhases';
 
 /** Everything the Watch screen can play, in the order shown within each group. */
-export const stories: readonly Story[] = [moonPhases, artemis1];
+export const stories: readonly Story[] = [moonPhases, artemis1, artemis2];

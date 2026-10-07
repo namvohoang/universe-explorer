@@ -1095,6 +1095,16 @@ export const en = {
   storyArtemis1SecondPass: 'Orion flies close past the Moon a second time, and turns for home.',
   storyArtemis1Home:
     'Orion flies back to Earth. At the end it slows down and lands in the sea under parachutes.',
+  storyArtemis2Title: 'Artemis II: with astronauts',
+  storyArtemis2RoundEarth:
+    'Four astronauts are on board Orion: Reid, Victor, Christina and Jeremy. First they fly one big loop round Earth.',
+  storyArtemis2ToTheMoon:
+    'Orion fires its engine for about six minutes. That push sends it off towards the Moon.',
+  storyArtemis2RoundTheMoon:
+    'Orion swings round the far side of the Moon. This is as far from Earth as it goes.',
+  storyArtemis2ComingHome: 'Now the astronauts are on their way back to Earth.',
+  storyArtemis2Landing:
+    'Orion drops the part that carried its engine. Then it lands in the sea under parachutes.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

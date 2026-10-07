@@ -605,7 +605,11 @@ recorded last.
       two hours after launch and stops 40 minutes before splashdown, as Horizons does, so the
       launch and the landing are told in words, not shown. Not done: an Orion model (the craft
       is a named point), and the stories still wait for their recordings (12.12).
-- [ ] 12.10 Artemis II: four astronauts round the Moon, `tracked`.
+- [x] 12.10 Artemis II: four astronauts round the Moon, `tracked`, in five parts: one big loop
+      round Earth, the engine burn that sends Orion to the Moon, the swing round the far side
+      seen close up, the way home, and the landing. The times of the burn, the pass and the
+      dropping of the service module are from Horizons' data sheet for the flight; a test
+      holds the drawn pass to the sheet's distance and minute.
 - [ ] 12.11 Staged flights: how a rocket reaches space (the Saturn V's stages, times from
       NASA's Apollo reports), Apollo 11's landing (with the S-IVB's real path as a side note),
       and a shuttle joining the space station, seen from the station.

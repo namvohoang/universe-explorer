@@ -67,6 +67,8 @@ const CLOSE_UP_RADII = 12;
 const WATCH_VIEW_RADII = 3.6;
 /** The share of a close-up's usual distance that fits the same picture into the room, once stood back for it. */
 const ROOM_FILL = 0.6;
+/** The same for a card at the side: only a card that takes a good part of the width stands the view back. */
+const SIDE_FILL = 0.75;
 /** How far a view from over a pole leans towards the night side, against one for straight overhead. */
 const NIGHT_LEAN = 0.45;
 /** How many of its own radii away a body stands when a story looks down on one of its poles. */
@@ -99,6 +101,8 @@ const CRAFT_VIEW_SOUTH = 1.1;
 const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
 const BODY_VIEW_RADII = 6;
+/** How many times the reach of its rings, over the screen's width-to-height, a ringed world is seen from. */
+const RINGS_FIT = 2.4;
 const BODY_CLOSEST_RADII = 1.8;
 /** A pointer that has moved less than this between two turns of the wheel has not moved. */
 const SAME_SPOT_PIXELS = 6;
@@ -206,8 +210,48 @@ function start(): void {
   window.addEventListener('resize', resize);
   resize();
 
+  // The top bar and the panels at the bottom cover part of the screen, more of it on a phone:
+  // the view is drawn in the room between them, not in the middle of the whole screen. In a
+  // story on a wide screen the words stand in a card at the left, and the room is beside it too.
+  const roomAbovePanel = (): { top: number; bottom: number; left: number } => {
+    // A card of words that keeps to the left half of the screen stands beside the view: a
+    // place's card, or a story's words on a wide screen. One as wide as the screen does not.
+    let left = 0;
+    for (const panel of document.querySelectorAll('.card, .watch-caption')) {
+      const box = panel.getBoundingClientRect();
+      if (box.width > 0 && box.right <= window.innerWidth / 2) left = Math.max(left, box.right);
+    }
+    return {
+      top: mustFind('.top').getBoundingClientRect().bottom,
+      bottom: mustFind('#tray').getBoundingClientRect().top,
+      left,
+    };
+  };
+  /**
+   * How many times taller the screen is than the room left for the view. A view that would
+   * fill the screen is stood this many times further back, so it fills the room instead.
+   */
+  const roomSqueeze = (): number => {
+    const room = roomAbovePanel();
+    return window.innerHeight / Math.max(1, room.bottom - room.top);
+  };
+  /** The same for width: how many times wider the screen is than the room beside a card. */
+  const sideSqueeze = (): number =>
+    window.innerWidth / Math.max(1, window.innerWidth - roomAbovePanel().left);
+  const liftView = (): void => {
+    const { top, bottom, left } = roomAbovePanel();
+    stage.setLift(Math.round(window.innerHeight / 2 - (top + bottom) / 2), Math.round(left / 2));
+  };
+  /**
+   * How much further back a view stands than it would to fill the whole screen, so that it
+   * fits the room it has: none on a big screen, half as far again on a phone.
+   */
+  const roomFit = (): number => Math.max(1, roomSqueeze() * ROOM_FILL, sideSqueeze() * SIDE_FILL);
+  for (const bar of ['#tray', '.top']) new ResizeObserver(liftView).observe(mustFind(bar));
+  window.addEventListener('resize', liftView);
+
   const wholeView = (): FlyTo => {
-    const distance = distanceForAspect(system.extent() * FRAMING, stage.aspect());
+    const distance = distanceForAspect(system.extent() * FRAMING, stage.aspect()) * roomFit();
     return {
       target: () => ({ x: 0, y: 0, z: 0 }),
       distance,
@@ -218,12 +262,18 @@ function start(): void {
     };
   };
 
+  /**
+   * How far back a ringed world must be seen from for its rings to fit across the screen;
+   * 0 for a world with none. It matters on a tall, narrow screen.
+   */
+  const ringed = (id: string): number =>
+    system.spanOf(id) > system.radiusOf(id) ? (system.spanOf(id) * RINGS_FIT) / stage.aspect() : 0;
   const bodyView = (id: string): FlyTo => {
     // A comet with a glow is framed to show the glow and tails; zooming in reaches the nucleus.
     const glow = system.glowRadiusOf(id) * GLOW_VIEW_RADII;
     return {
       target: () => system.positionOf(id),
-      distance: Math.max(system.radiusOf(id) * BODY_VIEW_RADII, glow),
+      distance: Math.max(system.radiusOf(id) * BODY_VIEW_RADII, glow, ringed(id)) * roomFit(),
       // Arrive on the sunny side, so the kid meets the body lit rather than in the dark.
       direction: litSideBearing(system.positionOf(id), system.positionOf('sun')),
       minDistance: system.radiusOf(id) * BODY_CLOSEST_RADII,
@@ -260,6 +310,8 @@ function start(): void {
     language === 'en' ? createBrowserSpeaker() : null,
   );
   mustFind('#card-slot').append(card.element);
+  // Opening or closing the card changes the room beside it.
+  new ResizeObserver(liftView).observe(card.element);
 
   // A group the kid picked by its tab; until the next place is picked the row shows it.
   let browse: Group | null = null;
@@ -344,10 +396,12 @@ function start(): void {
     const { radius } = deepModel;
     stage.lookAt({
       target: () => ({ x: 0, y: 0, z: 0 }),
-      distance: deepModel.viewDistance ?? distanceForAspect(radius * DEEP_FRAMING, stage.aspect()),
+      distance:
+        (deepModel.viewDistance ?? distanceForAspect(radius * DEEP_FRAMING, stage.aspect())) *
+        roomFit(),
       direction: deepModel.viewFrom,
       minDistance: radius * 0.12,
-      maxDistance: Math.max(radius * 8, (deepModel.viewDistance ?? 0) * 2),
+      maxDistance: Math.max(radius * 8, (deepModel.viewDistance ?? 0) * 2) * roomFit(),
       // It stands still until the kid sets it turning, with a tap on it or the turn button.
       idleTurn: false,
     });
@@ -467,12 +521,13 @@ function start(): void {
     browse = null;
     if (!fromHistory) record(id);
     if (id !== null && !isDeep(id)) system.showDetail(id);
+    // The card is shown first: the camera is then aimed for the room the card leaves.
+    showFocus();
     // Pictures need no camera move; coming back from one, the camera is put straight in place.
     if (!isDeep(id)) {
       if (wasDeep) stage.lookAt(currentView());
       else stage.flyTo(view ?? currentView());
     }
-    showFocus();
   };
 
   const mainTabs = createTabs<Scene | 'compare' | 'watch'>(
@@ -659,37 +714,6 @@ function start(): void {
   let watchFieldDeg: number | null = null;
   let scaleBeforeWatch: ScaleMode | null = null;
   // The story's panel covers the bottom of the screen, so the view is drawn in the room above it.
-  // On a wide screen the words stand in a card at the left, and the view is drawn in the room
-  // beside it too.
-  const roomAbovePanel = (): { top: number; bottom: number; left: number } => {
-    const words = document.querySelector('.watch-caption')?.getBoundingClientRect();
-    const bottom = mustFind('#tray').getBoundingClientRect().top;
-    // A card of words that ends above the tray stands beside the view, not under it.
-    const beside = words !== undefined && words.width > 0 && words.bottom <= bottom + 1;
-    return {
-      top: mustFind('.top').getBoundingClientRect().bottom,
-      bottom,
-      left: beside ? words.right : 0,
-    };
-  };
-  /**
-   * How many times taller the screen is than the room left for the view. A view that would
-   * fill the screen is stood this many times further back, so it fills the room instead.
-   */
-  const roomSqueeze = (): number => {
-    const room = roomAbovePanel();
-    return window.innerHeight / Math.max(1, room.bottom - room.top);
-  };
-  const liftView = (): void => {
-    if (!watchWanted) {
-      stage.setLift(0);
-      return;
-    }
-    const { top, bottom, left } = roomAbovePanel();
-    stage.setLift(Math.round(window.innerHeight / 2 - (top + bottom) / 2), Math.round(left / 2));
-  };
-  new ResizeObserver(liftView).observe(mustFind('#tray'));
-  window.addEventListener('resize', liftView);
   /** What the story on show draws; everything else steps out of the picture. */
   let watchActors: ReadonlySet<string> | null = null;
   const watchAddress = (story: Story): string =>
@@ -1201,6 +1225,8 @@ function start(): void {
   }
   if (new URLSearchParams(window.location.search).has('grownups')) grownUps.open();
   showFocus();
+  // Aimed again now that the card is on show, for the room it leaves.
+  if (!isDeep(focus)) stage.lookAt(currentView());
   if (linkedStory !== undefined) watch.open(linkedStory);
 
   // On the very first visit, point at Earth and say what a tap does. Any touch or key ends it.

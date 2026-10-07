@@ -11,19 +11,25 @@ test('zooming in with the pointer on a body zooms in on that body', async ({ pag
   // Saturn is now what the camera is on: its card, its address, and the middle of the view.
   await expect(page.locator('.card h2')).toHaveText('Saturn');
   await expect(page).toHaveURL(/#saturn$/);
-  const middle = (): Promise<number[]> =>
+  // The middle of the view is the middle of the room the bars and the card leave: beside the
+  // card, below the top bar and above the tray. How far Saturn's marker is from it, in pixels:
+  const middle = (): Promise<number> =>
     saturn.evaluate((marker) => {
+      const edge = (selector: string): DOMRect =>
+        document.querySelector(selector)?.getBoundingClientRect() ?? new DOMRect();
       const box = marker.getBoundingClientRect();
-      return [Math.round(box.x + box.width / 2), Math.round(box.y + box.height / 2)];
+      const x = (edge('.card').right + window.innerWidth) / 2;
+      const y = (edge('.top').bottom + edge('#tray').top) / 2;
+      return Math.round(Math.hypot(box.x + box.width / 2 - x, box.y + box.height / 2 - y));
     });
-  await expect.poll(middle).toEqual([720, 450]);
+  await expect.poll(middle).toBeLessThanOrEqual(1);
 
   // It is a step closer, not a jump all the way: Saturn is still small, and the wheel goes on.
   const neptune = page.getByRole('button', { name: 'Go to Neptune' });
   const before = await neptune.evaluate((marker) => marker.style.transform);
   await page.mouse.wheel(0, -400);
   await expect.poll(() => neptune.evaluate((marker) => marker.style.transform)).not.toBe(before);
-  await expect.poll(middle).toEqual([720, 450]);
+  await expect.poll(middle).toBeLessThanOrEqual(1);
 });
 
 test('zooming out with the pointer on another body stays with the one in view', async ({

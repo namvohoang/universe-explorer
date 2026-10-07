@@ -679,6 +679,13 @@ recorded last.
       share one line; from 1000 px wide the words stand in a card at the left, as a place's
       card does, and the view is drawn in the room beside it; a ringed world is stood back from
       far enough to see its rings whole.
+- [x] 12.14 The same on every screen (the owner's phone screenshots of a star and of the Sun,
+      2026-10-07): in the Solar System, Deep Space and Spaceships too, what is looked at is
+      drawn in the middle of the room the top bar, the bottom panels and a card at the side
+      leave, not in the middle of the whole screen, and is stood back where that room is small;
+      the camera is aimed after the card is shown, so it knows the room; a ringed planet is
+      stood back until its rings fit across a narrow screen; on a phone the real picture is a
+      small card under the title, its credit read when it is tapped big.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

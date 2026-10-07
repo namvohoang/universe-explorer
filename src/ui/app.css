@@ -1805,9 +1805,16 @@ button.icon-button.phone-menu {
     padding: calc(var(--top-h) + 12px) 12px calc(var(--bottom-h) + 12px);
   }
 
+  /* The real picture is a small card in the corner under the title, clear of what is shown in
+     3D in the middle of the room. Its credit is read when it is tapped big. */
   body.deep-3d #picture:not(.big) {
-    inset: auto auto calc(var(--bottom-h) + 8px) 12px;
-    width: min(150px, 40vw);
+    inset: calc(var(--top-h) + 6px) auto auto 12px;
+    width: min(104px, 28vw);
+    padding: 4px;
+  }
+
+  body.deep-3d #picture:not(.big) figcaption {
+    display: none;
   }
 
   /* The card: a sheet above the tab bar. */

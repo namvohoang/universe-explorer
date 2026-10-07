@@ -132,3 +132,41 @@ test('the phone menu holds the settings and keeps the Tab key inside', async ({ 
   await page.keyboard.press('Escape');
   await expect(sheet).toBeHidden();
 });
+
+for (const screen of SCREENS) {
+  test(`what is looked at sits in the room the bars and the card leave on ${screen.name}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: screen.width, height: screen.height });
+    await page.goto('/?speed=pause#saturn');
+    const saturn = page.getByRole('button', { name: 'Go to Saturn' });
+    await expect(saturn).toBeVisible();
+    // How far Saturn's marker is from the middle of that room, in pixels.
+    const off = (): Promise<number> =>
+      saturn.evaluate((marker) => {
+        const edge = (selector: string): DOMRect =>
+          document.querySelector(selector)?.getBoundingClientRect() ?? new DOMRect();
+        const card = edge('.card');
+        // Only a card that keeps to the left half of the screen stands beside the view.
+        const left = card.right <= window.innerWidth / 2 ? card.right : 0;
+        const box = marker.getBoundingClientRect();
+        const x = (left + window.innerWidth) / 2;
+        const y = (edge('.top').bottom + edge('#tray').top) / 2;
+        return Math.round(Math.hypot(box.x + box.width / 2 - x, box.y + box.height / 2 - y));
+      });
+    await expect.poll(off).toBeLessThanOrEqual(2);
+  });
+}
+
+test('on a phone the real picture is a small card under the title, clear of the middle of the room', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/?speed=pause#mira');
+  const picture = await boxOf(page.locator('#picture'));
+  const bar = await boxOf(page.locator('.brand'));
+  const row = await boxOf(page.locator('.place-row'));
+  expect(picture.y).toBeGreaterThanOrEqual(bar.y + bar.height);
+  expect(picture.y + picture.height).toBeLessThan((bar.y + bar.height + row.y) / 2);
+  expect(picture.x + picture.width).toBeLessThan(390 / 2);
+});

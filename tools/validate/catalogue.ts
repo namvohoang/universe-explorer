@@ -38,11 +38,14 @@ function isRealDate(text: string): boolean {
   return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(text);
 }
 
-/** Checks any record that lists its `sources` and wraps its values in `Sourced`. */
-export function sourceErrors(object: {
-  readonly id: string;
-  readonly sources: readonly Source[];
-}): string[] {
+/**
+ * Checks any record that lists its `sources` and wraps its values in `Sourced`. `alsoCited`
+ * names sources the record leans on in some other way, such as for a sentence.
+ */
+export function sourceErrors(
+  object: { readonly id: string; readonly sources: readonly Source[] },
+  alsoCited: readonly string[] = [],
+): string[] {
   const errors: string[] = [];
   const at = `${object.id}:`;
   const ids = new Set<string>();
@@ -59,7 +62,7 @@ export function sourceErrors(object: {
     }
   }
 
-  const used = new Set<string>();
+  const used = new Set<string>(alsoCited);
   for (const node of valueNodes(object, '')) {
     if (node.value === null) {
       if (typeof node.reason !== 'string' || node.reason.trim() === '') {

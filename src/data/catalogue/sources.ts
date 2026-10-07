@@ -1371,3 +1371,19 @@ export const CSA_CANADARM: Source = {
   url: 'https://www.asc-csa.gc.ca/eng/canadarm/about.asp',
   retrieved: '2026-10-07',
 };
+
+// Stories of the Watch screen (src/data/stories/).
+export const USNO_MOON_PHASES: Source = {
+  id: 'usno-moon-phases',
+  title:
+    'US Naval Observatory, Astronomical Applications — dates and times of the primary phases of the Moon from 2026-10-08',
+  url: 'https://aa.usno.navy.mil/api/moon/phases/date?date=2026-10-08&nump=6',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_MOON_PHASES: Source = {
+  id: 'nasa-moon-phases',
+  title: 'NASA Science — Moon Phases',
+  url: 'https://science.nasa.gov/moon/moon-phases/',
+  retrieved: '2026-10-07',
+};

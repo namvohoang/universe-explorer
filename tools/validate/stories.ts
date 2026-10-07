@@ -27,6 +27,11 @@ function chapterErrors(story: Story): string[] {
         `${at} chapter "${chapter.id}" looks at "${chapter.lookAtId}", not one of its actors`,
       );
     }
+    if (chapter.viewFromId !== undefined && !story.actorIds.includes(chapter.viewFromId)) {
+      errors.push(
+        `${at} chapter "${chapter.id}" is seen from "${chapter.viewFromId}", not one of its actors`,
+      );
+    }
     if (!sourceIds.has(chapter.text.sourceId)) {
       errors.push(
         `${at} chapter "${chapter.id}" text cites "${chapter.text.sourceId}", not one of its sources`,
@@ -53,7 +58,8 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
       if (!known.has(actor))
         errors.push(`story ${story.id}: actor "${actor}" is not in the catalogue`);
     }
-    errors.push(...sourceErrors(story), ...chapterErrors(story));
+    const quoted = story.chapters.map((chapter) => chapter.text.sourceId);
+    errors.push(...sourceErrors(story, quoted), ...chapterErrors(story));
   }
   return errors;
 }

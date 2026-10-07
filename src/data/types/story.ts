@@ -21,6 +21,11 @@ export interface Chapter {
   readonly text: BackedText;
   /** One of the story's `actorIds`. */
   readonly lookAtId: string;
+  /**
+   * When set, the camera is held on the line from this actor to the one looked at, so the kid
+   * sees it as from there (the Moon as seen from Earth). Left out, the whole stage is shown.
+   */
+  readonly viewFromId?: string;
 }
 
 /** Something that happens, played on a real clock: a sky event or a space flight. */
@@ -34,7 +39,7 @@ export interface Story {
   readonly chapters: readonly Chapter[];
   /** The instant the last chapter ends. */
   readonly endJd: Sourced<number>;
-  /** Catalogue ids of everything drawn. */
+  /** Catalogue ids of everything drawn. The first is the middle of the stage. */
   readonly actorIds: readonly string[];
   readonly sources: readonly Source[];
 }

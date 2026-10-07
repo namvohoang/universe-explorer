@@ -20,6 +20,8 @@ import { gemini } from './gemini';
 import { pioneer10 } from './pioneer10';
 import { newHorizons } from './newHorizons';
 import { curiosity } from './curiosity';
+import { perseverance } from './perseverance';
+import { ingenuity } from './ingenuity';
 import { swift } from './swift';
 import { chandra } from './chandra';
 import { mro } from './mro';
@@ -237,6 +239,8 @@ export const catalogue: readonly CelestialObject[] = [
   cassini,
   newHorizons,
   curiosity,
+  perseverance,
+  ingenuity,
   apolloSoyuz,
   mir,
   rosetta,

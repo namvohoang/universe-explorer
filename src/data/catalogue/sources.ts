@@ -1294,3 +1294,17 @@ export const NASA_OSIRIS_REX: Source = {
   url: 'https://science.nasa.gov/mission/osiris-rex/',
   retrieved: '2026-10-07',
 };
+
+export const NASA_PERSEVERANCE: Source = {
+  id: 'nasa-perseverance',
+  title: 'NASA Science — Mars 2020: Perseverance Rover',
+  url: 'https://science.nasa.gov/mission/mars-2020-perseverance/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_INGENUITY: Source = {
+  id: 'nasa-ingenuity',
+  title: 'NASA Science — Ingenuity Mars Helicopter',
+  url: 'https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-mars-helicopter/',
+  retrieved: '2026-10-07',
+};

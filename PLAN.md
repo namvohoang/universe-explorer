@@ -481,8 +481,11 @@ often hold a better file of the same thing, with its surface, and are used where
       2005 to 2049 and far out before 2000; the test against JPL Horizons starts in 2005 and
       says why. Left out: Haumea. NASA has a 3D model of it, but neither NASA's page nor JPL's
       database gives its three axes, so its size could only be guessed from the model.
-- [ ] 11.3 More from the list: Saturn's spongy moon Hyperion (it tumbles, which the app's three
-      ways of turning cannot show yet), the Perseverance rover and its helicopter Ingenuity.
+- [x] 11.3 Two more spacecraft from the list, as NASA's models in Spaceships: the Perseverance
+      rover and its helicopter Ingenuity, each with a card, a recording and Vietnamese text.
+      Left out: Saturn's spongy moon Hyperion. NASA has its shape model, but Hyperion tumbles,
+      and a body here can only turn forwards, backwards or keep one face to its planet; it
+      waits for a fourth way of turning.
 - [ ] 11.4 The Crab Nebula as NASA's own 3D model in place of a cloud whose depth is a guess.
 
 **Acceptance:** as for Phase 7.

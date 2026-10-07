@@ -93,6 +93,8 @@ import {
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_GALAXIES,
+  NASA_PERSEVERANCE,
+  NASA_INGENUITY,
   NASA_BENNU,
   NASA_OSIRIS_REX,
   NASA_COSMIC_HISTORY,
@@ -2787,5 +2789,65 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_OSIRIS_REX],
+  },
+  {
+    id: 'perseverance',
+    hello: {
+      key: 'cardPerseveranceHello',
+      sourceId: 'nasa-perseverance',
+      quote:
+        "The Mars 2020 Perseverance Rover is searching for signs of ancient microbial life, to advance NASA's quest to explore the past habitability of Mars.",
+    },
+    facts: [
+      {
+        key: 'cardPerseveranceFact1',
+        sourceId: 'nasa-perseverance',
+        quote:
+          'The rover is collecting core samples of Martian rock and regolith (broken rock and soil), for potential pickup by a future mission that would bring them to Earth for detailed study.',
+      },
+      {
+        key: 'cardPerseveranceFact2',
+        sourceId: 'nasa-perseverance',
+        quote:
+          "The rover discovered a habitable, stable lake, delta, and river system in Jezero Crater's history.",
+      },
+      {
+        key: 'cardPerseveranceFact3',
+        sourceId: 'nasa-ingenuity',
+        quote:
+          'After riding to Mars strapped beneath the Perseverance rover, the Ingenuity helicopter took to the Martian air for its initial flight on April 19, 2021',
+      },
+    ],
+    moons: null,
+    sources: [NASA_PERSEVERANCE, NASA_INGENUITY],
+  },
+  {
+    id: 'ingenuity',
+    hello: {
+      key: 'cardIngenuityHello',
+      sourceId: 'nasa-ingenuity',
+      quote:
+        "On April 19, 2021, NASA's Ingenuity Mars Helicopter made history when it completed the first powered, controlled flight on the Red Planet.",
+    },
+    facts: [
+      {
+        key: 'cardIngenuityFact1',
+        sourceId: 'nasa-ingenuity',
+        quote: 'the first powered flight on another planet',
+      },
+      {
+        key: 'cardIngenuityFact2',
+        sourceId: 'nasa-ingenuity',
+        quote:
+          'Designed to be a technology demonstration that would make no more than five test flights in 30 days, the helicopter eventually completed 72 flights across nearly three years',
+      },
+      {
+        key: 'cardIngenuityFact3',
+        sourceId: 'nasa-ingenuity',
+        quote: 'Total length of rotors: Approximately 4 feet (approximately 1.2 meters) tip to tip',
+      },
+    ],
+    moons: null,
+    sources: [NASA_INGENUITY],
   },
 ];

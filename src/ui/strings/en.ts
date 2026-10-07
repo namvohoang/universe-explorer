@@ -510,6 +510,22 @@ export const en = {
     'Scientists hope the bits will show whether asteroids brought water to Earth long ago.',
   modelAltOsirisRex:
     'A 3D model of OSIRIS-REx: a box with two square solar panels and a long arm for touching the asteroid.',
+  namePerseverance: 'The Perseverance Rover',
+  cardPerseveranceHello:
+    'Perseverance is a rover on Mars. It looks for signs of tiny living things from long ago.',
+  cardPerseveranceFact1:
+    'It drills out small pieces of rock and keeps them in tubes. One day they may be brought to Earth.',
+  cardPerseveranceFact2: 'It found that the crater it explores once held a lake and a river.',
+  cardPerseveranceFact3: 'It carried a small helicopter called Ingenuity to Mars under its belly.',
+  modelAltPerseverance:
+    'A 3D model of the Perseverance rover: a car-sized machine with six wheels, a long arm and a mast with cameras on top.',
+  nameIngenuity: 'The Ingenuity Helicopter',
+  cardIngenuityHello: 'Ingenuity is a small helicopter that flew on Mars.',
+  cardIngenuityFact1: 'In 2021 it made the first powered flight on another planet.',
+  cardIngenuityFact2: 'It was built to fly five times. It flew 72 times in nearly three years.',
+  cardIngenuityFact3: 'Its spinning blades are about 1.2 metres from tip to tip.',
+  modelAltIngenuity:
+    'A 3D model of the Ingenuity helicopter: a small box on four thin legs, with two long blades and a little solar panel on top.',
   cardNgc5264Hello:
     'NGC 5264 is a small galaxy with no tidy shape. That is called an irregular galaxy.',
   cardNgc5264Fact1: 'It is just over 15 million light-years away.',

@@ -471,6 +471,16 @@ export const NARRATION: Readonly<
     fingerprint: '816034ba',
     starts: [0.0, 2.52, 8.03, 10.78, 15.5],
   },
+  perseverance: {
+    file: 'public/voice/perseverance.mp3',
+    fingerprint: '5dc4e56b',
+    starts: [0.0, 2.52, 9.45, 16.25, 21.05],
+  },
+  ingenuity: {
+    file: 'public/voice/ingenuity.mp3',
+    fingerprint: 'a178bd8a',
+    starts: [0.0, 2.83, 7.35, 12.68, 18.88],
+  },
   'apollo-soyuz': {
     file: 'public/voice/apollo-soyuz.mp3',
     fingerprint: '4ffff290',

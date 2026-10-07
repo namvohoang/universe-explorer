@@ -541,6 +541,25 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Các nhà khoa học hy vọng các mẩu này sẽ cho biết liệu tiểu hành tinh có mang nước đến Trái Đất từ xa xưa hay không.',
   modelAltOsirisRex:
     'Mô hình 3D của OSIRIS-REx: một chiếc hộp có hai tấm pin mặt trời vuông và một cánh tay dài để chạm vào tiểu hành tinh.',
+  namePerseverance: 'Xe tự hành Perseverance',
+  cardPerseveranceHello:
+    'Perseverance là một xe tự hành trên Sao Hỏa. Nó tìm dấu vết của những sinh vật tí hon từ xa xưa.',
+  cardPerseveranceFact1:
+    'Nó khoan lấy những mẩu đá nhỏ và cất vào ống. Một ngày nào đó chúng có thể được mang về Trái Đất.',
+  cardPerseveranceFact2:
+    'Nó phát hiện ra rằng miệng hố nó đang khám phá từng có một cái hồ và một con sông.',
+  cardPerseveranceFact3:
+    'Nó đã mang một chiếc trực thăng nhỏ tên là Ingenuity tới Sao Hỏa ở dưới bụng mình.',
+  modelAltPerseverance:
+    'Mô hình 3D của xe tự hành Perseverance: một cỗ máy to bằng chiếc ô tô có sáu bánh, một cánh tay dài và một cột gắn máy ảnh ở trên.',
+  nameIngenuity: 'Trực thăng Ingenuity',
+  cardIngenuityHello: 'Ingenuity là một chiếc trực thăng nhỏ đã bay trên Sao Hỏa.',
+  cardIngenuityFact1:
+    'Năm 2021 nó thực hiện chuyến bay có động cơ đầu tiên trên một hành tinh khác.',
+  cardIngenuityFact2: 'Nó được chế tạo để bay năm lần. Nó đã bay 72 lần trong gần ba năm.',
+  cardIngenuityFact3: 'Các cánh quạt quay của nó dài khoảng 1,2 mét tính từ đầu này tới đầu kia.',
+  modelAltIngenuity:
+    'Mô hình 3D của trực thăng Ingenuity: một chiếc hộp nhỏ trên bốn chân mảnh, có hai cánh quạt dài và một tấm pin mặt trời nhỏ ở trên.',
   cardNgc5264Hello:
     'NGC 5264 là một thiên hà nhỏ không có hình dạng gọn gàng. Người ta gọi đó là thiên hà vô định hình.',
   cardNgc5264Fact1: 'Nó ở cách ta hơn 15 triệu năm ánh sáng một chút.',

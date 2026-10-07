@@ -23,6 +23,7 @@ import { artemis2 } from '../src/data/stories/artemis2';
 import { aurora } from '../src/data/stories/aurora';
 import { halleyTail } from '../src/data/stories/halleyTail';
 import { lunarEclipse } from '../src/data/stories/lunarEclipse';
+import { marsBackwards } from '../src/data/stories/marsBackwards';
 import { meteorShower } from '../src/data/stories/meteorShower';
 import { solarEclipse } from '../src/data/stories/solarEclipse';
 import { supermoon } from '../src/data/stories/supermoon';
@@ -680,6 +681,50 @@ describe('the shuttle joining the space station', () => {
   it('says on screen which path is real and which is a drawing', () => {
     expect(shuttleDocking.path).toBe('staged');
     expect(shuttleDocking.noteKey).toBe('storyShuttleDockingNote');
+  });
+});
+
+describe('Mars going backwards', () => {
+  const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+  const mars = catalogue.find((object) => object.id === 'mars') ?? fail();
+  /** Which way Mars lies from Earth, as an angle round the ecliptic that grows eastwards, in degrees. */
+  const longitudeDeg = (jd: number): number => {
+    const sight = subtract(
+      eclipticOffsetKm(mars, catalogue, jd),
+      eclipticOffsetKm(earth, catalogue, jd),
+    );
+    return (Math.atan2(sight.y, sight.x) * 180) / Math.PI;
+  };
+  const eastwards = (jd: number): number => longitudeDeg(jd + 0.5) - longitudeDeg(jd - 0.5);
+  const [drifting, backwards, forwardsAgain] = marsBackwards.chapters;
+  if (!drifting || !backwards || !forwardsAgain) throw new Error('three chapters expected');
+
+  it('drifts east, then west, then east again, turning where the parts say it does', () => {
+    for (let jd = drifting.atJd.value + 1; jd < backwards.atJd.value - 1; jd += 3) {
+      expect(eastwards(jd), String(jd)).toBeGreaterThan(0);
+    }
+    for (let jd = backwards.atJd.value + 1; jd < forwardsAgain.atJd.value - 1; jd += 3) {
+      expect(eastwards(jd), String(jd)).toBeLessThan(0);
+    }
+    for (let jd = forwardsAgain.atJd.value + 1; jd < marsBackwards.endJd.value - 1; jd += 3) {
+      expect(eastwards(jd), String(jd)).toBeGreaterThan(0);
+    }
+  });
+
+  it('goes backwards while Earth passes nearest to it', () => {
+    const apartKm = (jd: number): number => {
+      const sight = subtract(
+        eclipticOffsetKm(mars, catalogue, jd),
+        eclipticOffsetKm(earth, catalogue, jd),
+      );
+      return Math.hypot(sight.x, sight.y, sight.z);
+    };
+    let nearestJd = drifting.atJd.value;
+    for (let jd = drifting.atJd.value; jd <= marsBackwards.endJd.value; jd += 1) {
+      if (apartKm(jd) < apartKm(nearestJd)) nearestJd = jd;
+    }
+    expect(nearestJd).toBeGreaterThan(backwards.atJd.value);
+    expect(nearestJd).toBeLessThan(forwardsAgain.atJd.value);
   });
 });
 

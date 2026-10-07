@@ -192,6 +192,12 @@ export interface Story {
   readonly dustAlongId?: string;
   /** Key, in the UI strings, of a sentence shown with the story about what in it is a drawing. */
   readonly noteKey?: string;
+  /**
+   * The track one body makes across the sky of another, drawn as a line far behind it: for a
+   * planet seen from Earth. With it, a chapter that stands at `fromId` looks at the middle of
+   * the track, not at the body, so the body is seen to move along it.
+   */
+  readonly skyTrack?: { readonly ofId: string; readonly fromId: string };
   /** Auroral rings drawn round a world's magnetic poles. */
   readonly aurora?: StoryAurora;
   /** Shadows drawn from one body onto another. */

@@ -23,6 +23,7 @@ import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
 import { createDustTrail, type DustTrail } from './dustTrail';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
+import { createSkyTrail, type SkyTrail } from './skyTrail';
 import { createTrail, type Trail } from './trail';
 
 /** How far ahead to look to find which way a comet is heading, in days. */
@@ -87,6 +88,13 @@ export interface SolarSystem {
    * puts everything back.
    */
   setTracks(tracks: Tracks | null): void;
+  /**
+   * Draws the track one body makes across the sky of another between two dates, as a line far
+   * off in each direction it is seen in; `null` takes it away.
+   */
+  setSkyTrack(track: { ofId: string; fromId: string; fromJd: number; toJd: number } | null): void;
+  /** A point far off in the middle of the sky track, to look at from the body it is seen from; `null` with no track. */
+  skyGaze(): Vec3 | null;
   /** Draws the two auroral bands of a body, riding round with its ground; `null` takes them away. */
   setAurora(onId: string | null, shape: AuroraShape | null): void;
   /** Which way a body's north pole points, as a unit vector in scene axes. */
@@ -174,6 +182,10 @@ export function createSolarSystem(
   const DUST_SPECKS_PER_POINT = 5;
   let dust: DustTrail | null = null;
   let aurora: AuroraRings | null = null;
+  /** How many sights a sky track is drawn through, and how far off it is drawn, in scene units. */
+  const SKY_TRACK_STEPS = 400;
+  const SKY_TRACK_FAR = 200_000;
+  let sky: { trail: SkyTrail; fromId: string; middle: Vec3 } | null = null;
   let currentScale = scale;
   let tracks: Tracks | null = null;
   let shownIds: ReadonlySet<string> | null = null;
@@ -233,6 +245,11 @@ export function createSolarSystem(
       body.group.updateWorldMatrix(true, true);
       const world = body.frame.localToWorld(inWorld.set(place.x, place.y, place.z));
       positions.set(craft.id, { x: world.x, y: world.y, z: world.z });
+    }
+    if (sky) {
+      const from = positions.get(sky.fromId);
+      if (from) sky.trail.group.position.set(from.x, from.y, from.z);
+      sky.trail.setDate(jd);
     }
     for (const belt of belts) {
       const parent = positions.get(belt.parentId);
@@ -335,6 +352,46 @@ export function createSolarSystem(
       }
       bodies.get(id)?.loadDetail();
     },
+    setSkyTrack(track) {
+      if (sky) {
+        group.remove(sky.trail.group);
+        sky.trail.dispose();
+        sky = null;
+      }
+      if (!track) return;
+      const sights: { jd: number; towards: Vec3 }[] = [];
+      let sum: Vec3 = { x: 0, y: 0, z: 0 };
+      for (let step = 0; step <= SKY_TRACK_STEPS; step++) {
+        const jd = track.fromJd + ((track.toJd - track.fromJd) * step) / SKY_TRACK_STEPS;
+        const then = scenePositions(catalogue, jd, currentScale, tracks?.bodies);
+        const from = then.get(track.fromId);
+        const of = then.get(track.ofId);
+        if (!from || !of) continue;
+        const sight = subtract(of, from);
+        const far = length(sight);
+        if (far === 0) continue;
+        const towards = { x: sight.x / far, y: sight.y / far, z: sight.z / far };
+        sights.push({ jd, towards });
+        sum = add(sum, towards);
+      }
+      const size = length(sum);
+      if (size === 0) return;
+      sky = {
+        trail: createSkyTrail(sights, SKY_TRACK_FAR),
+        fromId: track.fromId,
+        middle: { x: sum.x / size, y: sum.y / size, z: sum.z / size },
+      };
+      group.add(sky.trail.group);
+    },
+    skyGaze() {
+      const from = sky ? positions.get(sky.fromId) : undefined;
+      if (!sky || !from) return null;
+      return {
+        x: from.x + sky.middle.x * SKY_TRACK_FAR,
+        y: from.y + sky.middle.y * SKY_TRACK_FAR,
+        z: from.z + sky.middle.z * SKY_TRACK_FAR,
+      };
+    },
     setAurora(onId, shape) {
       if (aurora) {
         aurora.group.removeFromParent();
@@ -413,6 +470,7 @@ export function createSolarSystem(
       for (const { trail } of trails.values()) trail.dispose();
       dust?.dispose();
       aurora?.dispose();
+      sky?.trail.dispose();
     },
   };
 }

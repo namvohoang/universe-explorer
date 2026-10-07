@@ -599,7 +599,7 @@ recorded last.
       shadow within a quarter of a degree of NASA's table of its path; tests hold both. The
       lunar eclipse is two or three minutes shorter than NASA's, which draws Earth's shadow a
       little bigger for its air. How red the Moon glows in the shadow is a drawing choice.
-- [~] 12.5 Done: Halley's Comet growing its glow and tails as it rounds the Sun in 1986 (the
+- [x] 12.5 Halley's Comet growing its glow and tails as it rounds the Sun in 1986 (the
       camera backs away as the glow grows; a test holds "too cold to have a tail" to the days
       the app draws none), and Saturn's rings seen from Earth from 2017 to 2032, closing to a
       line and opening again. On the catalogue's own orbits and pole Earth crosses the plane of
@@ -609,7 +609,12 @@ recorded last.
       times) are seen from Earth itself through one narrow field, like a telescope, so the
       nearer is drawn bigger by what it really is: 14 percent, the most NASA says a supermoon
       can be. The card says the word is a nickname.
-      Left: Mars going backwards in Earth's sky (it needs a track drawn across the stars).
+      And Mars going backwards: Mars seen from Earth from November 2026 to June 2027, the
+      camera on one patch of sky and Mars's track drawn across it, so the loop it makes while
+      Earth overtakes it can be seen. On the catalogue's orbits Mars turns back on 10 January
+      and forward again on 1 April 2027; a test holds the turning points and that Earth passes
+      nearest between them. No stars are drawn behind the track: there is no star map for this
+      view.
 - [x] 12.6 A meteor shower: Earth passing through the dust of Halley's Comet in May and
       again in October 2027. On the catalogue's orbits Earth is nearest the comet's path on
       7 May (0.07 AU) and 26 October (0.15 AU), when NASA says the Eta Aquariids ("early May")

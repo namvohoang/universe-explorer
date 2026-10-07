@@ -1211,6 +1211,13 @@ export const en = {
     'Discovery creeps closer and closer. Both are racing round Earth, so it has to be done very carefully.',
   storyShuttleDockingJoined:
     'They have joined up! This is called docking. Now the astronauts can open the hatches and float across.',
+  storyMarsBackwardsTitle: 'Mars goes backwards',
+  storyMarsBackwardsDrifting:
+    'You are on Earth, watching Mars night after night. It drifts slowly one way across the sky. The line shows where it has been.',
+  storyMarsBackwardsBackwards:
+    'Now Mars seems to go backwards! It has not really turned round. Earth goes round the Sun faster, and is overtaking Mars.',
+  storyMarsBackwardsForwardsAgain:
+    'Earth has gone past, and Mars seems to go forwards again. It has drawn a loop in the sky.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

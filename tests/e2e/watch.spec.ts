@@ -26,6 +26,7 @@ const STORIES = [
   ['solar-eclipse', 'A solar eclipse'],
   ['halley-tail', 'A comet grows its tail'],
   ['saturn-rings', 'Saturn’s rings turn edge-on'],
+  ['mars-backwards', 'Mars goes backwards'],
   ['meteor-shower', 'A meteor shower'],
   ['aurora', 'An aurora'],
   ['lunar-eclipse', 'A lunar eclipse'],

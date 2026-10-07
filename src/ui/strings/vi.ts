@@ -952,6 +952,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Discovery nhích lại gần, gần nữa. Cả hai đang lao nhanh quanh Trái Đất, nên việc này phải làm thật cẩn thận.',
   storyShuttleDockingJoined:
     'Chúng đã nối vào nhau! Việc này gọi là ghép nối. Giờ các phi hành gia có thể mở cửa và bay sang.',
+  storyMarsBackwardsTitle: 'Sao Hỏa đi lùi',
+  storyMarsBackwardsDrifting:
+    'Bạn đang ở trên Trái Đất, ngắm Sao Hỏa đêm này qua đêm khác. Nó trôi chậm về một phía trên bầu trời. Đường vẽ cho thấy nó đã ở đâu.',
+  storyMarsBackwardsBackwards:
+    'Giờ Sao Hỏa trông như đi lùi! Nó không thật sự quay đầu. Trái Đất quay quanh Mặt Trời nhanh hơn, và đang vượt qua Sao Hỏa.',
+  storyMarsBackwardsForwardsAgain:
+    'Trái Đất đã vượt qua, và Sao Hỏa trông như lại đi tới. Nó đã vẽ một vòng trên bầu trời.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

@@ -150,6 +150,13 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
         errors.push(`story ${story.id}: draws dust but has no note to say it is a drawing`);
       }
     }
+    if (story.skyTrack) {
+      for (const id of [story.skyTrack.ofId, story.skyTrack.fromId]) {
+        if (!story.actorIds.includes(id)) {
+          errors.push(`story ${story.id}: draws a sky track with "${id}", not one of its actors`);
+        }
+      }
+    }
     if (story.aurora) {
       if (!story.actorIds.includes(story.aurora.onId)) {
         errors.push(

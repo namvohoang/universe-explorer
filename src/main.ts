@@ -69,6 +69,12 @@ const POLE_VIEW_RADII = 5;
  * three times the width of the full Moon as seen from Earth.
  */
 const TELESCOPE_FIELD_DEG = 1.3;
+/**
+ * How wide a patch of sky is shown when a planet's track across it is drawn, side to side, in
+ * degrees, and the most it may take in top to bottom on a tall screen.
+ */
+const SKY_FIELD_WIDTH_DEG = 34;
+const SKY_FIELD_MAX_DEG = 60;
 /** Points drawn between one sample of a path and the next, so the curve between shows as a curve. */
 const STEPS_PER_SAMPLE = 8;
 /** A path round a body is drawn in steps this many degrees long. */
@@ -677,6 +683,20 @@ function start(): void {
   /** The view a chapter asks for: held on a line between two actors, or the whole stage. */
   const watchView = (story: Story, chapter: Chapter, free: boolean): FlyTo => {
     const stand = chapter.standAtId;
+    if (stand !== undefined && !free && story.skyTrack) {
+      // Looking at one patch of sky from the body stood on, while the other body moves across it.
+      const gaze = (): Vec3 => system.skyGaze() ?? system.positionOf(chapter.lookAtId);
+      const away = (): Vec3 => subtract(system.positionOf(stand), gaze());
+      return {
+        target: gaze,
+        distance: length(away()),
+        direction: away(),
+        standAt: () => system.positionOf(stand),
+        minDistance: 0,
+        maxDistance: Infinity,
+        idleTurn: false,
+      };
+    }
     if (stand !== undefined && !free) {
       const seen = chapter.lookAtId;
       const away = (): Vec3 => subtract(system.positionOf(stand), system.positionOf(seen));
@@ -865,7 +885,12 @@ function start(): void {
           watchPanel = createWatch({
             reducedMotion,
             aim(story, chapter, free) {
-              watchFieldDeg = chapter.standAtId !== undefined && !free ? TELESCOPE_FIELD_DEG : null;
+              watchFieldDeg =
+                chapter.standAtId === undefined || free
+                  ? null
+                  : story.skyTrack
+                    ? Math.min(SKY_FIELD_MAX_DEG, SKY_FIELD_WIDTH_DEG / stage.aspect())
+                    : TELESCOPE_FIELD_DEG;
               for (const id of story.actorIds) system.showDetail(id);
               stage.flyTo(watchView(story, chapter, free));
             },
@@ -874,6 +899,15 @@ function start(): void {
               system.showOnly(watchActors);
               const craft = story.craft ?? [];
               showAurora(story);
+              system.setSkyTrack(
+                story.skyTrack
+                  ? {
+                      ...story.skyTrack,
+                      fromJd: story.chapters[0]?.atJd.value ?? clock.jd,
+                      toJd: story.endJd.value,
+                    }
+                  : null,
+              );
               system.setDust(story.dustAlongId ?? null, story.chapters[0]?.atJd.value ?? clock.jd);
               system.setTracks(
                 craft.length === 0 && !story.tracked && !story.turned && !story.shadows
@@ -925,6 +959,7 @@ function start(): void {
       system.setTracks(null);
       system.setDust(null, clock.jd);
       system.setAurora(null, null);
+      system.setSkyTrack(null);
       tagCraft([]);
       document.body.classList.remove('watching');
       system.setDate(clock.jd);

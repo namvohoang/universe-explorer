@@ -341,3 +341,19 @@ export const NASA_STS_133_DOCKING_PHOTO: Source = {
   url: 'https://www.nasa.gov/image-article/international-space-station-40/',
   retrieved: '2026-10-07',
 };
+
+export const NASA_APOD_RETROGRADE_MARS: Source = {
+  id: 'nasa-apod-retrograde-mars',
+  title: 'NASA Astronomy Picture of the Day, 2010 June 13 — Retrograde Mars',
+  url: 'https://science.nasa.gov/image-article/apod-2010-june-13-retrograde-mars/',
+  retrieved: '2026-10-07',
+};
+
+// The same page as the catalogue's source of that id, set down again here so the stories pull
+// in none of the catalogue's code.
+export const JPL_APPROX_POSITIONS: Source = {
+  id: 'jpl-approx-positions-story',
+  title: 'JPL Solar System Dynamics — Approximate Positions of the Planets',
+  url: 'https://ssd.jpl.nasa.gov/planets/approx_pos.html',
+  retrieved: '2026-10-07',
+};

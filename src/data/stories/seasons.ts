@@ -17,7 +17,10 @@ export const seasons: Story = {
   path: 'orbits',
   titleKey: 'storySeasonsTitle',
   actorIds: ['earth', 'sun'],
-  diagram: 'round-the-star',
+  // The star at one side and Earth at the other, seen level with Earth's path: the axis is
+  // seen leaning to the Sun in June and away from it in December.
+  diagram: 'in-line',
+  diagramSeen: 'side',
   seasonsOf: 'earth',
   chapters: [
     {

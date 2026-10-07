@@ -227,6 +227,11 @@ export interface Story {
    */
   readonly diagram?: 'in-line' | 'round-the-star';
   /**
+   * With an `in-line` diagram: seen from the side, level with the planets' paths, in place of
+   * from above, so that the way a world's axis leans to its star or away from it shows.
+   */
+  readonly diagramSeen?: 'side';
+  /**
    * Without a diagram: what the whole picture, at true scale, is fitted to. `orbits` puts the
    * star in the middle with every actor's path round it; `star-and-first` keeps the star and
    * the first actor both in view as they near and part. Left out, it is the first actor and

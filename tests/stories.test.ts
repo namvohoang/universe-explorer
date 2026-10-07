@@ -20,6 +20,7 @@ import {
   poleOf,
 } from '../src/sim/frames';
 import { showerAt } from '../src/sim/radiant';
+import { seasonsAt, starLatitudeDeg } from '../src/sim/seasons';
 import { shadowAt, shadowCentreOn, sunCover } from '../src/sim/shadow';
 import { groundDirection, groundUnder } from '../src/sim/turn';
 import { add, dot, normalize, scale, subtract } from '../src/sim/vec3';
@@ -257,6 +258,39 @@ describe('the landing of Apollo 11', () => {
     expect(turnsApart).toBeCloseTo(Math.round(turnsApart), 9);
     expect(one.latDeg).toBeCloseTo(other.latDeg, 9);
     expect(one.altitudeKm).toBeCloseTo(other.altitudeKm, 9);
+  });
+});
+
+describe('the seasons named on Earth', () => {
+  const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+  if (earth.shape?.type !== 'spheroid') throw new Error('Earth is a spheroid');
+  const pole = northPoleEcliptic(poleOf(earth.shape.orientation) ?? fail());
+  const overhead = (jd: number): number => {
+    const from = eclipticOffsetKm(earth, catalogue, jd);
+    return starLatitudeDeg(pole, { x: -from.x, y: -from.y, z: -from.z });
+  };
+
+  it('are the ones each part tells of, from its first instant', () => {
+    const named = seasons.chapters.map((chapter) => {
+      const at = chapter.atJd.value;
+      return [chapter.id, seasonsAt(overhead(at), overhead(at + 1)).north];
+    });
+    expect(named).toEqual([
+      ['march-equinox', 'spring'],
+      ['june-solstice', 'summer'],
+      ['september-equinox', 'autumn'],
+      ['december-solstice', 'winter'],
+    ]);
+  });
+
+  it('follow a pole that leans 23.4 degrees to the Sun in June and away in December', () => {
+    const at = (id: string): number =>
+      overhead(seasons.chapters.find((chapter) => chapter.id === id)?.atJd.value ?? fail());
+    expect(at('june-solstice')).toBeCloseTo(23.44, 1);
+    expect(at('december-solstice')).toBeCloseTo(-23.44, 1);
+    // The catalogue's pole is the one for 2000: the equinoxes of 2027 come nine hours late.
+    expect(Math.abs(at('march-equinox'))).toBeLessThan(0.2);
+    expect(Math.abs(at('september-equinox'))).toBeLessThan(0.2);
   });
 });
 

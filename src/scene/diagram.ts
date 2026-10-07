@@ -5,7 +5,7 @@ import { createScale, type Scale } from '../sim/scale';
 import { drawnOffset, shadowCones } from '../sim/shadowCone';
 import { add, dot, length, normalize, scale as times, subtract, type Vec3 } from '../sim/vec3';
 import { createShadowCones, type ShadowConesDrawing } from './shadowCones';
-import type { SightLine } from './sightLine';
+import { createSightLine, type SightLine } from './sightLine';
 import { createSolarSystem, type SolarSystem } from './solarSystem';
 
 const BACKGROUND = '#05070f';
@@ -14,6 +14,9 @@ const BEYOND_RADII = 3;
 /** A drawn umbra that has all but come to a point is still given this share of the penumbra's width. */
 const LEAST_UMBRA_SHARE = 0.3;
 const TRUE_SCALE = createScale('true');
+/** A world's axis is drawn out to this many of its radii beyond each pole, in a pale line. */
+const AXIS_RADII = 1.9;
+const AXIS_COLOR = 0xdfe8ff;
 
 /**
  * A drawing of a few bodies in a scene of its own, at a scale that brings them close enough
@@ -39,12 +42,16 @@ export function createDiagram(
   scale: Scale,
   shadows: readonly { readonly casterId: string; readonly onId: string }[],
   tracked: TrackedOffsets,
+  /** Worlds whose axis is drawn as a line through both poles. */
+  axes: readonly string[] = [],
 ): Diagram {
   const scene = new Scene();
   scene.background = new Color(BACKGROUND);
   const system = createSolarSystem(catalogue, scale);
   scene.add(system.group);
   const star = catalogue.find((object) => object.kind === 'star');
+  const axisLines = axes.map((id) => ({ id, line: createSightLine(AXIS_COLOR) }));
+  for (const { line } of axisLines) scene.add(line.line);
   const cones: ShadowConesDrawing[] = shadows.map(() => createShadowCones());
   for (const cone of cones) scene.add(cone.group);
   const realRadius = (id: string): number => {
@@ -116,6 +123,12 @@ export function createDiagram(
     system,
     setDate(jd) {
       system.setDate(jd);
+      for (const { id, line } of axisLines) {
+        line.set(
+          system.groundPointOf(id, { x: 0, y: -AXIS_RADII, z: 0 }),
+          system.groundPointOf(id, { x: 0, y: AXIS_RADII, z: 0 }),
+        );
+      }
       if (!star) return;
       for (const [index, shadow] of shadows.entries()) {
         showDepth(jd, shadow.casterId, shadow.onId, star.id);
@@ -137,6 +150,7 @@ export function createDiagram(
     },
     dispose() {
       for (const cone of cones) cone.dispose();
+      for (const { line } of axisLines) line.dispose();
       system.dispose();
     },
   };

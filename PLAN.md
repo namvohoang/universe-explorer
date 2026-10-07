@@ -732,6 +732,13 @@ recorded last.
       their real photo as a corner inset that a tap makes big. Mars: the start of each part
       and the end are numbered spots in the sky, and numbered lines of sight that stay in
       the whole picture.
+- [x] 12.20 More of the owner's notes (2026-10-07). A new part that is looked at the same way
+      as the one before no longer re-aims the camera (it stuttered at every mark). Halley's
+      Comet is held close in the look from Earth. The aurora photo says why it is red. The
+      seasons' whole picture is seen from the side, the Sun at the left and Earth at the
+      right with its axis drawn, so the axis is seen leaning to the Sun and away.
+      Known: Earth's pole in the catalogue is the one for 2000, so the app's equinoxes of
+      2027 fall about nine hours late; the season names allow for it.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

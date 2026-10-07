@@ -13,12 +13,12 @@ export interface SightLine {
   dispose(): void;
 }
 
-export function createSightLine(): SightLine {
+export function createSightLine(color: number = COLOR): SightLine {
   const positions = new BufferAttribute(new Float32Array(6), 3);
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', positions);
   const material = new LineBasicMaterial({
-    color: COLOR,
+    color,
     opacity: OPACITY,
     transparent: true,
     depthTest: false,

@@ -98,6 +98,11 @@ const RADIANT_LINE_SHARE = 0.45;
  * on a page: each ball shows its lit half and its dark half. The little lean says which way is up.
  */
 const DIAGRAM_LEAN = 0.06;
+/** A diagram seen from the side is looked at from this much above the level of the paths. */
+const DIAGRAM_SIDE_LIFT = 0.18;
+/** Seen from the side: how much of the star's radius is kept in the picture, and the room a world's drawn axis needs, in its radii. */
+const DIAGRAM_SIDE_STAR_SHARE = 0.35;
+const DIAGRAM_AXIS_ROOM = 2;
 /** How many of its own radii away a body stands when a story looks at it close up. */
 const CLOSE_UP_RADII = 12;
 /**
@@ -1099,16 +1104,18 @@ function start(): void {
     if (diagram && story.diagram === 'in-line' && star !== undefined) {
       // The star at one end, and at the other the world it lights with whatever goes round it.
       const round = Math.max(
-        shown.spanOf(first),
+        shown.spanOf(first) * (story.diagramSeen === 'side' ? DIAGRAM_AXIS_ROOM : 1),
         ...story.actorIds
           .filter((id) => id !== star && id !== first)
           .map((id) => from(id, first) + shown.radiusOf(id)),
       );
-      const starRadius = shown.radiusOf(star);
+      // From the side the star may run off the edge, to leave the room to the world and its axis.
+      const side = story.diagramSeen === 'side';
+      const starRadius = shown.radiusOf(star) * (side ? DIAGRAM_SIDE_STAR_SHARE : 1);
       const halfLine = (from(first, star) + round + starRadius) / 2;
       const halfAcross = Math.max(starRadius, round);
       const distance =
-        (aspect < 1
+        (aspect < 1 && story.diagramSeen !== 'side'
           ? distanceToFit(halfAcross, halfLine, aspect, FIELD_OF_VIEW_DEG)
           : distanceToFit(halfLine, halfAcross, aspect, FIELD_OF_VIEW_DEG)) *
         DIAGRAM_MARGIN *
@@ -1210,6 +1217,8 @@ function start(): void {
       const z = out.z / flat;
       // From beyond the lit world the star is further off, so higher up the screen; from one
       // side of the line it is to the left.
+      // From the side, a little above the level of the paths: the star is at the left.
+      if (story.diagramSeen === 'side') return { x: -z, y: DIAGRAM_SIDE_LIFT, z: x };
       return aspect < 1 ? { x: x * lean, y: 1, z: z * lean } : { x: -z * lean, y: 1, z: x * lean };
     };
   };
@@ -1613,6 +1622,7 @@ function start(): void {
                   DIAGRAM_SCALE,
                   story.shadows ?? [],
                   tracks.bodies,
+                  story.seasonsOf === undefined ? [] : [story.seasonsOf],
                 );
                 diagram.system.setTracks({ ...tracks, craft: [], keepOrbitLines: true });
                 for (const id of story.actorIds) diagram.system.showDetail(id);

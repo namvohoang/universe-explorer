@@ -23,6 +23,13 @@ describe('seasonsAt', () => {
     expect(seasonsAt(-20, -19).north).toBe('winter');
   });
 
+  it('names the season that is beginning while the star crosses the equator', () => {
+    expect(seasonsAt(-0.01, 0.01).north).toBe('spring');
+    expect(seasonsAt(0.01, -0.01).north).toBe('autumn');
+    expect(seasonsAt(-0.15, -0.1).north).toBe('spring');
+    expect(seasonsAt(-0.5, -0.4).north).toBe('winter');
+  });
+
   it('gives the south the season half a year away', () => {
     expect(seasonsAt(5, 6).south).toBe('autumn');
     expect(seasonsAt(20, 19).south).toBe('winter');

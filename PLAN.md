@@ -461,6 +461,27 @@ everything found to be done. Nothing in the app contradicted those pages.
 
 **Acceptance:** as for Phase 7.
 
+### Phase 11 — From NASA's 3D resources (asked for on 2026-10-07)
+
+The owner asked for NASA's 3D resources (https://science.nasa.gov/3d-resources/, 375 entries on
+2026-10-07) to be reviewed and for objects to be added or polished from them. Most entries are
+Earth satellites, tools, spacesuits, landing sites and buildings, which are not places in this
+app. What fits: shape models of small worlds, spacecraft that explored the solar system, and 3D
+models of a few nebulae. NASA's own pages for single models (science.nasa.gov/resource/…-3d-model/)
+often hold a better file of the same thing, with its surface, and are used where they do.
+
+- [x] 11.1 Real shapes for three worlds already here: Phobos, Eros and Vesta are NASA's 3D models
+      in place of smooth three-axis balls with a map wrapped on, as Deimos already was. Each
+      model is turned by whole quarter turns so its longest side and its pole lie the way the
+      app draws bodies; nothing is reshaped. Their old maps are gone with their credit rows.
+- [ ] 11.2 New small worlds that have a NASA shape model: the asteroid Bennu, Saturn's spongy
+      moon Hyperion and the dwarf planet Haumea, which task 3.3 left out for want of a shape.
+- [ ] 11.3 New spacecraft that explored the solar system: the Perseverance rover and its
+      helicopter Ingenuity, and OSIRIS-REx, which brought back a piece of Bennu.
+- [ ] 11.4 The Crab Nebula as NASA's own 3D model in place of a cloud whose depth is a guess.
+
+**Acceptance:** as for Phase 7.
+
 ## 7. Testing
 
 | Layer | Tests |

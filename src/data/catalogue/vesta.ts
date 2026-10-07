@@ -51,10 +51,10 @@ export const vesta: Asteroid = {
   },
   media: [
     {
-      file: 'public/media/maps/vesta.webp',
+      file: 'public/media/models/vesta.glb',
       kind: 'agency-model',
-      role: 'surface-map',
-      altKey: 'mapAltVesta',
+      role: 'model',
+      altKey: 'modelAltVesta',
       credit: 'NASA Visualization Technology Applications and Development (VTAD)',
     },
   ],

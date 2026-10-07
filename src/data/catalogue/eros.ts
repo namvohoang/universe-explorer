@@ -51,12 +51,11 @@ export const eros: Asteroid = {
   },
   media: [
     {
-      file: 'public/media/maps/eros.webp',
-      kind: 'composite',
-      role: 'surface-map',
-      altKey: 'mapAltEros',
-      credit:
-        'Golish, D.R., Brodbeck, J.I., Webber, C., Becker, K.J., Bennett, C.A., DellaGiustina, D.N. Published by USGS Astrogeology Science Center.',
+      file: 'public/media/models/eros.glb',
+      kind: 'agency-model',
+      role: 'model',
+      altKey: 'modelAltEros',
+      credit: 'NASA Visualization Technology Applications and Development (VTAD)',
     },
   ],
   sources: [JPL_SBDB_EROS],

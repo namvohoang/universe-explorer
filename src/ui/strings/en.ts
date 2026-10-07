@@ -923,12 +923,12 @@ export const en = {
   mapAltPluto:
     "A map of Pluto's surface: reddish brown and white, with a bright heart-shaped plain. The far south is blurry because it has never been seen up close.",
   mapAltCeres: "A map of Ceres's surface: grey and covered in craters, with a few bright spots.",
-  mapAltVesta:
-    "A map of Vesta's surface: grey, covered in craters, with long grooves round the middle.",
+  modelAltVesta:
+    'A 3D model of Vesta: a grey, slightly squashed ball covered in craters, with long grooves round the middle.',
   mapAltMimas: "A map of Mimas's surface: icy and crowded with craters, one of them very large.",
-  mapAltPhobos:
-    "A map of Phobos's surface: grey and dusty, with craters and long grooves. One crater is very large.",
-  mapAltEros: "A map of Eros's surface: grey with craters, some with bright rims.",
+  modelAltPhobos:
+    'A 3D model of Phobos: a lumpy grey rock with craters and long grooves. One crater is very large.',
+  modelAltEros: 'A 3D model of Eros: a long, bent grey rock with craters.',
   mapAltMercury: "A map of Mercury's surface: grey and covered in craters.",
   mapAltVenus: 'A map of the ground on Venus made with radar, with colours added by scientists.',
   mapAltEarth:

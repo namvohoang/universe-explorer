@@ -59,11 +59,11 @@ export const phobos: Moon = {
   },
   media: [
     {
-      file: 'public/media/maps/phobos.webp',
-      kind: 'composite',
-      role: 'surface-map',
-      altKey: 'mapAltPhobos',
-      credit: 'Planetary Data System. Published by USGS Astrogeology Science Center.',
+      file: 'public/media/models/phobos.glb',
+      kind: 'agency-model',
+      role: 'model',
+      altKey: 'modelAltPhobos',
+      credit: 'NASA/JPL-Caltech',
     },
   ],
   sources: [JPL_HORIZONS_PHOBOS_PERIOD, JPL_SAT_ELEM_MARS, NSSDC_MARS],

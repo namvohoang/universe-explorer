@@ -960,12 +960,12 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   mapAltPluto:
     'Bản đồ bề mặt Sao Diêm Vương: nâu đỏ và trắng, có một đồng bằng sáng hình trái tim. Vùng cực nam bị mờ vì chưa từng được nhìn ở gần.',
   mapAltCeres: 'Bản đồ bề mặt Ceres: xám và phủ đầy hố va chạm, có vài đốm sáng.',
-  mapAltVesta:
-    'Bản đồ bề mặt Vesta: xám, phủ đầy hố va chạm, có những rãnh dài chạy quanh phần giữa.',
+  modelAltVesta:
+    'Mô hình 3D của Vesta: một quả cầu xám hơi dẹt, phủ đầy hố va chạm, có những rãnh dài chạy quanh phần giữa.',
   mapAltMimas: 'Bản đồ bề mặt Mimas: băng giá và dày đặc hố va chạm, trong đó có một hố rất lớn.',
-  mapAltPhobos:
-    'Bản đồ bề mặt Phobos: xám và bụi bặm, có các hố va chạm và rãnh dài. Một hố rất lớn.',
-  mapAltEros: 'Bản đồ bề mặt Eros: xám với các hố va chạm, một số có vành sáng.',
+  modelAltPhobos:
+    'Mô hình 3D của Phobos: một tảng đá xám lồi lõm có các hố va chạm và rãnh dài. Một hố rất lớn.',
+  modelAltEros: 'Mô hình 3D của Eros: một tảng đá xám dài và cong, có các hố va chạm.',
   mapAltMercury: 'Bản đồ bề mặt Sao Thủy: xám và phủ đầy hố va chạm.',
   mapAltVenus: 'Bản đồ mặt đất Sao Kim làm bằng ra-đa, màu sắc do các nhà khoa học thêm vào.',
   mapAltEarth:

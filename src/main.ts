@@ -627,6 +627,8 @@ function start(): void {
   // It is built the first time it is opened; its code is not part of the first download.
   let watchPanel: Watch | null = null;
   let watchWanted = false;
+  /** The date the story last drew. */
+  let watchJd = NaN;
   let scaleBeforeWatch: ScaleMode | null = null;
   // The story's panel covers the bottom of the screen, so the view is drawn in the room above it.
   const roomAbovePanel = (): { top: number; bottom: number } => ({
@@ -685,12 +687,19 @@ function start(): void {
     }
     if (chapter.closeUp === true && !free) {
       const seen = chapter.lookAtId;
+      // Something with a glow that grows (a comet near the Sun) is stood back from as it grows.
+      const distanceNow = (): number =>
+        Math.max(
+          system.radiusOf(seen) * CLOSE_UP_RADII,
+          system.glowRadiusOf(seen) * GLOW_VIEW_RADII,
+        );
       return {
         target: () => system.positionOf(seen),
-        distance: system.radiusOf(seen) * CLOSE_UP_RADII,
+        distance: distanceNow(),
+        ...(system.glowRadiusOf(seen) > 0 || tailed.has(seen) ? { distanceNow } : {}),
         direction: litSideBearing(system.positionOf(seen), system.positionOf('sun')),
         minDistance: system.radiusOf(seen) * BODY_CLOSEST_RADII,
-        maxDistance: system.radiusOf(seen) * CLOSE_UP_RADII * 8,
+        maxDistance: Infinity,
         idleTurn: false,
       };
     }
@@ -756,6 +765,8 @@ function start(): void {
       craftTags.set(id, tag);
     }
   };
+  /** The things that grow a glow and tails. */
+  const tailed = new Set(catalogue.filter((object) => object.kind === 'comet').map((o) => o.id));
   const watch = {
     isOpen: (): boolean => watchWanted,
     open(storyId: string | null): void {
@@ -1064,7 +1075,12 @@ function start(): void {
     );
     if (watch.isOpen() && watchPanel) {
       // The story keeps its own date; the app's clock waits where it was.
-      system.setDate(watchPanel.tick(dt));
+      const jd = watchPanel.tick(dt);
+      const moved = jd !== watchJd;
+      watchJd = jd;
+      system.setDate(jd);
+      // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
+      if (moved && !reducedMotion) system.flowTails(dt);
       return;
     }
     const before = clock.jd;

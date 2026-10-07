@@ -5,6 +5,7 @@ import {
   distanceForAspect,
   easeInOutCubic,
   followTarget,
+  heldAtDistance,
   heldOnBearing,
   litSideBearing,
   zoomedDistance,
@@ -122,6 +123,20 @@ describe('heldOnBearing', () => {
   it('leaves the view alone when there is no bearing to hold', () => {
     const view: View = { camera: { x: 10, y: 0, z: 5 }, target: TARGET };
     expect(heldOnBearing(view, ORIGIN)).toBe(view);
+  });
+});
+
+describe('heldAtDistance', () => {
+  it('moves the camera along its line of sight to the distance asked for', () => {
+    const view: View = { camera: { x: 10, y: 0, z: 5 }, target: TARGET };
+    expectVec(heldAtDistance(view, 20).camera, { x: 10, y: 0, z: 20 });
+    expectVec(heldAtDistance(view, 20).target, TARGET);
+  });
+
+  it('leaves the view alone when there is no line of sight or no distance', () => {
+    const view: View = { camera: { x: 10, y: 0, z: 5 }, target: TARGET };
+    expect(heldAtDistance(view, 0)).toBe(view);
+    expect(heldAtDistance({ camera: TARGET, target: TARGET }, 3).camera).toBe(TARGET);
   });
 });
 

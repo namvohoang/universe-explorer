@@ -4,6 +4,7 @@ import type { Vec3 } from '../sim/vec3';
 import {
   ZOOM_SECONDS,
   followTarget,
+  heldAtDistance,
   heldOnBearing,
   startFlight,
   stepFlight,
@@ -49,6 +50,11 @@ export interface FlyTo {
    * on it after arriving, so it cannot be dragged round; zooming still works.
    */
   readonly bearing?: () => Vec3;
+  /**
+   * A distance from the target that is asked for every frame. The camera is held at it after
+   * arriving, so it backs away as the thing looked at grows; zooming is then of no use.
+   */
+  readonly distanceNow?: () => number;
 }
 
 /** Where a point of the scene lands on screen. */
@@ -188,7 +194,8 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       if (!flight) arrive(following);
     } else if (previousTarget) {
       const followed = followTarget(currentView(), previousTarget, target);
-      applyView(following.bearing ? heldOnBearing(followed, following.bearing()) : followed);
+      const turned = following.bearing ? heldOnBearing(followed, following.bearing()) : followed;
+      applyView(following.distanceNow ? heldAtDistance(turned, following.distanceNow()) : turned);
     }
     previousTarget = target;
   };

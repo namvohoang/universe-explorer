@@ -1155,6 +1155,15 @@ export const en = {
     'Earth’s tilt always points the same way. Today, again, neither pole leans towards the Sun. Autumn begins in the north.',
   storySeasonsDecember:
     'Now the South Pole leans towards the Sun. It is summer in the south, and winter in the north.',
+  storyHalleyTailTitle: 'A comet grows its tail',
+  storyHalleyTailFarAway:
+    'Far from the Sun, Halley’s Comet is a frozen lump a few miles across. It is too cold to have a tail.',
+  storyHalleyTailWarmingUp:
+    'As it gets nearer the Sun, the comet warms up. A glowing cloud of gas and dust grows round it.',
+  storyHalleyTailClosest:
+    'Close to the Sun! Sunlight and a wind from the Sun blow the gas and dust away into long tails.',
+  storyHalleyTailLeaving:
+    'Now the comet is leaving. Its tails still point away from the Sun, so they go in front of it.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

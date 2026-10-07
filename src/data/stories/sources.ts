@@ -199,3 +199,26 @@ export const NASA_EARTH_FACTS: Source = {
   url: 'https://science.nasa.gov/earth/facts/',
   retrieved: '2026-10-07',
 };
+
+// The same page as the catalogue's source of that id, set down again here so the stories pull
+// in none of the catalogue's code.
+export const JPL_SBDB_HALLEY: Source = {
+  id: 'jpl-sbdb-halley',
+  title: 'JPL Small-Body Database — 1P/Halley (orbit solution 75)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=1P',
+  retrieved: '2026-10-04',
+};
+
+export const NASA_COMETS: Source = {
+  id: 'nasa-comets',
+  title: 'NASA Science — Comets',
+  url: 'https://science.nasa.gov/solar-system/comets/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_COMETS_FACTS: Source = {
+  id: 'nasa-comets-facts',
+  title: 'NASA Science — Comets: Facts',
+  url: 'https://science.nasa.gov/solar-system/comets/facts/',
+  retrieved: '2026-10-07',
+};

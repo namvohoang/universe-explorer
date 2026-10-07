@@ -8,6 +8,8 @@ import { groundPlaceAt, groundRoute } from '../src/sim/groundPath';
 import { drawnThrough, pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
+import { TAIL_STARTS_AU, tailStrength } from '../src/sim/comet';
+import { KM_PER_AU } from '../src/sim/constants';
 import { lightTravelSeconds } from '../src/sim/elements';
 import { northPoleEcliptic, poleOf } from '../src/sim/frames';
 import { shadowAt, shadowCentreOn } from '../src/sim/shadow';
@@ -17,6 +19,7 @@ import { apollo11Landing } from '../src/data/stories/apollo11Landing';
 import { apollo11Launch } from '../src/data/stories/apollo11Launch';
 import { artemis1 } from '../src/data/stories/artemis1';
 import { artemis2 } from '../src/data/stories/artemis2';
+import { halleyTail } from '../src/data/stories/halleyTail';
 import { lunarEclipse } from '../src/data/stories/lunarEclipse';
 import { solarEclipse } from '../src/data/stories/solarEclipse';
 import { moonPhases } from '../src/data/stories/moonPhases';
@@ -444,6 +447,31 @@ describe('the seasons', () => {
       const next = seasons.chapters[index + 1];
       if (next) expect(next.atJd.value - chapter.atJd.value).toBeGreaterThan(80);
     }
+  });
+});
+
+describe('Halley’s tail', () => {
+  const halley = catalogue.find((object) => object.id === 'halley') ?? fail();
+  const sunDistanceAu = (jd: number): number => {
+    const place = eclipticOffsetKm(halley, catalogue, jd);
+    return Math.hypot(place.x, place.y, place.z) / KM_PER_AU;
+  };
+  const start = (id: string): number =>
+    halleyTail.chapters.find((chapter) => chapter.id === id)?.atJd.value ?? NaN;
+
+  it('has no tail for as long as it is told as too cold to have one', () => {
+    for (let jd = start('far-away'); jd < start('warming-up'); jd += 5) {
+      expect(sunDistanceAu(jd)).toBeGreaterThan(TAIL_STARTS_AU);
+      expect(tailStrength(sunDistanceAu(jd))).toBe(0);
+    }
+  });
+
+  it('is nearest the Sun, with its tail at its longest, in the middle of the part that says so', () => {
+    const middle = (start('closest') + start('leaving')) / 2;
+    for (const days of [-30, -10, 10, 30]) {
+      expect(sunDistanceAu(middle)).toBeLessThan(sunDistanceAu(middle + days));
+    }
+    expect(tailStrength(sunDistanceAu(middle))).toBe(1);
   });
 });
 

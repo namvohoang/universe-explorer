@@ -896,6 +896,15 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Trục nghiêng của Trái Đất luôn chỉ về một hướng. Hôm nay, một lần nữa, không cực nào ngả về phía Mặt Trời. Mùa thu bắt đầu ở phương bắc.',
   storySeasonsDecember:
     'Giờ Cực Nam ngả về phía Mặt Trời. Phương nam là mùa hè, còn phương bắc là mùa đông.',
+  storyHalleyTailTitle: 'Sao chổi mọc đuôi',
+  storyHalleyTailFarAway:
+    'Ở xa Mặt Trời, sao chổi Halley là một khối đóng băng rộng vài dặm. Nó quá lạnh nên không có đuôi.',
+  storyHalleyTailWarmingUp:
+    'Khi tới gần Mặt Trời hơn, sao chổi ấm lên. Một đám mây khí và bụi phát sáng lớn dần quanh nó.',
+  storyHalleyTailClosest:
+    'Gần Mặt Trời rồi! Ánh nắng và một luồng gió từ Mặt Trời thổi khí và bụi thành những cái đuôi dài.',
+  storyHalleyTailLeaving:
+    'Giờ sao chổi đang rời đi. Đuôi của nó vẫn chỉ ra xa Mặt Trời, nên chúng ở phía trước nó.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

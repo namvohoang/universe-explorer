@@ -102,6 +102,17 @@ export function heldOnBearing(view: View, bearing: Vec3): View {
   return { camera: add(view.target, scale(bearing, distance / size)), target: view.target };
 }
 
+/**
+ * The camera moved along its line of sight to stand a given distance from its target: for a
+ * view that has to back away as what it looks at grows, such as a comet's cloud near the Sun.
+ */
+export function heldAtDistance(view: View, distance: number): View {
+  const offset = subtract(view.camera, view.target);
+  const size = length(offset);
+  if (size === 0 || !(distance > 0)) return view;
+  return { camera: add(view.target, scale(offset, distance / size)), target: view.target };
+}
+
 /** How far round to the side, and how far above, the camera stands when it looks at a lit body. */
 const SIDE_SHARE = 0.6;
 const UP_SHARE = 0.35;

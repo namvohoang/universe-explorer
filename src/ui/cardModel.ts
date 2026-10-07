@@ -75,6 +75,8 @@ export function isDeepSky(object: CelestialObject): boolean {
   if (object.kind === 'constellation') return true;
   // Nor has every far star one from a trusted source: it is still drawn at its size and colour.
   if (object.kind === 'star' && object.sky !== null) return true;
+  // Our own star is in the solar system, even with a real picture beside its model.
+  if (object.kind === 'star') return false;
   // Something with a path round the Sun is in the solar system, even with a picture of it.
   return object.orbit === null && object.media.some((media) => media.role === 'picture');
 }

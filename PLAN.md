@@ -443,6 +443,14 @@ everything found to be done. Nothing in the app contradicted those pages.
       colours added. It has no 3D model: the map shows the whole sky around us, not a thing
       that can be turned and looked at from outside.
 
+- [x] 10.5 A Sun that shows what real pictures show (asked for on 2026-10-07, from NASA's
+      gallery of the Sun): over NASA's model the app now draws a fine grain that churns while
+      time runs, bright patches with loops of glowing gas, dark coronal holes, thin dark
+      filaments, a brighter rim and an uneven glow. What these things are is real; where they
+      sit is made up, since the Sun's face changes every day, and the model stays labelled as a
+      drawing. NASA's real ultraviolet picture, with a coronal hole across the top, sits in the
+      corner, and the card says what the dark patch is.
+
 **Acceptance:** as for Phase 7.
 
 ## 7. Testing

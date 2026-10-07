@@ -13,7 +13,7 @@ export const NARRATION: Readonly<
   },
   sun: {
     file: 'public/voice/sun.mp3',
-    fingerprint: '4a4e36e8',
+    fingerprint: '81b5804b',
     starts: [0.0, 1.98, 8.15, 12.57, 22.73],
   },
   'parker-solar-probe': {

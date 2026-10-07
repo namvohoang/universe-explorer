@@ -163,7 +163,8 @@ export const cards: readonly CardContent[] = [
       {
         key: 'cardSunFact3',
         sourceId: 'nasa-facts-sun',
-        quote: 'At its equator, the Sun completes one rotation in 25 Earth days.',
+        quote:
+          'A coronal hole is a patch of the Sun’s atmosphere with much lower density than the surrounding areas. In ultraviolet views of the Sun, coronal holes appear as dark splotches.',
       },
     ],
     moons: null,

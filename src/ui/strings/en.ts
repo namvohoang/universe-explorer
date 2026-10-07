@@ -13,7 +13,9 @@ export const en = {
   cardSunFact2:
     'The part of the Sun we can see is about 5,500 °C. Deep in its middle it is about 15 million °C.',
   cardSunFact3:
-    'The Sun does not spin as one solid ball. Its middle turns faster than its top and bottom.',
+    'The dark patch in the picture is called a coronal hole. The gas is thinner there, so it looks dark in ultraviolet light.',
+  pictureAltSun:
+    'The whole Sun glowing golden brown on black, with a big dark patch across the top, bright spots, and a fuzzy glow around its edge.',
   cardMercuryHello: 'Mercury is the smallest planet and the closest to the Sun.',
   cardMercuryFact1: 'Mercury is the fastest planet. It zips around the Sun in just 88 Earth days.',
   cardMercuryFact2: 'It is covered in craters, a lot like our Moon.',
@@ -938,7 +940,7 @@ export const en = {
   mapAltUranus: "An artist's drawing of Uranus: smooth pale blue-green.",
   mapAltNeptune: "An artist's drawing of Neptune: deep blue with a few white clouds.",
   modelAltSun:
-    'A 3D model of the Sun: a bright yellow-orange ball with a mottled, glowing surface.',
+    'A 3D model of the Sun: a glowing yellow-orange ball with a grainy surface, bright patches, a dark patch, thin dark threads and loops of gas at its edge.',
   mediaKindComposite: 'Made from many pictures joined together.',
   mediaKindFalseColour: 'Colours added by scientists.',
   mediaKindArtistConcept: "An artist's drawing, not a photo.",

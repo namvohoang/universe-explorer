@@ -20,7 +20,9 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardSunFact2:
     'Phần Mặt Trời mà ta nhìn thấy nóng khoảng 5.500 °C. Sâu trong lõi, nó nóng khoảng 15 triệu °C.',
   cardSunFact3:
-    'Mặt Trời không quay như một quả cầu đặc. Phần giữa quay nhanh hơn phần trên và phần dưới.',
+    'Mảng tối trong bức ảnh được gọi là lỗ nhật hoa. Khí ở đó loãng hơn nên trông tối trong ánh sáng cực tím.',
+  pictureAltSun:
+    'Toàn bộ Mặt Trời sáng màu nâu vàng trên nền đen, có một mảng tối lớn vắt ngang phía trên, những đốm sáng và một quầng sáng mờ quanh rìa.',
   cardMercuryHello: 'Sao Thủy là hành tinh nhỏ nhất và gần Mặt Trời nhất.',
   cardMercuryFact1:
     'Sao Thủy là hành tinh nhanh nhất. Nó chạy một vòng quanh Mặt Trời chỉ trong 88 ngày Trái Đất.',
@@ -975,7 +977,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   mapAltUranus: 'Hình vẽ của họa sĩ về Sao Thiên Vương: xanh lam pha lục nhạt, trơn mịn.',
   mapAltNeptune: 'Hình vẽ của họa sĩ về Sao Hải Vương: xanh lam đậm với vài đám mây trắng.',
   modelAltSun:
-    'Mô hình 3D của Mặt Trời: một quả cầu vàng cam sáng rực với bề mặt lốm đốm, phát sáng.',
+    'Mô hình 3D của Mặt Trời: một quả cầu vàng cam phát sáng với bề mặt lấm tấm, những mảng sáng, một mảng tối, các sợi tối mảnh và những vòng khí ở rìa.',
   mediaKindComposite: 'Ghép từ nhiều bức ảnh lại với nhau.',
   mediaKindFalseColour: 'Màu sắc do các nhà khoa học thêm vào.',
   mediaKindArtistConcept: 'Hình vẽ của họa sĩ, không phải ảnh chụp.',

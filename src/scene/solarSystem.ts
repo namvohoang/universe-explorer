@@ -190,6 +190,7 @@ export function createSolarSystem(
     glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,
     flowTails(seconds) {
       for (const tail of tails.values()) tail.flow(seconds);
+      for (const body of bodies.values()) body.flow(seconds);
     },
     setViewer(camera) {
       for (const tail of tails.values()) tail.setViewer(camera);

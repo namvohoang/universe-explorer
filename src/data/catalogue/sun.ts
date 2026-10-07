@@ -46,6 +46,13 @@ export const sun: Star = {
       altKey: 'modelAltSun',
       credit: 'NASA. The page gives no credit line.',
     },
+    {
+      file: 'public/media/deep/sun.webp',
+      kind: 'false-colour',
+      role: 'picture',
+      altKey: 'pictureAltSun',
+      credit: 'NASA/SDO',
+    },
   ],
   sources: [NSSDC_SUN],
 };

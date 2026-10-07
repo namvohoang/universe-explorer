@@ -1,7 +1,5 @@
 import {
-  AdditiveBlending,
   Box3,
-  CanvasTexture,
   Group,
   Mesh,
   MeshBasicMaterial,
@@ -9,8 +7,6 @@ import {
   Quaternion,
   SRGBColorSpace,
   SphereGeometry,
-  Sprite,
-  SpriteMaterial,
   TextureLoader,
   Vector3,
   type BufferGeometry,
@@ -26,6 +22,7 @@ import type { Scale } from '../sim/scale';
 import { spinAngleRad } from '../sim/spin';
 import type { Vec3 } from '../sim/vec3';
 import { createRingMap, createRings, type RingMap, type Rings } from './rings';
+import { createSunGlow, createSunSurface } from './sunSurface';
 
 const SPHERE_SEGMENTS = { width: 64, height: 32 };
 /** Plain colours for a body with no surface map, and while a map is still loading. */
@@ -105,51 +102,11 @@ export interface Body {
    * towards where the parent is now. Does nothing for a body that spins freely.
    */
   faceTowards(parent: Vec3): void;
+  /** Lets what moves on the body's face move on, for this many seconds of running time. */
+  flow(seconds: number): void;
   /** Tells the body where the Sun is, so ring shadows fall the right way. */
   setSunPosition(sun: { x: number; y: number; z: number }): void;
   dispose(): void;
-}
-
-/** How far a star's glow reaches, in its own radii, and how strong it is. A drawing choice. */
-const GLOW_RADII = 3.2;
-const GLOW_COLOR = '255, 214, 130';
-
-/** A soft round glow, bright in the middle and fading to nothing: light spilling off a star. */
-function createGlow(): Sprite {
-  const size = 256;
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  const context = canvas.getContext('2d');
-  if (context) {
-    const gradient = context.createRadialGradient(
-      size / 2,
-      size / 2,
-      0,
-      size / 2,
-      size / 2,
-      size / 2,
-    );
-    // The body itself covers the middle third; the glow only shows around it.
-    gradient.addColorStop(0, `rgba(${GLOW_COLOR}, 0.9)`);
-    gradient.addColorStop(0.32, `rgba(${GLOW_COLOR}, 0.55)`);
-    gradient.addColorStop(0.55, `rgba(${GLOW_COLOR}, 0.14)`);
-    gradient.addColorStop(1, `rgba(${GLOW_COLOR}, 0)`);
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, size, size);
-  }
-  const map = new CanvasTexture(canvas);
-  map.colorSpace = SRGBColorSpace;
-  const sprite = new Sprite(
-    new SpriteMaterial({
-      map,
-      blending: AdditiveBlending,
-      depthWrite: false,
-      transparent: true,
-    }),
-  );
-  sprite.scale.setScalar(GLOW_RADII * 2);
-  return sprite;
 }
 
 /**
@@ -182,6 +139,8 @@ function loadModel(
   frame: Group,
   sphere: Mesh,
   onDispose: (dispose: () => void) => void,
+  /** Called with the model once it is in place, for a body that draws over its model. */
+  onPlaced?: (model: Group) => void,
 ): void {
   loadGltf(mediaUrl(file), (model) => {
     const centre = new Box3().setFromObject(model).getCenter(new Vector3());
@@ -194,6 +153,7 @@ function loadModel(
     frame.add(holder);
     // The sphere is no longer drawn itself.
     (sphere.material as Material).visible = false;
+    onPlaced?.(model);
     onDispose(() => {
       model.traverse((part) => {
         if (part instanceof Mesh) {
@@ -308,23 +268,35 @@ export function createBody(
   };
 
   const extras: (() => void)[] = [];
+  // A star with its own model gets its face drawn over that model.
+  const sunSurface = object.kind === 'star' ? createSunSurface() : null;
   const model = object.media.find((media) => media.role === 'model');
   let modelWanted = model !== undefined;
   const loadDetail = (): void => {
     surface.loadMap();
     if (!model || !modelWanted) return;
     modelWanted = false;
-    loadModel(model.file, modelFrame, mesh, (dispose) => extras.push(dispose));
+    loadModel(
+      model.file,
+      modelFrame,
+      mesh,
+      (dispose) => extras.push(dispose),
+      (placed) => sunSurface?.dress(placed, modelFrame),
+    );
   };
   // A spacecraft is nothing like a ball, so no ball is drawn while its model is on the way.
   if (object.kind === 'spacecraft') material.visible = false;
   if (!waitsForAVisit(object)) loadDetail();
-  if (object.kind === 'star') {
-    const glow = createGlow();
+  if (sunSurface) {
+    const glow = createSunGlow();
     flattened.add(glow);
+    // The loops stand in the frame the model turns in, so they turn with the Sun's face.
+    modelFrame.add(sunSurface.group);
+    const surfaceOfSun = sunSurface;
     extras.push(() => {
       glow.material.map?.dispose();
       glow.material.dispose();
+      surfaceOfSun.dispose();
     });
   }
 
@@ -375,6 +347,9 @@ export function createBody(
       facing.applyQuaternion(untilt.copy(tilt.quaternion).invert());
       flattened.rotation.y = Math.atan2(-facing.z, facing.x);
       turnModel();
+    },
+    flow(seconds) {
+      sunSurface?.flow(seconds);
     },
     setSunPosition(sun) {
       if (!rings) return;

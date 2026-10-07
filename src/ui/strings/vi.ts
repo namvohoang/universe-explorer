@@ -978,7 +978,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPhotoSmaller: 'Thu nhỏ ảnh lại',
   watchPaneGround: 'Nhìn từ mặt đất trên Trái Đất',
   watchPhotoBy: 'Ảnh: {credit}',
-  storyAuroraPhoto: 'Cực quang đỏ trên bầu trời Florida, Mỹ, ngày 11 tháng 11 năm 2025.',
+  storyAuroraPhoto:
+    'Cực quang đỏ trên bầu trời Florida, Mỹ, ngày 11 tháng 11 năm 2025. Màu đỏ đến từ khí ô-xi ở trên cao hơn 200 km; màu xanh đến từ ô-xi ở thấp hơn.',
   storyAuroraPhotoAlt:
     'Bầu trời đêm ửng đỏ sẫm ở sát chân trời trên một bãi đất phẳng, phía sau ba ngọn tháp cao và mảnh.',
   storyMeteorShowerPhoto:

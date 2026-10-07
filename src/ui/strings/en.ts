@@ -1085,7 +1085,8 @@ export const en = {
   watchPhotoSmaller: 'Make the photo small again',
   watchPaneGround: 'Seen from the ground on Earth',
   watchPhotoBy: 'Photo: {credit}',
-  storyAuroraPhoto: 'A red aurora over Florida, USA, on 11 November 2025.',
+  storyAuroraPhoto:
+    'A red aurora over Florida, USA, on 11 November 2025. Red comes from oxygen higher up, above 200 km; green from oxygen lower down.',
   storyAuroraPhotoAlt:
     'A night sky glowing deep red low over a flat field, behind three tall thin towers.',
   storyMeteorShowerPhoto:

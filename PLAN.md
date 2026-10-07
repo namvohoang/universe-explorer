@@ -453,6 +453,11 @@ everything found to be done. Nothing in the app contradicted those pages.
       The gas over the bright patches (prominences) is drawn as soft glowing clouds of
       specks, in arches and plumes, yellow at the feet and redder at the top, and streams
       along them while time runs; the first try, thin wire rings, did not look real.
+      One patch has a solar tornado (asked for on 2026-10-07): a funnel of gas whose bands
+      wind round it and seem to turn while time runs. NASA's page "Tornadoes On The Sun?"
+      (https://svs.gsfc.nasa.gov/11691/) says scientists do not agree whether such gas truly
+      turns or only looks as if it does; the card does not mention it yet, since a card has
+      three facts.
 
 **Acceptance:** as for Phase 7.
 

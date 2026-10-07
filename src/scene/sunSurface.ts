@@ -25,7 +25,9 @@ import {
  * Sun show (NASA's Solar Dynamics Observatory, in ultraviolet light):
  * - a fine grain all over that slowly churns;
  * - bright patches, the active regions, with prominences over them: arches and plumes of
- *   glowing gas;
+ *   glowing gas, and one funnel that seems to twist like a tornado. NASA's page "Tornadoes On
+ *   The Sun?" says scientists do not agree whether such gas really turns or only looks as if
+ *   it does;
  * - a large dark patch, a coronal hole, and a few thin dark threads, the filaments;
  * - a brighter rim, and an uneven glow around the whole Sun.
  *
@@ -63,6 +65,15 @@ const SPECK_SIZE = 0.026;
 const PROMINENCE_OPACITY = 0.5;
 /** How far below the surface an arch's feet start, so no gap shows: a share of the radius. */
 const FEET_AT = 0.985;
+/** Which bright patches have a plume and a twister in place of arches. */
+const PLUME_AT = 2;
+const TWISTER_AT = 5;
+/**
+ * The twister's funnel: how wide its neck is and how much it flares, in patch widths; how many
+ * times a band of gas winds round it and how many bands there are; how fast it seems to turn,
+ * in radians per arch length of flow; and how many times an arch's specks it has. A drawing choice.
+ */
+const TWISTER = { neck: 0.14, flare: 0.75, turns: 1.5, bands: 3, spin: 9, specks: 3 } as const;
 /** How fast gas streams along an arch: arch lengths per second of running time. */
 const PROMINENCE_FLOW = 0.03;
 /** How far the uneven glow reaches, in Sun radii, and how many streamers it has. */
@@ -238,12 +249,15 @@ interface Arch {
   readonly width: number;
   readonly height: number;
   readonly lean: number;
-  /** A plume rises from one spot and does not come back down. */
-  readonly plume: boolean;
+  /**
+   * An arch stands on two feet. A plume rises from one spot and does not come back down. A
+   * twister is a funnel of gas that seems to turn like a tornado.
+   */
+  readonly shape: 'arch' | 'plume' | 'twister';
 }
 
 /**
- * Prominences: arches and plumes of glowing gas held up over the bright patches. They are soft
+ * Prominences: arches, plumes and a twisting funnel of glowing gas over the bright patches. They are soft
  * clouds of specks, thick and bright at the feet and thin and redder at the top, as in NASA's
  * pictures; they show best at the Sun's edge. Their shapes are made up.
  */
@@ -269,20 +283,23 @@ function createProminences(): {
       .multiplyScalar(Math.cos(turned))
       .addScaledVector(north, Math.sin(turned));
     const aside = new Vector3().crossVectors(foot, along);
-    // One patch in three flings out a plume; the others hold up arches.
-    const plume = region % 3 === 2;
-    for (let n = 0; n < (plume ? 1 : ARCHES_PER_REGION); n += 1) {
+    // One patch flings out a plume, one has a twister, and the others hold up arches.
+    const shape = region === PLUME_AT ? 'plume' : region === TWISTER_AT ? 'twister' : 'arch';
+    const single = shape !== 'arch';
+    for (let n = 0; n < (single ? 1 : ARCHES_PER_REGION); n += 1) {
       const arch = arches.length;
       arches.push({
         foot,
         along,
         aside,
-        width: size * (plume ? 0.35 : 0.55 + 0.5 * random()),
-        height: size * (plume ? 1.3 : 0.45 + 0.55 * random()),
+        width: size * (single ? 0.35 : 0.55 + 0.5 * random()),
+        height:
+          size * (shape === 'plume' ? 1.3 : shape === 'twister' ? 0.75 : 0.45 + 0.55 * random()),
         lean: size * (random() - 0.5) * 0.5,
-        plume,
+        shape,
       });
-      for (let s = 0; s < SPECKS_PER_ARCH; s += 1) {
+      const specksHere = SPECKS_PER_ARCH * (shape === 'twister' ? TWISTER.specks : 1);
+      for (let s = 0; s < specksHere; s += 1) {
         // A handful of strands, one inside another, each with a haze of specks around it.
         const strand = Math.floor(random() * STRANDS) / STRANDS;
         specks.push({
@@ -317,7 +334,20 @@ function createProminences(): {
       let up: number;
       // The feet stand a little under the surface, so no gap shows beneath them.
       at.copy(arch.foot).multiplyScalar(FEET_AT);
-      if (arch.plume) {
+      if (arch.shape === 'twister') {
+        up = along;
+        // A funnel, narrow at the ground and wider higher up. Each strand winds round it, and
+        // the gas climbs the strands, so the whole funnel seems to turn.
+        const band = Math.round(((speck.wide - 0.55) / 0.45) * STRANDS) % TWISTER.bands;
+        const around =
+          (band / TWISTER.bands) * 2 * Math.PI +
+          up * TWISTER.turns * 2 * Math.PI +
+          flowed * TWISTER.spin;
+        const reach = arch.width * (TWISTER.neck + TWISTER.flare * up ** 1.5);
+        at.addScaledVector(arch.foot, up * arch.height);
+        at.addScaledVector(arch.along, Math.cos(around) * reach);
+        at.addScaledVector(arch.aside, Math.sin(around) * reach + arch.lean * up * up);
+      } else if (arch.shape === 'plume') {
         up = along;
         // It rises, fans out and bends over to one side as it goes.
         at.addScaledVector(arch.foot, up * arch.height * speck.tall);
@@ -331,7 +361,7 @@ function createProminences(): {
         at.addScaledVector(arch.aside, up * arch.lean);
       }
       // Tight at the feet, wispier higher up.
-      const haze = THICKNESS * (0.5 + 1.6 * up);
+      const haze = THICKNESS * (0.5 + 1.6 * up) * (arch.shape === 'twister' ? 2.4 : 1);
       at.addScaledVector(arch.along, speck.drift[0] * haze);
       at.addScaledVector(arch.aside, speck.drift[1] * haze);
       at.addScaledVector(arch.foot, speck.drift[2] * haze * 0.6);
@@ -342,7 +372,8 @@ function createProminences(): {
       colors[n * 4] = 1;
       colors[n * 4 + 1] = 0.5 - 0.3 * up;
       colors[n * 4 + 2] = 0.12 - 0.09 * up;
-      colors[n * 4 + 3] = arch.plume ? (1 - up) ** 1.2 : 0.9 - 0.4 * up;
+      colors[n * 4 + 3] =
+        arch.shape === 'arch' ? 0.9 - 0.4 * up : (1 - up) ** (arch.shape === 'twister' ? 0.7 : 1.2);
     });
     positionAttribute.needsUpdate = true;
     colorAttribute.needsUpdate = true;

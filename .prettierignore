@@ -3,3 +3,4 @@ docs/prototype/
 package-lock.json
 *.md
 .claude/
+tests/fixtures/*.heldout.json

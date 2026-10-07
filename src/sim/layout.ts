@@ -103,13 +103,29 @@ function toSceneOffset(
 }
 
 /**
+ * A place given in km from a body's centre, in the ecliptic frame, as an offset from that body
+ * in scene units: the same scaling that places everything that goes round it.
+ */
+export function sceneOffsetFromKm(offsetKm: Vec3, centre: CelestialObject, scale: Scale): Vec3 {
+  const distanceKm = length(offsetKm);
+  if (distanceKm === 0) return { x: 0, y: 0, z: 0 };
+  const sceneDistance = scale.distanceToScene(distanceKm, parentRadiusKm(centre));
+  return scaleVec(eclipticToScene(offsetKm), sceneDistance / distanceKm);
+}
+
+/** Where a body is at a date, in km from its parent in the ecliptic frame, when it is tracked. */
+export type TrackedOffsets = ReadonlyMap<string, (jd: number) => Vec3>;
+
+/**
  * Where every object is at a date, in scene units. An object with no orbit sits at its
- * parent's position, or at the origin when it has no parent.
+ * parent's position, or at the origin when it has no parent. A body in `tracked` is put where
+ * its track says, in place of where its orbit would put it.
  */
 export function scenePositions(
   catalogue: readonly CelestialObject[],
   jd: number,
   scale: Scale,
+  tracked?: TrackedOffsets,
 ): Map<string, Vec3> {
   const byId = new Map(catalogue.map((object) => [object.id, object]));
   const positions = new Map<string, Vec3>();
@@ -118,7 +134,11 @@ export function scenePositions(
     const known = positions.get(object.id);
     if (known) return known;
     let position: Vec3 = { x: 0, y: 0, z: 0 };
-    if (object.orbit) {
+    const track = tracked?.get(object.id);
+    if (track && object.parentId !== null) {
+      const parent = requireParent(object, byId);
+      position = add(place(parent), sceneOffsetFromKm(track(jd), parent, scale));
+    } else if (object.orbit) {
       const parent = requireParent(object, byId);
       const state = orbitStateAt(object.orbit, jd);
       const offset = toSceneOffset(positionFromState(state), object.orbit, parent, scale);

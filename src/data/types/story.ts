@@ -19,13 +19,45 @@ export interface Chapter {
   /** The instant the chapter starts, as a Julian date. */
   readonly atJd: Sourced<number>;
   readonly text: BackedText;
-  /** One of the story's `actorIds`. */
+  /** One of the story's `actorIds`, or one of its craft. */
   readonly lookAtId: string;
+  /** Stands close to what is looked at, in place of showing the whole stage. */
+  readonly closeUp?: boolean;
   /**
    * When set, the camera is held on the line from this actor to the one looked at, so the kid
    * sees it as from there (the Moon as seen from Earth). Left out, the whole stage is shown.
    */
   readonly viewFromId?: string;
+}
+
+/**
+ * Where something was at one instant: [Julian date (TDB), x, y, z (km), vx, vy, vz (km/s)],
+ * from the centre of the body it is tracked round, in the ecliptic frame of J2000.
+ */
+export type PathSample = readonly [
+  jd: number,
+  xKm: number,
+  yKm: number,
+  zKm: number,
+  vxKmPerS: number,
+  vyKmPerS: number,
+  vzKmPerS: number,
+];
+
+/** A path as it was really flown or really moved, sampled closely enough to draw between. */
+export interface SampledPath {
+  /** Catalogue id of the body the positions are measured from. */
+  readonly centreId: string;
+  /** Earliest first. */
+  readonly samples: Sourced<readonly PathSample[]>;
+}
+
+/** A spacecraft that flies in a story. It is drawn as a named point: at true scale it is too small to see. */
+export interface StoryCraft {
+  readonly id: string;
+  /** Key of its name in the UI strings. */
+  readonly nameKey: string;
+  readonly path: SampledPath;
 }
 
 /** Something that happens, played on a real clock: a sky event or a space flight. */
@@ -41,5 +73,13 @@ export interface Story {
   readonly endJd: Sourced<number>;
   /** Catalogue ids of everything drawn. The first is the middle of the stage. */
   readonly actorIds: readonly string[];
+  /** The spacecraft that fly in it, each on its tracked path. */
+  readonly craft?: readonly StoryCraft[];
+  /**
+   * Bodies that, for this story, are put where JPL Horizons has them in place of where the
+   * catalogue's orbit puts them, keyed by catalogue id: a spacecraft that skims a moon needs
+   * the moon to the kilometre.
+   */
+  readonly tracked?: Readonly<Record<string, SampledPath>>;
   readonly sources: readonly Source[];
 }

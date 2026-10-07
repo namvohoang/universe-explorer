@@ -1,0 +1,87 @@
+import type { PathSample } from '../data/types';
+import { SECONDS_PER_DAY } from './constants';
+import { length, subtract, type Vec3 } from './vec3';
+
+const positionOf = (sample: PathSample): Vec3 => ({ x: sample[1], y: sample[2], z: sample[3] });
+
+/**
+ * The position between two samples, in km: the cubic curve that leaves the first and reaches
+ * the second at the positions and velocities measured there (a Hermite spline).
+ */
+export function positionBetweenKm(from: PathSample, to: PathSample, jd: number): Vec3 {
+  const spanDays = to[0] - from[0];
+  if (!(spanDays > 0)) return positionOf(from);
+  const t = (jd - from[0]) / spanDays;
+  const spanSeconds = spanDays * SECONDS_PER_DAY;
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const p0 = 2 * t3 - 3 * t2 + 1;
+  const v0 = (t3 - 2 * t2 + t) * spanSeconds;
+  const p1 = -2 * t3 + 3 * t2;
+  const v1 = (t3 - t2) * spanSeconds;
+  const [, x0, y0, z0, vx0, vy0, vz0] = from;
+  const [, x1, y1, z1, vx1, vy1, vz1] = to;
+  const axis = (a: number, va: number, b: number, vb: number): number =>
+    p0 * a + v0 * va + p1 * b + v1 * vb;
+  return { x: axis(x0, vx0, x1, vx1), y: axis(y0, vy0, y1, vy1), z: axis(z0, vz0, z1, vz1) };
+}
+
+/**
+ * Where a sampled path is at a date, in km from its centre. Before the first sample it stays
+ * at the first, and after the last at the last: nothing is made up beyond what was tracked.
+ */
+export function pathPositionKm(samples: readonly PathSample[], jd: number): Vec3 {
+  const first = samples[0];
+  const last = samples[samples.length - 1];
+  if (!first || !last) throw new RangeError('A path needs at least one sample');
+  if (jd <= first[0]) return positionOf(first);
+  if (jd >= last[0]) return positionOf(last);
+  // The last sample at or before the date.
+  let low = 0;
+  let high = samples.length - 1;
+  while (high - low > 1) {
+    const middle = (low + high) >> 1;
+    if ((samples[middle]?.[0] ?? Infinity) <= jd) low = middle;
+    else high = middle;
+  }
+  const from = samples[low];
+  const to = samples[high];
+  return from && to ? positionBetweenKm(from, to, jd) : positionOf(first);
+}
+
+/** The farthest a path gets from its centre, in km. */
+export function pathReachKm(samples: readonly PathSample[]): number {
+  return Math.max(0, ...samples.map((sample) => length(positionOf(sample))));
+}
+
+/**
+ * The fewest samples that still give every sample left out to within `toleranceKm` when the
+ * curve is drawn between the ones kept. Samples are kept close together where the path bends
+ * sharply (a pass round the Moon) and far apart where it coasts.
+ */
+export function thinPath(samples: readonly PathSample[], toleranceKm: number): PathSample[] {
+  const kept: PathSample[] = [];
+  let from = 0;
+  while (from < samples.length) {
+    const start = samples[from];
+    if (!start) break;
+    kept.push(start);
+    if (from === samples.length - 1) break;
+    let to = from + 1;
+    for (let candidate = from + 2; candidate < samples.length; candidate++) {
+      const end = samples[candidate];
+      if (!end) break;
+      const fits = samples
+        .slice(from + 1, candidate)
+        .every(
+          (between) =>
+            length(subtract(positionBetweenKm(start, end, between[0]), positionOf(between))) <=
+            toleranceKm,
+        );
+      if (!fits) break;
+      to = candidate;
+    }
+    from = to;
+  }
+  return kept;
+}

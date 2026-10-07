@@ -519,6 +519,11 @@ often hold a better file of the same thing, with its surface, and are used where
       the few huge patches of a giant, stronger on a cool star than a hot one, and a little
       redder in the darker parts. Where the patches sit is made up, and the note on the card
       says the grain is a drawing. Only the giants had patches before.
+      The Sun that stands beside each star for size is now the same Sun as in the Solar System
+      view, NASA's model with its details (the owner asked: kids would ask why the Sun had two
+      colours). So the Sun is yellow-orange while every other star is the colour its
+      temperature gives it, and it can look more orange than a cooler star such as Pollux; the
+      note on the card says the Sun is NASA's drawing and the others are coloured by heat.
 - [ ] 11.7 Exploded stars with NASA 3D models (Cassiopeia A, Tycho, SN 1987A): they need the
       Deep Space view to show a ready-made model for a nebula.
 

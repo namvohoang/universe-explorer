@@ -45,6 +45,8 @@ export interface DeepContext {
   readonly pictureUrl: string | null;
   /** Where the object's own 3D model is served from, if it has one. */
   readonly modelUrl: string | null;
+  /** Where the Sun's own 3D model is served from, to draw the Sun beside another star. */
+  readonly sunModelUrl: string | null;
   /** The name to show for an object in a label. */
   readonly nameOf: (object: CelestialObject) => string;
 }
@@ -54,7 +56,7 @@ export interface DeepContext {
  * its picture can be shown.
  */
 export function createDeepModel(object: CelestialObject, context: DeepContext): DeepModel | null {
-  const { catalogue, pictureUrl, modelUrl, nameOf } = context;
+  const { catalogue, pictureUrl, modelUrl, sunModelUrl, nameOf } = context;
   const sun = catalogue.find((o) => o.id === 'sun');
   const earth = catalogue.find((o) => o.id === 'earth');
   const sunRadiusKm = sun ? bodyRadiusKm(sun) : null;
@@ -107,6 +109,7 @@ export function createDeepModel(object: CelestialObject, context: DeepContext): 
           name: nameOf(sun),
           radiusInSuns: 1,
           temperatureK: sun.effectiveTemperatureK.value,
+          modelUrl: sunModelUrl,
         });
       }
       return createStarSizes(stars);

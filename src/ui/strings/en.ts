@@ -732,7 +732,7 @@ export const en = {
   deepNoteCluster:
     'Every dot is a real star, placed where the Gaia space telescope measured it. Distances to stars are hard to measure, so the cluster looks more stretched towards us than it really is.',
   deepNoteStarSizes:
-    'The stars are the right size next to each other, and each is the colour its heat gives it. The grain on each star’s face, and the big patches on a giant, are a drawing: nobody has a clear picture of them. A blue ring marks a star too small to see here. They are lined up to compare: really they are light-years apart.',
+    'The stars are the right size next to each other. The Sun looks as it does in the Solar System view, which is NASA’s drawing. Every other star is the colour its heat gives it. The grain on each star’s face, and the big patches on a giant, are a drawing: nobody has a clear picture of them. A blue ring marks a star too small to see here. They are lined up to compare: really they are light-years apart.',
   deepNotePlanetSystem:
     'The star and the planets’ paths are the right size next to each other, and the planets go round at their real speeds. The planets are drawn {times} times too big so you can see them, and plain because nobody has seen what they look like.',
   eyebrowSpacecraft: 'Built by people · goes around {parent}',

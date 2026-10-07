@@ -1,5 +1,6 @@
 import {
   AdditiveBlending,
+  Box3,
   CanvasTexture,
   Color,
   Group,
@@ -8,10 +9,13 @@ import {
   Sprite,
   SpriteMaterial,
   SRGBColorSpace,
+  Vector3,
 } from 'three';
 import { colorFromTemperature } from '../../sim/stars';
 import { createLabel, disposeLabel } from './label';
-import { createStarSurface, type StarSurface } from './starSurface';
+import { createStarSurface } from './starSurface';
+import { loadGltf } from '../gltf';
+import { createSunGlow, createSunSurface } from '../sunSurface';
 import type { DeepModel } from './model';
 
 export interface SizedStar {
@@ -19,6 +23,11 @@ export interface SizedStar {
   /** Radius next to the Sun's. */
   readonly radiusInSuns: number;
   readonly temperatureK: number;
+  /**
+   * For the Sun: where its own 3D model is served from. It is then drawn as in the Solar System
+   * view, so that a kid meets the same Sun in both places.
+   */
+  readonly modelUrl?: string | null;
 }
 
 /** The biggest star is drawn this many scene units across its radius. */
@@ -89,7 +98,7 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
   const group = new Group();
   const glow = glowTexture();
   const ring = ringTexture();
-  const surfaces: StarSurface[] = [];
+  const surfaces: { flow(seconds: number): void }[] = [];
   const disposers: (() => void)[] = [
     () => {
       glow.dispose();
@@ -121,6 +130,47 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
     ball.position.set(x, 0, 0);
     group.add(ball);
 
+    if (star.modelUrl) {
+      // The Sun as the Solar System view shows it: NASA's model with its details drawn over.
+      const frame = new Group();
+      frame.position.copy(ball.position);
+      frame.scale.setScalar(radius);
+      group.add(frame);
+      const sunSurface = createSunSurface();
+      sunSurface.setRadius(radius);
+      frame.add(sunSurface.group);
+      surfaces.push(sunSurface);
+      const sunGlow = createSunGlow();
+      frame.add(sunGlow);
+      let gone = false;
+      loadGltf(star.modelUrl, (model) => {
+        if (gone) return;
+        const box = new Box3().setFromObject(model);
+        const size = box.getSize(new Vector3());
+        const reach = Math.max(size.x, size.y, size.z) / 2;
+        if (!(reach > 0)) return;
+        const holder = new Group();
+        holder.scale.setScalar(1 / reach);
+        model.position.sub(box.getCenter(new Vector3()));
+        holder.add(model);
+        frame.add(holder);
+        sunSurface.dress(model, frame);
+        // The plain ball has done its job of standing in.
+        ball.visible = false;
+        disposers.push(() => {
+          model.traverse((part) => {
+            if (part instanceof Mesh) (part.geometry as { dispose(): void }).dispose();
+          });
+        });
+      });
+      disposers.push(() => {
+        gone = true;
+        sunGlow.material.map?.dispose();
+        sunGlow.material.dispose();
+        sunSurface.dispose();
+      });
+    }
+
     const haloMaterial = new SpriteMaterial({
       map: glow,
       color,
@@ -131,7 +181,8 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
     const halo = new Sprite(haloMaterial);
     halo.position.copy(ball.position);
     halo.scale.setScalar((radius * 2) / EDGE);
-    group.add(halo);
+    // The Sun's model brings its own glow.
+    if (!star.modelUrl) group.add(halo);
 
     // A star too small to see at this size gets a ring round it, like the markers elsewhere.
     if (radius < SMALLEST_VISIBLE) {

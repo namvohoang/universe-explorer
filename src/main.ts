@@ -251,6 +251,10 @@ function start(): void {
     system.group.visible = object === undefined;
     if (!object) return;
     const modelFile = object.media.find((media) => media.role === 'model')?.file;
+    // The Sun stands beside another star as it looks in the Solar System view.
+    const sunModelFile = catalogue
+      .find((o) => o.kind === 'star' && o.sky === null)
+      ?.media.find((media) => media.role === 'model')?.file;
     void import('./scene/deep').then(({ createDeepModel, PLANET_ENLARGEMENT }) => {
       // The kid may have moved on while the code was on its way.
       if (deepModelFor !== object.id || deepModel) return;
@@ -259,6 +263,7 @@ function start(): void {
         catalogue,
         pictureUrl,
         modelUrl: modelFile ? mediaUrl(modelFile) : null,
+        sunModelUrl: sunModelFile ? mediaUrl(sunModelFile) : null,
         nameOf: displayName,
       });
       if (!deepModel) return;

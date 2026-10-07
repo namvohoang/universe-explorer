@@ -567,13 +567,18 @@ recorded last.
 - [x] 12.1 Story types (`src/data/types/story.ts`), the pure story clock (`src/sim/story.ts`:
       the chapter at a date, progress, a named rate per chapter) and `validate` checks (every
       chapter time sourced and in order; a staged story says so).
-- [ ] 12.2 The Watch shell: a fifth tab, loaded on demand; a story row in two groups (Sky
-      events, Space flights); a caption card; Previous and Next chapter; play and pause; a
-      scrubber with a mark per chapter; the date; the path label; the address follows the
-      story; reduced motion stops auto-play and swooping; layout test at the five sizes.
-- [ ] 12.3 The Moon's phases, and day, night and the seasons: Earth, Moon and Sun from the
-      catalogue, in a `near-earth` scale mode where Earth, the Moon and the gap between them
-      share one true factor.
+- [x] 12.2 The Watch shell: a fifth tab, loaded on demand; a row of stories (in two groups once
+      there are flights); a caption with the date; Previous and Next part; play and pause; a
+      scrubber with a notch per part; the address follows the story (`#watch/moon-phases`);
+      reduced motion waits to be played; layout test at the five screen sizes. A story is played
+      in the solar system view itself, on its own clock, with only its own bodies, paths and
+      names drawn, and the view is drawn in the room above the panel. A part can hold the camera
+      on a line between two bodies (the Moon as seen from Earth); "Look around" lets it loose
+      over the whole stage. Not done: stories do not count in the space passport.
+- [~] 12.3 The Moon's phases: done, at the app's `true` scale (Earth, the Moon and the gap
+      between them already share one factor there, so no new scale mode was needed). The four
+      instants are the US Naval Observatory's, since NASA's pages give no table of phase times;
+      a test holds the app's Moon to the named phase at each. Left: day, night and the seasons.
 - [ ] 12.4 `src/sim/shadow.ts` (the dark middle and the pale edge of a shadow) and the two
       eclipses, each on a real date from NASA's eclipse pages. First measure how far the
       catalogue's Moon is from JPL Horizons at those hours; if the shadow would miss, the Moon

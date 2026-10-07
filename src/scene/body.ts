@@ -93,8 +93,11 @@ export interface Body {
   setScale(scale: Scale): void;
   /** Fetches the body's 3D model if it has one that was put off until needed. */
   loadDetail(): void;
-  /** Fetches only the surface map: cheap enough to do for a whole family of moons at once. */
-  loadMap(): void;
+  /**
+   * Fetches only the surface map: cheap enough to do for a whole family of moons at once.
+   * `onLoaded` is told once the map is on the body, or at once if there is none to wait for.
+   */
+  loadMap(onLoaded?: () => void): void;
   /** Turns the body to where it is at this date. */
   setDate(jd: number): void;
   /**
@@ -174,17 +177,21 @@ interface Surface {
   readonly material: Material;
   /** Set when the surface is lit by the star and so can show a ring's shadow. */
   readonly lit: MeshStandardMaterial | null;
-  /** Fetches the surface map, if there is one; safe to call again. */
-  loadMap(): void;
+  /**
+   * Fetches the surface map, if there is one; safe to call again. `onLoaded` is told once the
+   * surface looks as it is going to: at once when there is no map, or it is already here.
+   */
+  loadMap(onLoaded?: () => void): void;
   dispose(): void;
 }
 
 function createSurface(object: CelestialObject): Surface {
   const nothing = (): void => undefined;
+  const noMap = (onLoaded?: () => void): void => onLoaded?.();
   // A star shines by itself; everything else is lit by it.
   if (object.kind === 'star') {
     const material = new MeshBasicMaterial({ color: UNMAPPED_STAR });
-    return { material, lit: null, loadMap: nothing, dispose: nothing };
+    return { material, lit: null, loadMap: noMap, dispose: nothing };
   }
   const material = new MeshStandardMaterial({
     color: object.kind === 'comet' ? COMET_NUCLEUS : UNMAPPED_SURFACE,
@@ -192,18 +199,26 @@ function createSurface(object: CelestialObject): Surface {
     metalness: 0,
   });
   const map = object.media.find((media) => media.role === 'surface-map');
-  if (!map) return { material, lit: material, loadMap: nothing, dispose: nothing };
+  if (!map) return { material, lit: material, loadMap: noMap, dispose: nothing };
 
   let texture: Texture | null = null;
+  let loaded = false;
+  const waiting: (() => void)[] = [];
   return {
     material,
     lit: material,
-    loadMap() {
+    loadMap(onLoaded) {
+      if (onLoaded) {
+        if (loaded) onLoaded();
+        else waiting.push(onLoaded);
+      }
       if (texture) return;
       const loading = new TextureLoader().load(mediaUrl(map.file), () => {
         material.map = loading;
         material.color.set('#ffffff');
         material.needsUpdate = true;
+        loaded = true;
+        for (const tell of waiting.splice(0)) tell();
       });
       loading.colorSpace = SRGBColorSpace;
       loading.anisotropy = ANISOTROPY;
@@ -333,8 +348,8 @@ export function createBody(
     group,
     radius: () => longest,
     loadDetail,
-    loadMap: () => {
-      surface.loadMap();
+    loadMap: (onLoaded) => {
+      surface.loadMap(onLoaded);
     },
     setScale,
     setDate(jd) {

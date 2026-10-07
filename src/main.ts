@@ -1,11 +1,18 @@
 import './ui/fonts';
 import { catalogue } from './data/catalogue';
-import { isSatellite, isShowpiece, type CelestialObject } from './data/types';
+import {
+  isSatellite,
+  isShowpiece,
+  type CelestialObject,
+  type Chapter,
+  type Story,
+} from './data/types';
 import { ZOOM_SECONDS, distanceForAspect, litSideBearing, zoomedDistance } from './scene/flight';
 import type { DeepModel, DeepModelNote } from './scene/deep';
 import { createSolarSystem } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
+import { length, subtract, type Vec3 } from './sim/vec3';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
   DEFAULT_SPEED,
@@ -35,6 +42,7 @@ import { discs, icon, type IconName } from './ui/icons';
 import { createSegmented } from './ui/segmented';
 import { createChoice, createSettings, createSwitch } from './ui/settings';
 import { createTabs } from './ui/tabs';
+import type { Watch } from './ui/watch';
 import { narrationFor } from './ui/narration';
 import { createBrowserSpeaker, speechLines } from './ui/speech';
 import { formatVisited, parseVisited } from './ui/passport';
@@ -43,6 +51,10 @@ import { LANGUAGES, LANGUAGE_KEY, language, words, type Language } from './ui/st
 
 /** Whole-view camera: looking down on the system from the prototype's angle. */
 const HOME_DIRECTION = { x: 0, y: 0.5, z: 1 };
+/** A story's whole stage is seen from well above, so the paths on it show as open loops. */
+const STAGE_DIRECTION = { x: 0, y: 1, z: 0.45 };
+/** How much wider than a story's stage its view is, leaving room for the panel under it. */
+const STAGE_FRAMING = 2.6;
 /** Camera distance that frames a sphere of radius 1 with a little room around it. */
 const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
@@ -340,7 +352,7 @@ function start(): void {
     showRow();
     stamp(focus);
     document.body.classList.toggle('deep', isDeep(focus));
-    if (!compare.isOpen()) mainTabs.show(sceneOfId(focus));
+    if (!compare.isOpen() && !watch.isOpen()) mainTabs.show(sceneOfId(focus));
     back.hidden = focus === null;
     picture.hidden = model.picture === null;
     if (model.picture) {
@@ -407,6 +419,7 @@ function start(): void {
 
   const goTo = (id: string | null, fromHistory = false, view?: FlyTo): void => {
     compare.close();
+    watch.close();
     const wasDeep = isDeep(focus);
     focus = id;
     browse = null;
@@ -420,21 +433,28 @@ function start(): void {
     showFocus();
   };
 
-  const mainTabs = createTabs<Scene | 'compare'>(
+  const mainTabs = createTabs<Scene | 'compare' | 'watch'>(
     words.sceneControl,
     [
       { value: 'solar', label: words.sceneSolar, icon: 'sun' },
       { value: 'deep', label: words.sceneDeep, icon: 'sparkle' },
       { value: 'craft', label: words.sceneCraft, icon: 'rocket' },
+      { value: 'watch', label: words.sceneWatch, icon: 'watch' },
       { value: 'compare', label: words.compare, icon: 'compare' },
     ],
     'solar',
     (tab) => {
       if (tab === 'compare') {
+        watch.close();
         compare.open();
         return;
       }
       compare.close();
+      if (tab === 'watch') {
+        watch.open(null);
+        return;
+      }
+      watch.close();
       // Coming back from Compare to the scene already on show changes nothing.
       if (tab === sceneOfId(focus)) return;
       const first = deep.find((object) => sceneOf(object) === tab);
@@ -460,6 +480,7 @@ function start(): void {
     if (!grownUps.element.hidden) grownUps.close();
     else if (settings.isOpen()) settings.close();
     else if (compare.isOpen()) compare.close();
+    else if (watch.isOpen()) watch.close();
     else card.hide();
   });
 
@@ -490,7 +511,8 @@ function start(): void {
   }).classList.add('zoom');
   // Fit shows everything again: the whole solar system, or all of the model on show.
   viewButton(words.fitView, 'fit', () => {
-    if (isDeep(focus)) frameDeep();
+    if (watch.isOpen()) watchPanel?.reframe();
+    else if (isDeep(focus)) frameDeep();
     else if (focus === null) stage.flyTo(wholeView());
     else goTo(null);
   });
@@ -585,9 +607,132 @@ function start(): void {
       comparePanel?.close();
     },
   };
+  // Watch plays a story in the solar system view, on the story's own clock, at true scale.
+  // It is built the first time it is opened; its code is not part of the first download.
+  let watchPanel: Watch | null = null;
+  let watchWanted = false;
+  let scaleBeforeWatch: ScaleMode | null = null;
+  // The story's panel covers the bottom of the screen, so the view is drawn in the room above it.
+  const roomAbovePanel = (): { top: number; bottom: number } => ({
+    top: mustFind('.top').getBoundingClientRect().bottom,
+    bottom: mustFind('#tray').getBoundingClientRect().top,
+  });
+  const liftView = (): void => {
+    if (!watchWanted) {
+      stage.setLift(0);
+      return;
+    }
+    const { top, bottom } = roomAbovePanel();
+    stage.setLift(Math.round(window.innerHeight / 2 - (top + bottom) / 2));
+  };
+  new ResizeObserver(liftView).observe(mustFind('#tray'));
+  window.addEventListener('resize', liftView);
+  /** What the story on show draws; everything else steps out of the picture. */
+  let watchActors: ReadonlySet<string> | null = null;
+  const watchAddress = (story: Story): string =>
+    `${window.location.pathname}${window.location.search}#watch/${story.id}`;
+  /** The view a chapter asks for: held on a line between two actors, or the whole stage. */
+  const watchView = (story: Story, chapter: Chapter, free: boolean): FlyTo => {
+    const from = chapter.viewFromId;
+    if (from !== undefined && !free) {
+      const seen = chapter.lookAtId;
+      const bearing = (): Vec3 => subtract(system.positionOf(from), system.positionOf(seen));
+      return {
+        target: () => system.positionOf(seen),
+        distance: system.radiusOf(seen) * BODY_VIEW_RADII,
+        direction: bearing(),
+        bearing,
+        minDistance: system.radiusOf(seen) * BODY_CLOSEST_RADII,
+        // Never further back than where the view is from.
+        maxDistance: length(bearing()),
+        idleTurn: false,
+      };
+    }
+    // The whole stage: its middle, and everything that is not the far-off star that lights it.
+    const middle = story.actorIds[0] ?? chapter.lookAtId;
+    const reach = Math.max(
+      system.radiusOf(middle),
+      ...story.actorIds
+        .filter((id) => catalogue.find((object) => object.id === id)?.kind !== 'star')
+        .map((id) => length(subtract(system.positionOf(id), system.positionOf(middle)))),
+    );
+    // The stage has to fit in the room above the panel, not in the whole height of the screen.
+    const room = roomAbovePanel();
+    const squeeze = window.innerHeight / Math.max(1, room.bottom - room.top);
+    const distance = distanceForAspect(reach * STAGE_FRAMING, stage.aspect()) * squeeze;
+    return {
+      target: () => system.positionOf(middle),
+      distance,
+      direction: STAGE_DIRECTION,
+      minDistance: system.radiusOf(middle) * BODY_CLOSEST_RADII,
+      maxDistance: distance * 4,
+      idleTurn: false,
+    };
+  };
+  const watch = {
+    isOpen: (): boolean => watchWanted,
+    open(storyId: string | null): void {
+      // A story is played among the planets, so a deep-space model steps aside first.
+      if (isDeep(focus)) goTo(null);
+      compare.close();
+      watchWanted = true;
+      document.body.classList.add('watching');
+      mainTabs.show('watch');
+      if (scaleBeforeWatch === null) {
+        scaleBeforeWatch = scale.mode;
+        setScale('true');
+      }
+      if (watchPanel) {
+        watchPanel.open(storyId);
+        liftView();
+        return;
+      }
+      void import('./ui/watch').then(({ createWatch }) => {
+        if (!watchPanel) {
+          watchPanel = createWatch({
+            reducedMotion,
+            aim(story, chapter, free) {
+              for (const id of story.actorIds) system.showDetail(id);
+              stage.flyTo(watchView(story, chapter, free));
+            },
+            onStory(story) {
+              watchActors = new Set(story.actorIds);
+              system.showOnly(watchActors);
+              // The story's first instant is drawn before the camera is aimed at it.
+              system.setDate(story.chapters[0]?.atJd.value ?? clock.jd);
+              try {
+                history.replaceState(history.state, '', watchAddress(story));
+              } catch {
+                // See record().
+              }
+            },
+          });
+          mustFind('#tray').prepend(watchPanel.element);
+        }
+        if (watchWanted) watchPanel.open(storyId);
+        liftView();
+      });
+    },
+    close(): void {
+      if (!watchWanted) return;
+      watchWanted = false;
+      watchPanel?.close();
+      liftView();
+      watchActors = null;
+      system.showOnly(null);
+      document.body.classList.remove('watching');
+      system.setDate(clock.jd);
+      // Putting the scale back also puts the address back to the place in focus.
+      setScale(scaleBeforeWatch ?? scale.mode);
+      scaleBeforeWatch = null;
+      stage.lookAt(currentView());
+      mainTabs.show(sceneOfId(focus));
+    },
+  };
   for (const control of [menuButton, scaleSection, scaleLabel]) {
     control.classList.add('solar-only');
   }
+  for (const control of [menuButton, scaleSection]) control.classList.add('not-watching');
   const grownUps = createGrownUps(catalogue, limits, () => {
     forget(VISITED);
     forget(HINT_SEEN);
@@ -695,9 +840,16 @@ function start(): void {
       label: `${words.goTo} ${displayName(object)}`,
       parentId: isSatellite(object) ? object.parentId : null,
     })),
-    goTo,
+    (id) => {
+      // In a story a name only says what a thing is; it is not a way out of the story.
+      if (!watch.isOpen()) goTo(id);
+    },
     (id, event) => {
       event.preventDefault();
+      if (watch.isOpen()) {
+        canvas.dispatchEvent(new WheelEvent('wheel', event));
+        return;
+      }
       // Zooming in while pointing at another body zooms in on that body, not on the one in view.
       if (pointedAfresh(event) && event.deltaY < 0 && id !== focus) goTo(id, false, zoomOnto(id));
       else canvas.dispatchEvent(new WheelEvent('wheel', event));
@@ -730,6 +882,8 @@ function start(): void {
   const isPlace = (id: string | null): id is string =>
     drawn.some((object) => object.id === id) || isBelt(id) || isDeep(id);
   const link = parseLink(window.location.search, window.location.hash);
+  // A link can open straight onto a story of the Watch screen: #watch/moon-phases
+  const linkedStory = /^#watch\/([a-z0-9-]+)$/.exec(window.location.hash)?.[1];
   // An id nobody knows opens the whole view.
   if (isPlace(link.place)) focus = link.place;
   const linkedScale = SCALE_MODES.find((mode) => mode === link.scale);
@@ -769,9 +923,10 @@ function start(): void {
   }
   if (new URLSearchParams(window.location.search).has('grownups')) grownUps.open();
   showFocus();
+  if (linkedStory !== undefined) watch.open(linkedStory);
 
   // On the very first visit, point at Earth and say what a tap does. Any touch or key ends it.
-  if (recall(HINT_SEEN) === null && focus === null) {
+  if (recall(HINT_SEEN) === null && focus === null && !watch.isOpen()) {
     const hint = mustFind('#first-hint');
     hint.append(icon('hand'), create('span', '', words.firstHint));
     hint.hidden = false;
@@ -792,6 +947,11 @@ function start(): void {
     stage.setFieldOfView(
       deepModel?.fieldOfViewDeg?.(stage.camera.position, FIELD_OF_VIEW_DEG) ?? FIELD_OF_VIEW_DEG,
     );
+    if (watch.isOpen() && watchPanel) {
+      // The story keeps its own date; the app's clock waits where it was.
+      system.setDate(watchPanel.tick(dt));
+      return;
+    }
     const before = clock.jd;
     clock = advanceClock(clock, dt, limits);
     system.setDate(clock.jd);
@@ -803,6 +963,17 @@ function start(): void {
     system.setViewer(stage.camera.position);
     // A body behind the one in view gets no marker: its name would sit on the wrong globe.
     if (isDeep(focus)) return;
+    if (watch.isOpen()) {
+      const actors = watchActors;
+      markers.update((id) => {
+        const point = stage.toScreen(system.positionOf(id));
+        return {
+          point: actors?.has(id) ? point : { ...point, visible: false },
+          radiusPixels: system.radiusOf(id) * point.pixelsPerUnit,
+        };
+      });
+      return;
+    }
     const body = focus !== null && !isBelt(focus) ? focus : null;
     const front = body === null ? null : stage.toScreen(system.positionOf(body));
     const frontRadius = body === null || !front ? 0 : system.radiusOf(body) * front.pixelsPerUnit;

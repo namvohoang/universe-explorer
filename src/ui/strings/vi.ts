@@ -827,6 +827,31 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   modelAltChandra:
     'Mô hình 3D của Chandra: một ống dài màu bạc với một tấm pin mặt trời ở mỗi bên.',
   sceneCraft: 'Tàu vũ trụ',
+  sceneWatch: 'Xem',
+  watchStories: 'Những điều để xem',
+  watchGroupSkyEvents: 'Chuyện trên trời',
+  watchGroupSpaceFlights: 'Chuyến bay vũ trụ',
+  watchPlay: 'Chạy',
+  watchPause: 'Tạm dừng',
+  watchAgain: 'Xem lại',
+  watchNext: 'Phần sau',
+  watchPrevious: 'Phần trước',
+  watchStep: 'Phần {n} trên {count}',
+  watchScrubber: 'Bạn đang ở đâu trong câu chuyện',
+  watchLookAround: 'Nhìn xung quanh',
+  watchStoryView: 'Về góc nhìn của câu chuyện',
+  watchClose: 'Thôi xem',
+  watchPathTracked: 'Đây là đường bay thật của con tàu.',
+  watchPathStaged: 'Giờ giấc là thật. Đường bay là hình vẽ.',
+  storyMoonPhasesTitle: 'Các pha của Mặt Trăng',
+  storyMoonPhasesNew:
+    'Đây là trăng non, nhìn từ Trái Đất. Mặt Trời chiếu sáng nửa bên kia của Mặt Trăng. Nửa quay về phía chúng ta thì tối.',
+  storyMoonPhasesFirstQuarter:
+    'Mặt Trăng đã đi được một phần tư vòng quanh Trái Đất. Giờ ta thấy một nửa phần được chiếu sáng.',
+  storyMoonPhasesFull:
+    'Trăng tròn! Mặt Trăng ở phía bên kia Trái Đất so với Mặt Trời, nên ta thấy trọn phần được chiếu sáng.',
+  storyMoonPhasesLastQuarter:
+    'Ta lại thấy một nửa, nhưng là nửa kia. Mặt Trời luôn chiếu sáng một nửa Mặt Trăng. Điều thay đổi là ta thấy được bao nhiêu của nửa ấy.',
   eyebrowSpaceship: 'Do con người chế tạo để khám phá vũ trụ',
   deepNoteCraft:
     'Đây là mô hình 3D do NASA làm, không phải ảnh chụp. Hãy xoay nó để nhìn từ mọi phía.',

@@ -91,6 +91,17 @@ export function followTarget(view: View, previousTarget: Vec3, target: Vec3): Vi
   return { camera: add(view.camera, moved), target: add(view.target, moved) };
 }
 
+/**
+ * The camera put on a bearing from its target, as far away as it already is: for a view held
+ * on a line that turns, such as the Moon seen from Earth as the Moon goes round.
+ */
+export function heldOnBearing(view: View, bearing: Vec3): View {
+  const size = length(bearing);
+  if (size === 0) return view;
+  const distance = length(subtract(view.camera, view.target));
+  return { camera: add(view.target, scale(bearing, distance / size)), target: view.target };
+}
+
 /** How far round to the side, and how far above, the camera stands when it looks at a lit body. */
 const SIDE_SHARE = 0.6;
 const UP_SHARE = 0.35;

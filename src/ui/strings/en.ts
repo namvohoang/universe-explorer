@@ -1058,6 +1058,31 @@ export const en = {
   showNamesHint: 'Labels next to each place',
   grownUpsHint: 'Privacy · sources',
   languageQuestion: 'Language',
+  sceneWatch: 'Watch',
+  watchStories: 'Things to watch',
+  watchGroupSkyEvents: 'Sky events',
+  watchGroupSpaceFlights: 'Space flights',
+  watchPlay: 'Play',
+  watchPause: 'Pause',
+  watchAgain: 'Play again',
+  watchNext: 'Next part',
+  watchPrevious: 'Part before',
+  watchStep: 'Part {n} of {count}',
+  watchScrubber: 'Where you are in the story',
+  watchLookAround: 'Look around',
+  watchStoryView: 'Back to the story view',
+  watchClose: 'Stop watching',
+  watchPathTracked: 'This is the real path the spaceship flew.',
+  watchPathStaged: 'The times are real. The path is a drawing.',
+  storyMoonPhasesTitle: 'The Moon’s phases',
+  storyMoonPhasesNew:
+    'This is a new Moon, seen from Earth. The Sun lights the far side of the Moon. The side facing us is dark.',
+  storyMoonPhasesFirstQuarter:
+    'The Moon is a quarter of the way round Earth. Now we see half of its sunny side.',
+  storyMoonPhasesFull:
+    'A full Moon! The Moon is on the other side of Earth from the Sun, so we see all of its sunny side.',
+  storyMoonPhasesLastQuarter:
+    'We see half again, but the other half. The Sun always lights half of the Moon. What changes is how much of that half we can see.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

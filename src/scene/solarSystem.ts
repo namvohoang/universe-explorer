@@ -38,6 +38,11 @@ export interface SolarSystem {
   setViewer(camera: Vec3): void;
   /** Streams the comets' gas and dust for so many real seconds. */
   flowTails(seconds: number): void;
+  /**
+   * Draws only these bodies and their paths, for a story told with a few of them; `null` draws
+   * everything again. The light of the star stays either way.
+   */
+  showOnly(ids: ReadonlySet<string> | null): void;
   /** Scene radius of a belt's outer edge under the current scale. */
   beltRadius(id: string): number;
   /** Distance from the centre to the farthest body right now. */
@@ -185,6 +190,13 @@ export function createSolarSystem(
         }
       }
       bodies.get(id)?.loadDetail();
+    },
+    showOnly(ids) {
+      const shown = (id: string): boolean => ids === null || ids.has(id);
+      for (const [id, body] of bodies) body.group.visible = shown(id);
+      for (const orbit of orbitLines) orbit.line.visible = shown(orbit.objectId);
+      for (const [id, tail] of tails) tail.group.visible = shown(id);
+      for (const belt of belts) belt.points.visible = ids === null;
     },
     radiusOf: (id) => bodyOf(id).radius(),
     glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,

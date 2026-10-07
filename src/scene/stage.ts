@@ -4,6 +4,7 @@ import type { Vec3 } from '../sim/vec3';
 import {
   ZOOM_SECONDS,
   followTarget,
+  heldOnBearing,
   startFlight,
   stepFlight,
   zoomedDistance,
@@ -43,6 +44,11 @@ export interface FlyTo {
   readonly idleTurn: boolean;
   /** How long the move takes; the usual flight time when left out. */
   readonly seconds?: number;
+  /**
+   * A bearing from the target to the camera that is asked for every frame. The camera is held
+   * on it after arriving, so it cannot be dragged round; zooming still works.
+   */
+  readonly bearing?: () => Vec3;
 }
 
 /** Where a point of the scene lands on screen. */
@@ -66,6 +72,11 @@ export interface Stage {
   setFieldOfView(degrees: number): void;
   readonly scene: Scene;
   readonly camera: PerspectiveCamera;
+  /**
+   * Draws everything this many CSS pixels higher than the middle of the screen, for when a
+   * panel covers the bottom of it. 0 puts the middle back.
+   */
+  setLift(pixels: number): void;
   /** Width over height of the view, for choosing camera distances. */
   aspect(): number;
   /** Projects a scene position onto the screen, e.g. to place a label over a body. */
@@ -123,6 +134,12 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   let lastTime: number | null = null;
   let viewWidth = 1;
   let viewHeight = 1;
+  let lift = 0;
+  /** Looks through a window slid down the picture, so what is in the middle is drawn higher up. */
+  const applyLift = (): void => {
+    if (lift === 0) camera.clearViewOffset();
+    else camera.setViewOffset(viewWidth, viewHeight, 0, lift, viewWidth, viewHeight);
+  };
   const projected = new Vector3();
 
   const currentView = (): View => ({
@@ -170,7 +187,8 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       flight = step.flight;
       if (!flight) arrive(following);
     } else if (previousTarget) {
-      applyView(followTarget(currentView(), previousTarget, target));
+      const followed = followTarget(currentView(), previousTarget, target);
+      applyView(following.bearing ? heldOnBearing(followed, following.bearing()) : followed);
     }
     previousTarget = target;
   };
@@ -212,6 +230,11 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     scene,
     camera,
     aspect: () => camera.aspect,
+    setLift(pixels) {
+      if (pixels === lift) return;
+      lift = pixels;
+      applyLift();
+    },
     setFieldOfView(degrees) {
       if (camera.fov === degrees) return;
       camera.fov = degrees;
@@ -275,6 +298,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       viewWidth = width;
       viewHeight = height;
       camera.aspect = width / height;
+      applyLift();
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
     },

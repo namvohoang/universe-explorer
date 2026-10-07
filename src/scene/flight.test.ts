@@ -5,6 +5,7 @@ import {
   distanceForAspect,
   easeInOutCubic,
   followTarget,
+  heldOnBearing,
   litSideBearing,
   zoomedDistance,
   startFlight,
@@ -107,6 +108,20 @@ describe('followTarget', () => {
     const next = followTarget(view, TARGET, { x: 11, y: 0, z: -1 });
     expectVec(next.target, { x: 11, y: 0, z: -1 });
     expectVec(next.camera, { x: 11, y: 2, z: 3 });
+  });
+});
+
+describe('heldOnBearing', () => {
+  it('puts the camera on the bearing and keeps its distance', () => {
+    const view: View = { camera: { x: 10, y: 0, z: 5 }, target: TARGET };
+    const next = heldOnBearing(view, { x: 0, y: 3, z: 0 });
+    expectVec(next.target, TARGET);
+    expectVec(next.camera, { x: 10, y: 5, z: 0 });
+  });
+
+  it('leaves the view alone when there is no bearing to hold', () => {
+    const view: View = { camera: { x: 10, y: 0, z: 5 }, target: TARGET };
+    expect(heldOnBearing(view, ORIGIN)).toBe(view);
   });
 });
 

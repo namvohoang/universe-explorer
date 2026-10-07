@@ -770,7 +770,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   deepNoteCluster:
     'Mỗi chấm là một ngôi sao thật, đặt đúng chỗ mà kính thiên văn vũ trụ Gaia đã đo. Khoảng cách tới các ngôi sao rất khó đo, nên cụm sao trông bị kéo dài về phía ta hơn so với thật.',
   deepNoteStarSizes:
-    'Các ngôi sao có kích thước đúng so với nhau, và mỗi ngôi có màu do sức nóng của nó tạo ra. Các mảng trên sao khổng lồ là hình vẽ: chưa ai có ảnh rõ về chúng. Vòng xanh lam đánh dấu một ngôi sao quá nhỏ để thấy ở đây. Chúng được xếp cạnh nhau để so sánh: thật ra chúng cách nhau nhiều năm ánh sáng.',
+    'Các ngôi sao có kích thước đúng so với nhau, và mỗi ngôi có màu do sức nóng của nó tạo ra. Các hạt lấm tấm trên mặt mỗi ngôi sao, và những mảng lớn trên sao khổng lồ, là hình vẽ: chưa ai có ảnh rõ về chúng. Vòng xanh lam đánh dấu một ngôi sao quá nhỏ để thấy ở đây. Chúng được xếp cạnh nhau để so sánh: thật ra chúng cách nhau nhiều năm ánh sáng.',
   deepNotePlanetSystem:
     'Ngôi sao và đường đi của các hành tinh có kích thước đúng so với nhau, và các hành tinh quay với tốc độ thật. Các hành tinh được vẽ to gấp {times} lần để bạn nhìn thấy, và để trơn vì chưa ai thấy chúng trông ra sao.',
   eyebrowSpacecraft: 'Do con người chế tạo · quay quanh {parent}',

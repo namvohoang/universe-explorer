@@ -11,7 +11,7 @@ import {
 } from 'three';
 import { colorFromTemperature } from '../../sim/stars';
 import { createLabel, disposeLabel } from './label';
-import { createStarSurface } from './starSurface';
+import { createStarSurface, type StarSurface } from './starSurface';
 import type { DeepModel } from './model';
 
 export interface SizedStar {
@@ -27,11 +27,16 @@ const GAP = 1.2;
 const FRAMING = 1.7;
 /** How far out from the middle of the glow picture the star's own edge sits. */
 const EDGE = 0.36;
-/** From this many Suns wide, a star is drawn with the huge patches giants are thought to have. */
-const GIANT_IN_SUNS = 100;
 /** Below this drawn radius a star is only a speck, so a ring marks where it is. */
 const SMALLEST_VISIBLE = 0.08;
 const MARKER_SIZE = 0.6;
+
+/** A number from a star's name, so each star keeps its own made-up patches wherever it is shown. */
+function seedOf(name: string): number {
+  let sum = 0;
+  for (const letter of name) sum = (sum * 31 + (letter.codePointAt(0) ?? 0)) % 997;
+  return sum / 10;
+}
 
 function glowTexture(): CanvasTexture {
   const size = 128;
@@ -84,6 +89,7 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
   const group = new Group();
   const glow = glowTexture();
   const ring = ringTexture();
+  const surfaces: StarSurface[] = [];
   const disposers: (() => void)[] = [
     () => {
       glow.dispose();
@@ -103,8 +109,14 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
     x += radius;
 
     const geometry = new SphereGeometry(radius, 48, 32);
-    // A giant is drawn with patches; a star like the Sun is far too finely grained to show any.
-    const surface = createStarSurface(color, star.radiusInSuns >= GIANT_IN_SUNS, n + 1);
+    // Each star's face is grained to suit its own size and temperature.
+    const surface = createStarSurface(
+      color,
+      star.radiusInSuns,
+      star.temperatureK,
+      seedOf(star.name),
+    );
+    surfaces.push(surface);
     const ball = new Mesh(geometry, surface.material);
     ball.position.set(x, 0, 0);
     group.add(ball);
@@ -152,8 +164,9 @@ export function createStarSizes(stars: readonly SizedStar[]): DeepModel {
     radius: Math.max(width / 2, BIGGEST) * FRAMING,
     note: 'star-sizes',
     viewFrom: { x: 0, y: 0.15, z: 1 },
-    update() {
-      // The stars only stand for comparison.
+    update(dt) {
+      // The stars stand still to be compared; only the gas on their faces churns.
+      for (const surface of surfaces) surface.flow(dt);
     },
     dispose() {
       for (const dispose of disposers) dispose();

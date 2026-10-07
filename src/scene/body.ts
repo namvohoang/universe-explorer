@@ -189,6 +189,11 @@ export interface Body {
   readonly group: Group;
   /** Drawn longest radius under the current scale. */
   radius(): number;
+  /**
+   * Draws the body or leaves it out of the next picture, without taking away the light a star
+   * gives: for a look that is of one thing only.
+   */
+  setDrawn(drawn: boolean): void;
   setScale(scale: Scale): void;
   /** Fetches the body's 3D model if it has one that was put off until needed. */
   loadDetail(): void;
@@ -466,6 +471,9 @@ export function createBody(
     id: object.id,
     group,
     radius: () => longest,
+    setDrawn(drawn) {
+      tilt.visible = drawn;
+    },
     span: () => longest * Math.max(1, ringMap?.outer ?? 1),
     frame: modelFrame,
     loadDetail,

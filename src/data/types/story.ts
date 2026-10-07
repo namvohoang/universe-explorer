@@ -40,6 +40,13 @@ export interface Chapter {
    * another (the Sun wholly hidden in an eclipse) needs it.
    */
   readonly standOn?: Sourced<readonly [lonDegEast: number, latDeg: number]>;
+  /**
+   * With `standOn`: looks from the ground at this place over the same body (longitude east,
+   * latitude north, height in km), with the ground level across the screen and a wide field,
+   * as the sky is seen by somebody standing there. With `closeUp` as well, the close-up is
+   * drawn as the second picture, beside the look from the ground.
+   */
+  readonly lookUpAt?: Sourced<readonly [lonDegEast: number, latDeg: number, altitudeKm: number]>;
   /** Stands close to what is looked at, in place of showing the whole stage. */
   readonly closeUp?: boolean;
   /** With `closeUp`: stands over this pole of the body, on its night side, in place of its sunlit side. */

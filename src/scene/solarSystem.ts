@@ -116,6 +116,11 @@ export interface SolarSystem {
    * say, given in units of the body's radius (see `bodyFramePoint`).
    */
   groundPointOf(id: string, place: Vec3): Vec3;
+  /**
+   * Draws a body somewhere else than its path puts it, until the next date is set: for a
+   * drawing that is not to scale and has to put a body where it shows what is happening.
+   */
+  moveBody(id: string, position: Vec3): void;
   /** Which way a body's north pole points, as a unit vector in scene axes. */
   northOf(id: string): Vec3;
   /**
@@ -128,6 +133,11 @@ export interface SolarSystem {
    * everything again. The light of the star stays either way.
    */
   showOnly(ids: ReadonlySet<string> | null): void;
+  /**
+   * For the next picture drawn: only these bodies, and no orbit lines, or (`null`) everything
+   * the story shows. Light still falls from the star when the star itself is left out.
+   */
+  drawOnly(ids: ReadonlySet<string> | null): void;
   /** Scene radius of a belt's outer edge under the current scale. */
   beltRadius(id: string): number;
   /** Distance from the centre to the farthest body right now. */
@@ -210,12 +220,15 @@ export function createSolarSystem(
   let currentScale = scale;
   let tracks: Tracks | null = null;
   let shownIds: ReadonlySet<string> | null = null;
+  let linesDrawn = true;
   const trails = new Map<string, { readonly craft: TrackedCraft; readonly trail: Trail }>();
   const showLines = (): void => {
     for (const orbit of orbitLines) {
       const shown = shownIds === null || shownIds.has(orbit.objectId);
       orbit.line.visible =
-        shown && (tracks?.keepOrbitLines === true || !tracks?.bodies.has(orbit.objectId));
+        linesDrawn &&
+        shown &&
+        (tracks?.keepOrbitLines === true || !tracks?.bodies.has(orbit.objectId));
     }
   };
   const drawTrails = (): void => {
@@ -371,6 +384,10 @@ export function createSolarSystem(
       drawTrails();
       showLines();
     },
+    moveBody(id, position) {
+      positions.set(id, position);
+      bodyOf(id).group.position.set(position.x, position.y, position.z);
+    },
     groundPointOf(id, place) {
       const body = bodyOf(id);
       body.group.updateWorldMatrix(true, true);
@@ -501,6 +518,15 @@ export function createSolarSystem(
       const origin = positions.get(along.parentId ?? '');
       if (origin) dust.points.position.set(origin.x, origin.y, origin.z);
       group.add(dust.points);
+    },
+    drawOnly(ids) {
+      for (const [id, body] of bodies) body.setDrawn(ids === null || ids.has(id));
+      // Dust strewn along a path is part of the whole picture, not of a look from inside it.
+      if (dust) dust.points.visible = ids === null;
+      if (linesDrawn !== (ids === null)) {
+        linesDrawn = ids === null;
+        showLines();
+      }
     },
     showOnly(ids) {
       const shown = (id: string): boolean => ids === null || ids.has(id);

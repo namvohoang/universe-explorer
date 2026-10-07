@@ -37,3 +37,24 @@ export function shadowCones(lightRadius: number, casterRadius: number, apart: nu
     penumbraRadius: (along) => Math.max(0, crossing + along) * slope(widening),
   };
 }
+
+/**
+ * Where to draw something that is `real` far from the middle line of a shadow, in a drawing
+ * whose shadows are not to scale: as deep into the drawn umbra as it really is into the real
+ * one, and the same for the penumbra, and beyond that as many penumbra widths out. So it is
+ * drawn crossing each edge at the instant it really crosses it.
+ */
+export function drawnOffset(
+  real: number,
+  realUmbra: number,
+  realPenumbra: number,
+  drawnUmbra: number,
+  drawnPenumbra: number,
+): number {
+  if (!(realPenumbra > realUmbra) || !(realUmbra >= 0)) {
+    throw new RangeError('the penumbra must be wider than the umbra');
+  }
+  if (realUmbra > 0 && real <= realUmbra) return (real / realUmbra) * drawnUmbra;
+  const through = (real - realUmbra) / (realPenumbra - realUmbra);
+  return drawnUmbra + through * (drawnPenumbra - drawnUmbra);
+}

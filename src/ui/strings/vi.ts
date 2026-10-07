@@ -102,7 +102,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Chỉ chế độ tên là Thật mới giữ đúng cả kích thước lẫn khoảng cách. Hai chế độ kia kéo mọi thứ lại gần để dễ nhìn, và có ghi rõ trên màn hình.',
   grownUpsWatchTitle: 'Các câu chuyện ở màn hình Xem',
   grownUpsWatch1:
-    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện. Khi một phần có góc nhìn riêng (chẳng hạn từ Trái Đất), góc nhìn đó được đặt cạnh toàn cảnh. Với các pha của Mặt Trăng, siêu trăng, các mùa, nhật thực, nguyệt thực và vành Sao Thổ, toàn cảnh là một hình vẽ ghi “không đúng tỉ lệ”: vẫn những thiên thể ấy, đúng hướng thật, được chiếu sáng và quay như thật, nhưng vẽ đủ to và đủ gần để thấy cùng lúc, với hai vùng bóng của nhật thực, nguyệt thực vẽ phía sau thiên thể tạo ra bóng. Một chấm ghi “Bạn” và một đường thẳng cho biết góc nhìn xuất phát từ đâu. Với cực quang và mưa sao băng, góc nhìn từ Trái Đất là một bức ảnh thật của NASA, bên dưới ghi rõ ảnh chụp gì và ai chụp; sao băng trong ảnh thuộc một trận mưa khác, và chú thích nói rõ điều đó. Các ngôi sao phía sau Sao Hỏa và sao chổi là các chòm sao của ứng dụng, ở đúng vị trí thật.',
+    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện. Khi một phần có góc nhìn riêng (chẳng hạn từ Trái Đất), góc nhìn đó được đặt cạnh toàn cảnh. Với các pha của Mặt Trăng, siêu trăng, các mùa, nhật thực, nguyệt thực và vành Sao Thổ, toàn cảnh là một hình vẽ ghi “không đúng tỉ lệ”: vẫn những thiên thể ấy, đúng hướng thật, được chiếu sáng và quay như thật, nhưng vẽ đủ to và đủ gần để thấy cùng lúc, với hai vùng bóng của nhật thực, nguyệt thực vẽ phía sau thiên thể tạo ra bóng. Một chấm ghi “Bạn” và một đường thẳng cho biết góc nhìn xuất phát từ đâu. Trong hình vẽ nhật thực, nguyệt thực, Mặt Trăng còn được dời sang ngang, để nó nằm sâu trong vùng bóng được vẽ đúng như nó thật sự nằm trong vùng bóng thật. Cực quang được nhìn từ mặt đất bên dưới dải sáng, còn sao băng được nhìn từ Trái Đất: mỗi vệt hiện ở đâu là hình vẽ, nhưng điểm mà chúng tỏa ra được tính từ đường đi của Trái Đất và sao chổi. Một bức ảnh thật của NASA về mỗi hiện tượng nằm ở góc; chạm vào để phóng to, kèm chú thích ảnh chụp gì và ai chụp. Sao băng trong ảnh thuộc một trận mưa khác, và chú thích nói rõ điều đó. Trong câu chuyện Sao Hỏa, các điểm đánh số là nơi nhìn thấy Sao Hỏa lúc bắt đầu mỗi phần và lúc kết thúc. Các ngôi sao là các chòm sao của ứng dụng, ở đúng vị trí thật.',
   grownUpsWatch2:
     'Khi câu chuyện ghi “Đây là đường bay thật của con tàu”, các vị trí là ghi nhận của chính NASA/JPL về chuyến bay, lấy từ dịch vụ JPL Horizons. Với nhật thực, nguyệt thực, siêu trăng và các chuyến bay Artemis, Mặt Trăng cũng được đặt theo Horizons, và trạm vũ trụ trong câu chuyện tàu con thoi cũng vậy. Nhật thực được nhìn từ mặt đất, tại nơi phần giữa của bóng Mặt Trăng đi qua lúc nhật thực lớn nhất, với Trái Đất quay đúng như khi đó.',
   grownUpsWatch3:
@@ -925,7 +925,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storySupermoonNear:
     'Giờ nó ở gần, nên trông to hơn và sáng hơn. Người ta gọi đây là siêu trăng. Đó là một cái tên gọi vui, không phải từ các nhà khoa học dùng.',
   storyMeteorShowerTitle: 'Mưa sao băng',
-  storyMeteorShowerNote: 'Bụi ở đây là hình vẽ: bụi thật rất nhỏ.',
+  storyMeteorShowerNote: 'Bụi và sao băng ở đây là hình vẽ.',
   storyMeteorShowerDustyTrail:
     'Sao chổi Halley đã để lại bụi dọc đường đi của nó, và bụi đã tản ra thành một vệt rộng. Trái Đất đang tiến tới đó.',
   storyMeteorShowerMay:
@@ -974,7 +974,9 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPaneClose: 'Nhìn gần',
   watchPaneWhole: 'Toàn cảnh',
   watchYou: 'Bạn',
-  watchPanePhoto: 'Nhìn từ Trái Đất: ảnh thật',
+  watchPhotoBigger: 'Ảnh thật. Phóng to',
+  watchPhotoSmaller: 'Thu nhỏ ảnh lại',
+  watchPaneGround: 'Nhìn từ mặt đất trên Trái Đất',
   watchPhotoBy: 'Ảnh: {credit}',
   storyAuroraPhoto: 'Cực quang đỏ trên bầu trời Florida, Mỹ, ngày 11 tháng 11 năm 2025.',
   storyAuroraPhotoAlt:

@@ -165,7 +165,9 @@ test.describe('a story', () => {
 
   test('with something drawn in it says what is a drawing', async ({ page }) => {
     await page.goto('/#watch/meteor-shower');
-    await expect(page.locator('.watch-path')).toContainText('The dust is a drawing');
+    await expect(page.locator('.watch-path')).toContainText(
+      'The dust and the shooting stars are drawings',
+    );
     // A story that draws nothing of its own has no such line.
     await page.getByRole('button', { name: 'The seasons' }).click();
     await expect(page.locator('.watch-path')).toBeHidden();
@@ -270,34 +272,69 @@ test.describe('a story', () => {
     await expect(page.locator('.side-you')).toBeVisible();
   });
 
-  test('shows a real photo from the ground where the app cannot draw the look from Earth', async ({
+  test('looks at the sky from Earth in 3D, and keeps a real photo of it in the corner', async ({
     page,
   }) => {
-    for (const [story, credit, beside] of [
-      ['aurora', 'NASA/Ben Smegelsky', 'Close up'],
-      ['meteor-shower', 'NASA/Bill Ingalls', 'The whole picture'],
+    for (const [story, credit, labels] of [
+      ['aurora', 'NASA/Ben Smegelsky', ['Seen from the ground on Earth', 'Close up']],
+      ['meteor-shower', 'NASA/Bill Ingalls', ['Seen from: Earth', 'The whole picture']],
     ] as const) {
       await page.goto(`/#watch/${story}`);
-      await expect(page.locator('.pane-label')).toHaveText([
-        'Seen from Earth: a real photo',
-        beside,
-      ]);
-      const photo = page.locator('.pane-photo');
-      await expect(photo).toBeVisible();
+      await expect(page.locator('.pane-label')).toHaveText([...labels]);
+      const inset = page.getByRole('button', { name: 'A real photo. Make it bigger' });
+      await expect(inset).toBeVisible();
+      const photo = inset.locator('img');
       await expect(photo).toHaveAttribute('alt', /.+/);
       await expect
         .poll(() => photo.evaluate((image: HTMLImageElement) => image.naturalWidth))
         .toBeGreaterThan(0);
-      await expect(page.locator('.pane-caption')).toContainText(`Photo: ${credit}`);
-      // The 3D look stands in the other frame, clear of the photo.
-      const [first, second] = await Promise.all([
-        boxOf(page.locator('.pane').nth(0)),
-        boxOf(page.locator('.pane').nth(1)),
-      ]);
-      expect(overlap(first, second)).toBe(false);
-      const earth = await boxOf(page.locator('.marker', { hasText: 'Earth' }));
-      expect(earth.x + earth.width / 2).toBeGreaterThan(second.x);
+      // Small, it leaves most of its frame to the 3D look; tapped, it fills the frame and
+      // says what it shows and who took it.
+      const frame = await boxOf(page.locator('.pane').first());
+      const small = await boxOf(inset);
+      expect(small.width * small.height).toBeLessThan(frame.width * frame.height * 0.3);
+      expect(small.width).toBeGreaterThanOrEqual(44);
+      expect(small.height).toBeGreaterThanOrEqual(44);
+      await inset.click();
+      const big = page.getByRole('button', { name: 'Make the photo small again' });
+      await expect(big.locator('.pane-caption')).toContainText(`Photo: ${credit}`);
+      await expect.poll(async () => (await boxOf(big)).width).toBeGreaterThan(frame.width * 0.9);
+      await big.click();
+      await expect(inset).toBeVisible();
     }
+  });
+
+  test('numbers the moments of Mars’s loop in the sky and in the whole picture', async ({
+    page,
+  }) => {
+    await page.goto('/#watch/mars-backwards');
+    await expect(page.locator('.sky-mark:visible')).toHaveText(['1']);
+    await expect(page.locator('.side-mark:visible')).toHaveText(['1']);
+    await page.getByRole('slider').focus();
+    await page.keyboard.press('End');
+    await expect(page.locator('.sky-mark:visible')).toHaveText(['1', '2', '3', '4']);
+    // Mars went on, came back past where it began, and went on again.
+    const across = async (n: number): Promise<number> =>
+      (await boxOf(page.locator('.sky-mark').nth(n))).x;
+    await expect
+      .poll(async () => {
+        const [one, two, three, four] = await Promise.all([0, 1, 2, 3].map(across));
+        if (one === undefined || two === undefined || three === undefined || four === undefined) {
+          return false;
+        }
+        return (
+          Math.sign(two - one) === -Math.sign(three - two) &&
+          Math.sign(four - three) === Math.sign(two - one)
+        );
+      })
+      .toBe(true);
+  });
+
+  test('shows only what is looked at in a look from a world', async ({ page }) => {
+    await page.goto('/#watch/moon-phases');
+    // The Sun stands behind the new Moon, but the look from Earth names the Moon alone.
+    await expect(page.locator('.marker:visible')).toHaveText(['The Moon']);
+    await expect(page.locator('.side-tag', { hasText: 'The Sun' })).toBeVisible();
   });
 
   test('names the season in each half of Earth, and the comet is watched from Earth', async ({

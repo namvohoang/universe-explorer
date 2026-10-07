@@ -60,6 +60,11 @@ export interface FlyTo {
    * after arriving and only turns to follow the target, like a telescope on a stand.
    */
   readonly standAt?: () => Vec3;
+  /**
+   * Which way is up on screen, asked every frame: for a camera that stands on the ground of a
+   * world, where up is away from that world's middle. Left out, up is north of the planets' paths.
+   */
+  readonly up?: () => Vec3;
 }
 
 /** A part of the screen, in CSS pixels from its top-left. */
@@ -280,6 +285,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   };
 
   const moveCamera = (dt: number): void => {
+    const up = following?.up?.();
+    if (up) camera.up.set(up.x, up.y, up.z).normalize();
+    else camera.up.set(0, 1, 0);
     if (!following) return;
     const target = following.target();
     if (flight) {

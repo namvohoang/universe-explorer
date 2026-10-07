@@ -19,13 +19,16 @@ export interface SideTags {
       | readonly {
           box: PaneBox;
           label: string;
-          /** A real picture that fills the frame in place of a 3D look, with what it shows. */
-          picture?: { src: string; alt: string; caption: string };
+          /**
+           * A real picture kept small in a corner of the frame, with what it shows; a tap
+           * makes it fill the frame, and another puts it back.
+           */
+          picture?: { src: string; alt: string; caption: string; bigger: string; smaller: string };
         }[]
       | null,
   ): void;
   /** The things to name in the second look. */
-  name(things: readonly { id: string; name: string; above?: boolean }[]): void;
+  name(things: readonly { id: string; name: string; above?: boolean; numbered?: boolean }[]): void;
   /** Call every frame with where each thing is in the second look and how big it is drawn. */
   update(place: (id: string) => MarkerPlace): void;
 }
@@ -37,6 +40,7 @@ export interface SideTags {
  */
 export function createSideTags(layer: HTMLElement): SideTags {
   const frames: HTMLElement[] = [];
+  let bigPictures = false;
   let tags: { id: string; name: string; above: boolean; tag: HTMLElement; pill: HTMLElement }[] =
     [];
   return {
@@ -49,13 +53,27 @@ export function createSideTags(layer: HTMLElement): SideTags {
         frame.style.top = `${String(box.y)}px`;
         frame.style.width = `${String(box.width)}px`;
         frame.style.height = `${String(box.height)}px`;
+        frame.append(create('span', 'pane-label', label));
         if (picture) {
+          const inset = create('button', 'pane-inset');
+          inset.type = 'button';
           const image = create('img', 'pane-photo');
           image.src = picture.src;
           image.alt = picture.alt;
-          frame.append(image, create('p', 'pane-caption', picture.caption));
+          inset.append(image, create('span', 'pane-caption', picture.caption));
+          const show = (big: boolean): void => {
+            inset.classList.toggle('big', big);
+            inset.setAttribute('aria-label', big ? picture.smaller : picture.bigger);
+            inset.setAttribute('aria-pressed', String(big));
+            bigPictures = big;
+          };
+          // A picture made big stays big when the frames are laid out again.
+          show(bigPictures);
+          inset.addEventListener('click', () => {
+            show(!inset.classList.contains('big'));
+          });
+          frame.append(inset);
         }
-        frame.append(create('span', 'pane-label', label));
         frames.push(frame);
       }
       // Under the names, in the order the looks are told in.
@@ -63,14 +81,18 @@ export function createSideTags(layer: HTMLElement): SideTags {
     },
     name(things) {
       for (const { tag } of tags) tag.remove();
-      tags = things.map(({ id, name, above = false }) => {
-        // A name above its spot is the viewer's: it is told apart from the bodies' names.
-        const tag = create('div', above ? 'side-tag side-you' : 'side-tag');
+      tags = things.map(({ id, name, above = false, numbered = false }) => {
+        // A name above its spot is the viewer's: it is told apart from the bodies' names. A
+        // numbered moment is a small disc with its number.
+        const tag = create(
+          'div',
+          numbered ? 'side-tag side-mark' : above ? 'side-tag side-you' : 'side-tag',
+        );
         const pill = create('span', 'marker-name', name);
         tag.hidden = true;
         tag.append(pill);
         layer.append(tag);
-        return { id, name, above, tag, pill };
+        return { id, name, above: above || numbered, tag, pill };
       });
     },
     update(place) {

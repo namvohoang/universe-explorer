@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { shadowCones } from './shadowCone';
+import { drawnOffset, shadowCones } from './shadowCone';
 
 describe('shadowCones', () => {
   const cones = shadowCones(5, 1, 20);
@@ -32,5 +32,23 @@ describe('shadowCones', () => {
   it('refuses a light no bigger than the ball, or balls that touch', () => {
     expect(() => shadowCones(1, 1, 20)).toThrow(RangeError);
     expect(() => shadowCones(5, 1, 6)).toThrow(RangeError);
+  });
+});
+
+describe('drawnOffset', () => {
+  it('crosses each drawn edge where the real edge is crossed', () => {
+    expect(drawnOffset(0, 4, 8, 1, 3)).toBe(0);
+    expect(drawnOffset(4, 4, 8, 1, 3)).toBeCloseTo(1, 12);
+    expect(drawnOffset(8, 4, 8, 1, 3)).toBeCloseTo(3, 12);
+  });
+
+  it('is as deep into each shadow as the real thing is, and carries on beyond', () => {
+    expect(drawnOffset(2, 4, 8, 1, 3)).toBeCloseTo(0.5, 12);
+    expect(drawnOffset(6, 4, 8, 1, 3)).toBeCloseTo(2, 12);
+    expect(drawnOffset(12, 4, 8, 1, 3)).toBeCloseTo(5, 12);
+  });
+
+  it('works where the umbra has come to a point', () => {
+    expect(drawnOffset(4, 0, 8, 0, 3)).toBeCloseTo(1.5, 12);
   });
 });

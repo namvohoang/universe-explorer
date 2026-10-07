@@ -12,7 +12,14 @@ import { TAIL_STARTS_AU, tailStrength } from '../src/sim/comet';
 import { KM_PER_AU } from '../src/sim/constants';
 import { DUST_TRAIL_RADIUS_KM, DUST_TRAIL_WITHIN_AU, nearestOnPath } from '../src/sim/dust';
 import { lightTravelSeconds } from '../src/sim/elements';
-import { northPoleEcliptic, poleOf } from '../src/sim/frames';
+import {
+  directionFromRaDec,
+  eclipticToEquatorial,
+  equatorialToEcliptic,
+  northPoleEcliptic,
+  poleOf,
+} from '../src/sim/frames';
+import { showerAt } from '../src/sim/radiant';
 import { shadowAt, shadowCentreOn, sunCover } from '../src/sim/shadow';
 import { groundDirection, groundUnder } from '../src/sim/turn';
 import { add, dot, normalize, scale, subtract } from '../src/sim/vec3';
@@ -250,6 +257,76 @@ describe('the landing of Apollo 11', () => {
     expect(turnsApart).toBeCloseTo(Math.round(turnsApart), 9);
     expect(one.latDeg).toBeCloseTo(other.latDeg, 9);
     expect(one.altitudeKm).toBeCloseTo(other.altitudeKm, 9);
+  });
+});
+
+describe('the shooting stars of the meteor shower', () => {
+  const halley = catalogue.find((object) => object.id === 'halley') ?? fail();
+  const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+  const orion = catalogue.find((object) => object.id === 'orion') ?? fail();
+  const showerOf = (chapterId: string) =>
+    showerAt(
+      (jd) => eclipticOffsetKm(halley, catalogue, jd),
+      (jd) => eclipticOffsetKm(earth, catalogue, jd),
+      meteorShower.chapters.find((chapter) => chapter.id === chapterId)?.atJd.value ?? fail(),
+      14_000,
+    );
+  /** Right ascension and declination of a direction in the ecliptic frame, in degrees. */
+  const skyPlace = (towards: { x: number; y: number; z: number }) => {
+    const equatorial = eclipticToEquatorial(towards);
+    return {
+      raDeg: ((Math.atan2(equatorial.y, equatorial.x) * 180) / Math.PI + 360) % 360,
+      decDeg: (Math.asin(equatorial.z) * 180) / Math.PI,
+    };
+  };
+
+  it('are watched from Earth in every part', () => {
+    for (const chapter of meteorShower.chapters) expect(chapter.standAtId).toBe('earth');
+  });
+
+  it('in October fly out from just north of Betelgeuse, as NASA says the Orionids do', () => {
+    // NASA, Orionids (read 2026-10-07): the radiant is "Just to the north of constellation
+    // Orion's bright star Betelgeuse". The comet's path today is taken for the dust's, which
+    // was shed over many trips round the Sun, so the spot is near NASA's, not on it.
+    if (orion.kind !== 'constellation') throw new Error('Orion is a constellation');
+    const star = orion.stars.value.find(([name]) => name === 'Betelgeuse') ?? fail();
+    const from = skyPlace(showerOf('october-shower').towards);
+    expect(from.decDeg).toBeGreaterThan(star[2]);
+    const apart =
+      Math.acos(
+        dot(
+          equatorialToEcliptic(directionFromRaDec(from.raDeg, from.decDeg)),
+          equatorialToEcliptic(directionFromRaDec(star[1], star[2])),
+        ),
+      ) *
+      (180 / Math.PI);
+    expect(apart).toBeLessThan(15);
+  });
+
+  it('hit the air about as fast as NASA says', () => {
+    // NASA, Orionids (read 2026-10-07): 66 km per second. Earth's pull, left out here,
+    // adds about one more.
+    expect(Math.abs(showerOf('october-shower').speedKmS - 66)).toBeLessThan(3);
+  });
+
+  it('fall only while Earth is inside the trail the story draws', () => {
+    const inside = (chapterId: string, daysOn: number): boolean => {
+      const at =
+        (meteorShower.chapters.find((chapter) => chapter.id === chapterId)?.atJd.value ?? fail()) +
+        daysOn;
+      return (
+        showerOf(chapterId).missFrom(eclipticOffsetKm(earth, catalogue, at)) < DUST_TRAIL_RADIUS_KM
+      );
+    };
+    // Coming up to the trail, 40 days before the nearest: none yet.
+    expect(inside('dusty-trail', 0)).toBe(false);
+    // Six days before the nearest, and at the nearest: falling.
+    expect(inside('may-shower', 0)).toBe(true);
+    expect(inside('may-shower', 6)).toBe(true);
+    // Earth moves on: still in the wide trail six days after, out of it a month after.
+    expect(inside('moving-on', 0)).toBe(true);
+    expect(inside('moving-on', 30)).toBe(false);
+    expect(inside('october-shower', 0)).toBe(true);
   });
 });
 

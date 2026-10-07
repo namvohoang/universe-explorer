@@ -90,7 +90,7 @@ export const en = {
     'Only the view called Real keeps both sizes and distances true. The other two bring things closer so they can be seen, and say so on screen.',
   grownUpsWatchTitle: 'The stories on the Watch screen',
   grownUpsWatch1:
-    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells. Where a part has a look of its own (from Earth, say), that look is shown beside the whole picture. For the Moon’s phases, the supermoon, the seasons, the eclipses and Saturn’s rings the whole picture is a diagram marked “not to scale”: the same bodies in their true directions, lit and turned as they really are, but drawn big and close enough to see together, with an eclipse’s two shadows drawn behind the body that casts them. A dot named “You” and a line show where the look is from. For the aurora and the meteor shower the look from Earth is a real NASA photo, with what it shows and who took it written under it; the meteor in it is from another shower, and the caption says so. The stars behind Mars and the comet are the app’s star patterns, in their real places.',
+    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells. Where a part has a look of its own (from Earth, say), that look is shown beside the whole picture. For the Moon’s phases, the supermoon, the seasons, the eclipses and Saturn’s rings the whole picture is a diagram marked “not to scale”: the same bodies in their true directions, lit and turned as they really are, but drawn big and close enough to see together, with an eclipse’s two shadows drawn behind the body that casts them. A dot named “You” and a line show where the look is from. In an eclipse’s diagram the Moon is also moved sideways, so that it is drawn as deep in the drawn shadow as it really is in the real one. The aurora is seen from the ground under its band, and the shooting stars from Earth: where each streak appears is a drawing, but the spot they fly out of is worked out from the paths of Earth and the comet. A real NASA photo of each is kept in the corner; a tap makes it big, with what it shows and who took it. The meteor in the photo is from another shower, and its caption says so. In the story of Mars the numbered spots are where Mars was seen at the start of each part and at the end. The stars are the app’s star patterns, in their real places.',
   grownUpsWatch2:
     'Where a story says “This is the real path the spaceship flew”, the positions are NASA/JPL’s own record of the flight, from the JPL Horizons service. For the eclipses, the supermoon and the Artemis flights the Moon, too, is put where Horizons has it, and the space station is in the shuttle story. The solar eclipse is watched from the ground at the place the middle of the Moon’s shadow crosses when the eclipse is greatest, with Earth turned as it will be.',
   grownUpsWatch3:
@@ -1081,7 +1081,9 @@ export const en = {
   watchPaneClose: 'Close up',
   watchPaneWhole: 'The whole picture',
   watchYou: 'You',
-  watchPanePhoto: 'Seen from Earth: a real photo',
+  watchPhotoBigger: 'A real photo. Make it bigger',
+  watchPhotoSmaller: 'Make the photo small again',
+  watchPaneGround: 'Seen from the ground on Earth',
   watchPhotoBy: 'Photo: {credit}',
   storyAuroraPhoto: 'A red aurora over Florida, USA, on 11 November 2025.',
   storyAuroraPhotoAlt:
@@ -1201,7 +1203,7 @@ export const en = {
   storySupermoonNear:
     'Now it is close, so it looks bigger and brighter. People call this a supermoon. That is a nickname, not a word scientists use.',
   storyMeteorShowerTitle: 'A meteor shower',
-  storyMeteorShowerNote: 'The dust is a drawing: real dust is tiny.',
+  storyMeteorShowerNote: 'The dust and the shooting stars are drawings.',
   storyMeteorShowerDustyTrail:
     'Halley’s Comet has left dust all along its path, and the dust has spread out into a wide trail. Earth is coming up to it.',
   storyMeteorShowerMay:

@@ -41,6 +41,7 @@ export const meteorShower: Story = {
           'When comets come around the sun, the dust they emit gradually spreads into a dusty trail around their orbits.',
       },
       lookAtId: 'earth',
+      standAtId: 'earth',
     },
     {
       id: 'may-shower',
@@ -52,6 +53,7 @@ export const meteorShower: Story = {
           'Every year Earth passes through these debris trails, which allows the bits to collide with our atmosphere where they disintegrate to create fiery and colorful streaks in the sky.',
       },
       lookAtId: 'earth',
+      standAtId: 'earth',
     },
     {
       id: 'moving-on',
@@ -63,6 +65,7 @@ export const meteorShower: Story = {
           "The dust grains eventually become the Orionids in October and the Eta Aquarids in May if they collide with Earth's atmosphere.",
       },
       lookAtId: 'earth',
+      standAtId: 'earth',
     },
     {
       id: 'october-shower',
@@ -74,6 +77,7 @@ export const meteorShower: Story = {
           'Orionid meteors appear every year when Earth travels through an area of space littered with debris from Halley’s Comet.',
       },
       lookAtId: 'earth',
+      standAtId: 'earth',
     },
   ],
   endJd: s(2461710.625, ORBIT, '6 days after Earth is nearest the comet’s path in October.'),

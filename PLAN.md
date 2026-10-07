@@ -720,6 +720,18 @@ recorded last.
       and its caption says so, since NASA's library has no ground photo of Halley's showers).
       Saturn's rings play slower: 32 seconds a part in place of 14, since each part covers
       years (`chapterSeconds` on a story).
+- [x] 12.19 The owner's second round of notes (2026-10-07). A look from a world draws only
+      what is looked at: no paths, no other worlds (the Sun still lights it). Spring and
+      autumn have their own moving labels. In an eclipse's diagram the Moon is moved sideways
+      so it is as deep in the drawn shadow as it really is in the real one, and is seen to
+      cross it. The comet's look closes in on its glow and tails. The aurora is seen in 3D
+      from the ground under each band (`lookUpAt`), level with the horizon, with the polar
+      close-up beside it. The meteor shower is seen in 3D from Earth: streaks fly out of the
+      spot worked out from Earth's and the comet's velocities (tested against NASA: just
+      north of Betelgeuse, 66 km/s), and only while Earth is inside the trail. Both keep
+      their real photo as a corner inset that a tap makes big. Mars: the start of each part
+      and the end are numbered spots in the sky, and numbered lines of sight that stay in
+      the whole picture.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

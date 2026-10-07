@@ -1261,27 +1261,55 @@ body.watching .view-controls .turn {
   white-space: nowrap;
 }
 
-/* A real photo in a frame, in place of a 3D look: it fills the frame, with what it shows below. */
+/* A real photo kept small in a corner of a frame; a tap makes it fill the frame. */
+.pane-inset {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  width: min(44%, 190px);
+  aspect-ratio: 4 / 3;
+  min-height: 0;
+  padding: 0;
+  border: 2px solid var(--sun);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  pointer-events: auto;
+  cursor: zoom-in;
+}
+
+.pane-inset.big {
+  inset: 0;
+  width: auto;
+  aspect-ratio: auto;
+  border-radius: 13px;
+  cursor: zoom-out;
+}
+
 .pane-photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 13px;
 }
 
+/* What the photo shows and who took it: read once it is big. */
 .pane-caption {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  margin: 0;
+  display: none;
   padding: 8px 10px;
   font: 600 12px/1.35 var(--body);
+  text-align: left;
   color: var(--ink);
   background: rgba(6, 9, 20, 0.78);
-  border-radius: 0 0 13px 13px;
+}
+
+.pane-inset.big .pane-caption {
+  display: block;
 }
 
 /* A name in the second look: placed like a marker, but it is not a button. */
@@ -1342,6 +1370,61 @@ body.watching .view-controls .turn {
   animation: season-turn 9s linear infinite;
 }
 
+.season-tag.spring {
+  color: #9be89b;
+  border-color: #9be89b;
+  animation: season-fresh 2.8s ease-in-out infinite;
+}
+
+/* A shoot coming up. */
+.season-tag.spring .icon {
+  transform-origin: 50% 100%;
+  animation: season-grow 2.8s ease-in-out infinite;
+}
+
+.season-tag.autumn {
+  color: #ffa25e;
+  border-color: #ffa25e;
+  animation: season-mellow 3s ease-in-out infinite;
+}
+
+/* A leaf swinging on its way down. */
+.season-tag.autumn .icon {
+  animation: season-sway 3s ease-in-out infinite;
+}
+
+@keyframes season-fresh {
+  50% {
+    box-shadow: 0 0 14px 2px rgba(130, 230, 130, 0.45);
+  }
+}
+
+@keyframes season-grow {
+  0%,
+  100% {
+    transform: scale(0.7);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes season-mellow {
+  50% {
+    box-shadow: 0 0 14px 2px rgba(255, 150, 70, 0.45);
+  }
+}
+
+@keyframes season-sway {
+  0%,
+  100% {
+    transform: translateY(-2px) rotate(-18deg);
+  }
+  50% {
+    transform: translateY(2px) rotate(18deg);
+  }
+}
+
 @keyframes season-warm {
   50% {
     box-shadow: 0 0 16px 3px rgba(255, 150, 40, 0.55);
@@ -1365,6 +1448,42 @@ body.watching .view-controls .turn {
   .season-tag .icon {
     animation: none !important;
   }
+}
+
+/* A numbered moment of a story, marked in the sky and on the line of sight it was seen along. */
+.sky-mark {
+  position: absolute;
+  left: -11px;
+  top: -11px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  font: 800 12px/1 var(--body);
+  color: #1a1206;
+  background: var(--sun);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(6, 9, 20, 0.8);
+  will-change: transform;
+}
+
+.side-tag.side-mark::after {
+  display: none;
+}
+
+.side-tag.side-mark .marker-name {
+  top: 11px;
+  bottom: auto;
+  padding: 0;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  font: 800 12px/1 var(--body);
+  color: #1a1206;
+  background: var(--sun);
+  border: 0;
+  box-shadow: 0 0 0 2px rgba(6, 9, 20, 0.8);
 }
 
 /* Where the viewer stands in the whole picture: a bright dot with "You" above it. */

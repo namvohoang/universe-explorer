@@ -22,6 +22,33 @@ const DAY = 'jpl-horizons-turn-aurora2027earthturn';
 const NOAA = 'noaa-geomagnetic-poles';
 const NASA = 'nasa-auroras';
 
+// Where the aurora is watched from the ground, and where in it the look is turned: both on the
+// meridian of the geomagnetic north pole (72.76°W, 80.79°N), on the side away from the
+// geographic pole. The band is 15° to 25° from that pole; its middle, 20° away, is looked at
+// from 27° away, a little outside the band, so that it stands up from the northern horizon.
+const UNDER_THE_BAND = s(
+  [-72.76, 53.79] as const,
+  NOAA,
+  '27° from the geomagnetic north pole along its own meridian: 2° outside the band of greatest activity.',
+);
+// The same on the far side of the world, for the ring round the far south: the geomagnetic
+// south pole is the point opposite the north one (107.24°E, 80.79°S).
+const UNDER_THE_SOUTHERN_BAND = s(
+  [107.24, -53.79] as const,
+  NOAA,
+  '27° from the geomagnetic south pole along its own meridian: 2° outside the band of greatest activity.',
+);
+const IN_THE_SOUTHERN_BAND = s(
+  [107.24, -60.79, 150] as const,
+  NOAA,
+  'The middle of the southern band, 20° from the geomagnetic south pole, at 150 km.',
+);
+const IN_THE_BAND = s(
+  [-72.76, 60.79, 150] as const,
+  NOAA,
+  'The middle of the band, 20° from the geomagnetic north pole, at 150 km, the middle of the heights NASA gives for the green glow.',
+);
+
 export const aurora: Story = {
   id: 'aurora',
   group: 'sky-events',
@@ -61,6 +88,9 @@ export const aurora: Story = {
           'The Sun continuously produces an outflow of charged particles into the solar system known as the solar wind.',
       },
       lookAtId: 'earth',
+      standAtId: 'earth',
+      standOn: UNDER_THE_BAND,
+      lookUpAt: IN_THE_BAND,
       closeUp: true,
       over: 'north',
     },
@@ -74,6 +104,9 @@ export const aurora: Story = {
           'When energetic particles from space collide with atoms and molecules in the atmosphere, they can cause the colorful glow that we call auroras.',
       },
       lookAtId: 'earth',
+      standAtId: 'earth',
+      standOn: UNDER_THE_BAND,
+      lookUpAt: IN_THE_BAND,
       closeUp: true,
       over: 'north',
     },
@@ -87,6 +120,9 @@ export const aurora: Story = {
           "The most common color is green, which is produced when oxygen is excited by electrons around 60 mi (100 km) above Earth's surface.",
       },
       lookAtId: 'earth',
+      standAtId: 'earth',
+      standOn: UNDER_THE_SOUTHERN_BAND,
+      lookUpAt: IN_THE_SOUTHERN_BAND,
       closeUp: true,
       over: 'south',
     },

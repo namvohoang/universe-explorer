@@ -522,6 +522,25 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   conceptUniverseTitle: 'Vũ trụ là gì?',
   conceptUniverseText:
     'Vũ trụ là tất cả: toàn bộ không gian, cùng mọi ngôi sao, hành tinh và thiên hà ở trong đó.',
+  cardBennuHello:
+    'Bennu là một tiểu hành tinh nhỏ, cứ khoảng sáu năm lại đi ngang gần Trái Đất một lần.',
+  cardBennuFact1: 'Nó rộng khoảng một phần ba dặm, tức là khoảng nửa ki-lô-mét.',
+  cardBennuFact2:
+    'Đá của nó đã gần 4,6 tỉ năm tuổi. Chúng đến từ một thế giới cổ hơn đã bị đập vỡ.',
+  cardBennuFact3:
+    'Tàu vũ trụ OSIRIS-REx của NASA đã nhặt các mẩu của Bennu và mang về Trái Đất năm 2023.',
+  modelAltBennu:
+    'Mô hình 3D của Bennu: một tảng đá xám sẫm có hình hơi giống con quay, phủ đầy đá tảng.',
+  nameOsirisRex: 'OSIRIS-REx',
+  cardOsirisRexHello:
+    'OSIRIS-REx là một tàu vũ trụ của NASA đã bay tới một tiểu hành tinh tên là Bennu.',
+  cardOsirisRexFact1: 'Nó đã nhặt đá và bụi từ Bennu vào năm 2020.',
+  cardOsirisRexFact2:
+    'Năm 2023 nó thả một khoang chứa các mẩu của Bennu. Khoang đó đã hạ cánh xuống Trái Đất.',
+  cardOsirisRexFact3:
+    'Các nhà khoa học hy vọng các mẩu này sẽ cho biết liệu tiểu hành tinh có mang nước đến Trái Đất từ xa xưa hay không.',
+  modelAltOsirisRex:
+    'Mô hình 3D của OSIRIS-REx: một chiếc hộp có hai tấm pin mặt trời vuông và một cánh tay dài để chạm vào tiểu hành tinh.',
   cardNgc5264Hello:
     'NGC 5264 là một thiên hà nhỏ không có hình dạng gọn gàng. Người ta gọi đó là thiên hà vô định hình.',
   cardNgc5264Fact1: 'Nó ở cách ta hơn 15 triệu năm ánh sáng một chút.',

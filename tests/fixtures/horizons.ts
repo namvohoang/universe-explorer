@@ -3,6 +3,7 @@
  * its API: geometric position vectors in km, in the ecliptic of J2000, at Julian dates (TDB),
  * measured from the Sun for planets and from the planet for moons and spacecraft. A spacecraft's
  * rows span only a few hours round the instant its orbit was taken: its path is not predictable.
+ * Bennu's rows were fetched on 2026-10-07 and start in 2005: see the note in the test.
  * Generated from the API replies; do not edit by hand. `url` reproduces each query.
  */
 export interface HorizonsSeries {
@@ -755,6 +756,22 @@ export const HORIZONS: readonly HorizonsSeries[] = [
       [2455270.5, -18857188.3546913, 171305184.1551751, 15522678.27282695],
       [2461317.5, -6166189.435357362, -251921786.6777418, -28106981.05584449],
       [2469776.5, 152343510.1771277, -218853795.7466652, 624719.2635184824],
+    ],
+  },
+  {
+    bodyId: 'bennu',
+    target: '101955 Bennu (1999 RQ36)',
+    center: 'Sun (10)',
+    url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27101955%3B%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%4010%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&VEC_TABLE=%271%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TLIST=%272453371.5+2455270.5+2456658.5+2458849.5+2461317.5+2463232.5+2466154.5+2469776.5%27',
+    positionsKm: [
+      [2453371.5, -178184095.6975736, -19613126.75584924, -1364496.489791286],
+      [2455270.5, 22285153.74061453, -194479374.6465388, -20632314.37908],
+      [2456658.5, 144520471.7653683, -81294755.90133557, -9132377.191605695],
+      [2458849.5, 149960653.9576814, -59665948.9259135, -6858730.055196937],
+      [2461317.5, -98377560.03982829, -175831827.2781143, -18215384.55967192],
+      [2463232.5, 151764609.3919622, -10797804.15461514, -1681046.77853813],
+      [2466154.5, -33724057.57853137, -197886476.1113548, -20801259.88348147],
+      [2469776.5, 152761458.613615, -31892886.55558589, -3817468.64746598],
     ],
   },
   {

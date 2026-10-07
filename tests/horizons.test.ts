@@ -44,6 +44,9 @@ const OTHER_MOONS_DISTANCE_TOLERANCE = 0.02;
  * Phobos 5.6° and 2.6% (one fixed period does not quite fit 80 years of so fast a moon);
  * Halley's Comet 3.2° and 3.4% close to the Sun in 1986. Halley is checked from 1950 on only:
  * its database orbit is for the 1986 visit and does not fit the visits before it.
+ * Bennu is checked from 2005 on only, where the worst seen was 4.1° and 1.3%, inside the
+ * ordinary tolerances. It passes close to Earth every few years and each pass bends its path, so
+ * the one ellipse of its database orbit (for 2011) is 8° out by 2000 and far out before that.
  */
 const LOOSE_MOONS: Readonly<Record<string, { directionDeg: number; distance: number }>> = {
   mimas: { directionDeg: 75, distance: 0.06 },

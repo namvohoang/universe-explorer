@@ -493,6 +493,23 @@ export const en = {
   conceptUniverseTitle: 'What is the universe?',
   conceptUniverseText:
     'The universe is everything: all of space, and all the stars, planets and galaxies in it.',
+  cardBennuHello: 'Bennu is a small asteroid that passes close to Earth about every six years.',
+  cardBennuFact1: 'It is about a third of a mile wide. That is about half a kilometre.',
+  cardBennuFact2:
+    'Its rocks are nearly 4.6 billion years old. They come from an older world that was smashed apart.',
+  cardBennuFact3:
+    'A NASA spacecraft called OSIRIS-REx picked up bits of Bennu and brought them to Earth in 2023.',
+  modelAltBennu:
+    'A 3D model of Bennu: a dark grey rock shaped a little like a spinning top, covered in boulders.',
+  nameOsirisRex: 'OSIRIS-REx',
+  cardOsirisRexHello: 'OSIRIS-REx is a NASA spacecraft that flew to an asteroid called Bennu.',
+  cardOsirisRexFact1: 'It picked up rocks and dust from Bennu in 2020.',
+  cardOsirisRexFact2:
+    'In 2023 it dropped a capsule with the bits of Bennu inside. The capsule landed on Earth.',
+  cardOsirisRexFact3:
+    'Scientists hope the bits will show whether asteroids brought water to Earth long ago.',
+  modelAltOsirisRex:
+    'A 3D model of OSIRIS-REx: a box with two square solar panels and a long arm for touching the asteroid.',
   cardNgc5264Hello:
     'NGC 5264 is a small galaxy with no tidy shape. That is called an irregular galaxy.',
   cardNgc5264Fact1: 'It is just over 15 million light-years away.',

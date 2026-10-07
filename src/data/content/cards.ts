@@ -93,6 +93,8 @@ import {
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_GALAXIES,
+  NASA_BENNU,
+  NASA_OSIRIS_REX,
   NASA_COSMIC_HISTORY,
   NASA_DARK_ENERGY,
   NASA_DARK_MATTER,
@@ -2725,5 +2727,65 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_COSMIC_HISTORY, NASA_DARK_ENERGY, NASA_DARK_MATTER],
+  },
+  {
+    id: 'bennu',
+    hello: {
+      key: 'cardBennuHello',
+      sourceId: 'nasa-bennu',
+      quote:
+        'Bennu is a relatively small asteroid that passes close to Earth about every six years.',
+    },
+    facts: [
+      {
+        key: 'cardBennuFact1',
+        sourceId: 'nasa-bennu',
+        quote: 'Bennu is about one-third of a mile wide at its equator.',
+      },
+      {
+        key: 'cardBennuFact2',
+        sourceId: 'nasa-bennu',
+        quote:
+          'The rocks Bennu is made of formed nearly 4.6 billion years ago on a primeval world that has since been destroyed by a giant collision.',
+      },
+      {
+        key: 'cardBennuFact3',
+        sourceId: 'nasa-bennu',
+        quote:
+          "Bennu was the target of NASA's OSIRIS-REx, the first U.S. mission to collect a sample from an asteroid and deliver it to Earth on Sept. 24, 2023.",
+      },
+    ],
+    moons: null,
+    sources: [NASA_BENNU],
+  },
+  {
+    id: 'osiris-rex',
+    hello: {
+      key: 'cardOsirisRexHello',
+      sourceId: 'nasa-osiris-rex',
+      quote:
+        'Launched on Sept. 8, 2016, the Origins, Spectral Interpretation, Resource Identification, and Security-Regolith Explorer, or OSIRIS-REx, spacecraft traveled to a near-Earth asteroid named Bennu (formerly 1999 RQ36).',
+    },
+    facts: [
+      {
+        key: 'cardOsirisRexFact1',
+        sourceId: 'nasa-osiris-rex',
+        quote: "It collected a sample of rocks and dust from Bennu's surface on October 20, 2020.",
+      },
+      {
+        key: 'cardOsirisRexFact2',
+        sourceId: 'nasa-osiris-rex',
+        quote:
+          'The spacecraft delivered the sample to Earth on Sept. 24, 2023, when it released a capsule with grains of Bennu over Earth’s atmosphere.',
+      },
+      {
+        key: 'cardOsirisRexFact3',
+        sourceId: 'nasa-osiris-rex',
+        quote:
+          'Scientists hope the Bennu sample will reveal whether asteroids that collided with Earth billions of years ago thereby delivered water and other ingredients for life to our planet.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_OSIRIS_REX],
   },
 ];

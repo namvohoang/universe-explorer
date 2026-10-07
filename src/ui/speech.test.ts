@@ -25,6 +25,10 @@ describe('cleanForSpeech', () => {
     expect(cleanForSpeech('The M87 Black Hole.')).toBe('The M eighty-seven Black Hole.');
   });
 
+  it('says a hyphenated name in capitals as two plain words', () => {
+    expect(cleanForSpeech('OSIRIS-REx flew to Bennu.')).toBe('Osiris Rex flew to Bennu.');
+  });
+
   it('leaves hyphens inside words alone', () => {
     expect(cleanForSpeech('second-biggest, blue-green')).toBe('second-biggest, blue-green');
   });

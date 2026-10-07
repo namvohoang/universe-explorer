@@ -74,6 +74,11 @@ export const NARRATION: Readonly<
     starts: [0.0, 2.98, 9.85, 12.93, 17.68],
   },
   eros: { file: 'public/voice/eros.mp3', fingerprint: '6ac1c90b', starts: [0.0, 2.0] },
+  bennu: {
+    file: 'public/voice/bennu.mp3',
+    fingerprint: '5718baba',
+    starts: [0.0, 1.9, 7.67, 12.65, 20.27],
+  },
   ida: {
     file: 'public/voice/ida.mp3',
     fingerprint: '91b676da',
@@ -480,6 +485,11 @@ export const NARRATION: Readonly<
     file: 'public/voice/rosetta.mp3',
     fingerprint: '0307ca72',
     starts: [0.0, 2.02, 8.6, 14.12, 19.0],
+  },
+  'osiris-rex': {
+    file: 'public/voice/osiris-rex.mp3',
+    fingerprint: '7dca9520',
+    starts: [0.0, 2.25, 8.12, 12.4, 19.7],
   },
   webb: {
     file: 'public/voice/webb.mp3',

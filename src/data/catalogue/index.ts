@@ -54,6 +54,8 @@ import { makemake } from './makemake';
 import { eris } from './eris';
 import { asteroidBelt } from './asteroidBelt';
 import { eros } from './eros';
+import { bennu } from './bennu';
+import { osirisRex } from './osirisRex';
 import { ida } from './ida';
 import { psyche } from './psyche';
 import { kuiperBelt } from './kuiperBelt';
@@ -136,6 +138,7 @@ export const catalogue: readonly CelestialObject[] = [
   deimos,
   mro,
   eros,
+  bennu,
   ida,
   psyche,
   asteroidBelt,
@@ -237,5 +240,6 @@ export const catalogue: readonly CelestialObject[] = [
   apolloSoyuz,
   mir,
   rosetta,
+  osirisRex,
   webb,
 ];

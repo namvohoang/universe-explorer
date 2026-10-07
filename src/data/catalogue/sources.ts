@@ -1273,3 +1273,24 @@ export const NASA_WHAT_IS_THE_UNIVERSE: Source = {
   url: 'https://science.nasa.gov/exoplanets/what-is-the-universe/',
   retrieved: '2026-10-06',
 };
+
+export const JPL_SBDB_BENNU: Source = {
+  id: 'jpl-sbdb-bennu',
+  title: 'JPL Small-Body Database — 101955 Bennu (1999 RQ36) (orbit solution 118)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Bennu',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_BENNU: Source = {
+  id: 'nasa-bennu',
+  title: 'NASA Science — Bennu',
+  url: 'https://science.nasa.gov/solar-system/asteroids/101955-bennu/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_OSIRIS_REX: Source = {
+  id: 'nasa-osiris-rex',
+  title: 'NASA Science — OSIRIS-REx',
+  url: 'https://science.nasa.gov/mission/osiris-rex/',
+  retrieved: '2026-10-07',
+};

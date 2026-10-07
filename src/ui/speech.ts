@@ -10,6 +10,8 @@ export function cleanForSpeech(text: string): string {
       // Names with digits, said the way people say them.
       .replace(/TRAPPIST-1/g, 'Trappist One')
       .replace(/\bM87\b/g, 'M eighty-seven')
+      // A name written in capitals with a hyphen is said as two plain words.
+      .replace(/OSIRIS-REx/g, 'Osiris Rex')
       // A black hole's name ends in a star that is said aloud: "A star".
       .replace(/\bA\*/g, 'A star')
       .replace(/\bBH1\b/g, 'B H one')

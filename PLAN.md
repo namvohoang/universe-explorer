@@ -474,10 +474,15 @@ often hold a better file of the same thing, with its surface, and are used where
       in place of smooth three-axis balls with a map wrapped on, as Deimos already was. Each
       model is turned by whole quarter turns so its longest side and its pole lie the way the
       app draws bodies; nothing is reshaped. Their old maps are gone with their credit rows.
-- [ ] 11.2 New small worlds that have a NASA shape model: the asteroid Bennu, Saturn's spongy
-      moon Hyperion and the dwarf planet Haumea, which task 3.3 left out for want of a shape.
-- [ ] 11.3 New spacecraft that explored the solar system: the Perseverance rover and its
-      helicopter Ingenuity, and OSIRIS-REx, which brought back a piece of Bennu.
+- [x] 11.2 The asteroid Bennu, with NASA's shape model, its orbit and size from JPL's Small-Body
+      Database and a card from NASA's page, and OSIRIS-REx, the spacecraft that brought bits of
+      it to Earth, as NASA's model in Spaceships. Bennu passes close to Earth every few years
+      and each pass bends its path, so its one ellipse is right to within about 4 degrees from
+      2005 to 2049 and far out before 2000; the test against JPL Horizons starts in 2005 and
+      says why. Left out: Haumea. NASA has a 3D model of it, but neither NASA's page nor JPL's
+      database gives its three axes, so its size could only be guessed from the model.
+- [ ] 11.3 More from the list: Saturn's spongy moon Hyperion (it tumbles, which the app's three
+      ways of turning cannot show yet), the Perseverance rover and its helicopter Ingenuity.
 - [ ] 11.4 The Crab Nebula as NASA's own 3D model in place of a cloud whose depth is a guess.
 
 **Acceptance:** as for Phase 7.

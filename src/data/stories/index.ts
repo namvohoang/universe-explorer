@@ -5,11 +5,13 @@ import { artemis1 } from './artemis1';
 import { artemis2 } from './artemis2';
 import { lunarEclipse } from './lunarEclipse';
 import { moonPhases } from './moonPhases';
+import { seasons } from './seasons';
 import { solarEclipse } from './solarEclipse';
 
 /** Everything the Watch screen can play, in the order shown within each group. */
 export const stories: readonly Story[] = [
   moonPhases,
+  seasons,
   solarEclipse,
   lunarEclipse,
   apollo11Launch,

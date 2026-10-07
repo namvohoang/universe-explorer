@@ -10,12 +10,18 @@ export const CHAPTER_SECONDS = 14;
 export interface StoryTimes {
   /** When each chapter starts, earliest first. */
   readonly chapterJds: readonly number[];
+  /**
+   * Where a chapter stops short of the next one's start, the date it stops; the story then
+   * skips the time between. Left out, or `null` for a chapter, when it runs on into the next.
+   */
+  readonly chapterStopJds?: readonly (number | null)[];
   readonly endJd: number;
 }
 
 export function storyTimes(story: Story): StoryTimes {
   return {
     chapterJds: story.chapters.map((chapter) => chapter.atJd.value),
+    chapterStopJds: story.chapters.map((chapter) => chapter.untilJd?.value ?? null),
     endJd: story.endJd.value,
   };
 }
@@ -39,9 +45,9 @@ export function chapterIndexAt(times: StoryTimes, jd: number): number {
   return index;
 }
 
-/** When a chapter ends: at the start of the next one, or at the end of the story. */
+/** When a chapter ends: where it is told to stop, else at the start of the next one, or at the end of the story. */
 export function chapterEndJd(times: StoryTimes, index: number): number {
-  return times.chapterJds[index + 1] ?? times.endJd;
+  return times.chapterStopJds?.[index] ?? times.chapterJds[index + 1] ?? times.endJd;
 }
 
 /** Simulated days per real second while a chapter plays. */
@@ -61,7 +67,8 @@ export function storyProgress(times: StoryTimes, jd: number): number {
   const index = chapterIndexAt(times, at);
   const from = times.chapterJds[index] ?? at;
   const span = chapterEndJd(times, index) - from;
-  const within = span > 0 ? (at - from) / span : 0;
+  // A date in the time skipped after a chapter counts as that chapter's end.
+  const within = span > 0 ? Math.min(1, (at - from) / span) : 0;
   return (index + within) / times.chapterJds.length;
 }
 
@@ -90,8 +97,9 @@ export function advanceStory(times: StoryTimes, jd: number, realSeconds: number)
     const rate = chapterDaysPerSecond(times, index);
     const toEnd = rate > 0 ? (end - at) / rate : 0;
     if (left < toEnd) return { jd: at + left * rate, ended: false };
-    at = end;
-    left -= toEnd;
+    // On to the next chapter, skipping any time between where this one stops and that one starts.
+    at = times.chapterJds[index + 1] ?? times.endJd;
+    left -= Math.max(0, toEnd);
   }
   return { jd: at, ended: at >= times.endJd };
 }

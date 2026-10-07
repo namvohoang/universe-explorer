@@ -68,4 +68,34 @@ describe('story clock', () => {
   it('refuses a story with no chapters', () => {
     expect(() => chapterIndexAt({ chapterJds: [], endJd: 1 }, 0)).toThrow(RangeError);
   });
+
+  describe('with time skipped between chapters', () => {
+    // Two chapters of one day each, 50 days apart, then the end.
+    const SKIPPING: StoryTimes = {
+      chapterJds: [100, 150],
+      chapterStopJds: [101, null],
+      endJd: 151,
+    };
+
+    it('plays each chapter over its own day', () => {
+      expect(advanceStory(SKIPPING, 100, CHAPTER_SECONDS / 2).jd).toBeCloseTo(100.5, 9);
+      expect(chapterDaysPerSecond(SKIPPING, 0)).toBeCloseTo(1 / CHAPTER_SECONDS, 12);
+    });
+
+    it('skips from where one chapter stops to where the next starts', () => {
+      const { jd, ended } = advanceStory(SKIPPING, 100.5, CHAPTER_SECONDS);
+      expect(jd).toBeCloseTo(150.5, 9);
+      expect(ended).toBe(false);
+      expect(advanceStory(SKIPPING, 100, CHAPTER_SECONDS * 3)).toEqual({ jd: 151, ended: true });
+    });
+
+    it('lays the scrubber out over the days played, not the days skipped', () => {
+      expect(storyProgress(SKIPPING, 100.5)).toBeCloseTo(0.25, 12);
+      expect(storyProgress(SKIPPING, 150.5)).toBeCloseTo(0.75, 12);
+      expect(jdAtProgress(SKIPPING, 0.25)).toBeCloseTo(100.5, 9);
+      expect(jdAtProgress(SKIPPING, 0.75)).toBeCloseTo(150.5, 9);
+      // A date in the skipped time counts as the end of the chapter before it.
+      expect(storyProgress(SKIPPING, 120)).toBeCloseTo(0.5, 12);
+    });
+  });
 });

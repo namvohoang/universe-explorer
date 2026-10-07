@@ -887,6 +887,15 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyLunarEclipseRedMoon:
     'Cả Mặt Trăng nằm trong bóng Trái Đất, và nó ánh lên màu đỏ. Một ít ánh sáng Mặt Trời bị không khí của Trái Đất bẻ cong và tới được nó.',
   storyLunarEclipseComingOut: 'Mặt Trăng bắt đầu trượt ra khỏi bóng của Trái Đất.',
+  storySeasonsTitle: 'Các mùa',
+  storySeasonsMarch:
+    'Bạn đang nhìn Trái Đất từ Mặt Trời. Trái Đất nghiêng, nhưng hôm nay không cực nào ngả về phía Mặt Trời. Mùa xuân bắt đầu ở phương bắc.',
+  storySeasonsJune:
+    'Giờ Cực Bắc ngả về phía Mặt Trời. Phương bắc nhận nhiều nắng nhất. Ở đó là mùa hè, còn phương nam là mùa đông.',
+  storySeasonsSeptember:
+    'Trục nghiêng của Trái Đất luôn chỉ về một hướng. Hôm nay, một lần nữa, không cực nào ngả về phía Mặt Trời. Mùa thu bắt đầu ở phương bắc.',
+  storySeasonsDecember:
+    'Giờ Cực Nam ngả về phía Mặt Trời. Phương nam là mùa hè, còn phương bắc là mùa đông.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

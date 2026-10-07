@@ -575,10 +575,16 @@ recorded last.
       names drawn, and the view is drawn in the room above the panel. A part can hold the camera
       on a line between two bodies (the Moon as seen from Earth); "Look around" lets it loose
       over the whole stage. Not done: stories do not count in the space passport.
-- [~] 12.3 The Moon's phases: done, at the app's `true` scale (Earth, the Moon and the gap
-      between them already share one factor there, so no new scale mode was needed). The four
-      instants are the US Naval Observatory's, since NASA's pages give no table of phase times;
-      a test holds the app's Moon to the named phase at each. Left: day, night and the seasons.
+- [x] 12.3 The Moon's phases, at the app's `true` scale (Earth, the Moon and the gap between
+      them already share one factor there, so no new scale mode was needed). The four instants
+      are the US Naval Observatory's, since NASA's pages give no table of phase times; a test
+      holds the app's Moon to the named phase at each.
+      Day, night and the seasons: Earth seen from the Sun on the four days of 2027 when a
+      season begins (the Naval Observatory's instants), turning once each day. A part of a
+      story can now stop and skip on to the next, so the months between are not raced through.
+      A test holds the Sun over the equator at each equinox and over a tropic at each solstice.
+      Which countries face the Sun at each hour is not real: the catalogue does not know which
+      side of Earth faced where, and no turning was fetched for these four days.
 - [x] 12.4 The two eclipses: the total solar eclipse of 2 August 2027 and the total lunar
       eclipse of 31 December 2028. `src/sim/shadow.ts` works out, from the real sizes and
       places, what share of the Sun's disc one body hides from a point, and the surface shader

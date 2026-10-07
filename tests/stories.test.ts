@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../src/data/catalogue';
 import type { PathSample, Story } from '../src/data/types';
-import { bodyRadiusKm, scenePositions } from '../src/sim/layout';
+import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from '../src/sim/layout';
 import { groundPlaceAt, groundRoute } from '../src/sim/groundPath';
 import { drawnThrough, pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
@@ -12,7 +12,7 @@ import { lightTravelSeconds } from '../src/sim/elements';
 import { northPoleEcliptic, poleOf } from '../src/sim/frames';
 import { shadowAt, shadowCentreOn } from '../src/sim/shadow';
 import { groundUnder } from '../src/sim/turn';
-import { add, subtract } from '../src/sim/vec3';
+import { add, dot, normalize, scale, subtract } from '../src/sim/vec3';
 import { apollo11Landing } from '../src/data/stories/apollo11Landing';
 import { apollo11Launch } from '../src/data/stories/apollo11Launch';
 import { artemis1 } from '../src/data/stories/artemis1';
@@ -20,6 +20,7 @@ import { artemis2 } from '../src/data/stories/artemis2';
 import { lunarEclipse } from '../src/data/stories/lunarEclipse';
 import { solarEclipse } from '../src/data/stories/solarEclipse';
 import { moonPhases } from '../src/data/stories/moonPhases';
+import { seasons } from '../src/data/stories/seasons';
 
 /**
  * How far the lit share of the Moon the app draws may be from the phase the almanac names, at
@@ -404,6 +405,45 @@ describe('the eclipses', () => {
         expect(shadow.axisDistance + radiusKm('moon')).toBeLessThan(shadow.umbraRadius);
       }
     });
+  });
+});
+
+describe('the seasons', () => {
+  /**
+   * How far the latitude the Sun stands over may be from what the season's first day calls
+   * for, in degrees. The catalogue's pole for Earth is the one for 2000, which has moved 0.15
+   * degrees by 2027, and Earth's orbit here is JPL's approximate one, good to a minute of arc
+   * or so; near an equinox that latitude changes by 0.4 degrees in a day.
+   */
+  const SUN_LATITUDE_TOLERANCE_DEG = 0.25;
+
+  it('has the Sun over the equator at each equinox and over a tropic at each solstice', () => {
+    const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+    if (earth.shape?.type !== 'spheroid') throw new Error('Earth is a spheroid');
+    const { orientation } = earth.shape;
+    const pole = northPoleEcliptic(poleOf(orientation) ?? fail());
+    const tiltDeg = orientation.axialTiltDeg.value ?? fail();
+    const expected: Readonly<Record<string, number>> = {
+      'march-equinox': 0,
+      'june-solstice': tiltDeg,
+      'september-equinox': 0,
+      'december-solstice': -tiltDeg,
+    };
+    for (const chapter of seasons.chapters) {
+      const toSun = normalize(scale(eclipticOffsetKm(earth, catalogue, chapter.atJd.value), -1));
+      const sunLatitudeDeg = (Math.asin(dot(toSun, pole)) * 180) / Math.PI;
+      expect(Math.abs(sunLatitudeDeg - (expected[chapter.id] ?? NaN)), chapter.id).toBeLessThan(
+        SUN_LATITUDE_TOLERANCE_DEG,
+      );
+    }
+  });
+
+  it('shows one day at a time and skips the months between', () => {
+    for (const [index, chapter] of seasons.chapters.entries()) {
+      expect((chapter.untilJd?.value ?? NaN) - chapter.atJd.value).toBeCloseTo(1, 9);
+      const next = seasons.chapters[index + 1];
+      if (next) expect(next.atJd.value - chapter.atJd.value).toBeGreaterThan(80);
+    }
   });
 });
 

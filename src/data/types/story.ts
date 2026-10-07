@@ -19,6 +19,11 @@ export interface Chapter {
   readonly id: string;
   /** The instant the chapter starts, as a Julian date. */
   readonly atJd: Sourced<number>;
+  /**
+   * When set, the chapter stops here and the story skips on to the start of the next one: for
+   * showing a day in spring and then a day in summer without racing through the months between.
+   */
+  readonly untilJd?: Sourced<number>;
   readonly text: BackedText;
   /** One of the story's `actorIds`, or one of its craft. */
   readonly lookAtId: string;

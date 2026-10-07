@@ -177,3 +177,25 @@ export const NASA_MOON_ECLIPSES: Source = {
   url: 'https://science.nasa.gov/moon/eclipses/',
   retrieved: '2026-10-07',
 };
+
+export const USNO_SEASONS_2027: Source = {
+  id: 'usno-seasons-2027',
+  title:
+    'US Naval Observatory, Astronomical Applications — Earth’s seasons for 2027: dates and times of the equinoxes and solstices',
+  url: 'https://aa.usno.navy.mil/api/seasons?year=2027',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_SPACE_PLACE_SEASONS: Source = {
+  id: 'nasa-space-place-seasons',
+  title: 'NASA Space Place — What Causes the Seasons?',
+  url: 'https://spaceplace.nasa.gov/seasons/en/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_EARTH_FACTS: Source = {
+  id: 'nasa-earth-facts',
+  title: 'NASA Science — Earth: Facts',
+  url: 'https://science.nasa.gov/earth/facts/',
+  retrieved: '2026-10-07',
+};

@@ -21,7 +21,11 @@ function chapterErrors(story: Story): string[] {
     if (!(chapter.atJd.value > previousJd)) {
       errors.push(`${at} chapter "${chapter.id}" does not start after the one before it`);
     }
-    previousJd = chapter.atJd.value;
+    if (chapter.untilJd && !(chapter.untilJd.value > chapter.atJd.value)) {
+      errors.push(`${at} chapter "${chapter.id}" stops before it starts`);
+    }
+    // The next chapter must start no sooner than this one stops.
+    previousJd = Math.max(chapter.atJd.value, (chapter.untilJd?.value ?? -Infinity) - 1e-9);
     const craftIds = (story.craft ?? []).map((craft) => craft.id);
     if (![...story.actorIds, ...craftIds].includes(chapter.lookAtId)) {
       errors.push(
@@ -43,6 +47,10 @@ function chapterErrors(story: Story): string[] {
     }
   }
   if (!(story.endJd.value > previousJd)) errors.push(`${at} ends before its last chapter starts`);
+  const lastStop = story.chapters[story.chapters.length - 1]?.untilJd;
+  if (lastStop && Math.abs(lastStop.value - story.endJd.value) > 1e-9) {
+    errors.push(`${at} ends at another time than its last chapter stops`);
+  }
   return errors;
 }
 

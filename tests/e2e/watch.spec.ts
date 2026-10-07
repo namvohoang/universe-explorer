@@ -21,6 +21,7 @@ function overlap(a: Box, b: Box): boolean {
 /** A story with a short caption, and one with a long caption and a note about its path. */
 const STORIES = [
   ['moon-phases', 'The Moon’s phases'],
+  ['seasons', 'The seasons'],
   ['solar-eclipse', 'A solar eclipse'],
   ['lunar-eclipse', 'A lunar eclipse'],
   ['artemis-1', 'Artemis I: round the Moon'],
@@ -124,6 +125,18 @@ test.describe('a story', () => {
       'true',
     );
     await expect(page).toHaveURL(/scale=easy$/);
+  });
+
+  test('can skip the months between two days it shows', async ({ page }) => {
+    await page.goto('/#watch/seasons');
+    await expect(page.locator('.watch-date')).toContainText('20 March 2027');
+    await page.getByRole('button', { name: 'Next part' }).click();
+    await expect(page.locator('.watch-date')).toContainText('21 June 2027');
+    // The end of the first day and the start of the second sit side by side on the scrubber.
+    const scrubber = page.getByRole('slider', { name: 'Where you are in the story' });
+    await scrubber.focus();
+    await page.keyboard.press('ArrowLeft');
+    await expect(page.locator('.watch-date')).toContainText('21 March 2027');
   });
 
   test('lets the camera loose and takes it back', async ({ page }) => {

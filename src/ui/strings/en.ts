@@ -1146,6 +1146,15 @@ export const en = {
   storyLunarEclipseRedMoon:
     'The whole Moon is in Earth’s shadow, and it glows red. A little sunlight bends through Earth’s air and reaches it.',
   storyLunarEclipseComingOut: 'The Moon starts to slide out of Earth’s shadow again.',
+  storySeasonsTitle: 'The seasons',
+  storySeasonsMarch:
+    'You are looking at Earth from the Sun. Earth is tilted, but today neither pole leans towards the Sun. Spring begins in the north.',
+  storySeasonsJune:
+    'Now the North Pole leans towards the Sun. The north gets the most sunshine. It is summer there, and winter in the south.',
+  storySeasonsSeptember:
+    'Earth’s tilt always points the same way. Today, again, neither pole leans towards the Sun. Autumn begins in the north.',
+  storySeasonsDecember:
+    'Now the South Pole leans towards the Sun. It is summer in the south, and winter in the north.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

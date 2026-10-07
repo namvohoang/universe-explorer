@@ -62,6 +62,28 @@ export interface FlyTo {
   readonly standAt?: () => Vec3;
 }
 
+/** A part of the screen, in CSS pixels from its top-left. */
+export interface PaneBox {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * Two looks at the same scene drawn at once: the camera that is flown and dragged draws in
+ * `main`, and a second one, which only follows what it looks at, draws in `side`.
+ */
+export interface Panes {
+  readonly main: PaneBox;
+  readonly side: PaneBox;
+  /** Where the second camera looks, in scene units. Called every frame. */
+  readonly target: () => Vec3;
+  /** How far from it the second camera stands, and on which bearing from it. */
+  readonly distance: number;
+  readonly direction: Vec3;
+}
+
 /** Where a point of the scene lands on screen. */
 export interface ScreenPoint {
   /** CSS pixels from the top-left of the view. */
@@ -89,10 +111,17 @@ export interface Stage {
    * 0 and 0 put the middle back.
    */
   setLift(pixelsUp: number, pixelsRight?: number): void;
+  /**
+   * Draws two looks side by side, each in its own part of the screen; `null` goes back to one
+   * that fills it. With two, the lift is not used: each is drawn in the middle of its part.
+   */
+  setPanes(panes: Panes | null): void;
   /** Width over height of the view, for choosing camera distances. */
   aspect(): number;
   /** Projects a scene position onto the screen, e.g. to place a label over a body. */
   toScreen(position: Vec3): ScreenPoint;
+  /** The same through the second camera; nothing is visible while there is only one look. */
+  toSideScreen(position: Vec3): ScreenPoint;
   flyTo(request: FlyTo): void;
   /** Jumps there without a flight, e.g. for the first frame. */
   lookAt(request: FlyTo): void;
@@ -107,6 +136,11 @@ export interface Stage {
   onFrame(callback: (dt: number) => void): void;
   /** Registers work to do once the camera has moved for the frame, e.g. placing labels. */
   onCameraMoved(callback: () => void): void;
+  /**
+   * Registers work to do before the second look is drawn, with where its camera is. It runs
+   * after the first look is drawn, so it may turn things to face the second camera.
+   */
+  onSideMoved(callback: (viewer: Vec3) => void): void;
   resize(width: number, height: number): void;
   start(): void;
   dispose(): void;
@@ -126,6 +160,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
 
   const scene = new Scene();
   scene.background = new Color(BACKGROUND);
+  renderer.setClearColor(BACKGROUND);
 
   const camera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, 1e6);
   camera.position.set(0, 30, 60);
@@ -140,6 +175,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
 
   const frameCallbacks: ((dt: number) => void)[] = [];
   const cameraCallbacks: (() => void)[] = [];
+  const sideCallbacks: ((viewer: Vec3) => void)[] = [];
+  const sideCamera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, 1e6);
+  let panes: Panes | null = null;
   let following: FlyTo | null = null;
   let flight: Flight | null = null;
   let previousTarget: Vec3 | null = null;
@@ -150,10 +188,53 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   let shift = 0;
   /** Looks through a window slid down the picture, so what is in the middle is drawn higher up. */
   const applyLift = (): void => {
-    if (lift === 0 && shift === 0) camera.clearViewOffset();
+    camera.aspect = panes ? panes.main.width / panes.main.height : viewWidth / viewHeight;
+    if (panes || (lift === 0 && shift === 0)) camera.clearViewOffset();
     else camera.setViewOffset(viewWidth, viewHeight, -shift, lift, viewWidth, viewHeight);
+    camera.updateProjectionMatrix();
   };
   const projected = new Vector3();
+  const whole = (): PaneBox => ({ x: 0, y: 0, width: viewWidth, height: viewHeight });
+  const project = (position: Vec3, through: PerspectiveCamera, box: PaneBox): ScreenPoint => {
+    projected.set(position.x, position.y, position.z);
+    const distance = projected.distanceTo(through.position);
+    projected.project(through);
+    const inView =
+      projected.z > -1 &&
+      projected.z < 1 &&
+      Math.abs(projected.x) <= 1 &&
+      Math.abs(projected.y) <= 1;
+    return {
+      x: box.x + (projected.x * 0.5 + 0.5) * box.width,
+      y: box.y + (-projected.y * 0.5 + 0.5) * box.height,
+      visible: inView,
+      pixelsPerUnit: pixelsFor(1, distance, through.fov, box.height),
+      distance,
+    };
+  };
+  /** Puts the second camera where its look says, facing what it looks at. */
+  const moveSideCamera = (look: Panes): void => {
+    const target = look.target();
+    const { direction, distance } = look;
+    const far = Math.hypot(direction.x, direction.y, direction.z) || 1;
+    sideCamera.position.set(
+      target.x + (direction.x / far) * distance,
+      target.y + (direction.y / far) * distance,
+      target.z + (direction.z / far) * distance,
+    );
+    sideCamera.lookAt(target.x, target.y, target.z);
+    sideCamera.aspect = look.side.width / look.side.height;
+    sideCamera.near = nearPlaneFor(distance);
+    sideCamera.updateProjectionMatrix();
+    sideCamera.updateMatrixWorld();
+  };
+  /** Draws through one camera into one part of the screen; the renderer counts up from the bottom. */
+  const drawIn = (box: PaneBox, through: PerspectiveCamera): void => {
+    const fromBottom = viewHeight - box.y - box.height;
+    renderer.setViewport(box.x, fromBottom, box.width, box.height);
+    renderer.setScissor(box.x, fromBottom, box.width, box.height);
+    renderer.render(scene, through);
+  };
 
   const currentView = (): View => ({
     camera: toVec3(camera.position),
@@ -230,7 +311,19 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     }
     camera.updateMatrixWorld();
     for (const callback of cameraCallbacks) callback();
-    renderer.render(scene, camera);
+    if (!panes) {
+      renderer.render(scene, camera);
+      return;
+    }
+    // The screen outside the two parts is wiped too, or it would keep what was last drawn there.
+    renderer.setScissorTest(false);
+    renderer.setViewport(0, 0, viewWidth, viewHeight);
+    renderer.clear();
+    renderer.setScissorTest(true);
+    drawIn(panes.main, camera);
+    moveSideCamera(panes);
+    for (const callback of sideCallbacks) callback(toVec3(sideCamera.position));
+    drawIn(panes.side, sideCamera);
   };
 
   // Nothing is drawn while the page is out of sight; time does not jump on the way back.
@@ -256,22 +349,19 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       camera.fov = degrees;
       camera.updateProjectionMatrix();
     },
-    toScreen(position) {
-      projected.set(position.x, position.y, position.z);
-      const distance = projected.distanceTo(camera.position);
-      projected.project(camera);
-      const inView =
-        projected.z > -1 &&
-        projected.z < 1 &&
-        Math.abs(projected.x) <= 1 &&
-        Math.abs(projected.y) <= 1;
-      return {
-        x: (projected.x * 0.5 + 0.5) * viewWidth,
-        y: (-projected.y * 0.5 + 0.5) * viewHeight,
-        visible: inView,
-        pixelsPerUnit: pixelsFor(1, distance, camera.fov, viewHeight),
-        distance,
-      };
+    setPanes(next) {
+      const split = next !== null;
+      if (split !== (panes !== null)) {
+        renderer.setScissorTest(split);
+        if (!split) renderer.setViewport(0, 0, viewWidth, viewHeight);
+      }
+      panes = next;
+      applyLift();
+    },
+    toScreen: (position) => project(position, camera, panes?.main ?? whole()),
+    toSideScreen(position) {
+      if (!panes) return { x: 0, y: 0, visible: false, pixelsPerUnit: 0, distance: 0 };
+      return project(position, sideCamera, panes.side);
     },
     flyTo: (request) => {
       begin(request, false);
@@ -310,13 +400,14 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     onCameraMoved: (callback) => {
       cameraCallbacks.push(callback);
     },
+    onSideMoved: (callback) => {
+      sideCallbacks.push(callback);
+    },
     resize(width, height) {
       viewWidth = width;
       viewHeight = height;
-      camera.aspect = width / height;
-      applyLift();
-      camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
+      applyLift();
     },
     start() {
       started = true;

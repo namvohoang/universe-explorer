@@ -1241,6 +1241,45 @@ body.watching .view-controls .turn {
   cursor: default;
 }
 
+/* Two looks drawn side by side in a story: a frame round each, and a few words on what it is. */
+.pane {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.pane-label {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  font: 700 12px/1 var(--body);
+  color: var(--sun);
+  background: rgba(6, 9, 20, 0.6);
+  border-radius: 999px;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+
+/* A name in the second look: placed like a marker, but it is not a button. */
+.side-tag {
+  position: absolute;
+  left: -22px;
+  top: -22px;
+  width: 44px;
+  height: 44px;
+  will-change: transform;
+}
+
+.side-tag.ringed::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 2px solid var(--sky);
+  border-radius: 50%;
+  opacity: 0.85;
+}
+
 /* A spacecraft in a story: a ring in the colour of its trail, with its name under it. */
 .craft-tag {
   pointer-events: none;

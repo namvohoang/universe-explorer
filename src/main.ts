@@ -11,7 +11,7 @@ import {
 import { ZOOM_SECONDS, distanceForAspect, litSideBearing, zoomedDistance } from './scene/flight';
 import type { DeepModel, DeepModelNote } from './scene/deep';
 import { createSolarSystem, type TrackedCraft } from './scene/solarSystem';
-import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
+import { FIELD_OF_VIEW_DEG, createStage, type FlyTo, type PaneBox } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
 import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
 import { chasePositionKm, drawnThrough, pathPositionKm, sampleInstants } from './sim/trajectory';
@@ -39,6 +39,7 @@ import { watchLayout } from './ui/layout';
 import { mediaUrl } from './ui/mediaUrl';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
+import { createSideTags } from './ui/sideTags';
 import { createPlaceRow } from './ui/placeRow';
 import { neighbour, placeRowFor, type Group, type Scene } from './ui/places';
 import { discs, icon, type IconName } from './ui/icons';
@@ -232,8 +233,66 @@ function start(): void {
    * fill the screen is stood this many times further back, so it fills the room instead.
    */
   const roomSqueeze = (): number => {
+    // A look with a part of the room to itself fills that part; a part taller than it is wide
+    // is fitted by its width.
+    if (paired) {
+      const { main } = roomHalves();
+      return Math.max(1, main.height / main.width);
+    }
     const room = roomAbovePanel();
     return window.innerHeight / Math.max(1, room.bottom - room.top);
+  };
+  /**
+   * The part of a story whose own look is drawn beside a look at the whole stage, so both can
+   * be seen at once: what it looks like from there, and where everything is.
+   */
+  let paired: { story: Story; chapter: Chapter } | null = null;
+  const sideTags = createSideTags(mustFind('#markers'));
+  /** The room cut in two: side by side where it is wide, one above the other where it is tall. */
+  const roomHalves = (): { main: PaneBox; side: PaneBox } => {
+    const { top, bottom, left } = roomAbovePanel();
+    const width = Math.max(2, Math.round(window.innerWidth - left));
+    const height = Math.max(2, Math.round(bottom - top));
+    const x = Math.round(left);
+    const y = Math.round(top);
+    if (width >= height) {
+      const half = Math.floor(width / 2);
+      return {
+        main: { x, y, width: half, height },
+        side: { x: x + half, y, width: width - half, height },
+      };
+    }
+    const half = Math.floor(height / 2);
+    return {
+      main: { x, y, width, height: half },
+      side: { x, y: y + half, width, height: height - half },
+    };
+  };
+  /** Draws the two looks in the two halves of the room, or one look in all of it. */
+  const layPanes = (): void => {
+    if (!paired) {
+      stage.setPanes(null);
+      sideTags.frame(null);
+      return;
+    }
+    const { story, chapter } = paired;
+    const { main, side } = roomHalves();
+    const whole = stageView(story, chapter, side.width / side.height, 1);
+    stage.setPanes({
+      main,
+      side,
+      target: whole.target,
+      distance: whole.distance,
+      direction: STAGE_DIRECTION,
+    });
+    const from = catalogue.find((o) => o.id === (chapter.standAtId ?? chapter.viewFromId));
+    sideTags.frame([
+      {
+        box: main,
+        label: from ? fill(words.watchPaneFrom, { name: displayName(from) }) : words.watchPaneClose,
+      },
+      { box: side, label: words.watchPaneWhole },
+    ]);
   };
   /** The same for width: how many times wider the screen is than the room beside a card. */
   const sideSqueeze = (): number =>
@@ -241,7 +300,14 @@ function start(): void {
   const liftView = (): void => {
     const { top, bottom, left } = roomAbovePanel();
     stage.setLift(Math.round(window.innerHeight / 2 - (top + bottom) / 2), Math.round(left / 2));
+    if (paired) layPanes();
+    // A story's look was fitted to the room as it was; in a room of another size it is fitted again.
+    const size = [top, bottom, left, window.innerWidth].map(Math.round).join();
+    if (size !== roomSize) onRoomChanged?.();
+    roomSize = size;
   };
+  let roomSize = '';
+  let onRoomChanged: (() => void) | null = null;
   /**
    * How much further back a view stands than it would to fill the whole screen, so that it
    * fits the room it has: none on a big screen, half as far again on a phone.
@@ -817,7 +883,16 @@ function start(): void {
         idleTurn: false,
       };
     }
-    // The whole stage: its middle, and everything that is not the far-off star that lights it.
+    // The stage has to fit in the room above the panel, not in the whole height of the screen.
+    const room = roomAbovePanel();
+    const squeeze = window.innerHeight / Math.max(1, room.bottom - room.top);
+    return stageView(story, chapter, stage.aspect(), squeeze);
+  };
+  /**
+   * The whole stage: its middle, and everything that is not the far-off star that lights it,
+   * fitted to a view of this shape and stood `squeeze` times further back than would fill it.
+   */
+  const stageView = (story: Story, chapter: Chapter, aspect: number, squeeze: number): FlyTo => {
     const middle = story.actorIds[0] ?? chapter.lookAtId;
     const reach = Math.max(
       system.radiusOf(middle),
@@ -826,10 +901,7 @@ function start(): void {
         .filter((id) => catalogue.find((object) => object.id === id)?.kind !== 'star')
         .map((id) => length(subtract(system.positionOf(id), system.positionOf(middle)))),
     );
-    // The stage has to fit in the room above the panel, not in the whole height of the screen.
-    const room = roomAbovePanel();
-    const squeeze = window.innerHeight / Math.max(1, room.bottom - room.top);
-    const distance = distanceForAspect(reach * STAGE_FRAMING, stage.aspect()) * squeeze;
+    const distance = distanceForAspect(reach * STAGE_FRAMING, aspect) * squeeze;
     return {
       target: () => system.positionOf(middle),
       distance,
@@ -913,6 +985,9 @@ function start(): void {
       radius: (radiusKm + (lowest + highest) / 2) / radiusKm,
     });
   };
+  onRoomChanged = () => {
+    if (watchWanted) watchPanel?.reframe();
+  };
   /** The things that grow a glow and tails. */
   const tailed = new Set(catalogue.filter((object) => object.kind === 'comet').map((o) => o.id));
   const watch = {
@@ -941,6 +1016,14 @@ function start(): void {
             speaker: language === 'en' ? createBrowserSpeaker() : null,
             recordings: language === 'en',
             aim(story, chapter, free) {
+              // A part with a look of its own shows it beside the whole stage, unless the
+              // camera has been let loose to look round the stage alone.
+              const own =
+                chapter.viewFromId !== undefined ||
+                chapter.standAtId !== undefined ||
+                chapter.closeUp === true;
+              paired = own && !free ? { story, chapter } : null;
+              layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined || free
                   ? null
@@ -993,6 +1076,12 @@ function start(): void {
                     },
               );
               tagCraft(craft.map(({ id, nameKey }) => ({ id, name: nameOfCraft(nameKey) })));
+              sideTags.name([
+                ...drawn
+                  .filter((object) => story.actorIds.includes(object.id))
+                  .map((object) => ({ id: object.id, name: displayName(object) })),
+                ...craft.map(({ id, nameKey }) => ({ id, name: nameOfCraft(nameKey) })),
+              ]);
               // The story's first instant is drawn before the camera is aimed at it.
               system.setDate(story.chapters[0]?.atJd.value ?? clock.jd);
               try {
@@ -1012,6 +1101,9 @@ function start(): void {
       if (!watchWanted) return;
       watchWanted = false;
       watchPanel?.close();
+      paired = null;
+      layPanes();
+      sideTags.name([]);
       liftView();
       watchActors = null;
       system.showOnly(null);
@@ -1303,6 +1395,14 @@ function start(): void {
         point: hidden ? { ...point, visible: false } : point,
         radiusPixels: system.radiusOf(id) * point.pixelsPerUnit,
       };
+    });
+  });
+  stage.onSideMoved((viewer) => {
+    // The second look of a story: things turn to face its camera, and get their names in it.
+    system.setViewer(viewer);
+    sideTags.update((id) => {
+      const point = stage.toSideScreen(system.positionOf(id));
+      return { point, radiusPixels: system.radiusOf(id) * point.pixelsPerUnit };
     });
   });
   stage.start();

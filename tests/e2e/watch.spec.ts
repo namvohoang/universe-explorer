@@ -202,6 +202,56 @@ test.describe('a story', () => {
     }
   });
 
+  test('shows its own look and the whole picture side by side, each named, clear of the bars', async ({
+    page,
+  }) => {
+    for (const [width, height] of [
+      [390, 844],
+      [1024, 768],
+    ] as const) {
+      await page.setViewportSize({ width, height });
+      await page.goto('/#watch/solar-eclipse');
+      const panes = page.locator('.pane');
+      await expect(panes).toHaveCount(2);
+      await expect(panes.locator('.pane-label')).toHaveText([
+        'Seen from: The Moon',
+        'The whole picture',
+      ]);
+      const [own, whole] = await Promise.all([boxOf(panes.nth(0)), boxOf(panes.nth(1))]);
+      expect(overlap(own, whole)).toBe(false);
+      for (const part of await page
+        .locator('.top > *, .tools > *, .watch-caption, .watch-controls')
+        .all()) {
+        if (!(await part.isVisible())) continue;
+        const box = await part.boundingBox();
+        if (box) for (const pane of [own, whole]) expect(overlap(pane, box)).toBe(false);
+      }
+      // Earth is named in both looks, each name inside its own frame.
+      const inside = async (name: Locator, pane: Box): Promise<boolean> => {
+        const spot = await boxOf(name);
+        const x = spot.x + spot.width / 2;
+        const y = spot.y + spot.height / 2;
+        return x > pane.x && x < pane.x + pane.width && y > pane.y && y < pane.y + pane.height;
+      };
+      const first = page.locator('.marker', { hasText: 'Earth' });
+      const second = page.locator('.side-tag', { hasText: 'Earth' });
+      await expect(first).toBeVisible();
+      await expect(second).toBeVisible();
+      await expect.poll(() => inside(first, own)).toBe(true);
+      await expect.poll(() => inside(second, whole)).toBe(true);
+      // Let loose, the camera looks round the whole stage alone.
+      await page.getByRole('button', { name: 'Look around' }).click();
+      await expect(panes).toHaveCount(0);
+      await expect(second).toBeHidden();
+    }
+  });
+
+  test('with no look of its own shows the whole stage alone', async ({ page }) => {
+    await page.goto('/#watch/meteor-shower');
+    await expect(page.locator('.watch-caption h2')).toHaveText('A meteor shower');
+    await expect(page.locator('.pane')).toHaveCount(0);
+  });
+
   test('lets the camera loose and takes it back', async ({ page }) => {
     await page.goto('/#watch/moon-phases');
     const look = page.getByRole('button', { name: 'Look around' });

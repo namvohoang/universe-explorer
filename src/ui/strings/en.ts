@@ -1085,6 +1085,9 @@ export const en = {
   watchPhotoSmaller: 'Make the photo small again',
   watchPaneGround: 'Seen from the ground on Earth',
   watchPhotoBy: 'Photo: {credit}',
+  storyAuroraGreenPhoto: 'A green aurora over Venetie, Alaska, USA, on 3 March 2014.',
+  storyAuroraGreenPhotoAlt:
+    'A bright green band of light curving across a dark sky, above a ring of snowy ground.',
   storyAuroraPhoto:
     'A red aurora over Florida, USA, on 11 November 2025. Red comes from oxygen higher up, above 200 km; green from oxygen lower down.',
   storyAuroraPhotoAlt:

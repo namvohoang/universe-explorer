@@ -10,13 +10,13 @@ import {
 import type { Vec3 } from '../sim/vec3';
 
 /** How many shooting stars are in the air or waiting their turn. */
-const STREAKS = 16;
+const STREAKS = 44;
 /** How far from the spot they fly out of a streak starts, and how long it is, in degrees. */
-const START_DEG: readonly [number, number] = [6, 48];
+const START_DEG: readonly [number, number] = [4, 36];
 const LENGTH_DEG: readonly [number, number] = [7, 18];
 /** How long a streak lasts and how long before the next in its place, in seconds. */
 const LIFE_SECONDS = 0.7;
-const WAIT_SECONDS: readonly [number, number] = [0.6, 3.2];
+const WAIT_SECONDS: readonly [number, number] = [0.2, 2.4];
 /** The colour of a streak's bright head; its tail fades to nothing. */
 const HEAD: readonly [number, number, number] = [1, 0.97, 0.85];
 const DEG = Math.PI / 180;
@@ -75,6 +75,7 @@ export function createMeteorStreaks(far: number): MeteorStreaks {
     lengthDeg: between(LENGTH_DEG),
     age: index % 3 === 0 ? LIFE_SECONDS * (0.35 + 0.4 * random()) : -between(WAIT_SECONDS),
   }));
+  let flying = false;
   const middle = new Vector3(0, 1, 0);
   const across = new Vector3(1, 0, 0);
   const upward = new Vector3(0, 0, 1);
@@ -110,7 +111,8 @@ export function createMeteorStreaks(far: number): MeteorStreaks {
   return {
     group,
     setRadiant(towards) {
-      group.visible = towards !== null;
+      flying = towards !== null;
+      group.visible = flying;
       if (!towards) return;
       middle.set(towards.x, towards.y, towards.z).normalize();
       // Any two directions square to the spot and to each other.
@@ -121,7 +123,9 @@ export function createMeteorStreaks(far: number): MeteorStreaks {
       draw();
     },
     flow(seconds) {
-      if (!group.visible) return;
+      // Whether the streaks are on show at this instant is not asked: a look that leaves them
+      // out for one picture must not stop them.
+      if (!flying) return;
       for (const streak of streaks) {
         streak.age += seconds;
         if (streak.age > LIFE_SECONDS) {

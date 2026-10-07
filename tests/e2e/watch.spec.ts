@@ -275,13 +275,24 @@ test.describe('a story', () => {
   test('looks at the sky from Earth in 3D, and keeps a real photo of it in the corner', async ({
     page,
   }) => {
-    for (const [story, credit, labels] of [
-      ['aurora', 'NASA/Ben Smegelsky', ['Seen from the ground on Earth', 'Close up']],
-      ['meteor-shower', 'NASA/Bill Ingalls', ['Seen from: Earth', 'The whole picture']],
+    for (const [story, credits, labels] of [
+      [
+        'aurora',
+        ['NASA/Christopher Perry', 'NASA/Ben Smegelsky'],
+        ['Seen from the ground on Earth', 'Close up'],
+      ],
+      ['meteor-shower', ['NASA/Bill Ingalls'], ['Seen from: Earth', 'The whole picture']],
     ] as const) {
       await page.goto(`/#watch/${story}`);
       await expect(page.locator('.pane-label')).toHaveText([...labels]);
-      const inset = page.getByRole('button', { name: 'A real photo. Make it bigger' });
+      const insets = page.getByRole('button', { name: 'A real photo. Make it bigger' });
+      // The aurora has a green one and a red one.
+      await expect(insets).toHaveCount(credits.length);
+      await expect(page.locator('.pane-caption')).toContainText(
+        credits.map((credit) => `Photo: ${credit}`),
+      );
+      const inset = insets.first();
+      const credit = credits[0];
       await expect(inset).toBeVisible();
       const photo = inset.locator('img');
       await expect(photo).toHaveAttribute('alt', /.+/);
@@ -300,7 +311,7 @@ test.describe('a story', () => {
       await expect(big.locator('.pane-caption')).toContainText(`Photo: ${credit}`);
       await expect.poll(async () => (await boxOf(big)).width).toBeGreaterThan(frame.width * 0.9);
       await big.click();
-      await expect(inset).toBeVisible();
+      await expect(insets).toHaveCount(credits.length);
     }
   });
 

@@ -91,7 +91,7 @@ export interface StoryStep {
 }
 
 /** Real seconds taken to run through the time skipped between two chapters, when it is not jumped. */
-export const SWEEP_SECONDS = 3;
+export const SWEEP_SECONDS = 4;
 
 /**
  * The date after `realSeconds` of play. A step that runs past a chapter carries on at the next
@@ -136,14 +136,23 @@ export function advanceStory(
 }
 
 /**
- * The date to draw for a date in the time skipped between two chapters: the last whole step
- * of `stepDays` since the chapter stopped. With a step of one turn of a world, the world is
- * seen swinging round its star without spinning into a blur. Any other date is drawn as it is.
+ * The date to draw for a date in the time skipped between two chapters, for a world that
+ * turns once in `stepDays`. Drawn date for date, the world would spin into a blur. So the
+ * dates drawn are picked a whole number of turns apart, plus a little more each time: the
+ * world is seen swinging round its star while it turns on smoothly, a part of one turn over
+ * the whole gap, and it arrives at the next chapter turned exactly as that chapter starts.
+ * Every date drawn is a real one. Any date outside a gap is drawn as it is.
  */
 export function steppedInGap(times: StoryTimes, jd: number, stepDays: number): number {
   const index = chapterIndexAt(times, jd);
   const end = chapterEndJd(times, index);
   const next = times.chapterJds[index + 1];
   if (next === undefined || !(jd > end) || !(jd < next) || !(stepDays > 0)) return jd;
-  return end + Math.floor((jd - end) / stepDays) * stepDays;
+  const gap = next - end;
+  const through = (jd - end) / gap;
+  // The gap is so many whole turns and a part of one: the whole turns are stepped over, and
+  // the part of one is turned through evenly.
+  const turns = Math.floor(gap / stepDays);
+  const over = gap - turns * stepDays;
+  return end + Math.floor(through * turns) * stepDays + through * over;
 }

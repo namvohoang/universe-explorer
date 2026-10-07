@@ -117,6 +117,12 @@ export interface SolarSystem {
    */
   groundPointOf(id: string, place: Vec3): Vec3;
   /**
+   * Draws a body turned as it was at one date, whatever date is set, or (`null`) lets it turn
+   * again. For a story that runs through months in seconds: a star that turns once in weeks
+   * would stand still and then whirl, which says nothing about what the story shows.
+   */
+  holdSpin(id: string, jd: number | null): void;
+  /**
    * Draws a body somewhere else than its path puts it, until the next date is set: for a
    * drawing that is not to scale and has to put a body where it shows what is happening.
    */
@@ -220,6 +226,7 @@ export function createSolarSystem(
   let currentScale = scale;
   let tracks: Tracks | null = null;
   let shownIds: ReadonlySet<string> | null = null;
+  const heldSpins = new Map<string, number>();
   let linesDrawn = true;
   const trails = new Map<string, { readonly craft: TrackedCraft; readonly trail: Trail }>();
   const showLines = (): void => {
@@ -265,7 +272,7 @@ export function createSolarSystem(
     for (const [id, body] of bodies) {
       const position = positions.get(id);
       if (position) body.group.position.set(position.x, position.y, position.z);
-      body.setDate(jd);
+      body.setDate(heldSpins.get(id) ?? jd);
     }
     for (const object of catalogue) {
       const parent = object.parentId === null ? undefined : positions.get(object.parentId);
@@ -383,6 +390,10 @@ export function createSolarSystem(
       }
       drawTrails();
       showLines();
+    },
+    holdSpin(id, jd) {
+      if (jd === null) heldSpins.delete(id);
+      else heldSpins.set(id, jd);
     },
     moveBody(id, position) {
       positions.set(id, position);

@@ -35,18 +35,12 @@ const mediaUses = catalogue.flatMap((object) =>
 );
 // A story's real photo is credited under the story's own id.
 const storyMediaUses = stories.flatMap((story) =>
-  story.fromEarth
-    ? [
-        {
-          objectId: story.id,
-          file: story.fromEarth.media.file,
-          kind: story.fromEarth.media.kind,
-          ...(story.fromEarth.media.credit === undefined
-            ? {}
-            : { credit: story.fromEarth.media.credit }),
-        },
-      ]
-    : [],
+  (story.fromEarth ?? []).map(({ media }) => ({
+    objectId: story.id,
+    file: media.file,
+    kind: media.kind,
+    ...(media.credit === undefined ? {} : { credit: media.credit }),
+  })),
 );
 const errors = [
   ...checkCatalogue(catalogue),

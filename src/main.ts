@@ -407,7 +407,7 @@ function start(): void {
       ...(diagram ? { scene: diagram.scene } : {}),
     });
     const strings: Readonly<Record<string, string>> = words;
-    const photo = story.fromEarth;
+    const photos = story.fromEarth ?? [];
     const from = catalogue.find((o) => o.id === (chapter.standAtId ?? chapter.viewFromId));
     sideTags.frame([
       {
@@ -417,17 +417,13 @@ function start(): void {
           : from
             ? fill(words.watchPaneFrom, { name: displayName(from) })
             : words.watchPaneClose,
-        ...(photo
-          ? {
-              picture: {
-                src: mediaUrl(photo.media.file),
-                alt: strings[photo.media.altKey] ?? '',
-                caption: `${strings[photo.captionKey] ?? ''} ${fill(words.watchPhotoBy, { credit: photo.media.credit ?? '' })}`,
-                bigger: words.watchPhotoBigger,
-                smaller: words.watchPhotoSmaller,
-              },
-            }
-          : {}),
+        pictures: photos.map((photo) => ({
+          src: mediaUrl(photo.media.file),
+          alt: strings[photo.media.altKey] ?? '',
+          caption: `${strings[photo.captionKey] ?? ''} ${fill(words.watchPhotoBy, { credit: photo.media.credit ?? '' })}`,
+          bigger: words.watchPhotoBigger,
+          smaller: words.watchPhotoSmaller,
+        })),
       },
       {
         box: side,
@@ -1631,6 +1627,14 @@ function start(): void {
                   ? null
                   : tracks,
               );
+              const firstJd = story.chapters[0]?.atJd.value ?? clock.jd;
+              const heldStar = story.chapters.some((chapter) => chapter.untilJd !== undefined)
+                ? starOf(story)
+                : undefined;
+              for (const object of catalogue) {
+                if (object.kind === 'star') system.holdSpin(object.id, null);
+              }
+              if (heldStar !== undefined) system.holdSpin(heldStar, firstJd);
               diagram?.dispose();
               diagram = null;
               if (story.diagram) {
@@ -1656,6 +1660,8 @@ function start(): void {
                   story.seasonsOf === undefined ? [] : [story.seasonsOf],
                 );
                 diagram.system.setTracks({ ...tracks, craft: [], keepOrbitLines: true });
+                // A story that runs through months between its parts holds its star's turning.
+                if (heldStar !== undefined) diagram.system.holdSpin(heldStar, firstJd);
                 for (const id of story.actorIds) diagram.system.showDetail(id);
                 diagram.setDate(story.chapters[0]?.atJd.value ?? clock.jd);
               }
@@ -1697,6 +1703,9 @@ function start(): void {
       layPanes();
       sideTags.name([]);
       diagramAlone = false;
+      for (const object of catalogue) {
+        if (object.kind === 'star') system.holdSpin(object.id, null);
+      }
       skyFromId = null;
       eyeOnly = null;
       meteorSky = null;
@@ -1960,7 +1969,8 @@ function start(): void {
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
       if (moved && !reducedMotion) system.flowTails(dt);
-      if (moved && !reducedMotion) meteors.flow(dt);
+      // Shooting stars keep falling while the story is stopped: they take a second each.
+      if (!reducedMotion) meteors.flow(dt);
       return;
     }
     const before = clock.jd;

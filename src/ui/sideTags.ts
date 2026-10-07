@@ -20,10 +20,16 @@ export interface SideTags {
           box: PaneBox;
           label: string;
           /**
-           * A real picture kept small in a corner of the frame, with what it shows; a tap
-           * makes it fill the frame, and another puts it back.
+           * Real pictures kept small in a corner of the frame, each with what it shows; a tap
+           * makes one fill the frame, and another puts it back.
            */
-          picture?: { src: string; alt: string; caption: string; bigger: string; smaller: string };
+          pictures?: readonly {
+            src: string;
+            alt: string;
+            caption: string;
+            bigger: string;
+            smaller: string;
+          }[];
         }[]
       | null,
   ): void;
@@ -40,39 +46,49 @@ export interface SideTags {
  */
 export function createSideTags(layer: HTMLElement): SideTags {
   const frames: HTMLElement[] = [];
-  let bigPictures = false;
+  /** Which picture has been made big; -1 for none. */
+  let bigPicture = -1;
   let tags: { id: string; name: string; above: boolean; tag: HTMLElement; pill: HTMLElement }[] =
     [];
   return {
     frame(looks) {
       for (const frame of frames.splice(0)) frame.remove();
       for (const { tag } of tags) tag.hidden = looks === null;
-      for (const { box, label, picture } of looks ?? []) {
+      for (const { box, label, pictures } of looks ?? []) {
         const frame = create('div', 'pane');
         frame.style.left = `${String(box.x)}px`;
         frame.style.top = `${String(box.y)}px`;
         frame.style.width = `${String(box.width)}px`;
         frame.style.height = `${String(box.height)}px`;
         frame.append(create('span', 'pane-label', label));
-        if (picture) {
-          const inset = create('button', 'pane-inset');
-          inset.type = 'button';
-          const image = create('img', 'pane-photo');
-          image.src = picture.src;
-          image.alt = picture.alt;
-          inset.append(image, create('span', 'pane-caption', picture.caption));
-          const show = (big: boolean): void => {
-            inset.classList.toggle('big', big);
-            inset.setAttribute('aria-label', big ? picture.smaller : picture.bigger);
-            inset.setAttribute('aria-pressed', String(big));
-            bigPictures = big;
-          };
-          // A picture made big stays big when the frames are laid out again.
-          show(bigPictures);
-          inset.addEventListener('click', () => {
-            show(!inset.classList.contains('big'));
+        if (pictures && pictures.length > 0) {
+          const row = create('div', 'pane-insets');
+          const insets = pictures.map((picture, index) => {
+            const inset = create('button', 'pane-inset');
+            inset.type = 'button';
+            const image = create('img', 'pane-photo');
+            image.src = picture.src;
+            image.alt = picture.alt;
+            inset.append(image, create('span', 'pane-caption', picture.caption));
+            inset.addEventListener('click', () => {
+              show(bigPicture === index ? -1 : index);
+            });
+            row.append(inset);
+            return { inset, picture };
           });
-          frame.append(inset);
+          // One picture at a time is big; the one made big stays big when the frames are
+          // laid out again.
+          const show = (big: number): void => {
+            bigPicture = big;
+            for (const [index, { inset, picture }] of insets.entries()) {
+              const on = index === big;
+              inset.classList.toggle('big', on);
+              inset.setAttribute('aria-label', on ? picture.smaller : picture.bigger);
+              inset.setAttribute('aria-pressed', String(on));
+            }
+          };
+          show(bigPicture < insets.length ? bigPicture : -1);
+          frame.append(row);
         }
         frames.push(frame);
       }

@@ -1261,12 +1261,22 @@ body.watching .view-controls .turn {
   white-space: nowrap;
 }
 
-/* A real photo kept small in a corner of a frame; a tap makes it fill the frame. */
-.pane-inset {
+/* Real photos kept small in a corner of a frame; a tap makes one fill the frame. */
+.pane-insets {
   position: absolute;
-  left: 8px;
-  bottom: 8px;
-  width: min(44%, 190px);
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 8px;
+  pointer-events: none;
+}
+
+.pane-inset {
+  position: relative;
+  flex: 0 1 150px;
+  width: 150px;
+  max-width: 34%;
   aspect-ratio: 4 / 3;
   min-height: 0;
   padding: 0;
@@ -1279,8 +1289,11 @@ body.watching .view-controls .turn {
 }
 
 .pane-inset.big {
+  position: absolute;
   inset: 0;
+  z-index: 1;
   width: auto;
+  max-width: none;
   aspect-ratio: auto;
   border-radius: 13px;
   cursor: zoom-out;

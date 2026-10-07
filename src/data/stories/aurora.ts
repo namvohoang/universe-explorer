@@ -55,19 +55,31 @@ export const aurora: Story = {
   path: 'orbits',
   titleKey: 'storyAuroraTitle',
   noteKey: 'storyAuroraNote',
-  fromEarth: {
-    media: {
-      file: 'public/media/stories/aurora-from-the-ground.webp',
-      kind: 'photo',
-      role: 'picture',
-      altKey: 'storyAuroraPhotoAlt',
-      credit: 'NASA/Ben Smegelsky',
+  fromEarth: [
+    {
+      media: {
+        file: 'public/media/stories/aurora-green-from-the-ground.webp',
+        kind: 'photo',
+        role: 'picture',
+        altKey: 'storyAuroraGreenPhotoAlt',
+        credit: 'NASA/Christopher Perry',
+      },
+      captionKey: 'storyAuroraGreenPhoto',
     },
-    // The caption says why the photo is red and the drawn rings green. NASA (nasa-auroras):
-    // "Green occurs roughly between 60 to 120 miles (100-200 km) altitude" and "Red occurs
-    // above 120 miles (200 km)", from "Oxygen excited to different energy levels".
-    captionKey: 'storyAuroraPhoto',
-  },
+    {
+      media: {
+        file: 'public/media/stories/aurora-from-the-ground.webp',
+        kind: 'photo',
+        role: 'picture',
+        altKey: 'storyAuroraPhotoAlt',
+        credit: 'NASA/Ben Smegelsky',
+      },
+      // The caption says why this photo is red and the drawn rings green. NASA (nasa-auroras):
+      // "Green occurs roughly between 60 to 120 miles (100-200 km) altitude" and "Red occurs
+      // above 120 miles (200 km)", from "Oxygen excited to different energy levels".
+      captionKey: 'storyAuroraPhoto',
+    },
+  ],
   actorIds: ['earth', 'sun'],
   turned: { earth: AURORA_2027_EARTH_TURN },
   aurora: {

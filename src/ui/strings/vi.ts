@@ -978,6 +978,10 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPhotoSmaller: 'Thu nhỏ ảnh lại',
   watchPaneGround: 'Nhìn từ mặt đất trên Trái Đất',
   watchPhotoBy: 'Ảnh: {credit}',
+  storyAuroraGreenPhoto:
+    'Cực quang xanh trên bầu trời Venetie, Alaska, Mỹ, ngày 3 tháng 3 năm 2014.',
+  storyAuroraGreenPhotoAlt:
+    'Một dải sáng xanh lục rực rỡ uốn cong ngang bầu trời tối, phía trên một vòng mặt đất phủ tuyết.',
   storyAuroraPhoto:
     'Cực quang đỏ trên bầu trời Florida, Mỹ, ngày 11 tháng 11 năm 2025. Màu đỏ đến từ khí ô-xi ở trên cao hơn 200 km; màu xanh đến từ ô-xi ở thấp hơn.',
   storyAuroraPhotoAlt:

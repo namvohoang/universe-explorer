@@ -738,6 +738,11 @@ recorded last.
       seasons' whole picture is seen from low at the side, square to the way Earth's axis
       leans: Earth goes round the Sun with its axis drawn as a line that keeps pointing the
       same way, towards the Sun in June and away from it in December.
+      Between the seasons' four days Earth keeps turning: the dates drawn are whole days
+      apart plus a little more each time, so it swings round the Sun and turns on smoothly,
+      and the Sun's own turning is held for that story (it would stand still and then whirl).
+      The aurora has a green photo too (NASA/Christopher Perry, Alaska), beside the red one.
+      The shooting stars are more, and keep falling while the story is stopped.
       Known: Earth's pole in the catalogue is the one for 2000, so the app's equinoxes of
       2027 fall about nine hours late; the season names allow for it.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying

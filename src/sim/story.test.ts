@@ -126,10 +126,24 @@ describe('time skipped between two chapters, run through', () => {
     expect(advanceStory(SKIPS, 100.5, CHAPTER_SECONDS).jd).toBeGreaterThanOrEqual(150);
   });
 
-  it('is drawn a whole step at a time, and other dates as they are', () => {
-    expect(steppedInGap(SKIPS, 110.7, 2)).toBeCloseTo(109, 9);
+  it('is drawn whole turns apart, turning on by the part of a turn left over', () => {
+    // 49 days of gap with a turn of 2 days: 24 whole turns and half a turn over.
+    expect(steppedInGap(SKIPS, 101, 2)).toBe(101);
+    // Halfway: 12 whole turns stepped over, and a quarter of a turn turned through.
+    expect(steppedInGap(SKIPS, 125.5, 2)).toBeCloseTo(101 + 24 + 0.5, 9);
+    // It arrives just as the next chapter starts, with no jump.
+    expect(steppedInGap(SKIPS, 150 - 1e-9, 2)).toBeCloseTo(150 - 2, 6);
     expect(steppedInGap(SKIPS, 100.4, 2)).toBe(100.4);
     expect(steppedInGap(SKIPS, 150.3, 2)).toBe(150.3);
+  });
+
+  it('never draws an earlier date after a later one', () => {
+    let last = 0;
+    for (let jd = 101.01; jd < 150; jd += 0.37) {
+      const drawn = steppedInGap(SKIPS, jd, 2);
+      expect(drawn).toBeGreaterThanOrEqual(last);
+      last = drawn;
+    }
   });
 });
 

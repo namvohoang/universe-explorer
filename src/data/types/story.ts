@@ -240,11 +240,11 @@ export interface Story {
    */
   readonly whole?: 'orbits' | 'star-and-first';
   /**
-   * A real photo of what the story tells, taken from the ground on Earth, for a thing the app
-   * cannot draw as it is seen from there. It stands in the place of the look from Earth, beside
-   * the 3D picture. `captionKey` says plainly what, where and when the photo is of.
+   * Real photos of what the story tells, taken from the ground on Earth, kept small in a
+   * corner of the look from Earth for a tap to make big. `captionKey` says plainly what,
+   * where and when each photo is of.
    */
-  readonly fromEarth?: { readonly media: MediaRef; readonly captionKey: string };
+  readonly fromEarth?: readonly { readonly media: MediaRef; readonly captionKey: string }[];
   /**
    * Real seconds each chapter takes to play, where the usual pace is too quick to follow:
    * years of a planet's path in one chapter, say. A choice of pace, not a measurement.

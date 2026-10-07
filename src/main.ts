@@ -341,6 +341,8 @@ function start(): void {
 
   // The space passport: the places opened so far, kept in this browser only.
   const VISITED = 'visited';
+  /** The same note the Watch screen keeps of the stories watched (src/ui/watch.ts). */
+  const WATCHED = 'watched';
   const HINT_SEEN = 'hint-seen';
   let visited = parseVisited(recall(VISITED), new Set(catalogue.map((object) => object.id)));
   const stamp = (id: string | null): void => {
@@ -940,6 +942,8 @@ function start(): void {
   const grownUps = createGrownUps(catalogue, limits, () => {
     forget(VISITED);
     forget(HINT_SEEN);
+    forget(WATCHED);
+    watchPanel?.refreshWatched();
     visited = new Set();
     placeRow.showVisited(visited, catalogue);
   });

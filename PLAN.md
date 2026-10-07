@@ -574,7 +574,9 @@ recorded last.
       in the solar system view itself, on its own clock, with only its own bodies, paths and
       names drawn, and the view is drawn in the room above the panel. A part can hold the camera
       on a line between two bodies (the Moon as seen from Earth); "Look around" lets it loose
-      over the whole stage. Not done: stories do not count in the space passport.
+      over the whole stage. A story that has been watched
+      is ticked off on its chip and counted on its group's tab, kept in this browser only and
+      cleared with the rest of the progress.
 - [x] 12.3 The Moon's phases, at the app's `true` scale (Earth, the Moon and the gap between
       them already share one factor there, so no new scale mode was needed). The four instants
       are the US Naval Observatory's, since NASA's pages give no table of phase times; a test

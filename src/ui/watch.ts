@@ -13,11 +13,20 @@ import {
 import { create } from './dom';
 import { fill, formatDateAndHour, formatDateAndMinute, formatDateAndSecond } from './format';
 import { icon, type IconName } from './icons';
+import { formatVisited, parseVisited } from './passport';
+import { recall, remember } from './storage';
 import { words } from './strings';
 import { createTabs } from './tabs';
 
 /** Steps of the scrubber from one end of a story to the other. */
 const SCRUBBER_STEPS = 1000;
+/** The note in this browser that remembers which stories have been watched (see storage.ts). */
+export const WATCHED_KEY = 'watched';
+/** The dot on a story's chip, in the colour of its group. A drawing choice. */
+const GROUP_DOTS: Readonly<Record<StoryGroup, string>> = {
+  'sky-events': '#6fd3ff',
+  'space-flights': '#ffc53d',
+};
 /** A story shorter than this many days shows the minute as well as the hour. */
 const MINUTES_SHOWN_UNDER_DAYS = 3;
 
@@ -53,6 +62,8 @@ export interface Watch {
   tick(realSeconds: number): number;
   /** Puts the camera back where the chapter on show wants it. */
   reframe(): void;
+  /** Reads again which stories have been watched, after the note of them was cleared. */
+  refreshWatched(): void;
 }
 
 /**
@@ -135,6 +146,20 @@ export function createWatch(host: WatchHost): Watch {
 
   element.append(caption, controls, row);
 
+  const storyIds = new Set(stories.map((candidate) => candidate.id));
+  let watched = parseVisited(recall(WATCHED_KEY), storyIds);
+  const countWatched = (): void => {
+    for (const one of groups) {
+      const members = stories.filter((candidate) => candidate.group === one);
+      const count = members.filter((candidate) => watched.has(candidate.id)).length;
+      groupTabs.setNote(
+        one,
+        count === 0 ? '' : fill(words.visitedCount, { seen: count, all: members.length }),
+      );
+    }
+  };
+  countWatched();
+
   let story: Story | null = null;
   let times: StoryTimes | null = null;
   let jd = 0;
@@ -151,8 +176,13 @@ export function createWatch(host: WatchHost): Watch {
       ...stories
         .filter((candidate) => candidate.group === group)
         .map((candidate) => {
-          const chip = create('button', '', text(candidate.titleKey));
+          const chip = create('button', '');
           chip.type = 'button';
+          const dot = create('span', 'dot');
+          dot.style.background = GROUP_DOTS[candidate.group];
+          chip.append(dot, text(candidate.titleKey));
+          // A story already watched has a tick on its dot, as a place already opened has.
+          chip.classList.toggle('visited', watched.has(candidate.id));
           if (candidate.id === story?.id) chip.setAttribute('aria-current', 'true');
           chip.addEventListener('click', () => {
             start(candidate);
@@ -236,6 +266,11 @@ export function createWatch(host: WatchHost): Watch {
   function start(picked: Story): void {
     story = picked;
     times = storyTimes(picked);
+    if (!watched.has(picked.id)) {
+      watched.add(picked.id);
+      remember(WATCHED_KEY, formatVisited(watched));
+      countWatched();
+    }
     group = picked.group;
     groupTabs.show(group);
     showChips();
@@ -325,6 +360,11 @@ export function createWatch(host: WatchHost): Watch {
         show(false);
       }
       return jd;
+    },
+    refreshWatched() {
+      watched = parseVisited(recall(WATCHED_KEY), storyIds);
+      countWatched();
+      showChips();
     },
     reframe() {
       const chapter = story?.chapters[shownChapter];

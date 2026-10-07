@@ -262,3 +262,23 @@ test('the grown-ups page says what is real and what is drawn, and lists the stor
     '_blank',
   );
 });
+
+test('a story that has been watched is ticked off, in this browser only, until progress is cleared', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/#watch/moon-phases');
+  const chip = (name: string) => page.locator('.watch-row .chips button', { hasText: name });
+  await expect(chip('The Moon’s phases')).toHaveClass(/visited/);
+  await expect(chip('The seasons')).not.toHaveClass(/visited/);
+  await chip('The seasons').click();
+  await expect(chip('The seasons')).toHaveClass(/visited/);
+  await expect(page.getByRole('tab', { name: /Sky events/ })).toContainText('2/');
+  await page.reload();
+  await expect(chip('The seasons')).toHaveClass(/visited/);
+  // Clearing progress on the grown-ups page unticks them.
+  await page.getByRole('button', { name: 'For grown-ups' }).click();
+  await page.getByRole('button', { name: 'Clear progress' }).click();
+  await page.getByRole('button', { name: 'Close' }).click();
+  await expect(chip('The Moon’s phases')).not.toHaveClass(/visited/);
+});

@@ -85,7 +85,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Khám Phá Vũ Trụ không có quảng cáo, không có tài khoản và không theo dõi. Ứng dụng không thu thập hay gửi đi bất kỳ thông tin nào về người đang dùng.',
   grownUpsKeptTitle: 'Những gì được lưu trong trình duyệt này',
   grownUpsKept:
-    'Ba ghi chú nhỏ được lưu trong trình duyệt này và không bao giờ rời khỏi thiết bị: rằng lời chào hướng dẫn đã được xem, những nơi nào đã được mở (để đánh dấu), và ngôn ngữ đã chọn. Không ghi chú nào cho biết ai đang dùng ứng dụng.',
+    'Vài ghi chú nhỏ được lưu trong trình duyệt này và không bao giờ rời khỏi thiết bị: rằng lời chào hướng dẫn đã được xem, những nơi nào đã được mở và những câu chuyện nào đã xem (để đánh dấu), và ngôn ngữ đã chọn. Không ghi chú nào cho biết ai đang dùng ứng dụng.',
   grownUpsClear: 'Xóa tiến trình',
   grownUpsCleared: 'Đã xóa tiến trình.',
   visitedMark: 'Bạn đã đến đây rồi',

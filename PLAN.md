@@ -564,7 +564,7 @@ only; a model an agency offers only in another file format may be converted, wit
 `CREDITS.md`; the tab is called Watch; sky events come first; captions are text first and
 recorded last.
 
-- [ ] 12.1 Story types (`src/data/types/story.ts`), the pure story clock (`src/sim/story.ts`:
+- [x] 12.1 Story types (`src/data/types/story.ts`), the pure story clock (`src/sim/story.ts`:
       the chapter at a date, progress, a named rate per chapter) and `validate` checks (every
       chapter time sourced and in order; a staged story says so).
 - [ ] 12.2 The Watch shell: a fifth tab, loaded on demand; a story row in two groups (Sky
@@ -627,8 +627,8 @@ Tolerances are named constants with a comment saying why. They are never widened
 6. **Models of SpaceX and Chinese craft.** None is published by a source on the trusted list
    (`.claude/rules/media.md`). Either the owner approves another source, with its licence, or
    these craft are shown with an agency's photo in place of a 3D model.
-8. **Paths that are drawn.** Decided on 2026-10-07: on the Watch screen a flight with no
-   published path may be shown as a drawing between real event times, labelled as one. See Phase 12.
 7. **A picture of TON 618.** The heaviest black hole found has one picture on a NASA page, credited
    to the Sloan Digital Sky Survey (sdss.org), which is not on the trusted list. Either the owner
    approves that source, with its licence, or TON 618 stays out.
+8. **Paths that are drawn.** Decided on 2026-10-07: on the Watch screen a flight with no
+   published path may be shown as a drawing between real event times, labelled as one. See Phase 12.

@@ -1,12 +1,15 @@
 /**
  * `npm run validate` — repository checks that are not unit tests of the code.
- * Checks the catalogue (sources, ids, sane values) and media files against CREDITS.md.
+ * Checks the catalogue (sources, ids, sane values), the stories of the Watch screen, and media
+ * files against CREDITS.md.
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { catalogue } from '../src/data/catalogue';
+import { stories } from '../src/data/stories';
 import { checkCatalogue } from './validate/catalogue';
 import { MEDIA_DIR, checkCredits, checkMediaUses } from './validate/credits';
+import { checkStories } from './validate/stories';
 
 const ROOT = join(import.meta.dirname, '..');
 const IGNORED_FILES = new Set(['.gitkeep', '.DS_Store']);
@@ -32,6 +35,10 @@ const mediaUses = catalogue.flatMap((object) =>
 );
 const errors = [
   ...checkCatalogue(catalogue),
+  ...checkStories(
+    stories,
+    catalogue.map((object) => object.id),
+  ),
   ...checkCredits(mediaFiles, credits),
   ...checkMediaUses(mediaUses, credits),
 ];
@@ -43,3 +50,4 @@ if (errors.length > 0) {
 }
 console.log(`validate: media and credits OK (${String(mediaFiles.length)} media file(s))`);
 console.log(`validate: catalogue OK (${String(catalogue.length)} object(s))`);
+console.log(`validate: stories OK (${String(stories.length)} story(ies))`);

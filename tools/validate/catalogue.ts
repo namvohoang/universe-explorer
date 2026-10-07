@@ -2,7 +2,7 @@
  * Checks the catalogue beyond what the types can: every value points at a real source, every
  * source is used, ids resolve, and the numbers are physically sane. Pure: takes the records.
  */
-import type { CelestialObject, Shape } from '../../src/data/types';
+import type { CelestialObject, Shape, Source } from '../../src/data/types';
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -38,7 +38,11 @@ function isRealDate(text: string): boolean {
   return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(text);
 }
 
-function sourceErrors(object: CelestialObject): string[] {
+/** Checks any record that lists its `sources` and wraps its values in `Sourced`. */
+export function sourceErrors(object: {
+  readonly id: string;
+  readonly sources: readonly Source[];
+}): string[] {
   const errors: string[] = [];
   const at = `${object.id}:`;
   const ids = new Set<string>();

@@ -56,7 +56,7 @@ export function createCompare(
     const widthPixels = Math.max(1, item.share * LARGEST_PIXELS);
     const object = planets.find((planet) => planet.id === item.id);
     const shape = object?.shape;
-    if (object && (shape?.type === 'spheroid' || shape?.type === 'triaxial')) {
+    if (object && shape?.type === 'spheroid') {
       // The caption beside it names the planet, so the picture itself stays out of the reading.
       const canvas = create('canvas', 'portrait');
       canvas.setAttribute('aria-hidden', 'true');

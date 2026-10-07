@@ -204,5 +204,12 @@ export interface Story {
   readonly shadows?: readonly StoryShadow[];
   /** Bodies turned, for this story, to face the way they really did, keyed by catalogue id. */
   readonly turned?: Readonly<Record<string, BodyTurn>>;
+  /**
+   * Draws the story's whole picture as a diagram: the same bodies in the same directions,
+   * with sizes and distances not real, so that all of them can be seen at once (and the
+   * screen says so). `in-line` keeps the star on one side and what it lights on the other,
+   * for things that happen along that line; `round-the-star` shows the orbits whole.
+   */
+  readonly diagram?: 'in-line' | 'round-the-star';
   readonly sources: readonly Source[];
 }

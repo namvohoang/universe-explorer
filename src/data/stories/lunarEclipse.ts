@@ -29,6 +29,7 @@ export const lunarEclipse: Story = {
   path: 'orbits',
   titleKey: 'storyLunarEclipseTitle',
   actorIds: ['earth', 'moon', 'sun'],
+  diagram: 'in-line',
   tracked: { moon: ECLIPSE_2028_MOON, earth: ECLIPSE_2028_EARTH },
   shadows: [{ casterId: 'earth', onId: 'moon', throughAir: true }],
   chapters: [

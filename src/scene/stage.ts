@@ -79,9 +79,11 @@ export interface Panes {
   readonly side: PaneBox;
   /** Where the second camera looks, in scene units. Called every frame. */
   readonly target: () => Vec3;
-  /** How far from it the second camera stands, and on which bearing from it. */
+  /** How far from it the second camera stands, and on which bearing from it, asked every frame. */
   readonly distance: number;
-  readonly direction: Vec3;
+  readonly direction: () => Vec3;
+  /** What the second camera draws, when it is not the scene the first one draws. */
+  readonly scene?: Scene;
 }
 
 /** Where a point of the scene lands on screen. */
@@ -116,6 +118,8 @@ export interface Stage {
    * that fills it. With two, the lift is not used: each is drawn in the middle of its part.
    */
   setPanes(panes: Panes | null): void;
+  /** Has the camera draw another scene in place of the stage's own; `null` puts that back. */
+  setScene(scene: Scene | null): void;
   /** Width over height of the view, for choosing camera distances. */
   aspect(): number;
   /** Projects a scene position onto the screen, e.g. to place a label over a body. */
@@ -178,6 +182,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   const sideCallbacks: ((viewer: Vec3) => void)[] = [];
   const sideCamera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, 1e6);
   let panes: Panes | null = null;
+  let otherScene: Scene | null = null;
   let following: FlyTo | null = null;
   let flight: Flight | null = null;
   let previousTarget: Vec3 | null = null;
@@ -215,7 +220,8 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   /** Puts the second camera where its look says, facing what it looks at. */
   const moveSideCamera = (look: Panes): void => {
     const target = look.target();
-    const { direction, distance } = look;
+    const { distance } = look;
+    const direction = look.direction();
     const far = Math.hypot(direction.x, direction.y, direction.z) || 1;
     sideCamera.position.set(
       target.x + (direction.x / far) * distance,
@@ -229,11 +235,11 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     sideCamera.updateMatrixWorld();
   };
   /** Draws through one camera into one part of the screen; the renderer counts up from the bottom. */
-  const drawIn = (box: PaneBox, through: PerspectiveCamera): void => {
+  const drawIn = (box: PaneBox, through: PerspectiveCamera, what: Scene): void => {
     const fromBottom = viewHeight - box.y - box.height;
     renderer.setViewport(box.x, fromBottom, box.width, box.height);
     renderer.setScissor(box.x, fromBottom, box.width, box.height);
-    renderer.render(scene, through);
+    renderer.render(what, through);
   };
 
   const currentView = (): View => ({
@@ -312,7 +318,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     camera.updateMatrixWorld();
     for (const callback of cameraCallbacks) callback();
     if (!panes) {
-      renderer.render(scene, camera);
+      renderer.render(otherScene ?? scene, camera);
       return;
     }
     // The screen outside the two parts is wiped too, or it would keep what was last drawn there.
@@ -320,10 +326,10 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     renderer.setViewport(0, 0, viewWidth, viewHeight);
     renderer.clear();
     renderer.setScissorTest(true);
-    drawIn(panes.main, camera);
+    drawIn(panes.main, camera, otherScene ?? scene);
     moveSideCamera(panes);
     for (const callback of sideCallbacks) callback(toVec3(sideCamera.position));
-    drawIn(panes.side, sideCamera);
+    drawIn(panes.side, sideCamera, panes.scene ?? scene);
   };
 
   // Nothing is drawn while the page is out of sight; time does not jump on the way back.
@@ -357,6 +363,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       }
       panes = next;
       applyLift();
+    },
+    setScene(next) {
+      otherScene = next;
     },
     toScreen: (position) => project(position, camera, panes?.main ?? whole()),
     toSideScreen(position) {

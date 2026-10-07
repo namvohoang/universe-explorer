@@ -12,13 +12,15 @@ export const SCALE_MODES = ['true', 'true-sizes', 'easy'] as const;
 export type ScaleMode = (typeof SCALE_MODES)[number];
 
 export interface Scale {
-  readonly mode: ScaleMode;
+  /** One of the modes a viewer picks, or `diagram`, which only a story's drawing uses. */
+  readonly mode: ScaleMode | 'diagram';
   /** Whether one body's size next to another's is the real ratio. */
   readonly sizes: 'true' | 'compressed';
   /** Whether distances are the real ratio to each other and to sizes. */
   readonly distances: 'true' | 'compressed';
   /** Key of the on-screen sentence that tells the kid what is and is not to scale. */
-  readonly labelKey: 'scaleLabelTrue' | 'scaleLabelTrueSizes' | 'scaleLabelEasy';
+  readonly labelKey:
+    'scaleLabelTrue' | 'scaleLabelTrueSizes' | 'scaleLabelEasy' | 'scaleLabelDiagram';
   /** Scene radius for a real radius. */
   sizeToScene(radiusKm: number): number;
   /**
@@ -60,6 +62,20 @@ interface DistanceCompression {
 const TRUE_SIZES_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.2 };
 const EASY_DISTANCES: DistanceCompression = { near: 2.5, exponent: 0.36 };
 
+/**
+ * Diagram: a drawing like one in a book, with the Sun, a planet and its moon all big enough to
+ * see in one small picture. Sizes are pulled much closer together than in the easy view (the
+ * Sun is drawn under three times as wide as Earth) and distances much further in. Directions
+ * stay true, so things line up when they really do.
+ */
+const DIAGRAM_SIZE_REFERENCE_KM = 5000;
+const DIAGRAM_SIZE_EXPONENT = 0.2;
+const DIAGRAM_DISTANCES: DistanceCompression = { near: 1.5, exponent: 0.2 };
+
+function diagramRadius(radiusKm: number): number {
+  return (radiusKm / DIAGRAM_SIZE_REFERENCE_KM) ** DIAGRAM_SIZE_EXPONENT;
+}
+
 function requirePositive(name: string, value: number): void {
   if (!(value > 0) || !Number.isFinite(value)) {
     throw new RangeError(`${name} must be a positive number, got ${String(value)}`);
@@ -85,7 +101,21 @@ function easyRadius(radiusKm: number): number {
   return (radiusKm / EASY_SIZE_REFERENCE_KM) ** EASY_SIZE_EXPONENT;
 }
 
-const SCALES: Readonly<Record<ScaleMode, Scale>> = {
+const SCALES: Readonly<Record<ScaleMode | 'diagram', Scale>> = {
+  diagram: {
+    mode: 'diagram',
+    sizes: 'compressed',
+    distances: 'compressed',
+    labelKey: 'scaleLabelDiagram',
+    sizeToScene: diagramRadius,
+    distanceToScene: (distanceKm, parentRadiusKm) =>
+      compressedDistance(
+        DIAGRAM_DISTANCES,
+        diagramRadius(parentRadiusKm),
+        distanceKm,
+        parentRadiusKm,
+      ),
+  },
   true: {
     mode: 'true',
     sizes: 'true',
@@ -119,10 +149,13 @@ const SCALES: Readonly<Record<ScaleMode, Scale>> = {
   },
 };
 
-export function createScale(mode: ScaleMode): Scale {
+export function createScale<Mode extends ScaleMode | 'diagram'>(
+  mode: Mode,
+): Scale & { readonly mode: Mode } {
   const scale = SCALES[mode];
   return {
     ...scale,
+    mode,
     sizeToScene(radiusKm) {
       requirePositive('radiusKm', radiusKm);
       return scale.sizeToScene(radiusKm);

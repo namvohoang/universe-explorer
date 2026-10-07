@@ -15,7 +15,7 @@ import {
   scenePositions,
   type TrackedOffsets,
 } from '../sim/layout';
-import type { Scale } from '../sim/scale';
+import { createScale, type Scale } from '../sim/scale';
 import { add, length, subtract, type Vec3 } from '../sim/vec3';
 import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
@@ -26,6 +26,7 @@ import { createOrbitLine, type OrbitLine } from './orbitLine';
 import { createSkyTrail, type SkyTrail } from './skyTrail';
 import { createTrail, type Trail } from './trail';
 
+const TRUE_SCALE = createScale('true');
 /** How far ahead to look to find which way a comet is heading, in days. */
 const HEADING_DAYS = 0.5;
 /** Enough fill light to make out a night side; the Sun does the rest. */
@@ -286,19 +287,34 @@ export function createSolarSystem(
       const on = positions.get(shadow.onId);
       const now = positions.get(shadow.casterId);
       if (!star || !sun || !on || !now) continue;
+      // The shadow is worked out from the real places and sizes, whatever scale things are
+      // drawn at: a drawing that moves the bodies closer must not move the shadow.
+      const real =
+        currentScale.mode === 'true'
+          ? positions
+          : scenePositions(catalogue, jd, TRUE_SCALE, tracks?.bodies);
+      const realOn = real.get(shadow.onId);
+      const realNow = real.get(shadow.casterId);
+      const realSun = real.get(star.id);
+      const radiusKm = (id: string): number => {
+        const object = catalogue.find((candidate) => candidate.id === id);
+        return (object && bodyRadiusKm(object)) ?? 1;
+      };
+      if (!realOn || !realNow || !realSun) continue;
       // The shadow that arrives now was cast when the light passed the caster: over a second
       // ago between the Moon and Earth, in which time both have moved some 30 km round the Sun.
-      // (Scene units are turned back to km as sizes are, which is right at true scale, where
-      // the stories that draw shadows are told.)
-      const apartKm = length(subtract(now, on)) / currentScale.sizeToScene(1);
+      const apartKm = length(subtract(realNow, realOn)) / TRUE_SCALE.sizeToScene(1);
       const then = jd - lightTravelSeconds(apartKm) / SECONDS_PER_DAY;
       const caster =
-        scenePositions(catalogue, then, currentScale, tracks?.bodies).get(shadow.casterId) ?? now;
+        scenePositions(catalogue, then, TRUE_SCALE, tracks?.bodies).get(shadow.casterId) ?? realNow;
+      // The body is drawn this many times its true-scale size, and the shadow with it.
+      const drawn = bodyOf(shadow.onId).radius() / TRUE_SCALE.sizeToScene(radiusKm(shadow.onId));
+      const times = (v: Vec3): Vec3 => ({ x: v.x * drawn, y: v.y * drawn, z: v.z * drawn });
       bodies.get(shadow.onId)?.setEclipse({
-        sun: subtract(sun, on),
-        sunRadius: bodyOf(star.id).radius(),
-        caster: subtract(caster, on),
-        casterRadius: bodyOf(shadow.casterId).radius(),
+        sun: times(subtract(realSun, realOn)),
+        sunRadius: TRUE_SCALE.sizeToScene(radiusKm(star.id)) * drawn,
+        caster: times(subtract(caster, realOn)),
+        casterRadius: TRUE_SCALE.sizeToScene(radiusKm(shadow.casterId)) * drawn,
         throughAir: shadow.throughAir,
       });
     }

@@ -16,6 +16,20 @@ export function distanceForAspect(distance: number, aspect: number): number {
   return distance * Math.max(1, 1.25 / aspect);
 }
 
+/**
+ * How far back a camera stands to see a box this far across and this tall (both measured from
+ * its middle), through a view of this shape and field of view.
+ */
+export function distanceToFit(
+  halfWide: number,
+  halfTall: number,
+  aspect: number,
+  fieldOfViewDeg: number,
+): number {
+  const half = Math.tan((fieldOfViewDeg * Math.PI) / 360);
+  return Math.max(halfWide / (half * aspect), halfTall / half);
+}
+
 function lerp(a: Vec3, b: Vec3, t: number): Vec3 {
   return add(a, scale(subtract(b, a), t));
 }

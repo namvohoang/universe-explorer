@@ -27,6 +27,7 @@ import { marsBackwards } from '../src/data/stories/marsBackwards';
 import { meteorShower } from '../src/data/stories/meteorShower';
 import { solarEclipse } from '../src/data/stories/solarEclipse';
 import { supermoon } from '../src/data/stories/supermoon';
+import { stories } from '../src/data/stories';
 import { moonPhases } from '../src/data/stories/moonPhases';
 import { saturnRings } from '../src/data/stories/saturnRings';
 import { seasons } from '../src/data/stories/seasons';
@@ -249,6 +250,80 @@ describe('the landing of Apollo 11', () => {
     expect(turnsApart).toBeCloseTo(Math.round(turnsApart), 9);
     expect(one.latDeg).toBeCloseTo(other.latDeg, 9);
     expect(one.altitudeKm).toBeCloseTo(other.altitudeKm, 9);
+  });
+});
+
+describe('a story drawn as a diagram', () => {
+  const diagram = createScale('diagram');
+  const drawn = [moonPhases, solarEclipse, lunarEclipse, seasons, saturnRings];
+  /** How far a body reaches in the diagram, rings and all. */
+  const reach = (id: string): number => {
+    const body = catalogue.find((object) => object.id === id) ?? fail();
+    const rings = catalogue.find(
+      (object) => object.kind === 'ring-system' && object.parentId === id,
+    );
+    const ownKm = bodyRadiusKm(body) ?? fail();
+    const outerKm = rings?.kind === 'ring-system' ? rings.shape.outerRadiusKm.value : ownKm;
+    // Rings are drawn as many times the body's size as they really are.
+    return diagram.sizeToScene(ownKm) * (outerKm / ownKm);
+  };
+
+  it('is every story that asks for one, and no other', () => {
+    expect(stories.filter((story) => story.diagram).map((story) => story.id)).toEqual(
+      expect.arrayContaining(drawn.map((story) => story.id)),
+    );
+    expect(stories.filter((story) => story.diagram)).toHaveLength(drawn.length);
+  });
+
+  it.each(drawn.map((story) => [story.id, story] as const))(
+    '%s keeps its bodies apart from first to last',
+    (_id, story) => {
+      const tracked = new Map(
+        Object.entries(story.tracked ?? {}).map(([id, path]) => [
+          id,
+          (jd: number) => pathPositionKm(path.samples.value, jd),
+        ]),
+      );
+      const from = story.chapters[0]?.atJd.value ?? fail();
+      const to = story.endJd.value;
+      for (let step = 0; step <= 200; step += 1) {
+        const places = scenePositions(
+          catalogue,
+          from + ((to - from) * step) / 200,
+          diagram,
+          tracked,
+        );
+        for (const [index, a] of story.actorIds.entries()) {
+          for (const b of story.actorIds.slice(index + 1)) {
+            const apart = subtract(places.get(a) ?? fail(), places.get(b) ?? fail());
+            expect(Math.hypot(apart.x, apart.y, apart.z), `${a} and ${b}`).toBeGreaterThan(
+              reach(a) + reach(b),
+            );
+          }
+        }
+      }
+    },
+  );
+
+  it('keeps the directions true: the Moon stands in line when it is eclipsed', () => {
+    const jd =
+      lunarEclipse.chapters.find((chapter) => chapter.id === 'red-moon')?.atJd.value ??
+      lunarEclipse.chapters[2]?.atJd.value ??
+      fail();
+    const tracked = new Map(
+      Object.entries(lunarEclipse.tracked ?? {}).map(([id, path]) => [
+        id,
+        (at: number) => pathPositionKm(path.samples.value, at),
+      ]),
+    );
+    const places = scenePositions(catalogue, jd, diagram, tracked);
+    const sun = places.get('sun') ?? fail();
+    const earth = places.get('earth') ?? fail();
+    const moon = places.get('moon') ?? fail();
+    const out = normalize(subtract(earth, sun));
+    const on = normalize(subtract(moon, earth));
+    // Within a degree of straight behind Earth, as it really is in the middle of the eclipse.
+    expect(Math.acos(dot(out, on)) * (180 / Math.PI)).toBeLessThan(1);
   });
 });
 

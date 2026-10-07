@@ -215,7 +215,7 @@ test.describe('a story', () => {
       await expect(panes).toHaveCount(2);
       await expect(panes.locator('.pane-label')).toHaveText([
         'Seen from: The Moon',
-        'The whole picture',
+        'The whole picture (not to scale)',
       ]);
       const [own, whole] = await Promise.all([boxOf(panes.nth(0)), boxOf(panes.nth(1))]);
       expect(overlap(own, whole)).toBe(false);
@@ -226,6 +226,11 @@ test.describe('a story', () => {
         const box = await part.boundingBox();
         if (box) for (const pane of [own, whole]) expect(overlap(pane, box)).toBe(false);
       }
+      // The whole picture is a diagram: the Sun is in it too, big enough to need no ring.
+      await expect(page.locator('#scale-label')).toHaveText('Real sizes and real distances.');
+      const sun = page.locator('.side-tag', { hasText: 'The Sun' });
+      await expect(sun).toBeVisible();
+      await expect(sun).not.toHaveClass(/ringed/);
       // Earth is named in both looks, each name inside its own frame.
       const inside = async (name: Locator, pane: Box): Promise<boolean> => {
         const spot = await boxOf(name);
@@ -239,11 +244,24 @@ test.describe('a story', () => {
       await expect(second).toBeVisible();
       await expect.poll(() => inside(first, own)).toBe(true);
       await expect.poll(() => inside(second, whole)).toBe(true);
-      // Let loose, the camera looks round the whole stage alone.
+      // Let loose, the camera looks round the diagram alone, and the screen says what it is.
       await page.getByRole('button', { name: 'Look around' }).click();
       await expect(panes).toHaveCount(0);
       await expect(second).toBeHidden();
+      await expect(page.locator('#scale-label')).toHaveText(
+        'A drawing: sizes and distances are not real.',
+      );
+      await expect(page.locator('.marker', { hasText: 'The Sun' })).toBeVisible();
+      await page.getByRole('button', { name: 'Back to the story view' }).click();
+      await expect(page.locator('#scale-label')).toHaveText('Real sizes and real distances.');
     }
+  });
+
+  test('with a real path shows the whole picture at true scale beside the close look', async ({
+    page,
+  }) => {
+    await page.goto('/#watch/apollo-11-landing');
+    await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
   });
 
   test('with no look of its own shows the whole stage alone', async ({ page }) => {

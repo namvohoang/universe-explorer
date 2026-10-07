@@ -8,7 +8,14 @@ import {
   type Story,
   type StoryCraft,
 } from './data/types';
-import { ZOOM_SECONDS, distanceForAspect, litSideBearing, zoomedDistance } from './scene/flight';
+import { createDiagram, type Diagram } from './scene/diagram';
+import {
+  ZOOM_SECONDS,
+  distanceForAspect,
+  distanceToFit,
+  litSideBearing,
+  zoomedDistance,
+} from './scene/flight';
 import type { DeepModel, DeepModelNote } from './scene/deep';
 import { createSolarSystem, type TrackedCraft } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo, type PaneBox } from './scene/stage';
@@ -58,7 +65,16 @@ const HOME_DIRECTION = { x: 0, y: 0.5, z: 1 };
 /** A story's whole stage is seen from well above, so the paths on it show as open loops. */
 const STAGE_DIRECTION = { x: 0, y: 1, z: 0.45 };
 /** How much wider than a story's stage its view is, leaving room for the panel under it. */
+const ORIGIN = { x: 0, y: 0, z: 0 };
 const STAGE_FRAMING = 2.6;
+/** A story's whole picture drawn as a diagram: its scale, and the room left round it. */
+const DIAGRAM_SCALE = createScale('diagram');
+const DIAGRAM_MARGIN = 1.2;
+/**
+ * A diagram of things in a line is seen from almost straight above the line, like a drawing
+ * on a page: each ball shows its lit half and its dark half. The little lean says which way is up.
+ */
+const DIAGRAM_LEAN = 0.06;
 /** How many of its own radii away a body stands when a story looks at it close up. */
 const CLOSE_UP_RADII = 12;
 /**
@@ -251,7 +267,11 @@ function start(): void {
   /** The room cut in two: side by side where it is wide, one above the other where it is tall. */
   const roomHalves = (): { main: PaneBox; side: PaneBox } => {
     const { top, bottom, left } = roomAbovePanel();
-    const width = Math.max(2, Math.round(window.innerWidth - left));
+    // The zoom buttons stand at the right of a wide screen; the looks keep clear of them.
+    const buttons = mustFind('#view-controls').getBoundingClientRect();
+    const right =
+      buttons.width > 0 && buttons.left > window.innerWidth / 2 ? buttons.left : window.innerWidth;
+    const width = Math.max(2, Math.round(right - left));
     const height = Math.max(2, Math.round(bottom - top));
     const x = Math.round(left);
     const y = Math.round(top);
@@ -283,7 +303,8 @@ function start(): void {
       side,
       target: whole.target,
       distance: whole.distance,
-      direction: STAGE_DIRECTION,
+      direction: stageBearing(story, side.width / side.height),
+      ...(diagram ? { scene: diagram.scene } : {}),
     });
     const from = catalogue.find((o) => o.id === (chapter.standAtId ?? chapter.viewFromId));
     sideTags.frame([
@@ -291,7 +312,7 @@ function start(): void {
         box: main,
         label: from ? fill(words.watchPaneFrom, { name: displayName(from) }) : words.watchPaneClose,
       },
-      { box: side, label: words.watchPaneWhole },
+      { box: side, label: diagram ? words.watchPaneDrawing : words.watchPaneWhole },
     ]);
   };
   /** The same for width: how many times wider the screen is than the room beside a card. */
@@ -782,6 +803,10 @@ function start(): void {
   // The story's panel covers the bottom of the screen, so the view is drawn in the room above it.
   /** What the story on show draws; everything else steps out of the picture. */
   let watchActors: ReadonlySet<string> | null = null;
+  /** The diagram of the story on show, if its whole picture is drawn as one. */
+  let diagram: Diagram | null = null;
+  /** The diagram is drawn on its own, in place of the stage. */
+  let diagramAlone = false;
   const watchAddress = (story: Story): string =>
     `${window.location.pathname}${window.location.search}#watch/${story.id}`;
   /** A bearing from over one pole of a body, leaning to its night side, where an aurora shows. */
@@ -885,30 +910,102 @@ function start(): void {
     }
     // The stage has to fit in the room above the panel, not in the whole height of the screen.
     const room = roomAbovePanel();
-    const squeeze = window.innerHeight / Math.max(1, room.bottom - room.top);
-    return stageView(story, chapter, stage.aspect(), squeeze);
+    const high = Math.max(1, room.bottom - room.top);
+    const squeeze = window.innerHeight / high;
+    // A diagram is fitted to the room itself: beside the words, and clear of the zoom buttons
+    // by as much on the other side, since the view is drawn in the middle of the room.
+    const buttons = mustFind('#view-controls').getBoundingClientRect();
+    const kept = buttons.width > 0 ? Math.max(0, window.innerWidth - buttons.left) : 0;
+    const wide = Math.max(1, window.innerWidth - room.left - 2 * kept);
+    return stageView(story, chapter, diagram ? wide / high : stage.aspect(), squeeze);
   };
   /**
    * The whole stage: its middle, and everything that is not the far-off star that lights it,
    * fitted to a view of this shape and stood `squeeze` times further back than would fill it.
    */
   const stageView = (story: Story, chapter: Chapter, aspect: number, squeeze: number): FlyTo => {
-    const middle = story.actorIds[0] ?? chapter.lookAtId;
+    // A story with a diagram has its whole picture drawn there, star and all.
+    const shown = diagram?.system ?? system;
+    const star = starOf(story);
+    const first = story.actorIds[0] ?? chapter.lookAtId;
+    const from = (a: string, b: string): number =>
+      length(subtract(shown.positionOf(a), shown.positionOf(b)));
+    if (diagram && story.diagram === 'in-line' && star !== undefined) {
+      // The star at one end, and at the other the world it lights with whatever goes round it.
+      const round = Math.max(
+        shown.spanOf(first),
+        ...story.actorIds
+          .filter((id) => id !== star && id !== first)
+          .map((id) => from(id, first) + shown.radiusOf(id)),
+      );
+      const starRadius = shown.radiusOf(star);
+      const halfLine = (from(first, star) + round + starRadius) / 2;
+      const halfAcross = Math.max(starRadius, round);
+      const distance =
+        (aspect < 1
+          ? distanceToFit(halfAcross, halfLine, aspect, FIELD_OF_VIEW_DEG)
+          : distanceToFit(halfLine, halfAcross, aspect, FIELD_OF_VIEW_DEG)) *
+        DIAGRAM_MARGIN *
+        squeeze;
+      return {
+        target: () => {
+          const at = shown.positionOf(star);
+          const out = subtract(shown.positionOf(first), at);
+          const far = length(out) || 1;
+          const along = (far + round - starRadius) / 2 / far;
+          return { x: at.x + out.x * along, y: at.y + out.y * along, z: at.z + out.z * along };
+        },
+        distance,
+        direction: stageBearing(story, aspect)(),
+        minDistance: shown.radiusOf(first) * BODY_CLOSEST_RADII,
+        maxDistance: distance * 4,
+        idleTurn: false,
+      };
+    }
+    const middle = diagram && star !== undefined ? star : first;
     const reach = Math.max(
-      system.radiusOf(middle),
-      ...(story.craft ?? []).map((craft) => system.reachOf(craft.id)),
+      shown.radiusOf(middle),
+      ...(story.craft ?? []).map((craft) => shown.reachOf(craft.id)),
       ...story.actorIds
-        .filter((id) => catalogue.find((object) => object.id === id)?.kind !== 'star')
-        .map((id) => length(subtract(system.positionOf(id), system.positionOf(middle)))),
+        .filter((id) => diagram !== null || id !== star)
+        .map((id) => from(id, middle) + (diagram && id !== middle ? shown.spanOf(id) : 0)),
     );
-    const distance = distanceForAspect(reach * STAGE_FRAMING, aspect) * squeeze;
+    const distance =
+      (diagram
+        ? distanceToFit(reach, reach, aspect, FIELD_OF_VIEW_DEG) * DIAGRAM_MARGIN
+        : distanceForAspect(reach * STAGE_FRAMING, aspect)) * squeeze;
     return {
-      target: () => system.positionOf(middle),
+      target: () => shown.positionOf(middle),
       distance,
       direction: STAGE_DIRECTION,
-      minDistance: system.radiusOf(middle) * BODY_CLOSEST_RADII,
+      minDistance: shown.radiusOf(middle) * BODY_CLOSEST_RADII,
       maxDistance: distance * 4,
       idleTurn: false,
+    };
+  };
+  const starOf = (story: Story): string | undefined =>
+    story.actorIds.find((id) => catalogue.find((object) => object.id === id)?.kind === 'star');
+  /**
+   * The bearing the whole stage is seen from, asked every frame. A diagram of things in a
+   * line turns with the line, so the star stays at the left of a wide view and at the top of
+   * a tall one; anything else is seen from one fixed bearing.
+   */
+  const stageBearing = (story: Story, aspect: number): (() => Vec3) => {
+    const drawing = diagram?.system;
+    const star = starOf(story);
+    const first = story.actorIds[0];
+    if (!drawing || story.diagram !== 'in-line' || star === undefined || first === undefined) {
+      return () => STAGE_DIRECTION;
+    }
+    const lean = DIAGRAM_LEAN;
+    return () => {
+      const out = subtract(drawing.positionOf(first), drawing.positionOf(star));
+      const flat = Math.hypot(out.x, out.z) || 1;
+      const x = out.x / flat;
+      const z = out.z / flat;
+      // From beyond the lit world the star is further off, so higher up the screen; from one
+      // side of the line it is to the left.
+      return aspect < 1 ? { x: x * lean, y: 1, z: z * lean } : { x: -z * lean, y: 1, z: x * lean };
     };
   };
   /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
@@ -1023,6 +1120,10 @@ function start(): void {
                 chapter.standAtId !== undefined ||
                 chapter.closeUp === true;
               paired = own && !free ? { story, chapter } : null;
+              // A diagram on its own fills the room, and the screen says it is a drawing.
+              diagramAlone = !paired && diagram !== null;
+              stage.setScene(diagramAlone && diagram ? diagram.scene : null);
+              scaleLabel.textContent = words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined || free
@@ -1051,30 +1152,57 @@ function start(): void {
                   : null,
               );
               system.setDust(story.dustAlongId ?? null, story.chapters[0]?.atJd.value ?? clock.jd);
+              const tracks = {
+                shadows: (story.shadows ?? []).map((shadow) => ({
+                  casterId: shadow.casterId,
+                  onId: shadow.onId,
+                  throughAir: shadow.throughAir === true,
+                })),
+                turns: new Map(
+                  Object.entries(story.turned ?? {}).map(([id, turn]) => {
+                    const [x, y, z] = turn.primeMeridian.value;
+                    return [id, { atJd: turn.atJd.value, towards: { x, y, z } }];
+                  }),
+                ),
+                bodies: new Map(
+                  Object.entries(story.tracked ?? {}).map(([id, path]) => [
+                    id,
+                    (jd: number) => pathPositionKm(path.samples.value, jd),
+                  ]),
+                ),
+                craft: craft.map(flightOf),
+              };
               system.setTracks(
                 craft.length === 0 && !story.tracked && !story.turned && !story.shadows
                   ? null
-                  : {
-                      shadows: (story.shadows ?? []).map((shadow) => ({
-                        casterId: shadow.casterId,
-                        onId: shadow.onId,
-                        throughAir: shadow.throughAir === true,
-                      })),
-                      turns: new Map(
-                        Object.entries(story.turned ?? {}).map(([id, turn]) => {
-                          const [x, y, z] = turn.primeMeridian.value;
-                          return [id, { atJd: turn.atJd.value, towards: { x, y, z } }];
-                        }),
-                      ),
-                      bodies: new Map(
-                        Object.entries(story.tracked ?? {}).map(([id, path]) => [
-                          id,
-                          (jd: number) => pathPositionKm(path.samples.value, jd),
-                        ]),
-                      ),
-                      craft: craft.map(flightOf),
-                    },
+                  : tracks,
               );
+              diagram?.dispose();
+              diagram = null;
+              if (story.diagram) {
+                // The story's bodies, with what each goes round and any rings they wear.
+                const ids = new Set<string>();
+                for (const actor of story.actorIds) {
+                  let id: string | null | undefined = actor;
+                  while (id && !ids.has(id)) {
+                    ids.add(id);
+                    const child: string = id;
+                    id = catalogue.find((object) => object.id === child)?.parentId;
+                  }
+                }
+                diagram = createDiagram(
+                  catalogue.filter(
+                    (object) =>
+                      ids.has(object.id) ||
+                      (object.kind === 'ring-system' && ids.has(object.parentId)),
+                  ),
+                  DIAGRAM_SCALE,
+                  story.shadows ?? [],
+                );
+                diagram.system.setTracks({ ...tracks, craft: [] });
+                for (const id of story.actorIds) diagram.system.showDetail(id);
+                diagram.setDate(story.chapters[0]?.atJd.value ?? clock.jd);
+              }
               tagCraft(craft.map(({ id, nameKey }) => ({ id, name: nameOfCraft(nameKey) })));
               sideTags.name([
                 ...drawn
@@ -1104,6 +1232,10 @@ function start(): void {
       paired = null;
       layPanes();
       sideTags.name([]);
+      diagramAlone = false;
+      stage.setScene(null);
+      diagram?.dispose();
+      diagram = null;
       liftView();
       watchActors = null;
       system.showOnly(null);
@@ -1350,6 +1482,7 @@ function start(): void {
       const moved = jd !== watchJd;
       watchJd = jd;
       system.setDate(jd);
+      diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
       if (moved && !reducedMotion) system.flowTails(dt);
       return;
@@ -1367,12 +1500,13 @@ function start(): void {
     if (isDeep(focus)) return;
     if (watch.isOpen()) {
       const actors = watchActors;
+      const shown = diagramAlone && diagram ? diagram.system : system;
       markers.update((id) => {
-        const point = stage.toScreen(system.positionOf(id));
-        return {
-          point: actors?.has(id) ? point : { ...point, visible: false },
-          radiusPixels: system.radiusOf(id) * point.pixelsPerUnit,
-        };
+        if (!actors?.has(id)) {
+          return { point: { ...stage.toScreen(ORIGIN), visible: false }, radiusPixels: 0 };
+        }
+        const point = stage.toScreen(shown.positionOf(id));
+        return { point, radiusPixels: shown.radiusOf(id) * point.pixelsPerUnit };
       });
       for (const [id, tag] of craftTags) {
         const point = stage.toScreen(system.positionOf(id));
@@ -1400,9 +1534,10 @@ function start(): void {
   stage.onSideMoved((viewer) => {
     // The second look of a story: things turn to face its camera, and get their names in it.
     system.setViewer(viewer);
+    const shown = diagram?.system ?? system;
     sideTags.update((id) => {
-      const point = stage.toSideScreen(system.positionOf(id));
-      return { point, radiusPixels: system.radiusOf(id) * point.pixelsPerUnit };
+      const point = stage.toSideScreen(shown.positionOf(id));
+      return { point, radiusPixels: shown.radiusOf(id) * point.pixelsPerUnit };
     });
   });
   stage.start();

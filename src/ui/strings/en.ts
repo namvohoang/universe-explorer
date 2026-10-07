@@ -90,7 +90,7 @@ export const en = {
     'Only the view called Real keeps both sizes and distances true. The other two bring things closer so they can be seen, and say so on screen.',
   grownUpsWatchTitle: 'The stories on the Watch screen',
   grownUpsWatch1:
-    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells.',
+    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells. Where a part has a look of its own (from Earth, say), that look is shown beside the whole picture. For the Moon’s phases, the seasons, the eclipses and Saturn’s rings the whole picture is a diagram marked “not to scale”: the same bodies in their true directions, lit and turned as they really are, but drawn big and close enough to see together, with an eclipse’s two shadows drawn behind the body that casts them.',
   grownUpsWatch2:
     'Where a story says “This is the real path the spaceship flew”, the positions are NASA/JPL’s own record of the flight, from the JPL Horizons service. For the eclipses, the supermoon and the Artemis flights the Moon, too, is put where Horizons has it, and the space station is in the shuttle story.',
   grownUpsWatch3:
@@ -1001,6 +1001,7 @@ export const en = {
   scaleLabelTrueSizes:
     'Planets are the right size next to each other. They are really much farther apart.',
   scaleLabelEasy: 'Drawn bigger and closer so you can see everything.',
+  scaleLabelDiagram: 'A drawing: sizes and distances are not real.',
   mapAltIo: "A map of Io's surface: yellow, orange and white, dotted with dark volcanoes.",
   mapAltEuropa: "A map of Europa's surface: pale ice crossed by long brown cracks.",
   mapAltGanymede:
@@ -1081,6 +1082,7 @@ export const en = {
   watchPaneFrom: 'Seen from: {name}',
   watchPaneClose: 'Close up',
   watchPaneWhole: 'The whole picture',
+  watchPaneDrawing: 'The whole picture (not to scale)',
   watchClose: 'Stop watching',
   watchPathTracked: 'This is the real path the spaceship flew.',
   watchPathStaged: 'The line between real places is a drawing.',

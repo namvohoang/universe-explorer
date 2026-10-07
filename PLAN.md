@@ -686,6 +686,19 @@ recorded last.
       the camera is aimed after the card is shown, so it knows the room; a ringed planet is
       stood back until its rings fit across a narrow screen; on a phone the real picture is a
       small card under the title, its credit read when it is tapped big.
+- [x] 12.15 Two looks side by side (asked for by the owner, 2026-10-07): a part with a look
+      of its own shows it in one half of the room and the whole picture in the other, each
+      framed and named; the eye button still lets the camera loose over the whole picture.
+- [x] 12.16 A whole picture that can be read (the owner's reference: a book diagram of a
+      lunar eclipse marked "not to scale"). For the Moon's phases, the seasons, the two
+      eclipses and Saturn's rings the whole picture is a diagram in a scale of its own
+      (`diagram` in `src/sim/scale.ts`, not one a viewer picks), labelled "not to scale" in
+      its frame and under the title when it fills the room. Same bodies, true directions,
+      true lighting and turning; an eclipse's umbra and penumbra are drawn flat behind the
+      caster. The shadow on a body is worked out from real places at any drawing scale.
+      Not given a diagram: the supermoon (squeezed distances would hide the very thing it
+      shows), Mars going backwards (Earth and Mars would touch), the comet, the meteor
+      shower and the aurora, which keep the true-scale picture.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

@@ -17,6 +17,7 @@ export const seasons: Story = {
   path: 'orbits',
   titleKey: 'storySeasonsTitle',
   actorIds: ['earth', 'sun'],
+  diagram: 'round-the-star',
   chapters: [
     {
       id: 'march-equinox',

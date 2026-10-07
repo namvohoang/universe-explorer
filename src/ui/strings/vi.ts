@@ -102,7 +102,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Chỉ chế độ tên là Thật mới giữ đúng cả kích thước lẫn khoảng cách. Hai chế độ kia kéo mọi thứ lại gần để dễ nhìn, và có ghi rõ trên màn hình.',
   grownUpsWatchTitle: 'Các câu chuyện ở màn hình Xem',
   grownUpsWatch1:
-    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện.',
+    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện. Khi một phần có góc nhìn riêng (chẳng hạn từ Trái Đất), góc nhìn đó được đặt cạnh toàn cảnh. Với các pha của Mặt Trăng, các mùa, nhật thực, nguyệt thực và vành Sao Thổ, toàn cảnh là một hình vẽ ghi “không đúng tỉ lệ”: vẫn những thiên thể ấy, đúng hướng thật, được chiếu sáng và quay như thật, nhưng vẽ đủ to và đủ gần để thấy cùng lúc, với hai vùng bóng của nhật thực, nguyệt thực vẽ phía sau thiên thể tạo ra bóng.',
   grownUpsWatch2:
     'Khi câu chuyện ghi “Đây là đường bay thật của con tàu”, các vị trí là ghi nhận của chính NASA/JPL về chuyến bay, lấy từ dịch vụ JPL Horizons. Với nhật thực, nguyệt thực, siêu trăng và các chuyến bay Artemis, Mặt Trăng cũng được đặt theo Horizons, và trạm vũ trụ trong câu chuyện tàu con thoi cũng vậy.',
   grownUpsWatch3:
@@ -975,6 +975,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPaneFrom: 'Nhìn từ: {name}',
   watchPaneClose: 'Nhìn gần',
   watchPaneWhole: 'Toàn cảnh',
+  watchPaneDrawing: 'Toàn cảnh (không đúng tỉ lệ)',
   watchClose: 'Thôi xem',
   watchPathTracked: 'Đây là đường bay thật của con tàu.',
   watchPathStaged: 'Đường nối giữa các vị trí thật là hình vẽ.',
@@ -1195,6 +1196,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   scaleLabelTrueSizes:
     'Các hành tinh có kích thước đúng so với nhau. Thật ra chúng ở xa nhau hơn nhiều.',
   scaleLabelEasy: 'Vẽ to hơn và gần hơn để bạn thấy được mọi thứ.',
+  scaleLabelDiagram: 'Hình vẽ: kích thước và khoảng cách không thật.',
   mapAltIo: 'Bản đồ bề mặt Io: vàng, cam và trắng, lốm đốm các núi lửa sẫm màu.',
   mapAltEuropa: 'Bản đồ bề mặt Europa: băng nhạt màu với những vết nứt dài màu nâu chạy ngang.',
   mapAltGanymede:

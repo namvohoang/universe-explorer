@@ -12,6 +12,7 @@ export const moonPhases: Story = {
   path: 'orbits',
   titleKey: 'storyMoonPhasesTitle',
   actorIds: ['earth', 'moon', 'sun'],
+  diagram: 'in-line',
   chapters: [
     {
       id: 'new-moon',

@@ -150,6 +150,50 @@ describe('easy view', () => {
   });
 });
 
+describe('the diagram scale', () => {
+  const scale = createScale('diagram');
+
+  it('says that nothing in it is to scale, and is not a mode to pick', () => {
+    expect(scale.labelKey).toBe('scaleLabelDiagram');
+    expect(scale.sizes).toBe('compressed');
+    expect(scale.distances).toBe('compressed');
+    expect(SCALE_MODES).not.toContain(scale.mode);
+  });
+
+  it('keeps what is bigger bigger and what is farther farther', () => {
+    let size = 0;
+    for (let r = 1; r < 1e7; r *= 1.5) {
+      expect(scale.sizeToScene(r)).toBeGreaterThan(size);
+      size = scale.sizeToScene(r);
+    }
+    for (const parentRadius of [1_000, 60_000, 700_000]) {
+      let previous = 0;
+      for (let a = parentRadius * 1.01; a < 1e10; a *= 1.37) {
+        const scene = scale.distanceToScene(a, parentRadius);
+        expect(scene).toBeGreaterThan(previous);
+        // Nothing outside its parent is drawn inside it.
+        expect(scene).toBeGreaterThan(scale.sizeToScene(parentRadius));
+        previous = scene;
+      }
+    }
+  });
+
+  it('brings the Sun, Earth and the Moon into one small picture', () => {
+    // Real radii and distances, rounded: only the order of size of the drawing is checked.
+    const sun = scale.sizeToScene(696_000);
+    const earth = scale.sizeToScene(6_378);
+    const moon = scale.sizeToScene(1_737);
+    const earthOut = scale.distanceToScene(149_600_000, 696_000);
+    const moonOut = scale.distanceToScene(384_400, 6_378);
+    expect(sun / earth).toBeLessThan(3);
+    expect(earth / moon).toBeLessThan(1.5);
+    // The whole line is under ten Earths long, where the real one is 11,700.
+    expect((sun + earthOut + moonOut + moon) / (2 * earth)).toBeLessThan(10);
+    expect(moonOut).toBeGreaterThan(earth + moon);
+    expect(earthOut).toBeGreaterThan(sun + earth + moonOut + moon);
+  });
+});
+
 describe.each(SCALE_MODES)('%s mode', (mode) => {
   const scale = createScale(mode);
 

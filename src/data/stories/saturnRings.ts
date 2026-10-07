@@ -17,6 +17,7 @@ export const saturnRings: Story = {
   path: 'orbits',
   titleKey: 'storySaturnRingsTitle',
   actorIds: ['saturn', 'earth', 'sun'],
+  diagram: 'round-the-star',
   chapters: [
     {
       id: 'wide-open',

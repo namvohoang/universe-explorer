@@ -3,6 +3,7 @@ import { dot, length, normalize, subtract, type Vec3 } from '../sim/vec3';
 import {
   FLIGHT_SECONDS,
   distanceForAspect,
+  distanceToFit,
   easeInOutCubic,
   followTarget,
   heldAtDistance,
@@ -45,6 +46,15 @@ describe('distanceForAspect', () => {
     expect(distanceForAspect(72, 16 / 9)).toBe(72);
     expect(distanceForAspect(72, 1.25)).toBe(72);
     expect(distanceForAspect(72, 0.5)).toBe(180);
+  });
+});
+
+describe('distanceToFit', () => {
+  it('stands back until the taller or the wider side just fits', () => {
+    // A 90 degree view sees as far up as it is away; twice as far across on a 2:1 screen.
+    expect(distanceToFit(1, 3, 2, 90)).toBeCloseTo(3, 12);
+    expect(distanceToFit(8, 3, 2, 90)).toBeCloseTo(4, 12);
+    expect(distanceToFit(2, 1, 0.5, 90)).toBeCloseTo(4, 12);
   });
 });
 

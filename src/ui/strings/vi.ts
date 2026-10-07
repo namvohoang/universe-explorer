@@ -871,6 +871,22 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyApollo11LandingLiftingOff: 'Phần trên của tàu đổ bộ nổ máy và bay lên.',
   storyApollo11LandingCatchingUp:
     'Tàu đổ bộ đuổi theo Columbia quanh Mặt Trăng. Cuối cùng hai tàu nối lại với nhau.',
+  storySolarEclipseTitle: 'Nhật thực',
+  storySolarEclipseShadowArrives:
+    'Mặt Trăng đang đi qua giữa Mặt Trời và Trái Đất. Rìa mờ của bóng nó vừa chạm vào Trái Đất.',
+  storySolarEclipseDarkSpot:
+    'Giờ phần giữa nhỏ và tối của cái bóng rơi lên Trái Đất. Người ở trong đó thấy Mặt Trăng che kín Mặt Trời.',
+  storySolarEclipsePaleRing:
+    'Cái bóng mờ lớn bao quanh đốm tối. Người ở đó thấy Mặt Trăng chỉ che một phần Mặt Trời.',
+  storySolarEclipseLeaving:
+    'Đốm tối trượt ra khỏi rìa Trái Đất. Hãy nhớ: không bao giờ nhìn Mặt Trời nếu không có kính xem nhật thực.',
+  storyLunarEclipseTitle: 'Nguyệt thực',
+  storyLunarEclipsePaleShadow:
+    'Trăng tròn đang đi vào bóng của Trái Đất. Lúc đầu nó chỉ mờ đi một chút. Rất khó nhận ra.',
+  storyLunarEclipseDarkShadow: 'Giờ phần giữa tối của bóng Trái Đất lan dần qua Mặt Trăng.',
+  storyLunarEclipseRedMoon:
+    'Cả Mặt Trăng nằm trong bóng Trái Đất, và nó ánh lên màu đỏ. Một ít ánh sáng Mặt Trời bị không khí của Trái Đất bẻ cong và tới được nó.',
+  storyLunarEclipseComingOut: 'Mặt Trăng bắt đầu trượt ra khỏi bóng của Trái Đất.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

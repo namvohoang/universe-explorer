@@ -1,7 +1,8 @@
 import { AmbientLight, Group, PointLight, Vector3 } from 'three';
 import type { CelestialObject, RingSystem } from '../data/types';
 import { isShowpiece } from '../data/types';
-import { J2000_JD, KM_PER_AU } from '../sim/constants';
+import { J2000_JD, KM_PER_AU, SECONDS_PER_DAY } from '../sim/constants';
+import { lightTravelSeconds } from '../sim/elements';
 import { eclipticToScene, poleOf } from '../sim/frames';
 import { sceneDistance } from '../sim/belt';
 import {
@@ -13,7 +14,7 @@ import {
   type TrackedOffsets,
 } from '../sim/layout';
 import type { Scale } from '../sim/scale';
-import { add, length, type Vec3 } from '../sim/vec3';
+import { add, length, subtract, type Vec3 } from '../sim/vec3';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
@@ -45,6 +46,12 @@ export interface Tracks {
   /** Bodies turned to face the way they really did: a direction in the ecliptic frame at a date. */
   readonly turns: ReadonlyMap<string, { readonly atJd: number; readonly towards: Vec3 }>;
   readonly craft: readonly TrackedCraft[];
+  /** One body's shadow drawn on another. */
+  readonly shadows: readonly {
+    readonly casterId: string;
+    readonly onId: string;
+    readonly throughAir: boolean;
+  }[];
 }
 
 export interface SolarSystem {
@@ -238,6 +245,26 @@ export function createSolarSystem(
     const star = catalogue.find((object) => object.kind === 'star');
     const sun = star ? positions.get(star.id) : undefined;
     if (sun) for (const body of bodies.values()) body.setSunPosition(sun);
+    for (const shadow of tracks?.shadows ?? []) {
+      const on = positions.get(shadow.onId);
+      const now = positions.get(shadow.casterId);
+      if (!star || !sun || !on || !now) continue;
+      // The shadow that arrives now was cast when the light passed the caster: over a second
+      // ago between the Moon and Earth, in which time both have moved some 30 km round the Sun.
+      // (Scene units are turned back to km as sizes are, which is right at true scale, where
+      // the stories that draw shadows are told.)
+      const apartKm = length(subtract(now, on)) / currentScale.sizeToScene(1);
+      const then = jd - lightTravelSeconds(apartKm) / SECONDS_PER_DAY;
+      const caster =
+        scenePositions(catalogue, then, currentScale, tracks?.bodies).get(shadow.casterId) ?? now;
+      bodies.get(shadow.onId)?.setEclipse({
+        sun: subtract(sun, on),
+        sunRadius: bodyOf(star.id).radius(),
+        caster: subtract(caster, on),
+        casterRadius: bodyOf(shadow.casterId).radius(),
+        throughAir: shadow.throughAir,
+      });
+    }
   };
 
   return {
@@ -255,6 +282,7 @@ export function createSolarSystem(
         trail.dispose();
       }
       trails.clear();
+      for (const shadow of tracks?.shadows ?? []) bodies.get(shadow.onId)?.setEclipse(null);
       tracks = next;
       for (const [id, body] of bodies) {
         const turn = next?.turns.get(id);

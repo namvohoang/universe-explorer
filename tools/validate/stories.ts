@@ -97,6 +97,13 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
     if (story.path !== 'staged' && craft.some((one) => 'points' in one.path)) {
       errors.push(`story ${story.id}: flies a craft on a drawn path but does not say it is staged`);
     }
+    for (const shadow of story.shadows ?? []) {
+      for (const id of [shadow.casterId, shadow.onId]) {
+        if (!story.actorIds.includes(id)) {
+          errors.push(`story ${story.id}: draws a shadow with "${id}", not one of its actors`);
+        }
+      }
+    }
     for (const id of Object.keys(story.turned ?? {})) {
       if (!story.actorIds.includes(id)) {
         errors.push(`story ${story.id}: turns "${id}", not one of its actors`);

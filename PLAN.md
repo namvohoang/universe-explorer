@@ -579,10 +579,18 @@ recorded last.
       between them already share one factor there, so no new scale mode was needed). The four
       instants are the US Naval Observatory's, since NASA's pages give no table of phase times;
       a test holds the app's Moon to the named phase at each. Left: day, night and the seasons.
-- [ ] 12.4 `src/sim/shadow.ts` (the dark middle and the pale edge of a shadow) and the two
-      eclipses, each on a real date from NASA's eclipse pages. First measure how far the
-      catalogue's Moon is from JPL Horizons at those hours; if the shadow would miss, the Moon
-      takes Horizons samples for those hours. No tolerance is widened.
+- [x] 12.4 The two eclipses: the total solar eclipse of 2 August 2027 and the total lunar
+      eclipse of 31 December 2028. `src/sim/shadow.ts` works out, from the real sizes and
+      places, what share of the Sun's disc one body hides from a point, and the surface shader
+      does the same sum at every point, so a shadow has its dark middle and its pale edge where
+      they truly fall. The catalogue's Moon was not near enough (a degree or so out), so for
+      these hours the Moon and Earth are where JPL Horizons has them, and for the solar eclipse
+      Earth is turned the way it will face. The shadow is taken from where its caster was when
+      the light passed it, 1.3 s earlier: leaving that out put the shadow 38 km off. With it,
+      the middle of each eclipse falls within 2 s of the instant NASA lists, and the Moon's
+      shadow within a quarter of a degree of NASA's table of its path; tests hold both. The
+      lunar eclipse is two or three minutes shorter than NASA's, which draws Earth's shadow a
+      little bigger for its air. How red the Moon glows in the shadow is a drawing choice.
 - [ ] 12.5 A supermoon (the Moon's stretched orbit: a full Moon at its nearest beside one at its
       farthest, the ratio from the catalogue; the word is not an official one and the card says
       so), Halley's tail growing near the Sun, Mars going backwards in Earth's sky, and

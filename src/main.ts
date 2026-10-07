@@ -787,9 +787,14 @@ function start(): void {
               system.showOnly(watchActors);
               const craft = story.craft ?? [];
               system.setTracks(
-                craft.length === 0 && !story.tracked && !story.turned
+                craft.length === 0 && !story.tracked && !story.turned && !story.shadows
                   ? null
                   : {
+                      shadows: (story.shadows ?? []).map((shadow) => ({
+                        casterId: shadow.casterId,
+                        onId: shadow.onId,
+                        throughAir: shadow.throughAir === true,
+                      })),
                       turns: new Map(
                         Object.entries(story.turned ?? {}).map(([id, turn]) => {
                           const [x, y, z] = turn.primeMeridian.value;

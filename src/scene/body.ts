@@ -37,6 +37,105 @@ const COMET_NUCLEUS = '#3d3731';
 const ANISOTROPY = 4;
 
 const SCENE_UP = new Vector3(0, 1, 0);
+/**
+ * How bright, and what colour, a body is in the full shadow of a world with air, as a share of
+ * its sunlit look: the dim red of a totally eclipsed Moon. The strength is a drawing choice.
+ */
+const AIR_GLOW = new Vector3(0.3, 0.08, 0.04);
+const NO_GLOW = new Vector3(0, 0, 0);
+
+/** Another body standing between this one and the Sun; places are from this body's centre, in scene units. */
+export interface Eclipse {
+  readonly sun: Vec3;
+  readonly sunRadius: number;
+  readonly caster: Vec3;
+  readonly casterRadius: number;
+  /** The caster has air, so its full shadow is dim red, not black. */
+  readonly throughAir: boolean;
+}
+
+interface EclipseUniforms {
+  readonly on: { value: number };
+  readonly sun: { value: Vector3 };
+  readonly sunRadius: { value: number };
+  readonly caster: { value: Vector3 };
+  readonly casterRadius: { value: number };
+  readonly glow: { value: Vector3 };
+}
+
+/**
+ * Makes a surface darken where another body hides the Sun from it. At each point the share of
+ * the Sun's disc the other body covers is worked out from the real sizes and places, so the
+ * shadow has its dark middle and its pale edge where they truly fall (the same sum as
+ * `sunCover` in src/sim/shadow.ts).
+ */
+function addEclipseShadow(material: MeshStandardMaterial): EclipseUniforms {
+  const uniforms: EclipseUniforms = {
+    on: { value: 0 },
+    sun: { value: new Vector3() },
+    sunRadius: { value: 1 },
+    caster: { value: new Vector3() },
+    casterRadius: { value: 1 },
+    glow: { value: NO_GLOW.clone() },
+  };
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.eclipseOn = uniforms.on;
+    shader.uniforms.eclipseSun = uniforms.sun;
+    shader.uniforms.eclipseSunRadius = uniforms.sunRadius;
+    shader.uniforms.eclipseCaster = uniforms.caster;
+    shader.uniforms.eclipseCasterRadius = uniforms.casterRadius;
+    shader.uniforms.eclipseGlow = uniforms.glow;
+    // The point's place from the body's centre: turned and sized like the body, but not moved,
+    // so nothing is lost to the huge distance from the middle of the scene.
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vFromCentre;')
+      .replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\nvFromCentre = mat3(modelMatrix) * transformed;',
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <common>',
+        `#include <common>
+        uniform float eclipseOn;
+        uniform vec3 eclipseSun;
+        uniform float eclipseSunRadius;
+        uniform vec3 eclipseCaster;
+        uniform float eclipseCasterRadius;
+        uniform vec3 eclipseGlow;
+        varying vec3 vFromCentre;`,
+      )
+      .replace(
+        '#include <dithering_fragment>',
+        `if (eclipseOn > 0.5) {
+          vec3 toSun = eclipseSun - vFromCentre;
+          vec3 toCaster = eclipseCaster - vFromCentre;
+          float sunDistance = length(toSun);
+          float casterDistance = length(toCaster);
+          if (casterDistance < sunDistance) {
+            float a = asin(min(1.0, eclipseSunRadius / sunDistance));
+            float b = asin(min(1.0, eclipseCasterRadius / casterDistance));
+            float d = atan(length(cross(toSun, toCaster)), dot(toSun, toCaster));
+            float cover = 0.0;
+            if (d < a + b) {
+              if (d <= abs(b - a)) {
+                cover = b >= a ? 1.0 : (b * b) / (a * a);
+              } else {
+                float alpha = acos(clamp((d * d + a * a - b * b) / (2.0 * d * a), -1.0, 1.0));
+                float beta = acos(clamp((d * d + b * b - a * a) / (2.0 * d * b), -1.0, 1.0));
+                float lens = a * a * (alpha - sin(2.0 * alpha) / 2.0) + b * b * (beta - sin(2.0 * beta) / 2.0);
+                cover = min(1.0, lens / (PI * a * a));
+              }
+            }
+            gl_FragColor.rgb = gl_FragColor.rgb * (1.0 - cover) + gl_FragColor.rgb * cover * eclipseGlow;
+          }
+        }
+        #include <dithering_fragment>`,
+      );
+  };
+  return uniforms;
+}
+
 /** How much sunlight a fully opaque ring takes off the planet beneath it. */
 const RING_SHADOW_STRENGTH = 0.85;
 
@@ -100,6 +199,8 @@ export interface Body {
   loadMap(onLoaded?: () => void): void;
   /** Turns the body to where it is at this date. */
   setDate(jd: number): void;
+  /** Draws another body's shadow on this one, or none for `null`. A ringed body shows none. */
+  setEclipse(eclipse: Eclipse | null): void;
   /**
    * The body's own turning frame: its +y is the north pole, its +x runs out through latitude 0,
    * longitude 0, and one unit is the body's longest radius. Something added to it rides round
@@ -337,6 +438,8 @@ export function createBody(
     flattened.add(rings.mesh);
     if (lit) addRingShadow(lit, ringMap, sunInMesh);
   }
+  // A surface has room for one such change: a ringed planet keeps its rings' shadow.
+  const eclipse = lit && !ringSystem ? addEclipseShadow(lit) : null;
   const synchronous = shape.orientation.rotation === 'synchronous';
   const facing = new Vector3();
   const untilt = new Quaternion();
@@ -370,6 +473,16 @@ export function createBody(
     setDate(jd) {
       if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd) + turnOffset;
       turnModel();
+    },
+    setEclipse(shadow) {
+      if (!eclipse) return;
+      eclipse.on.value = shadow ? 1 : 0;
+      if (!shadow) return;
+      eclipse.sun.value.set(shadow.sun.x, shadow.sun.y, shadow.sun.z);
+      eclipse.sunRadius.value = shadow.sunRadius;
+      eclipse.caster.value.set(shadow.caster.x, shadow.caster.y, shadow.caster.z);
+      eclipse.casterRadius.value = shadow.casterRadius;
+      eclipse.glow.value.copy(shadow.throughAir ? AIR_GLOW : NO_GLOW);
     },
     setTurn(turn) {
       turnOffset = 0;

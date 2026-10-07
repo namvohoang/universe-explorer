@@ -21,6 +21,8 @@ function overlap(a: Box, b: Box): boolean {
 /** A story with a short caption, and one with a long caption and a note about its path. */
 const STORIES = [
   ['moon-phases', 'The Moon’s phases'],
+  ['solar-eclipse', 'A solar eclipse'],
+  ['lunar-eclipse', 'A lunar eclipse'],
   ['artemis-1', 'Artemis I: round the Moon'],
   ['artemis-2', 'Artemis II: with astronauts'],
   ['apollo-11-launch', 'Apollo 11: the launch'],

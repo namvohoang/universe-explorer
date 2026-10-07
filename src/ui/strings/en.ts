@@ -1130,6 +1130,22 @@ export const en = {
   storyApollo11LandingLiftingOff: 'The top part of the lander fires its engine and lifts off.',
   storyApollo11LandingCatchingUp:
     'The lander chases Columbia round the Moon. At the end the two join up again.',
+  storySolarEclipseTitle: 'A solar eclipse',
+  storySolarEclipseShadowArrives:
+    'The Moon is passing between the Sun and Earth. The pale edge of its shadow has just touched Earth.',
+  storySolarEclipseDarkSpot:
+    'Now the small dark middle of the shadow lands on Earth. People inside it see the Moon hide the whole Sun.',
+  storySolarEclipsePaleRing:
+    'The big pale shadow is all around the dark spot. People there see the Moon hide only part of the Sun.',
+  storySolarEclipseLeaving:
+    'The dark spot slides off the edge of Earth. Remember: never look at the Sun without special eclipse glasses.',
+  storyLunarEclipseTitle: 'A lunar eclipse',
+  storyLunarEclipsePaleShadow:
+    'The full Moon is moving into Earth’s shadow. At first it only dims a little. It is hard to notice.',
+  storyLunarEclipseDarkShadow: 'Now the dark middle of Earth’s shadow creeps across the Moon.',
+  storyLunarEclipseRedMoon:
+    'The whole Moon is in Earth’s shadow, and it glows red. A little sunlight bends through Earth’s air and reaches it.',
+  storyLunarEclipseComingOut: 'The Moon starts to slide out of Earth’s shadow again.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

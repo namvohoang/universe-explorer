@@ -7,7 +7,8 @@ export type StoryGroup = (typeof STORY_GROUPS)[number];
 
 /**
  * Where a story's movement comes from, which the screen always says:
- * `orbits` is worked out from the catalogue's own orbits; `tracked` is positions sampled from
+ * `orbits` is worked out from the catalogue's own orbits, or from JPL's positions of the
+ * bodies themselves; `tracked` is positions sampled from
  * JPL Horizons; `staged` has real event times but the movement between them is a drawing.
  */
 export const STORY_PATHS = ['orbits', 'tracked', 'staged'] as const;
@@ -101,6 +102,19 @@ export interface BodyTurn {
   readonly primeMeridian: Sourced<readonly [x: number, y: number, z: number]>;
 }
 
+/** One body's shadow falling on another, drawn for a story about an eclipse. */
+export interface StoryShadow {
+  /** Catalogue id of the body that stands in the Sun's light. */
+  readonly casterId: string;
+  /** Catalogue id of the body the shadow falls on. */
+  readonly onId: string;
+  /**
+   * Set when the caster has air that bends a little red light into its shadow, as Earth's
+   * does: the body in the shadow then glows dim red rather than going black.
+   */
+  readonly throughAir?: boolean;
+}
+
 /** A spacecraft that flies in a story. It is drawn as a named point: at true scale it is too small to see. */
 export interface StoryCraft {
   readonly id: string;
@@ -130,6 +144,8 @@ export interface Story {
    * the moon to the kilometre.
    */
   readonly tracked?: Readonly<Record<string, SampledPath>>;
+  /** Shadows drawn from one body onto another. */
+  readonly shadows?: readonly StoryShadow[];
   /** Bodies turned, for this story, to face the way they really did, keyed by catalogue id. */
   readonly turned?: Readonly<Record<string, BodyTurn>>;
   readonly sources: readonly Source[];

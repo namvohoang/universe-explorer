@@ -28,6 +28,17 @@ export function formatDateAndHour(jd: number): string {
   return `${DATE_FORMAT.format(new Date(hour))}, ${HOUR_FORMAT.format(new Date(hour))}`;
 }
 
+/**
+ * A Julian date as a day and the time to the minute, e.g. "20 July 1969, 20:17", in world
+ * time (UTC): for something that takes a day or two, where the minute still matters.
+ */
+export function formatDateAndMinute(jd: number): string {
+  const MINUTE_MS = 60_000;
+  // Rounded down, as a clock shows it; half a millisecond is added for what a Julian date cannot hold.
+  const minute = Math.floor((unixMsFromJulianDate(jd) + 0.5) / MINUTE_MS) * MINUTE_MS;
+  return `${DATE_FORMAT.format(new Date(minute))}, ${HOUR_FORMAT.format(new Date(minute))}`;
+}
+
 const SECOND_FORMAT = new Intl.DateTimeFormat(locale, {
   hour: '2-digit',
   minute: '2-digit',

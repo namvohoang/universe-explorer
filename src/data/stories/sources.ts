@@ -100,3 +100,26 @@ export const NASA_SATURN_V_STUDENTS: Source = {
   url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-was-the-saturn-v-grades-5-8/',
   retrieved: '2026-10-07',
 };
+
+export const NASA_APOLLO_11_MISSION_REPORT: Source = {
+  id: 'nasa-apollo11-mission-report',
+  title:
+    'NASA Manned Spacecraft Center — Apollo 11 Mission Report, MSC-00171 (November 1969), Table 7-II, trajectory parameters: latitude, longitude and heading at each event in lunar orbit',
+  url: 'https://www.nasa.gov/wp-content/uploads/static/apollo50th/pdf/A11_MissionReport.pdf',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_SP4029_APOLLO_11_TIMELINE: Source = {
+  id: 'nasa-sp4029-apollo11-timeline',
+  title: 'NASA SP-2000-4029, Apollo by the Numbers — Apollo 11 timeline: each event with its time',
+  url: 'https://www.nasa.gov/wp-content/uploads/static/history/SP-4029/Apollo_11i_Timeline.htm',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_SP4029_APOLLO_11_SUMMARY: Source = {
+  id: 'nasa-sp4029-apollo11-summary',
+  title:
+    'NASA SP-2000-4029, Apollo by the Numbers — Apollo 11: the seventh mission, the first lunar landing',
+  url: 'https://www.nasa.gov/wp-content/uploads/static/history/SP-4029/Apollo_11a_Summary.htm',
+  retrieved: '2026-10-07',
+};

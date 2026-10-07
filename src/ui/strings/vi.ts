@@ -856,6 +856,21 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Tầng thứ hai cũng tách ra. Tầng thứ ba đẩy thêm cú cuối cùng.',
   storyApollo11LaunchInOrbit:
     'Động cơ tắt. Apollo 11 đã vào quỹ đạo. Giờ nó bay vòng quanh Trái Đất.',
+  storyApollo11LandingTitle: 'Apollo 11: hạ cánh',
+  craftApollo11Lander: 'Tàu đổ bộ',
+  craftApollo11Columbia: 'Columbia',
+  storyApollo11LandingLettingGo:
+    'Tàu đổ bộ rời khỏi Columbia, con tàu đã chở nó tới. Cả hai tiếp tục bay quanh Mặt Trăng.',
+  storyApollo11LandingDroppingLower:
+    'Ở phía sau Mặt Trăng, tàu đổ bộ nổ máy. Giờ đường bay của nó hạ xuống sát mặt đất.',
+  storyApollo11LandingSlowingDown: 'Tàu đổ bộ lại nổ máy, để chậm dần cho tới khi chạm đất.',
+  storyApollo11LandingLanded:
+    'Nó đã hạ cánh, trên một đồng bằng phẳng gọi là Biển Tĩnh Lặng. Columbia vẫn bay vòng ở phía trên.',
+  storyApollo11LandingFirstStep:
+    'Một phi hành gia trèo xuống và đặt bước chân đầu tiên lên Mặt Trăng.',
+  storyApollo11LandingLiftingOff: 'Phần trên của tàu đổ bộ nổ máy và bay lên.',
+  storyApollo11LandingCatchingUp:
+    'Tàu đổ bộ đuổi theo Columbia quanh Mặt Trăng. Cuối cùng hai tàu nối lại với nhau.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

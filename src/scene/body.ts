@@ -101,6 +101,12 @@ export interface Body {
   /** Turns the body to where it is at this date. */
   setDate(jd: number): void;
   /**
+   * The body's own turning frame: its +y is the north pole, its +x runs out through latitude 0,
+   * longitude 0, and one unit is the body's longest radius. Something added to it rides round
+   * with the ground.
+   */
+  readonly frame: Group;
+  /**
    * Turns the body so that its latitude 0, longitude 0 points along `towards` (scene axes) at
    * `atJd`, and spins on from there. `null` goes back to spinning from an unknown start.
    */
@@ -355,6 +361,7 @@ export function createBody(
     id: object.id,
     group,
     radius: () => longest,
+    frame: modelFrame,
     loadDetail,
     loadMap: (onLoaded) => {
       surface.loadMap(onLoaded);

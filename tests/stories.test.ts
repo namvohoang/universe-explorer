@@ -4,9 +4,11 @@ import { describe, expect, it } from 'vitest';
 import { catalogue } from '../src/data/catalogue';
 import type { PathSample, Story } from '../src/data/types';
 import { bodyRadiusKm, scenePositions } from '../src/sim/layout';
+import { groundPlaceAt, groundRoute } from '../src/sim/groundPath';
 import { drawnThrough, pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
+import { apollo11Landing } from '../src/data/stories/apollo11Landing';
 import { apollo11Launch } from '../src/data/stories/apollo11Launch';
 import { artemis1 } from '../src/data/stories/artemis1';
 import { artemis2 } from '../src/data/stories/artemis2';
@@ -141,7 +143,7 @@ describe('Artemis II', () => {
 
 describe('the launch of Apollo 11', () => {
   const path = apollo11Launch.craft?.[0]?.path;
-  const points = path && 'points' in path ? path.points.value : [];
+  const points = path && 'points' in path && !('heading' in path) ? path.points.value : [];
   const samples = drawnThrough(points);
   const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
   const groundKm = bodyRadiusKm(earth) ?? 0;
@@ -176,6 +178,59 @@ describe('the launch of Apollo 11', () => {
   it('turns Earth by a direction of length one', () => {
     const [x, y, z] = apollo11Launch.turned?.earth?.primeMeridian.value ?? [0, 0, 0];
     expect(Math.hypot(x, y, z)).toBeCloseTo(1, 6);
+  });
+});
+
+describe('the landing of Apollo 11', () => {
+  const moonKm = bodyRadiusKm(catalogue.find((object) => object.id === 'moon') ?? fail()) ?? 0;
+  const routeOf = (id: string) => {
+    const path = apollo11Landing.craft?.find((craft) => craft.id === id)?.path;
+    if (!path || !('heading' in path)) throw new Error(`${id} has no path over the ground`);
+    return groundRoute(path.points.value, path.heading.value, moonKm);
+  };
+  const lander = routeOf('apollo-11-lander');
+  const columbia = routeOf('apollo-11-columbia');
+  const chapter = (id: string): number =>
+    apollo11Landing.chapters.find((one) => one.id === id)?.atJd.value ?? NaN;
+
+  it('stands on the ground at the landing place from landing to liftoff', () => {
+    for (const jd of [chapter('landed'), chapter('first-step'), chapter('lifting-off')]) {
+      const place = groundPlaceAt(lander, jd);
+      // NASA: latitude 0.67408 north, longitude 23.47297 east.
+      expect(place.altitudeKm).toBe(0);
+      expect(place.latDeg).toBeCloseTo(0.67408, 9);
+      expect(((place.lonDegEast % 360) + 360) % 360).toBeCloseTo(23.47297, 9);
+    }
+  });
+
+  it('comes down all the way from where the engine is lit to the ground, without rising', () => {
+    let before = Infinity;
+    for (let jd = chapter('slowing-down'); jd <= chapter('landed'); jd += 1 / 86_400) {
+      const height = groundPlaceAt(lander, jd).altitudeKm;
+      expect(height).toBeLessThanOrEqual(before);
+      before = height;
+    }
+    expect(before).toBeLessThan(0.1);
+  });
+
+  it('sends Columbia round the Moon as many times as NASA’s count of its orbits allows', () => {
+    // NASA: 30 lunar orbits lasting 59 hours 30 minutes 25.79 seconds, so one took about
+    // 1.98 hours. From undocking to docking was 27 hours 51 minutes.
+    const hoursEach = (59 + 30 / 60 + 25.79 / 3600) / 30;
+    const expectedTurns = (27 + 51 / 60) / hoursEach;
+    const turns = (columbia.stops[columbia.stops.length - 1]?.travelDeg ?? 0) / 360;
+    // The ground turns under the orbit a little in that time, and the orbit was not quite round.
+    expect(Math.abs(turns - expectedTurns)).toBeLessThan(0.3);
+  });
+
+  it('brings the two craft back to one place at the end', () => {
+    const end = apollo11Landing.endJd.value;
+    const [one, other] = [groundPlaceAt(lander, end), groundPlaceAt(columbia, end)];
+    // Each has gone round a different number of times; what counts is the point of the ground.
+    const turnsApart = (one.lonDegEast - other.lonDegEast) / 360;
+    expect(turnsApart).toBeCloseTo(Math.round(turnsApart), 9);
+    expect(one.latDeg).toBeCloseTo(other.latDeg, 9);
+    expect(one.altitudeKm).toBeCloseTo(other.altitudeKm, 9);
   });
 });
 

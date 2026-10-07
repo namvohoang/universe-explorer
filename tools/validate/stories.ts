@@ -2,7 +2,7 @@
  * Checks the stories of the Watch screen beyond what the types can: sources resolve, chapters
  * run forwards in time, and everything a story draws is in the catalogue. Pure: takes the records.
  */
-import type { SampledPath, StagedPath, Story } from '../../src/data/types';
+import type { GroundPath, SampledPath, StagedPath, Story } from '../../src/data/types';
 import { sourceErrors } from './catalogue';
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -50,7 +50,7 @@ function chapterErrors(story: Story): string[] {
 function pathErrors(
   story: Story,
   name: string,
-  path: SampledPath | StagedPath,
+  path: SampledPath | StagedPath | GroundPath,
   known: ReadonlySet<string>,
 ): string[] {
   const errors: string[] = [];

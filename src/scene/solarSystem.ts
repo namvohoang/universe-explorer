@@ -1,5 +1,5 @@
-import { AmbientLight, Group, PointLight } from 'three';
-import type { CelestialObject, PathSample, RingSystem } from '../data/types';
+import { AmbientLight, Group, PointLight, Vector3 } from 'three';
+import type { CelestialObject, RingSystem } from '../data/types';
 import { isShowpiece } from '../data/types';
 import { J2000_JD, KM_PER_AU } from '../sim/constants';
 import { eclipticToScene, poleOf } from '../sim/frames';
@@ -12,9 +12,8 @@ import {
   scenePositions,
   type TrackedOffsets,
 } from '../sim/layout';
-import { pathPositionKm } from '../sim/trajectory';
 import type { Scale } from '../sim/scale';
-import { length, type Vec3 } from '../sim/vec3';
+import { add, length, type Vec3 } from '../sim/vec3';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
@@ -27,11 +26,18 @@ const HEADING_DAYS = 0.5;
 const NIGHT_SIDE_LIGHT = 0.06;
 const SUNLIGHT = 2.8;
 
-/** A spacecraft flown along samples of its real path, measured from the body `centreId`. */
+/**
+ * A spacecraft flown along a path measured from the body `centreId`. In `space` its places are
+ * km from that body's centre in the ecliptic frame. In `body` they are in the body's own
+ * turning frame, in units of its radius, so the path rides round with the ground.
+ */
 export interface TrackedCraft {
   readonly id: string;
   readonly centreId: string;
-  readonly samples: readonly PathSample[];
+  readonly frame: 'space' | 'body';
+  /** The dates the path is drawn at, earliest first. */
+  readonly instants: readonly number[];
+  placeAt(jd: number): Vec3;
 }
 
 export interface Tracks {
@@ -156,7 +162,10 @@ export function createSolarSystem(
   const drawTrails = (): void => {
     for (const { craft, trail } of trails.values()) {
       const centre = catalogue.find((object) => object.id === craft.centreId);
-      if (centre) trail.draw((km) => sceneOffsetFromKm(km, centre, currentScale));
+      if (!centre) continue;
+      // A path in a body's own frame is already in that frame's units.
+      if (craft.frame === 'body') trail.draw((place) => place);
+      else trail.draw((km) => sceneOffsetFromKm(km, centre, currentScale));
     }
   };
   let positions = new Map<string, Vec3>();
@@ -168,20 +177,18 @@ export function createSolarSystem(
     return body;
   };
 
+  const inWorld = new Vector3();
   const setDate = (jd: number): void => {
     positions = scenePositions(catalogue, jd, currentScale, tracks?.bodies);
     for (const { craft, trail } of trails.values()) {
+      if (craft.frame !== 'space') continue;
       const centre = catalogue.find((object) => object.id === craft.centreId);
       const origin = positions.get(craft.centreId);
       if (!centre || !origin) continue;
-      const offset = sceneOffsetFromKm(pathPositionKm(craft.samples, jd), centre, currentScale);
+      const offset = sceneOffsetFromKm(craft.placeAt(jd), centre, currentScale);
       trail.group.position.set(origin.x, origin.y, origin.z);
       trail.setDate(jd, offset);
-      positions.set(craft.id, {
-        x: origin.x + offset.x,
-        y: origin.y + offset.y,
-        z: origin.z + offset.z,
-      });
+      positions.set(craft.id, add(origin, offset));
     }
     for (const [id, body] of bodies) {
       const position = positions.get(id);
@@ -191,6 +198,16 @@ export function createSolarSystem(
     for (const object of catalogue) {
       const parent = object.parentId === null ? undefined : positions.get(object.parentId);
       if (parent) bodies.get(object.id)?.faceTowards(parent);
+    }
+    // A craft that rides round with a body's ground is placed once that body has been turned.
+    for (const { craft, trail } of trails.values()) {
+      const body = bodies.get(craft.centreId);
+      if (craft.frame !== 'body' || !body) continue;
+      const place = craft.placeAt(jd);
+      trail.setDate(jd, place);
+      body.group.updateWorldMatrix(true, true);
+      const world = body.frame.localToWorld(inWorld.set(place.x, place.y, place.z));
+      positions.set(craft.id, { x: world.x, y: world.y, z: world.z });
     }
     for (const belt of belts) {
       const parent = positions.get(belt.parentId);
@@ -234,7 +251,7 @@ export function createSolarSystem(
     },
     setTracks(next) {
       for (const { trail } of trails.values()) {
-        group.remove(trail.group);
+        trail.group.removeFromParent();
         trail.dispose();
       }
       trails.clear();
@@ -244,9 +261,10 @@ export function createSolarSystem(
         body.setTurn(turn ? { atJd: turn.atJd, towards: eclipticToScene(turn.towards) } : null);
       }
       for (const craft of next?.craft ?? []) {
-        const trail = createTrail(craft.samples);
+        const trail = createTrail(craft.instants, (jd) => craft.placeAt(jd));
         trails.set(craft.id, { craft, trail });
-        group.add(trail.group);
+        const ground = craft.frame === 'body' ? bodies.get(craft.centreId) : undefined;
+        (ground ? ground.frame : group).add(trail.group);
       }
       drawTrails();
       showLines();
@@ -279,7 +297,14 @@ export function createSolarSystem(
       for (const [id, tail] of tails) tail.group.visible = shown(id);
       for (const belt of belts) belt.points.visible = ids === null;
     },
-    reachOf: (id) => trails.get(id)?.trail.reach() ?? 0,
+    reachOf(id) {
+      const flown = trails.get(id);
+      if (!flown) return 0;
+      // A path in a body's own frame is measured in that body's radii.
+      const unit =
+        flown.craft.frame === 'body' ? (bodies.get(flown.craft.centreId)?.radius() ?? 0) : 1;
+      return flown.trail.reach() * unit;
+    },
     // A spacecraft is a point: at true scale it has no size to draw.
     radiusOf: (id) => (trails.has(id) ? 0 : bodyOf(id).radius()),
     glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,

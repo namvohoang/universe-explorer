@@ -7,12 +7,8 @@ import {
   Points,
   PointsMaterial,
 } from 'three';
-import type { PathSample } from '../data/types';
-import { positionBetweenKm } from '../sim/trajectory';
 import type { Vec3 } from '../sim/vec3';
 
-/** Points drawn between one sample and the next, so the curve between them shows as a curve. */
-const STEPS_PER_SAMPLE = 8;
 /** The way ahead is faint, in the colour of the orbit lines; the way flown is bright. */
 const AHEAD_COLOR = 0x6fd3ff;
 const AHEAD_OPACITY = 0.3;
@@ -24,8 +20,8 @@ const CRAFT_PIXELS = 9;
 export interface Trail {
   /** Position this at the body the path is measured from. */
   readonly group: Group;
-  /** Draws the path with a way of turning km from the centre into scene units. */
-  draw(toScene: (offsetKm: Vec3) => Vec3): void;
+  /** Draws the path with a way of turning a place into scene units from the centre. */
+  draw(toScene: (place: Vec3) => Vec3): void;
   /** The farthest the drawn path gets from its centre, in scene units. */
   reach(): number;
   /** Lights the path up to a date and puts the craft at `offset` from the centre. */
@@ -33,21 +29,13 @@ export interface Trail {
   dispose(): void;
 }
 
-export function createTrail(samples: readonly PathSample[]): Trail {
-  // The instants the path is drawn at: every sample, and even steps between each pair.
-  const points: { readonly jd: number; readonly from: PathSample; readonly to: PathSample }[] = [];
-  for (const [index, from] of samples.entries()) {
-    const to = samples[index + 1];
-    if (!to) {
-      points.push({ jd: from[0], from, to: from });
-      break;
-    }
-    for (let step = 0; step < STEPS_PER_SAMPLE; step++) {
-      points.push({ jd: from[0] + ((to[0] - from[0]) * step) / STEPS_PER_SAMPLE, from, to });
-    }
-  }
-
-  const positions = new BufferAttribute(new Float32Array(points.length * 3), 3);
+/**
+ * `instants` are the dates the path is drawn at, earliest first, close together where it bends;
+ * `placeAt` says where the craft is at a date, in whatever units `draw` is given a way to turn
+ * into scene units.
+ */
+export function createTrail(instants: readonly number[], placeAt: (jd: number) => Vec3): Trail {
+  const positions = new BufferAttribute(new Float32Array(instants.length * 3), 3);
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', positions);
   const aheadMaterial = new LineBasicMaterial({
@@ -86,8 +74,8 @@ export function createTrail(samples: readonly PathSample[]): Trail {
     reach: () => reach,
     draw(toScene) {
       reach = 0;
-      for (const [index, point] of points.entries()) {
-        const place = toScene(positionBetweenKm(point.from, point.to, point.jd));
+      for (const [index, jd] of instants.entries()) {
+        const place = toScene(placeAt(jd));
         reach = Math.max(reach, Math.hypot(place.x, place.y, place.z));
         positions.setXYZ(index, place.x, place.y, place.z);
       }
@@ -95,7 +83,7 @@ export function createTrail(samples: readonly PathSample[]): Trail {
     },
     setDate(jd, offset) {
       let count = 0;
-      while (count < points.length && (points[count]?.jd ?? Infinity) <= jd) count++;
+      while (count < instants.length && (instants[count] ?? Infinity) <= jd) count++;
       flownGeometry.setDrawRange(0, count);
       craftPosition.setXYZ(0, offset.x, offset.y, offset.z);
       craftPosition.needsUpdate = true;

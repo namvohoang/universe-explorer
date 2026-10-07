@@ -618,7 +618,17 @@ recorded last.
       it really faced, from Horizons, so the rocket leaves Florida: the catalogue knows how
       fast Earth spins but not which side faced where. One row of the table is left out as a
       misprint (a longitude west of the pad). The rocket is a named point, and the time is
-      shown to the second. Left: Apollo 11's landing and a shuttle joining the space station.
+      shown to the second.
+      Done too: Apollo 11's landing, with two craft, the lander and Columbia. The places they
+      pass over the Moon are from Table 7-II of NASA's Apollo 11 Mission Report (read by eye
+      from the scanned page, whose text layer is garbled), with times, heights and speeds from
+      SP-2000-4029 and the landing place from its summary. Between two known places a craft
+      may go right round the Moon; how many times is the count that fits the table's speeds,
+      and a test holds Columbia's to NASA's own count of its orbits. The path is drawn in the
+      Moon's own turning frame, so the lander stays put on the ground for the 21 hours it
+      stood there. The Moon keeps one face to Earth exactly; its slight rocking is not drawn.
+      Left: a shuttle joining the space station. No published places have been found for any
+      shuttle flight, so it would be a drawing between real times only.
 - [ ] 12.12 Recordings for the captions, Vietnamese text, and a note on the grown-ups' page
       about what "real path" and "drawing" mean.
 

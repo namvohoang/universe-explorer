@@ -24,6 +24,7 @@ const STORIES = [
   ['artemis-1', 'Artemis I: round the Moon'],
   ['artemis-2', 'Artemis II: with astronauts'],
   ['apollo-11-launch', 'Apollo 11: the launch'],
+  ['apollo-11-landing', 'Apollo 11: the landing'],
 ] as const;
 
 for (const screen of SCREENS) {
@@ -177,5 +178,20 @@ test.describe('a space flight', () => {
     await page.getByRole('slider').focus();
     await page.keyboard.press('End');
     await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:43:49');
+  });
+
+  test('with two spaceships names them both, and tells the landing to the minute', async ({
+    page,
+  }) => {
+    await page.goto('/#watch/apollo-11-landing');
+    await expect(page.locator('.craft-tag')).toHaveText(['The lander', 'Columbia']);
+    for (let part = 0; part < 3; part += 1) {
+      await page.getByRole('button', { name: 'Next part' }).click();
+    }
+    await expect(page.locator('.watch-text')).toContainText('Sea of Tranquility');
+    await expect(page.locator('.watch-date')).toHaveText('20 July 1969, 20:17');
+    // The camera can be let loose from over the lander to see the whole Moon.
+    await page.getByRole('button', { name: 'Look around' }).click();
+    await expect(page.locator('.marker', { hasText: 'The Moon' })).toBeVisible();
   });
 });

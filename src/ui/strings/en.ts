@@ -1115,6 +1115,21 @@ export const en = {
     'The second stage drops away too. The third stage gives the last push.',
   storyApollo11LaunchInOrbit:
     'The engine stops. Apollo 11 is in orbit. Now it goes round and round Earth.',
+  storyApollo11LandingTitle: 'Apollo 11: the landing',
+  craftApollo11Lander: 'The lander',
+  craftApollo11Columbia: 'Columbia',
+  storyApollo11LandingLettingGo:
+    'The lander lets go of Columbia, the ship that brought it. Both go on flying round the Moon.',
+  storyApollo11LandingDroppingLower:
+    'Behind the Moon, the lander fires its engine. Now its path dips down close to the ground.',
+  storyApollo11LandingSlowingDown:
+    'The lander fires its engine again, to slow down all the way to the ground.',
+  storyApollo11LandingLanded:
+    'It has landed, on a flat plain called the Sea of Tranquility. Columbia keeps going round above.',
+  storyApollo11LandingFirstStep: 'An astronaut climbs down and takes the first step on the Moon.',
+  storyApollo11LandingLiftingOff: 'The top part of the lander fires its engine and lifts off.',
+  storyApollo11LandingCatchingUp:
+    'The lander chases Columbia round the Moon. At the end the two join up again.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

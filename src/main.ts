@@ -6,13 +6,15 @@ import {
   type CelestialObject,
   type Chapter,
   type Story,
+  type StoryCraft,
 } from './data/types';
 import { ZOOM_SECONDS, distanceForAspect, litSideBearing, zoomedDistance } from './scene/flight';
 import type { DeepModel, DeepModelNote } from './scene/deep';
-import { createSolarSystem } from './scene/solarSystem';
+import { createSolarSystem, type TrackedCraft } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
-import { drawnThrough, pathPositionKm } from './sim/trajectory';
+import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
+import { drawnThrough, pathPositionKm, sampleInstants } from './sim/trajectory';
 import { length, subtract, type Vec3 } from './sim/vec3';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
@@ -58,6 +60,10 @@ const STAGE_DIRECTION = { x: 0, y: 1, z: 0.45 };
 const STAGE_FRAMING = 2.6;
 /** How many of its own radii away a body stands when a story looks at it close up. */
 const CLOSE_UP_RADII = 12;
+/** Points drawn between one sample of a path and the next, so the curve between shows as a curve. */
+const STEPS_PER_SAMPLE = 8;
+/** A path round a body is drawn in steps this many degrees long. */
+const ROUTE_STEP_DEG = 3;
 /**
  * A spacecraft has no size to stand back from, so a close-up of one stands this many radii of
  * the body it is leaving away from it, far enough to see the ground curve under its path.
@@ -659,20 +665,25 @@ function start(): void {
       };
     }
     const flown = (story.craft ?? []).find((craft) => craft.id === chapter.lookAtId);
-    if (chapter.closeUp === true && flown) {
+    if (chapter.closeUp === true && flown && !free) {
       const ground = flown.path.centreId;
-      const up = subtract(system.positionOf(flown.id), system.positionOf(ground));
-      const height = length(up) || 1;
+      // Held over the craft, a little to the south of straight overhead, however far round it goes.
+      const bearing = (): Vec3 => {
+        const up = subtract(system.positionOf(flown.id), system.positionOf(ground));
+        const height = length(up) || 1;
+        return { x: up.x / height, y: up.y / height - CRAFT_VIEW_SOUTH, z: up.z / height };
+      };
       return {
         target: () => system.positionOf(flown.id),
         distance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII,
-        direction: { x: up.x / height, y: up.y / height - CRAFT_VIEW_SOUTH, z: up.z / height },
+        direction: bearing(),
+        bearing,
         minDistance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII * 0.1,
         maxDistance: system.radiusOf(ground) * CLOSE_UP_RADII,
         idleTurn: false,
       };
     }
-    if (chapter.closeUp === true) {
+    if (chapter.closeUp === true && !free) {
       const seen = chapter.lookAtId;
       return {
         target: () => system.positionOf(seen),
@@ -703,6 +714,32 @@ function start(): void {
       minDistance: system.radiusOf(middle) * BODY_CLOSEST_RADII,
       maxDistance: distance * 4,
       idleTurn: false,
+    };
+  };
+  /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
+  const flightOf = ({ id, path }: StoryCraft): TrackedCraft => {
+    const { centreId } = path;
+    if ('heading' in path) {
+      // Places over the ground of a body: the path rides round with that body.
+      const centre = catalogue.find((object) => object.id === centreId);
+      const radiusKm = (centre && bodyRadiusKm(centre)) ?? 1;
+      const route = groundRoute(path.points.value, path.heading.value, radiusKm);
+      return {
+        id,
+        centreId,
+        frame: 'body',
+        instants: routeInstants(route, ROUTE_STEP_DEG),
+        placeAt: (jd) => bodyFramePoint(groundPlaceAt(route, jd), radiusKm),
+      };
+    }
+    // A path known at a few places only has a curve drawn through them.
+    const samples = 'samples' in path ? path.samples.value : drawnThrough(path.points.value);
+    return {
+      id,
+      centreId,
+      frame: 'space',
+      instants: sampleInstants(samples, STEPS_PER_SAMPLE),
+      placeAt: (jd) => pathPositionKm(samples, jd),
     };
   };
   // A spacecraft in a story gets a ring and its name, like a body too small to see.
@@ -765,13 +802,7 @@ function start(): void {
                           (jd: number) => pathPositionKm(path.samples.value, jd),
                         ]),
                       ),
-                      craft: craft.map(({ id, path }) => ({
-                        id,
-                        centreId: path.centreId,
-                        // A path known at a few places only has a curve drawn through them.
-                        samples:
-                          'samples' in path ? path.samples.value : drawnThrough(path.points.value),
-                      })),
+                      craft: craft.map(flightOf),
                     },
               );
               tagCraft(craft.map(({ id, nameKey }) => ({ id, name: nameOfCraft(nameKey) })));

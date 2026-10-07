@@ -1,0 +1,37 @@
+{
+  "file": "apollo11Moon",
+  "centreId": "moon",
+  "rangeZeroUtc": "1969-07-16T13:32:00Z",
+  "heading": "west",
+  "headingSourceId": "nasa-apollo11-mission-report",
+  "headingNote": "Table 7-II gives a space-fixed heading between -52 and -107 degrees east of north at every event in lunar orbit: westwards.",
+  "sourceId": "nasa-apollo11-mission-report",
+  "note": [
+    "Places of Apollo 11's two craft over the Moon. Latitude and longitude are from Table 7-II",
+    "(trajectory parameters) of NASA's Apollo 11 Mission Report, MSC-00171, read by eye from the",
+    "scanned page (7-9), since its text layer is garbled. Times, heights (nautical miles) and",
+    "speeds (feet a second) are from NASA SP-2000-4029's Apollo 11 lunar orbit table and",
+    "timeline, which print the same figures cleanly. The landing place is the one SP-4029's",
+    "summary gives; there the craft stands still. The row 'terminal phase finalize' is left out:",
+    "its latitude is smudged on the scan."
+  ],
+  "paths": {
+    "APOLLO_11_LANDER": [
+      ["CSM/LM undocked", "100:12:00.0", 116.21, 1.11, 62.9, 5333.8],
+      ["CSM/LM separation cutoff", "100:40:01.9", 31.41, 1.05, 62.5, 5332.2],
+      ["LM descent orbit insertion cutoff", "101:36:44.0", -141.88, -1.16, 57.8, 5284.9],
+      ["LM powered descent initiation", "102:33:05.01", 39.39, 1.02, 6.4, 5564.9],
+      ["LM lunar landing", "102:45:39.9", 23.47297, 0.67408, 0, 0],
+      ["LM lunar liftoff ignition", "124:22:00.79", 23.47297, 0.67408, 0, 0],
+      ["LM orbit insertion cutoff", "124:29:15.67", 12.99, 0.73, 10.0, 5537.9],
+      ["LM coelliptic sequence initiation cutoff", "125:20:22.0", -149.57, -0.91, 48.4, 5376.6],
+      ["LM terminal phase initiation cutoff", "127:04:14.5", -111.46, -1.17, 44.0, 5413.2],
+      ["CSM/LM docked", "128:03:00.0", 67.31, 1.18, 60.6, 5341.5]
+    ],
+    "APOLLO_11_COLUMBIA": [
+      ["CSM/LM undocked", "100:12:00.0", 116.21, 1.11, 62.9, 5333.8],
+      ["CSM/LM separation cutoff", "100:40:01.9", 31.41, 1.05, 62.5, 5332.2],
+      ["CSM/LM docked", "128:03:00.0", 67.31, 1.18, 60.6, 5341.5]
+    ]
+  }
+}

@@ -10,13 +10,15 @@ import {
   type StoryTimes,
 } from '../sim/story';
 import { create } from './dom';
-import { fill, formatDateAndHour, formatDateAndSecond } from './format';
+import { fill, formatDateAndHour, formatDateAndMinute, formatDateAndSecond } from './format';
 import { icon, type IconName } from './icons';
 import { words } from './strings';
 import { createTabs } from './tabs';
 
 /** Steps of the scrubber from one end of a story to the other. */
 const SCRUBBER_STEPS = 1000;
+/** A story shorter than this many days shows the minute as well as the hour. */
+const MINUTES_SHOWN_UNDER_DAYS = 3;
 
 const GROUP_LABELS: Readonly<Record<StoryGroup, string>> = {
   'sky-events': words.watchGroupSkyEvents,
@@ -168,7 +170,7 @@ export function createWatch(host: WatchHost): Watch {
 
   const showLook = (chapter: Chapter): void => {
     // A chapter with no view of its own already shows the whole stage with the camera loose.
-    look.hidden = chapter.viewFromId === undefined;
+    look.hidden = chapter.viewFromId === undefined && chapter.closeUp !== true;
     look.setAttribute('aria-pressed', String(free));
     name(look, free ? words.watchStoryView : words.watchLookAround);
   };
@@ -189,11 +191,15 @@ export function createWatch(host: WatchHost): Watch {
       aim = true;
     }
     if (aim) host.aim(story, chapter, free);
-    // A story that is over within a day is told to the second; a longer one to the hour.
+    // A story over within a day is told to the second, one of a few days to the minute, a
+    // longer one to the hour.
+    const days = times.endJd - (times.chapterJds[0] ?? jd);
     const label =
-      times.endJd - (times.chapterJds[0] ?? jd) < 1
+      days < 1
         ? formatDateAndSecond(jd)
-        : formatDateAndHour(jd);
+        : days < MINUTES_SHOWN_UNDER_DAYS
+          ? formatDateAndMinute(jd)
+          : formatDateAndHour(jd);
     if (label !== shownDate) {
       shownDate = label;
       date.textContent = label;

@@ -66,6 +66,31 @@ export interface StagedPath {
 }
 
 /**
+ * A place over a body's ground at one instant: [Julian date (UTC), longitude (degrees east),
+ * latitude (degrees north), height above the ground (km), speed (km/s)].
+ */
+export type GroundPoint = readonly [
+  jd: number,
+  lonDegEast: number,
+  latDegNorth: number,
+  altitudeKm: number,
+  speedKmPerS: number,
+];
+
+/**
+ * A path round a body, known at a few instants as places over its ground, each from an
+ * agency's table. Between two of them the craft may go right round the body, more than once;
+ * the app draws it going round at a steady rate, which is a drawing.
+ */
+export interface GroundPath {
+  readonly centreId: string;
+  /** Which way round the craft goes, as the table's heading angles show. */
+  readonly heading: Sourced<'east' | 'west'>;
+  /** Earliest first. */
+  readonly points: Sourced<readonly GroundPoint[]>;
+}
+
+/**
  * Which way a body was turned at one instant: the direction (a unit vector in the ecliptic
  * frame of J2000) of the point at latitude 0, longitude 0 on it. The catalogue knows how fast
  * a body spins but not which side faced where; a rocket leaving the ground needs the ground
@@ -81,7 +106,7 @@ export interface StoryCraft {
   readonly id: string;
   /** Key of its name in the UI strings. */
   readonly nameKey: string;
-  readonly path: SampledPath | StagedPath;
+  readonly path: SampledPath | StagedPath | GroundPath;
 }
 
 /** Something that happens, played on a real clock: a sky event or a space flight. */

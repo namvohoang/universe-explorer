@@ -64,6 +64,25 @@ export function drawnThrough(points: readonly PathPoint[]): PathSample[] {
   });
 }
 
+/**
+ * The instants to draw a sampled path at: every sample, and even steps between each pair, so
+ * the curve between them shows as a curve.
+ */
+export function sampleInstants(samples: readonly PathSample[], stepsPerSample: number): number[] {
+  const instants: number[] = [];
+  for (const [index, from] of samples.entries()) {
+    const to = samples[index + 1];
+    if (!to) {
+      instants.push(from[0]);
+      break;
+    }
+    for (let step = 0; step < stepsPerSample; step++) {
+      instants.push(from[0] + ((to[0] - from[0]) * step) / stepsPerSample);
+    }
+  }
+  return instants;
+}
+
 /** The farthest a path gets from its centre, in km. */
 export function pathReachKm(samples: readonly PathSample[]): number {
   return Math.max(0, ...samples.map((sample) => length(positionOf(sample))));

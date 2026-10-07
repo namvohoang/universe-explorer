@@ -227,8 +227,9 @@ export interface Story {
    */
   readonly diagram?: 'in-line' | 'round-the-star';
   /**
-   * With an `in-line` diagram: seen from the side, level with the planets' paths, in place of
-   * from above, so that the way a world's axis leans to its star or away from it shows.
+   * Seen from the side, near the level of the planets' paths, in place of from above, so
+   * that the way a world's axis leans shows. A `round-the-star` diagram is then looked at
+   * square to that lean.
    */
   readonly diagramSeen?: 'side';
   /**

@@ -15,8 +15,8 @@ const BEYOND_RADII = 3;
 const LEAST_UMBRA_SHARE = 0.3;
 const TRUE_SCALE = createScale('true');
 /** A world's axis is drawn out to this many of its radii beyond each pole, in a pale line. */
-const AXIS_RADII = 1.9;
-const AXIS_COLOR = 0xdfe8ff;
+const AXIS_RADII = 3.4;
+const AXIS_COLOR = 0xffffff;
 
 /**
  * A drawing of a few bodies in a scene of its own, at a scale that brings them close enough

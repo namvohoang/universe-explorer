@@ -103,6 +103,9 @@ const DIAGRAM_SIDE_LIFT = 0.18;
 /** Seen from the side: how much of the star's radius is kept in the picture, and the room a world's drawn axis needs, in its radii. */
 const DIAGRAM_SIDE_STAR_SHARE = 0.35;
 const DIAGRAM_AXIS_ROOM = 2;
+/** A ring of paths seen from low at the side: how far above their level it is looked at from, and how tall it then stands against its width. */
+const DIAGRAM_LOW_LIFT = 0.42;
+const DIAGRAM_SIDE_TALL = 0.6;
 /** How many of its own radii away a body stands when a story looks at it close up. */
 const CLOSE_UP_RADII = 12;
 /**
@@ -1180,16 +1183,25 @@ function start(): void {
       ...(story.craft ?? []).map((craft) => shown.reachOf(craft.id)),
       ...story.actorIds
         .filter((id) => diagram !== null || id !== star)
-        .map((id) => from(id, middle) + (diagram && id !== middle ? shown.spanOf(id) : 0)),
+        .map(
+          (id) =>
+            from(id, middle) +
+            (diagram && id !== middle
+              ? shown.spanOf(id) * (story.diagramSeen === 'side' ? DIAGRAM_AXIS_ROOM : 1)
+              : 0),
+        ),
     );
+    // Seen from low at the side, a ring of paths is far wider than it is tall.
+    const low = diagram !== null && story.diagramSeen === 'side';
     const distance =
       (diagram
-        ? distanceToFit(reach, reach, aspect, FIELD_OF_VIEW_DEG) * DIAGRAM_MARGIN
+        ? distanceToFit(reach, low ? reach * DIAGRAM_SIDE_TALL : reach, aspect, FIELD_OF_VIEW_DEG) *
+          DIAGRAM_MARGIN
         : distanceForAspect(reach * STAGE_FRAMING, aspect)) * squeeze;
     return {
       target: () => shown.positionOf(middle),
       distance,
-      direction: STAGE_DIRECTION,
+      direction: stageBearing(story, aspect)(),
       minDistance: shown.radiusOf(middle) * BODY_CLOSEST_RADII,
       maxDistance: distance * 4,
       idleTurn: false,
@@ -1206,6 +1218,14 @@ function start(): void {
     const drawing = diagram?.system;
     const star = starOf(story);
     const first = story.actorIds[0];
+    if (drawing && story.diagram === 'round-the-star' && story.diagramSeen === 'side') {
+      // From low at the side, square to the way the world's axis leans: wherever the world
+      // is on its path, its axis is then seen leaning its whole lean, always the same way.
+      const pole = drawing.northOf(story.seasonsOf ?? first ?? '');
+      const flat = Math.hypot(pole.x, pole.z) || 1;
+      const bearing = { x: pole.z / flat, y: DIAGRAM_LOW_LIFT, z: -pole.x / flat };
+      return () => bearing;
+    }
     if (!drawing || story.diagram !== 'in-line' || star === undefined || first === undefined) {
       return () => STAGE_DIRECTION;
     }

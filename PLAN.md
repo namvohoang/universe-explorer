@@ -735,8 +735,9 @@ recorded last.
 - [x] 12.20 More of the owner's notes (2026-10-07). A new part that is looked at the same way
       as the one before no longer re-aims the camera (it stuttered at every mark). Halley's
       Comet is held close in the look from Earth. The aurora photo says why it is red. The
-      seasons' whole picture is seen from the side, the Sun at the left and Earth at the
-      right with its axis drawn, so the axis is seen leaning to the Sun and away.
+      seasons' whole picture is seen from low at the side, square to the way Earth's axis
+      leans: Earth goes round the Sun with its axis drawn as a line that keeps pointing the
+      same way, towards the Sun in June and away from it in December.
       Known: Earth's pole in the catalogue is the one for 2000, so the app's equinoxes of
       2027 fall about nine hours late; the season names allow for it.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying

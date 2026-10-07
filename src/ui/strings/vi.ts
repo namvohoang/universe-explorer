@@ -912,6 +912,11 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Giờ Trái Đất nằm ngang với vành. Vành mỏng đến mức, nhìn từ cạnh, nó như biến mất.',
   storySaturnRingsOtherSide:
     'Vành lại mở ra, và giờ ta thấy mặt bên kia của nó. Chuyện này xảy ra khoảng 15 năm một lần.',
+  storySupermoonTitle: 'Siêu trăng',
+  storySupermoonFar:
+    'Bạn đang nhìn trăng tròn qua một kính thiên văn trên Trái Đất. Đường đi của Mặt Trăng quanh Trái Đất không phải là một vòng tròn hoàn hảo. Đêm nay Mặt Trăng ở xa.',
+  storySupermoonNear:
+    'Giờ nó ở gần, nên trông to hơn và sáng hơn. Người ta gọi đây là siêu trăng. Đó là một cái tên gọi vui, không phải từ các nhà khoa học dùng.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

@@ -60,6 +60,11 @@ const STAGE_DIRECTION = { x: 0, y: 1, z: 0.45 };
 const STAGE_FRAMING = 2.6;
 /** How many of its own radii away a body stands when a story looks at it close up. */
 const CLOSE_UP_RADII = 12;
+/**
+ * How much of the sky a telescope view takes in, top to bottom, in degrees: between two and
+ * three times the width of the full Moon as seen from Earth.
+ */
+const TELESCOPE_FIELD_DEG = 1.3;
 /** Points drawn between one sample of a path and the next, so the curve between shows as a curve. */
 const STEPS_PER_SAMPLE = 8;
 /** A path round a body is drawn in steps this many degrees long. */
@@ -629,6 +634,8 @@ function start(): void {
   let watchWanted = false;
   /** The date the story last drew. */
   let watchJd = NaN;
+  /** The narrow field of a telescope view, while a story asks for one. */
+  let watchFieldDeg: number | null = null;
   let scaleBeforeWatch: ScaleMode | null = null;
   // The story's panel covers the bottom of the screen, so the view is drawn in the room above it.
   const roomAbovePanel = (): { top: number; bottom: number } => ({
@@ -651,6 +658,20 @@ function start(): void {
     `${window.location.pathname}${window.location.search}#watch/${story.id}`;
   /** The view a chapter asks for: held on a line between two actors, or the whole stage. */
   const watchView = (story: Story, chapter: Chapter, free: boolean): FlyTo => {
+    const stand = chapter.standAtId;
+    if (stand !== undefined && !free) {
+      const seen = chapter.lookAtId;
+      const away = (): Vec3 => subtract(system.positionOf(stand), system.positionOf(seen));
+      return {
+        target: () => system.positionOf(seen),
+        distance: length(away()),
+        direction: away(),
+        standAt: () => system.positionOf(stand),
+        minDistance: 0,
+        maxDistance: Infinity,
+        idleTurn: false,
+      };
+    }
     const from = chapter.viewFromId;
     if (from !== undefined && !free) {
       const seen = chapter.lookAtId;
@@ -790,6 +811,7 @@ function start(): void {
           watchPanel = createWatch({
             reducedMotion,
             aim(story, chapter, free) {
+              watchFieldDeg = chapter.standAtId !== undefined && !free ? TELESCOPE_FIELD_DEG : null;
               for (const id of story.actorIds) system.showDetail(id);
               stage.flyTo(watchView(story, chapter, free));
             },
@@ -1075,6 +1097,7 @@ function start(): void {
     );
     if (watch.isOpen() && watchPanel) {
       // The story keeps its own date; the app's clock waits where it was.
+      stage.setFieldOfView(watchFieldDeg ?? FIELD_OF_VIEW_DEG);
       const jd = watchPanel.tick(dt);
       const moved = jd !== watchJd;
       watchJd = jd;

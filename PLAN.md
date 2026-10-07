@@ -602,9 +602,12 @@ recorded last.
       the app draws none), and Saturn's rings seen from Earth from 2017 to 2032, closing to a
       line and opening again. On the catalogue's own orbits and pole Earth crosses the plane of
       the rings on 23 March 2025, the very day NASA gives; a test holds it there.
-      Left: a supermoon (it needs a view from Earth itself, narrowed like a telescope, so the
-      Moon's size can be seen to change, and the Moon's real distance from JPL Horizons) and
-      Mars going backwards in Earth's sky (it needs a track drawn across the stars).
+      Done too: a supermoon. The farthest and the nearest full Moon of 2026 (31 May and
+      24 December, by JPL Horizons' distances at the Naval Observatory's thirteen full-Moon
+      times) are seen from Earth itself through one narrow field, like a telescope, so the
+      nearer is drawn bigger by what it really is: 14 percent, the most NASA says a supermoon
+      can be. The card says the word is a nickname.
+      Left: Mars going backwards in Earth's sky (it needs a track drawn across the stars).
 - [ ] 12.6 A meteor shower: Earth crossing the dust a comet leaves along its path. Halley if
       NASA's pages name it as a shower's comet, since its orbit is here. First a test of how
       near the comet's orbit passes Earth's; the dust and the streaks are a drawing, labelled.

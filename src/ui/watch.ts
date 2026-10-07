@@ -2,6 +2,7 @@ import { stories } from '../data/stories';
 import { STORY_GROUPS, type Chapter, type Story, type StoryGroup } from '../data/types';
 import {
   advanceStory,
+  chapterEndJd,
   chapterIndexAt,
   clampToStory,
   jdAtProgress,
@@ -172,7 +173,10 @@ export function createWatch(host: WatchHost): Watch {
 
   const showLook = (chapter: Chapter): void => {
     // A chapter with no view of its own already shows the whole stage with the camera loose.
-    look.hidden = chapter.viewFromId === undefined && chapter.closeUp !== true;
+    look.hidden =
+      chapter.viewFromId === undefined &&
+      chapter.standAtId === undefined &&
+      chapter.closeUp !== true;
     look.setAttribute('aria-pressed', String(free));
     name(look, free ? words.watchStoryView : words.watchLookAround);
   };
@@ -195,7 +199,12 @@ export function createWatch(host: WatchHost): Watch {
     if (aim) host.aim(story, chapter, free);
     // A story over within a day is told to the second, one of a few days to the minute, a
     // longer one to the hour.
-    const days = times.endJd - (times.chapterJds[0] ?? jd);
+    // Counted over the time that is played, leaving out any that is skipped.
+    const told = times;
+    const days = told.chapterJds.reduce(
+      (sum, from, index) => sum + (chapterEndJd(told, index) - from),
+      0,
+    );
     const label =
       days < 1
         ? formatDateAndSecond(jd)

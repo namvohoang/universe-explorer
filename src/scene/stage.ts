@@ -55,6 +55,11 @@ export interface FlyTo {
    * arriving, so it backs away as the thing looked at grows; zooming is then of no use.
    */
   readonly distanceNow?: () => number;
+  /**
+   * A place for the camera itself that is asked for every frame. The camera is held there
+   * after arriving and only turns to follow the target, like a telescope on a stand.
+   */
+  readonly standAt?: () => Vec3;
 }
 
 /** Where a point of the scene lands on screen. */
@@ -194,7 +199,8 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       if (!flight) arrive(following);
     } else if (previousTarget) {
       const followed = followTarget(currentView(), previousTarget, target);
-      const turned = following.bearing ? heldOnBearing(followed, following.bearing()) : followed;
+      const stood = following.standAt ? { camera: following.standAt(), target } : followed;
+      const turned = following.bearing ? heldOnBearing(stood, following.bearing()) : stood;
       applyView(following.distanceNow ? heldAtDistance(turned, following.distanceNow()) : turned);
     }
     previousTarget = target;

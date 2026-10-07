@@ -32,6 +32,11 @@ function chapterErrors(story: Story): string[] {
         `${at} chapter "${chapter.id}" looks at "${chapter.lookAtId}", not one of its actors or craft`,
       );
     }
+    if (chapter.standAtId !== undefined && !story.actorIds.includes(chapter.standAtId)) {
+      errors.push(
+        `${at} chapter "${chapter.id}" stands at "${chapter.standAtId}", not one of its actors`,
+      );
+    }
     if (chapter.viewFromId !== undefined && !story.actorIds.includes(chapter.viewFromId)) {
       errors.push(
         `${at} chapter "${chapter.id}" is seen from "${chapter.viewFromId}", not one of its actors`,

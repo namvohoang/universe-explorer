@@ -1171,6 +1171,11 @@ export const en = {
     'Now Earth is level with the rings. They are so thin that, seen from the edge, they seem to vanish.',
   storySaturnRingsOtherSide:
     'The rings open again, and now we see their other side. This happens about every 15 years.',
+  storySupermoonTitle: 'A supermoon',
+  storySupermoonFar:
+    'You are looking at a full Moon through a telescope on Earth. The Moon’s path round Earth is not a perfect circle. Tonight the Moon is far away.',
+  storySupermoonNear:
+    'Now it is close, so it looks bigger and brighter. People call this a supermoon. That is a nickname, not a word scientists use.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

@@ -21,6 +21,7 @@ function overlap(a: Box, b: Box): boolean {
 /** A story with a short caption, and one with a long caption and a note about its path. */
 const STORIES = [
   ['moon-phases', 'The Moon’s phases'],
+  ['supermoon', 'A supermoon'],
   ['seasons', 'The seasons'],
   ['solar-eclipse', 'A solar eclipse'],
   ['halley-tail', 'A comet grows its tail'],
@@ -139,6 +140,18 @@ test.describe('a story', () => {
     await scrubber.focus();
     await page.keyboard.press('ArrowLeft');
     await expect(page.locator('.watch-date')).toContainText('21 March 2027');
+  });
+
+  test('seen through a telescope shows a nearer Moon bigger', async ({ page }) => {
+    await page.goto('/#watch/supermoon');
+    await expect(page.locator('.watch-date')).toHaveText('31 May 2026, 08:45:00');
+    // The ring round a body too small to see is not drawn here: the Moon fills the telescope.
+    const moon = page.locator('.marker', { hasText: 'The Moon' });
+    await expect(moon).toBeVisible();
+    await expect(moon).not.toHaveClass(/ringed/);
+    await page.getByRole('button', { name: 'Next part' }).click();
+    await expect(page.locator('.watch-text')).toContainText('supermoon');
+    await expect(page.locator('.watch-date')).toHaveText('24 December 2026, 01:28:00');
   });
 
   test('lets the camera loose and takes it back', async ({ page }) => {

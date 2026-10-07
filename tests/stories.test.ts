@@ -22,6 +22,7 @@ import { artemis2 } from '../src/data/stories/artemis2';
 import { halleyTail } from '../src/data/stories/halleyTail';
 import { lunarEclipse } from '../src/data/stories/lunarEclipse';
 import { solarEclipse } from '../src/data/stories/solarEclipse';
+import { supermoon } from '../src/data/stories/supermoon';
 import { moonPhases } from '../src/data/stories/moonPhases';
 import { saturnRings } from '../src/data/stories/saturnRings';
 import { seasons } from '../src/data/stories/seasons';
@@ -513,6 +514,45 @@ describe('Saturn’s rings', () => {
       expect(openingDeg(start('wide-open'))).toBeGreaterThan(openingDeg(start('wide-open') + days));
       expect(openingDeg(saturnRings.endJd.value)).toBeLessThan(
         openingDeg(saturnRings.endJd.value + days),
+      );
+    }
+  });
+});
+
+describe('the supermoon', () => {
+  const moonKm = (jd: number) => pathPositionKm(supermoon.tracked?.moon?.samples.value ?? [], jd);
+  const [far, near] = supermoon.chapters;
+  if (!far || !near) throw new Error('two chapters expected');
+  const distanceKm = (jd: number): number => Math.hypot(moonKm(jd).x, moonKm(jd).y, moonKm(jd).z);
+
+  it('shows the nearer Moon bigger by what NASA says a supermoon can be', () => {
+    // NASA: "the full Moon can appear up to 14 percent bigger" than the farthest of the year.
+    const bigger = distanceKm(far.atJd.value) / distanceKm(near.atJd.value);
+    expect(bigger).toBeGreaterThan(1.13);
+    expect(bigger).toBeLessThanOrEqual(1.14);
+  });
+
+  it('shows two full Moons', () => {
+    const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+    for (const chapter of supermoon.chapters) {
+      const jd = chapter.atJd.value;
+      const earthKm = eclipticOffsetKm(earth, catalogue, jd);
+      const lit = illuminatedFraction(add(earthKm, moonKm(jd)), { x: 0, y: 0, z: 0 }, earthKm);
+      // A full Moon passes a little above or below Earth's shadow, so it is not lit quite face on.
+      expect(lit, chapter.id).toBeGreaterThan(0.995);
+    }
+  });
+
+  it('never plays the months between, which the samples do not cover', () => {
+    const samples = supermoon.tracked?.moon?.samples.value ?? [];
+    for (const chapter of supermoon.chapters) {
+      const covered = samples.filter((sample) => Math.abs(sample[0] - chapter.atJd.value) < 0.5);
+      expect(covered.length, chapter.id).toBeGreaterThanOrEqual(2);
+      expect(Math.min(...covered.map((sample) => sample[0]))).toBeLessThanOrEqual(
+        chapter.atJd.value,
+      );
+      expect(Math.max(...covered.map((sample) => sample[0]))).toBeGreaterThanOrEqual(
+        chapter.untilJd?.value ?? Infinity,
       );
     }
   });

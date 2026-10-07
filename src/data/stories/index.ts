@@ -9,10 +9,12 @@ import { moonPhases } from './moonPhases';
 import { saturnRings } from './saturnRings';
 import { seasons } from './seasons';
 import { solarEclipse } from './solarEclipse';
+import { supermoon } from './supermoon';
 
 /** Everything the Watch screen can play, in the order shown within each group. */
 export const stories: readonly Story[] = [
   moonPhases,
+  supermoon,
   seasons,
   solarEclipse,
   lunarEclipse,

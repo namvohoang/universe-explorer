@@ -27,6 +27,11 @@ export interface Chapter {
   readonly text: BackedText;
   /** One of the story's `actorIds`, or one of its craft. */
   readonly lookAtId: string;
+  /**
+   * When set, the camera stands at this actor itself and looks at the other through a narrow
+   * field, like a telescope: how big a thing looks from there is then how big it is drawn.
+   */
+  readonly standAtId?: string;
   /** Stands close to what is looked at, in place of showing the whole stage. */
   readonly closeUp?: boolean;
   /**

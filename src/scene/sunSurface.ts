@@ -179,7 +179,7 @@ const FRAGMENT = /* glsl */ `
     // Filaments: a few short, thin dark threads that snake across the face.
     float thread = abs(noise(direction * 2.6 + 11.0) - 0.5);
     float pieces = smoothstep(0.6, 0.72, noise(direction * 3.3 + 5.0));
-    float filament = (1.0 - smoothstep(0.004, 0.016, thread)) * pieces * (1.0 - inHole) * (1.0 - bright);
+    float filament = (1.0 - smoothstep(0.0015, 0.006, thread)) * pieces * (1.0 - inHole) * (1.0 - bright);
     colour = mix(colour, colour * vec3(0.16, 0.07, 0.04), 0.85 * filament);
 
     // The edge of the Sun glows, as it does in the real pictures.

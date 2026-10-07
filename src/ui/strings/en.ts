@@ -1176,6 +1176,16 @@ export const en = {
     'You are looking at a full Moon through a telescope on Earth. The Moon’s path round Earth is not a perfect circle. Tonight the Moon is far away.',
   storySupermoonNear:
     'Now it is close, so it looks bigger and brighter. People call this a supermoon. That is a nickname, not a word scientists use.',
+  storyMeteorShowerTitle: 'A meteor shower',
+  storyMeteorShowerNote: 'The dust is a drawing: real dust is tiny.',
+  storyMeteorShowerDustyTrail:
+    'Halley’s Comet has left dust all along its path, and the dust has spread out into a wide trail. Earth is coming up to it.',
+  storyMeteorShowerMay:
+    'In early May, Earth passes through the trail. Bits of dust hit our air and burn up. We see them as shooting stars.',
+  storyMeteorShowerMovingOn:
+    'Earth moves on round the Sun. Halfway round, it will meet the trail again.',
+  storyMeteorShowerOctober:
+    'In October, Earth meets the dust of Halley’s Comet once more. Lots of shooting stars in one night is called a meteor shower.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

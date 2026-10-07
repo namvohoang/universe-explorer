@@ -608,9 +608,13 @@ recorded last.
       nearer is drawn bigger by what it really is: 14 percent, the most NASA says a supermoon
       can be. The card says the word is a nickname.
       Left: Mars going backwards in Earth's sky (it needs a track drawn across the stars).
-- [ ] 12.6 A meteor shower: Earth crossing the dust a comet leaves along its path. Halley if
-      NASA's pages name it as a shower's comet, since its orbit is here. First a test of how
-      near the comet's orbit passes Earth's; the dust and the streaks are a drawing, labelled.
+- [x] 12.6 A meteor shower: Earth passing through the dust of Halley's Comet in May and
+      again in October 2027. On the catalogue's orbits Earth is nearest the comet's path on
+      7 May (0.07 AU) and 26 October (0.15 AU), when NASA says the Eta Aquariids ("early May")
+      and the Orionids ("mid-October") peak; a test holds each shower to its day. The dust is
+      strewn round the comet's path out to 0.17 AU, a width NASA does not give, so the screen
+      says "The dust is a drawing: real dust is tiny." Not shown: the streaks in the sky as
+      seen from the ground.
 - [ ] 12.7 Aurora: particles from the Sun steered by Earth's magnetism to a ring round each
       pole, where the air glows. Nothing in the catalogue describes Earth's magnetism, so the
       lines and particles are a diagram, labelled; NASA photos from the space station, credited.

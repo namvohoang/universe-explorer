@@ -917,6 +917,16 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Bạn đang nhìn trăng tròn qua một kính thiên văn trên Trái Đất. Đường đi của Mặt Trăng quanh Trái Đất không phải là một vòng tròn hoàn hảo. Đêm nay Mặt Trăng ở xa.',
   storySupermoonNear:
     'Giờ nó ở gần, nên trông to hơn và sáng hơn. Người ta gọi đây là siêu trăng. Đó là một cái tên gọi vui, không phải từ các nhà khoa học dùng.',
+  storyMeteorShowerTitle: 'Mưa sao băng',
+  storyMeteorShowerNote: 'Bụi ở đây là hình vẽ: bụi thật rất nhỏ.',
+  storyMeteorShowerDustyTrail:
+    'Sao chổi Halley đã để lại bụi dọc đường đi của nó, và bụi đã tản ra thành một vệt rộng. Trái Đất đang tiến tới đó.',
+  storyMeteorShowerMay:
+    'Đầu tháng Năm, Trái Đất đi qua vệt bụi. Những hạt bụi lao vào không khí của chúng ta và cháy sáng. Ta thấy chúng là sao băng.',
+  storyMeteorShowerMovingOn:
+    'Trái Đất đi tiếp quanh Mặt Trời. Nửa vòng nữa, nó sẽ lại gặp vệt bụi.',
+  storyMeteorShowerOctober:
+    'Tháng Mười, Trái Đất lại gặp bụi của sao chổi Halley. Rất nhiều sao băng trong một đêm được gọi là mưa sao băng.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

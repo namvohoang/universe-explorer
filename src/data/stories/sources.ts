@@ -274,3 +274,17 @@ export const NASA_SUPERMOONS: Source = {
   url: 'https://science.nasa.gov/moon/supermoons/',
   retrieved: '2026-10-07',
 };
+
+export const NASA_ORIONIDS: Source = {
+  id: 'nasa-orionids',
+  title: 'NASA Science — Orionids Meteor Shower',
+  url: 'https://science.nasa.gov/solar-system/meteors-meteorites/orionids/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_ETA_AQUARIIDS: Source = {
+  id: 'nasa-eta-aquariids',
+  title: 'NASA Science — Eta Aquarids Meteor Shower',
+  url: 'https://science.nasa.gov/solar-system/meteors-meteorites/eta-aquarids/',
+  retrieved: '2026-10-07',
+};

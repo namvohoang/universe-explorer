@@ -154,6 +154,13 @@ export interface Story {
    * the moon to the kilometre.
    */
   readonly tracked?: Readonly<Record<string, SampledPath>>;
+  /**
+   * Dust drawn along the path of this catalogue object (a comet), spread into a wide trail.
+   * Where each speck is put is a drawing; the story must say so with `noteKey`.
+   */
+  readonly dustAlongId?: string;
+  /** Key, in the UI strings, of a sentence shown with the story about what in it is a drawing. */
+  readonly noteKey?: string;
   /** Shadows drawn from one body onto another. */
   readonly shadows?: readonly StoryShadow[];
   /** Bodies turned, for this story, to face the way they really did, keyed by catalogue id. */

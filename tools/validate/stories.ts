@@ -110,6 +110,17 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
     if (story.path !== 'staged' && craft.some((one) => 'points' in one.path)) {
       errors.push(`story ${story.id}: flies a craft on a drawn path but does not say it is staged`);
     }
+    if (story.dustAlongId !== undefined) {
+      if (!known.has(story.dustAlongId)) {
+        errors.push(
+          `story ${story.id}: strews dust along "${story.dustAlongId}", not in the catalogue`,
+        );
+      }
+      // Where the dust lies is a drawing, and the screen must say so.
+      if (story.noteKey === undefined) {
+        errors.push(`story ${story.id}: draws dust but has no note to say it is a drawing`);
+      }
+    }
     for (const shadow of story.shadows ?? []) {
       for (const id of [shadow.casterId, shadow.onId]) {
         if (!story.actorIds.includes(id)) {

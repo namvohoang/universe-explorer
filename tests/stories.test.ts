@@ -10,6 +10,7 @@ import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
 import { TAIL_STARTS_AU, tailStrength } from '../src/sim/comet';
 import { KM_PER_AU } from '../src/sim/constants';
+import { DUST_TRAIL_RADIUS_KM, DUST_TRAIL_WITHIN_AU, nearestOnPath } from '../src/sim/dust';
 import { lightTravelSeconds } from '../src/sim/elements';
 import { northPoleEcliptic, poleOf } from '../src/sim/frames';
 import { shadowAt, shadowCentreOn } from '../src/sim/shadow';
@@ -21,6 +22,7 @@ import { artemis1 } from '../src/data/stories/artemis1';
 import { artemis2 } from '../src/data/stories/artemis2';
 import { halleyTail } from '../src/data/stories/halleyTail';
 import { lunarEclipse } from '../src/data/stories/lunarEclipse';
+import { meteorShower } from '../src/data/stories/meteorShower';
 import { solarEclipse } from '../src/data/stories/solarEclipse';
 import { supermoon } from '../src/data/stories/supermoon';
 import { moonPhases } from '../src/data/stories/moonPhases';
@@ -555,6 +557,45 @@ describe('the supermoon', () => {
         chapter.untilJd?.value ?? Infinity,
       );
     }
+  });
+});
+
+describe('the meteor shower', () => {
+  const comet = catalogue.find((object) => object.id === meteorShower.dustAlongId) ?? fail();
+  const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+  // The comet's path near the Sun, a point every half day for 400 days either side of its
+  // nearest to the Sun (the instant is the one in the Halley's tail story).
+  const NEAREST_THE_SUN_JD = 2446469.974;
+  const path = Array.from({ length: 1601 }, (_, index) =>
+    eclipticOffsetKm(comet, catalogue, NEAREST_THE_SUN_JD - 400 + index / 2),
+  ).filter((point) => Math.hypot(point.x, point.y, point.z) < DUST_TRAIL_WITHIN_AU * KM_PER_AU);
+  const fromPathKm = (jd: number): number =>
+    nearestOnPath(path, eclipticOffsetKm(earth, catalogue, jd));
+  const start = (id: string): number =>
+    meteorShower.chapters.find((chapter) => chapter.id === id)?.atJd.value ?? NaN;
+
+  it('has Earth inside the drawn dust in the middle of each shower, and well out of it between', () => {
+    const may = (start('may-shower') + start('moving-on')) / 2;
+    const october = (start('october-shower') + meteorShower.endJd.value) / 2;
+    expect(fromPathKm(may)).toBeLessThan(DUST_TRAIL_RADIUS_KM);
+    expect(fromPathKm(october)).toBeLessThan(DUST_TRAIL_RADIUS_KM);
+    const between = (start('moving-on') + start('october-shower')) / 2;
+    expect(fromPathKm(between)).toBeGreaterThan(2 * DUST_TRAIL_RADIUS_KM);
+  });
+
+  it('puts each shower at the day Earth is nearest the comet’s path', () => {
+    for (const [from, to] of [
+      [start('may-shower'), start('moving-on')],
+      [start('october-shower'), meteorShower.endJd.value],
+    ] as const) {
+      const middle = (from + to) / 2;
+      for (const days of [-3, 3])
+        expect(fromPathKm(middle)).toBeLessThan(fromPathKm(middle + days));
+    }
+  });
+
+  it('says on screen that the dust is a drawing', () => {
+    expect(meteorShower.noteKey).toBe('storyMeteorShowerNote');
   });
 });
 

@@ -2,6 +2,7 @@ import { AmbientLight, Group, PointLight, Vector3 } from 'three';
 import type { CelestialObject, RingSystem } from '../data/types';
 import { isShowpiece } from '../data/types';
 import { J2000_JD, KM_PER_AU, SECONDS_PER_DAY } from '../sim/constants';
+import { DUST_TRAIL_RADIUS_KM, DUST_TRAIL_WITHIN_AU, strewnAlong } from '../sim/dust';
 import { lightTravelSeconds } from '../sim/elements';
 import { eclipticToScene, poleOf } from '../sim/frames';
 import { sceneDistance } from '../sim/belt';
@@ -10,6 +11,7 @@ import {
   eclipticOffsetKm,
   sceneOffsetFromKm,
   sceneOrbitNormal,
+  sceneOrbitPath,
   scenePositions,
   type TrackedOffsets,
 } from '../sim/layout';
@@ -18,6 +20,7 @@ import { add, length, subtract, type Vec3 } from '../sim/vec3';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
+import { createDustTrail, type DustTrail } from './dustTrail';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
 import { createTrail, type Trail } from './trail';
 
@@ -83,6 +86,11 @@ export interface SolarSystem {
    * puts everything back.
    */
   setTracks(tracks: Tracks | null): void;
+  /**
+   * Strews dust along the part of this object's path that lies near its star: a drawing of
+   * the trail a comet leaves. `null` takes it away.
+   */
+  setDust(alongId: string | null, jd: number): void;
   /**
    * Draws only these bodies and their paths, for a story told with a few of them; `null` draws
    * everything again. The light of the star stays either way.
@@ -156,6 +164,10 @@ export function createSolarSystem(
   }
   group.add(new AmbientLight(0xffffff, NIGHT_SIDE_LIGHT));
 
+  /** How many points of a path dust is strewn round, and how many specks round each. */
+  const DUST_PATH_POINTS = 24_000;
+  const DUST_SPECKS_PER_POINT = 5;
+  let dust: DustTrail | null = null;
   let currentScale = scale;
   let tracks: Tracks | null = null;
   let shownIds: ReadonlySet<string> | null = null;
@@ -317,6 +329,26 @@ export function createSolarSystem(
       }
       bodies.get(id)?.loadDetail();
     },
+    setDust(alongId, jd) {
+      if (dust) {
+        group.remove(dust.points);
+        dust.dispose();
+        dust = null;
+      }
+      const along = catalogue.find((object) => object.id === alongId);
+      const parent = catalogue.find((object) => object.id === along?.parentId);
+      const parentKm = parent ? bodyRadiusKm(parent) : null;
+      if (!along?.orbit || parentKm === null) return;
+      const within = currentScale.distanceToScene(DUST_TRAIL_WITHIN_AU * KM_PER_AU, parentKm);
+      const path = sceneOrbitPath(along, catalogue, jd, currentScale, DUST_PATH_POINTS).filter(
+        (point) => length(point) < within,
+      );
+      const radius = currentScale.distanceToScene(DUST_TRAIL_RADIUS_KM, parentKm);
+      dust = createDustTrail(strewnAlong(path, radius, DUST_SPECKS_PER_POINT));
+      const origin = positions.get(along.parentId ?? '');
+      if (origin) dust.points.position.set(origin.x, origin.y, origin.z);
+      group.add(dust.points);
+    },
     showOnly(ids) {
       const shown = (id: string): boolean => ids === null || ids.has(id);
       shownIds = ids;
@@ -356,6 +388,7 @@ export function createSolarSystem(
       for (const belt of belts) belt.dispose();
       for (const tail of tails.values()) tail.dispose();
       for (const { trail } of trails.values()) trail.dispose();
+      dust?.dispose();
     },
   };
 }

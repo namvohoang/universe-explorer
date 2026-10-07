@@ -26,6 +26,7 @@ const STORIES = [
   ['solar-eclipse', 'A solar eclipse'],
   ['halley-tail', 'A comet grows its tail'],
   ['saturn-rings', 'Saturn’s rings turn edge-on'],
+  ['meteor-shower', 'A meteor shower'],
   ['lunar-eclipse', 'A lunar eclipse'],
   ['artemis-1', 'Artemis I: round the Moon'],
   ['artemis-2', 'Artemis II: with astronauts'],
@@ -152,6 +153,14 @@ test.describe('a story', () => {
     await page.getByRole('button', { name: 'Next part' }).click();
     await expect(page.locator('.watch-text')).toContainText('supermoon');
     await expect(page.locator('.watch-date')).toHaveText('24 December 2026, 01:28:00');
+  });
+
+  test('with something drawn in it says what is a drawing', async ({ page }) => {
+    await page.goto('/#watch/meteor-shower');
+    await expect(page.locator('.watch-path')).toContainText('The dust is a drawing');
+    // A story that draws nothing of its own has no such line.
+    await page.getByRole('button', { name: 'The seasons' }).click();
+    await expect(page.locator('.watch-path')).toBeHidden();
   });
 
   test('lets the camera loose and takes it back', async ({ page }) => {

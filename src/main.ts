@@ -819,6 +819,7 @@ function start(): void {
               watchActors = new Set(story.actorIds);
               system.showOnly(watchActors);
               const craft = story.craft ?? [];
+              system.setDust(story.dustAlongId ?? null, story.chapters[0]?.atJd.value ?? clock.jd);
               system.setTracks(
                 craft.length === 0 && !story.tracked && !story.turned && !story.shadows
                   ? null
@@ -867,6 +868,7 @@ function start(): void {
       watchActors = null;
       system.showOnly(null);
       system.setTracks(null);
+      system.setDust(null, clock.jd);
       tagCraft([]);
       document.body.classList.remove('watching');
       system.setDate(clock.jd);

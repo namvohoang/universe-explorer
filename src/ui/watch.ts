@@ -240,13 +240,15 @@ export function createWatch(host: WatchHost): Watch {
     groupTabs.show(group);
     showChips();
     title.textContent = text(picked.titleKey);
-    pathNote.textContent =
+    // What kind of path it is, or what else in the story is a drawing.
+    const note =
       picked.path === 'tracked'
         ? words.watchPathTracked
         : picked.path === 'staged'
           ? words.watchPathStaged
-          : '';
-    pathNote.hidden = picked.path === 'orbits';
+          : text(picked.noteKey ?? '');
+    pathNote.textContent = note;
+    pathNote.hidden = note === '';
     marks.replaceChildren(
       ...picked.chapters.slice(1).map((_, index) => {
         const mark = create('span', '');

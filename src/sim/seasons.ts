@@ -42,3 +42,15 @@ export function seasonsAt(
   }
   return northward ? { north: 'winter', south: 'summer' } : { north: 'autumn', south: 'spring' };
 }
+
+/**
+ * How long a world takes to show the same face to its star again, in days: its day from noon
+ * to noon. A little longer than one turn against the stars, since the world has moved on round
+ * its star meanwhile (for one that turns the way it goes round).
+ */
+export function noonToNoonDays(turnDays: number, yearDays: number): number {
+  if (!(turnDays > 0) || !(yearDays > turnDays)) {
+    throw new RangeError('a turn must be shorter than a trip round the star');
+  }
+  return 1 / (1 / turnDays - 1 / yearDays);
+}

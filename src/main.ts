@@ -26,7 +26,7 @@ import { eclipticToScene, northPoleEcliptic, poleOf } from './sim/frames';
 import { DUST_TRAIL_RADIUS_KM } from './sim/dust';
 import { showerAt } from './sim/radiant';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
-import { seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
+import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
 import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
 import { chasePositionKm, drawnThrough, pathPositionKm, sampleInstants } from './sim/trajectory';
 import { dot, length, subtract, type Vec3 } from './sim/vec3';
@@ -1570,12 +1570,23 @@ function start(): void {
               else stage.flyTo(watchView(story, chapter));
             },
             turnDays(story) {
-              const shape = catalogue.find((object) => object.id === story.actorIds[0])?.shape;
+              const world = catalogue.find((object) => object.id === story.actorIds[0]);
+              const shape = world?.shape;
               const hours =
                 shape?.type === 'spheroid' || shape?.type === 'triaxial'
                   ? shape.orientation.rotationPeriodHours.value
                   : null;
-              return hours === null ? 0 : hours / 24;
+              if (hours === null) return 0;
+              // A step from noon to noon keeps the same face to the star: stepped by turns
+              // against the stars, a world seen from its star would seem to turn backwards.
+              const motion = world?.orbit?.motion;
+              const yearDays =
+                motion?.type === 'rates-per-century'
+                  ? (36525 * 360) / motion.meanLongitudeDegPerCentury.value
+                  : null;
+              return yearDays !== null && yearDays > hours / 24
+                ? noonToNoonDays(hours / 24, yearDays)
+                : hours / 24;
             },
             onStory(story) {
               aimedLook = '';

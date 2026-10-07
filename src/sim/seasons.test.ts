@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { seasonsAt, starLatitudeDeg } from './seasons';
+import { noonToNoonDays, seasonsAt, starLatitudeDeg } from './seasons';
 
 describe('starLatitudeDeg', () => {
   const pole = { x: 0, y: 0, z: 2 };
@@ -35,5 +35,16 @@ describe('seasonsAt', () => {
     expect(seasonsAt(20, 19).south).toBe('winter');
     expect(seasonsAt(-5, -6).south).toBe('spring');
     expect(seasonsAt(-20, -19).south).toBe('summer');
+  });
+});
+
+describe('noonToNoonDays', () => {
+  it('is one turn more than the turns in a year, shared out', () => {
+    // A placeholder world for the maths: 10 turns against the stars in a year is 9 noons.
+    expect(noonToNoonDays(1, 10)).toBeCloseTo(10 / 9, 12);
+  });
+
+  it('refuses a world that turns no faster than it goes round', () => {
+    expect(() => noonToNoonDays(10, 10)).toThrow(RangeError);
   });
 });

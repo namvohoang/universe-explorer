@@ -20,7 +20,7 @@ import {
   poleOf,
 } from '../src/sim/frames';
 import { showerAt } from '../src/sim/radiant';
-import { seasonsAt, starLatitudeDeg } from '../src/sim/seasons';
+import { noonToNoonDays, seasonsAt, starLatitudeDeg } from '../src/sim/seasons';
 import { shadowAt, shadowCentreOn, sunCover } from '../src/sim/shadow';
 import { groundDirection, groundUnder } from '../src/sim/turn';
 import { add, dot, normalize, scale, subtract } from '../src/sim/vec3';
@@ -281,6 +281,16 @@ describe('the seasons named on Earth', () => {
       ['september-equinox', 'autumn'],
       ['december-solstice', 'winter'],
     ]);
+  });
+
+  it('are swept between in steps of one day from noon to noon, 24 hours', () => {
+    if (earth.shape?.type !== 'spheroid') throw new Error('Earth is a spheroid');
+    const motion = earth.orbit?.motion;
+    if (motion?.type !== 'rates-per-century') throw new Error('Earth has rates per century');
+    const turnDays = (earth.shape.orientation.rotationPeriodHours.value ?? fail()) / 24;
+    const yearDays = (36525 * 360) / motion.meanLongitudeDegPerCentury.value;
+    // The catalogue gives the turn to the nearest third of a second.
+    expect(noonToNoonDays(turnDays, yearDays) * 24).toBeCloseTo(24, 3);
   });
 
   it('follow a pole that leans 23.4 degrees to the Sun in June and away in December', () => {

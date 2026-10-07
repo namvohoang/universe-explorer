@@ -940,7 +940,7 @@ export const en = {
   mapAltUranus: "An artist's drawing of Uranus: smooth pale blue-green.",
   mapAltNeptune: "An artist's drawing of Neptune: deep blue with a few white clouds.",
   modelAltSun:
-    'A 3D model of the Sun: a glowing yellow-orange ball with a grainy surface, bright patches, a dark patch, thin dark threads and loops of gas at its edge.',
+    'A 3D model of the Sun: a glowing yellow-orange ball with a grainy surface, bright patches, a dark patch, thin dark threads, and glowing arches of gas at its edge.',
   mediaKindComposite: 'Made from many pictures joined together.',
   mediaKindFalseColour: 'Colours added by scientists.',
   mediaKindArtistConcept: "An artist's drawing, not a photo.",

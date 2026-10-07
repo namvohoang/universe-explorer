@@ -450,6 +450,9 @@ everything found to be done. Nothing in the app contradicted those pages.
       sit is made up, since the Sun's face changes every day, and the model stays labelled as a
       drawing. NASA's real ultraviolet picture, with a coronal hole across the top, sits in the
       corner, and the card says what the dark patch is.
+      The gas over the bright patches (prominences) is drawn as soft glowing clouds of
+      specks, in arches and plumes, yellow at the feet and redder at the top, and streams
+      along them while time runs; the first try, thin wire rings, did not look real.
 
 **Acceptance:** as for Phase 7.
 

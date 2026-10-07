@@ -977,7 +977,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   mapAltUranus: 'Hình vẽ của họa sĩ về Sao Thiên Vương: xanh lam pha lục nhạt, trơn mịn.',
   mapAltNeptune: 'Hình vẽ của họa sĩ về Sao Hải Vương: xanh lam đậm với vài đám mây trắng.',
   modelAltSun:
-    'Mô hình 3D của Mặt Trời: một quả cầu vàng cam phát sáng với bề mặt lấm tấm, những mảng sáng, một mảng tối, các sợi tối mảnh và những vòng khí ở rìa.',
+    'Mô hình 3D của Mặt Trời: một quả cầu vàng cam phát sáng với bề mặt lấm tấm, những mảng sáng, một mảng tối, các sợi tối mảnh và những vòm khí phát sáng ở rìa.',
   mediaKindComposite: 'Ghép từ nhiều bức ảnh lại với nhau.',
   mediaKindFalseColour: 'Màu sắc do các nhà khoa học thêm vào.',
   mediaKindArtistConcept: 'Hình vẽ của họa sĩ, không phải ảnh chụp.',

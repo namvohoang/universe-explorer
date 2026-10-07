@@ -290,7 +290,7 @@ export function createBody(
   if (sunSurface) {
     const glow = createSunGlow();
     flattened.add(glow);
-    // The loops stand in the frame the model turns in, so they turn with the Sun's face.
+    // The prominences stand in the frame the model turns in, so they turn with the Sun's face.
     modelFrame.add(sunSurface.group);
     const surfaceOfSun = sunSurface;
     extras.push(() => {
@@ -324,6 +324,7 @@ export function createBody(
     longest = Math.max(axes.x, axes.y, axes.z);
     flattened.scale.set(axes.x, axes.y, axes.z);
     modelFrame.scale.setScalar(longest);
+    sunSurface?.setRadius(longest);
   };
   setScale(scale);
 

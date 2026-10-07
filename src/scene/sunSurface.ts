@@ -1,19 +1,19 @@
 import {
   AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
   CanvasTexture,
   Color,
-  DoubleSide,
   Group,
   Matrix3,
   Matrix4,
   Mesh,
-  MeshBasicMaterial,
-  Quaternion,
+  Points,
+  PointsMaterial,
   SRGBColorSpace,
   ShaderMaterial,
   Sprite,
   SpriteMaterial,
-  TorusGeometry,
   Vector3,
   type Material,
   type Object3D,
@@ -24,7 +24,8 @@ import {
  * What is drawn over NASA's model of the Sun so that it shows the things real pictures of the
  * Sun show (NASA's Solar Dynamics Observatory, in ultraviolet light):
  * - a fine grain all over that slowly churns;
- * - bright patches, the active regions, with loops of glowing gas arching up from them;
+ * - bright patches, the active regions, with prominences over them: arches and plumes of
+ *   glowing gas;
  * - a large dark patch, a coronal hole, and a few thin dark threads, the filaments;
  * - a brighter rim, and an uneven glow around the whole Sun.
  *
@@ -52,10 +53,18 @@ const CORONAL_HOLES: readonly (readonly [x: number, y: number, z: number, size: 
 ];
 
 const RIM_COLOR = '#ffd27a';
-const LOOP_COLOR = '#ff9a3c';
-/** How many loops stand on each bright patch, and how tall the smallest is, in patch sizes. */
-const LOOPS_PER_REGION = 3;
-const LOOP_HEIGHT = 0.13;
+/** How many arches of gas stand on a bright patch, and what each is made of. A drawing choice. */
+const ARCHES_PER_REGION = 2;
+const SPECKS_PER_ARCH = 1100;
+const STRANDS = 6;
+/** How wide the haze round a strand is and how big one speck is, in Sun radii. */
+const THICKNESS = 0.0035;
+const SPECK_SIZE = 0.026;
+const PROMINENCE_OPACITY = 0.5;
+/** How far below the surface an arch's feet start, so no gap shows: a share of the radius. */
+const FEET_AT = 0.985;
+/** How fast gas streams along an arch: arch lengths per second of running time. */
+const PROMINENCE_FLOW = 0.03;
 /** How far the uneven glow reaches, in Sun radii, and how many streamers it has. */
 const GLOW_RADII = 3.2;
 const STREAMERS = 46;
@@ -180,46 +189,194 @@ function seeded(seed: number): () => number {
   };
 }
 
-/** Loops of glowing gas standing on the bright patches; they show best at the Sun's edge. */
-function createLoops(): { group: Group; dispose(): void } {
-  const group = new Group();
-  const material = new MeshBasicMaterial({
-    color: LOOP_COLOR,
-    blending: AdditiveBlending,
-    transparent: true,
-    opacity: 0.6,
-    depthWrite: false,
-    side: DoubleSide,
-  });
-  const geometries: TorusGeometry[] = [];
-  const random = seeded(7);
-  const up = new Vector3(0, 1, 0);
-  for (const [x, y, z, size] of ACTIVE_REGIONS) {
-    const foot = new Vector3(x, y, z).normalize();
-    // The loops of one patch stand nearly in one plane, one inside another, as real ones do.
-    const turned = random() * Math.PI;
-    const stand = new Quaternion().setFromUnitVectors(up, foot);
-    for (let n = 0; n < LOOPS_PER_REGION; n += 1) {
-      const height = LOOP_HEIGHT * size * (1 + (2 * (n + 1)) / LOOPS_PER_REGION);
-      // Half a ring, standing on the surface with both feet down.
-      const geometry = new TorusGeometry(height, height * 0.035, 6, 28, Math.PI);
-      geometries.push(geometry);
-      const loop = new Mesh(geometry, material);
-      // The ring's own up (+y) is turned to point straight out of the Sun, then the loop is
-      // spun about that line.
-      const spin = new Quaternion().setFromAxisAngle(foot, turned + (random() - 0.5) * 0.3);
-      loop.quaternion.copy(spin.multiply(stand));
-      // Some arch up taller than they are wide.
-      loop.scale.y = 1 + random() * 0.6;
-      loop.position.copy(foot).multiplyScalar(0.995);
-      group.add(loop);
-    }
+/** A soft round dot: what each speck of glowing gas is drawn with. */
+function softDot(): CanvasTexture {
+  const size = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const context = canvas.getContext('2d');
+  if (context) {
+    const half = size / 2;
+    const gradient = context.createRadialGradient(half, half, 0, half, half, half);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+    gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.35)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, size, size);
   }
+  const map = new CanvasTexture(canvas);
+  map.colorSpace = SRGBColorSpace;
+  return map;
+}
+
+/** A number from a bell curve around nought, mostly within one either way. */
+function bell(random: () => number): number {
+  return (random() + random() + random() + random() - 2) * 1.2;
+}
+
+/** One speck of gas: which arch it belongs to and how it differs from the arch's middle line. */
+interface Speck {
+  readonly arch: number;
+  /** Where along the arch it starts, 0 at one foot and 1 at the other (or the top of a plume). */
+  readonly start: number;
+  /** Which strand of the arch it rides: a little wider or narrower, taller or lower. */
+  readonly wide: number;
+  readonly tall: number;
+  /** Its own sideways drift off the strand, three ways. */
+  readonly drift: readonly [number, number, number];
+  readonly speed: number;
+}
+
+/** An arch of gas over a bright patch, or a plume flung out of one. */
+interface Arch {
+  readonly foot: Vector3;
+  /** The direction from one foot to the other, along the ground. */
+  readonly along: Vector3;
+  /** The direction the arch leans over in, along the ground. */
+  readonly aside: Vector3;
+  readonly width: number;
+  readonly height: number;
+  readonly lean: number;
+  /** A plume rises from one spot and does not come back down. */
+  readonly plume: boolean;
+}
+
+/**
+ * Prominences: arches and plumes of glowing gas held up over the bright patches. They are soft
+ * clouds of specks, thick and bright at the feet and thin and redder at the top, as in NASA's
+ * pictures; they show best at the Sun's edge. Their shapes are made up.
+ */
+function createProminences(): {
+  group: Group;
+  setRadius(radius: number): void;
+  flow(seconds: number): void;
+  dispose(): void;
+} {
+  const group = new Group();
+  const random = seeded(7);
+  const arches: Arch[] = [];
+  const specks: Speck[] = [];
+  const pole = new Vector3(0, 1, 0);
+  ACTIVE_REGIONS.forEach(([x, y, z, size], region) => {
+    const foot = new Vector3(x, y, z).normalize();
+    // Two directions along the ground at the foot, square to each other.
+    const east = new Vector3().crossVectors(pole, foot).normalize();
+    const north = new Vector3().crossVectors(foot, east);
+    const turned = random() * Math.PI;
+    const along = east
+      .clone()
+      .multiplyScalar(Math.cos(turned))
+      .addScaledVector(north, Math.sin(turned));
+    const aside = new Vector3().crossVectors(foot, along);
+    // One patch in three flings out a plume; the others hold up arches.
+    const plume = region % 3 === 2;
+    for (let n = 0; n < (plume ? 1 : ARCHES_PER_REGION); n += 1) {
+      const arch = arches.length;
+      arches.push({
+        foot,
+        along,
+        aside,
+        width: size * (plume ? 0.35 : 0.55 + 0.5 * random()),
+        height: size * (plume ? 1.3 : 0.45 + 0.55 * random()),
+        lean: size * (random() - 0.5) * 0.5,
+        plume,
+      });
+      for (let s = 0; s < SPECKS_PER_ARCH; s += 1) {
+        // A handful of strands, one inside another, each with a haze of specks around it.
+        const strand = Math.floor(random() * STRANDS) / STRANDS;
+        specks.push({
+          arch,
+          start: random(),
+          wide: 0.55 + 0.45 * strand,
+          tall: 0.5 + 0.5 * strand,
+          drift: [bell(random), bell(random), bell(random)],
+          speed: 0.6 + 0.8 * random(),
+        });
+      }
+    }
+  });
+
+  const count = specks.length;
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 4);
+  const geometry = new BufferGeometry();
+  const positionAttribute = new BufferAttribute(positions, 3);
+  const colorAttribute = new BufferAttribute(colors, 4);
+  geometry.setAttribute('position', positionAttribute);
+  geometry.setAttribute('color', colorAttribute);
+
+  let flowed = 0;
+  const at = new Vector3();
+  const lay = (): void => {
+    specks.forEach((speck, n) => {
+      const arch = arches[speck.arch];
+      if (!arch) return;
+      const along = (speck.start + flowed * speck.speed) % 1;
+      // How high up the arch this is, 0 at the ground and 1 at the top.
+      let up: number;
+      // The feet stand a little under the surface, so no gap shows beneath them.
+      at.copy(arch.foot).multiplyScalar(FEET_AT);
+      if (arch.plume) {
+        up = along;
+        // It rises, fans out and bends over to one side as it goes.
+        at.addScaledVector(arch.foot, up * arch.height * speck.tall);
+        at.addScaledVector(arch.along, (speck.wide - 0.78) * arch.width * (0.4 + 2 * up));
+        at.addScaledVector(arch.aside, up * up * arch.height * 0.45 + arch.lean * up);
+      } else {
+        const angle = Math.PI * along;
+        up = Math.sin(angle);
+        at.addScaledVector(arch.along, -Math.cos(angle) * 0.5 * arch.width * speck.wide);
+        at.addScaledVector(arch.foot, up * arch.height * speck.tall);
+        at.addScaledVector(arch.aside, up * arch.lean);
+      }
+      // Tight at the feet, wispier higher up.
+      const haze = THICKNESS * (0.5 + 1.6 * up);
+      at.addScaledVector(arch.along, speck.drift[0] * haze);
+      at.addScaledVector(arch.aside, speck.drift[1] * haze);
+      at.addScaledVector(arch.foot, speck.drift[2] * haze * 0.6);
+      positions[n * 3] = at.x;
+      positions[n * 3 + 1] = at.y;
+      positions[n * 3 + 2] = at.z;
+      // Yellow-white and thick near the ground, orange-red and thin at the top.
+      colors[n * 4] = 1;
+      colors[n * 4 + 1] = 0.5 - 0.3 * up;
+      colors[n * 4 + 2] = 0.12 - 0.09 * up;
+      colors[n * 4 + 3] = arch.plume ? (1 - up) ** 1.2 : 0.9 - 0.4 * up;
+    });
+    positionAttribute.needsUpdate = true;
+    colorAttribute.needsUpdate = true;
+  };
+  lay();
+
+  const dot = softDot();
+  const material = new PointsMaterial({
+    map: dot,
+    vertexColors: true,
+    transparent: true,
+    opacity: PROMINENCE_OPACITY,
+    depthWrite: false,
+    // The gas glows, so its light adds up: brightest where the strands are thickest.
+    blending: AdditiveBlending,
+    sizeAttenuation: true,
+  });
+  const points = new Points(geometry, material);
+  points.frustumCulled = false;
+  group.add(points);
   return {
     group,
+    setRadius(radius) {
+      // A speck's size is given in scene units, so it follows how big the Sun is drawn.
+      material.size = SPECK_SIZE * radius;
+    },
+    flow(seconds) {
+      flowed += seconds * PROMINENCE_FLOW;
+      lay();
+    },
     dispose() {
-      for (const geometry of geometries) geometry.dispose();
+      geometry.dispose();
       material.dispose();
+      dot.dispose();
     },
   };
 }
@@ -288,17 +445,19 @@ function onSphere(
 }
 
 export interface SunSurface {
-  /** The loops; goes in the frame the Sun's model turns in, where one unit is one Sun radius. */
+  /** The prominences; goes in the frame the Sun's model turns in, where one unit is one Sun radius. */
   readonly group: Group;
   /** Redraws the model's own surface with the Sun's details over its picture. */
   dress(model: Object3D, frame: Object3D): void;
+  /** Tells it how big the Sun is drawn, in scene units. */
+  setRadius(radius: number): void;
   /** Lets the grain churn for this many seconds of running time. */
   flow(seconds: number): void;
   dispose(): void;
 }
 
 export function createSunSurface(): SunSurface {
-  const loops = createLoops();
+  const prominences = createProminences();
   const uniforms = {
     map: { value: null as Texture | null },
     churn: { value: 0 },
@@ -315,7 +474,10 @@ export function createSunSurface(): SunSurface {
   const replaced: Material[] = [];
 
   return {
-    group: loops.group,
+    group: prominences.group,
+    setRadius(radius) {
+      prominences.setRadius(radius);
+    },
     dress(model, frame) {
       frame.updateWorldMatrix(true, true);
       const toFrame = new Matrix4();
@@ -338,9 +500,10 @@ export function createSunSurface(): SunSurface {
     },
     flow(seconds) {
       uniforms.churn.value += seconds * CHURN;
+      prominences.flow(seconds);
     },
     dispose() {
-      loops.dispose();
+      prominences.dispose();
       material.dispose();
       for (const old of replaced) old.dispose();
     },

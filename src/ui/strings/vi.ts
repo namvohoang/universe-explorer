@@ -935,6 +935,16 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Ở trên cao, các hạt va vào không khí và làm nó phát sáng. Ánh sáng đó là cực quang. Người ta thấy nó nhiều nhất trong một vòng quanh vùng cực bắc.',
   storyAuroraSouthToo:
     'Quanh vùng cực nam cũng có một vòng như thế. Ánh sáng xanh là của khí ô-xy, ở cao khoảng 100 km trên mặt đất.',
+  storyShuttleDockingTitle: 'Tàu con thoi gặp trạm vũ trụ',
+  storyShuttleDockingNote: 'Trạm: đường thật. Tàu con thoi: hình vẽ.',
+  craftSpaceStation: 'Trạm vũ trụ',
+  craftDiscovery: 'Discovery',
+  storyShuttleDockingChasing:
+    'Tàu con thoi Discovery rời Florida hai ngày trước, chở sáu phi hành gia. Từ đó tới giờ nó đuổi theo trạm vũ trụ.',
+  storyShuttleDockingClosingIn:
+    'Discovery nhích lại gần, gần nữa. Cả hai đang lao nhanh quanh Trái Đất, nên việc này phải làm thật cẩn thận.',
+  storyShuttleDockingJoined:
+    'Chúng đã nối vào nhau! Việc này gọi là ghép nối. Giờ các phi hành gia có thể mở cửa và bay sang.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

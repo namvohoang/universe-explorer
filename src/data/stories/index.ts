@@ -10,6 +10,7 @@ import { meteorShower } from './meteorShower';
 import { moonPhases } from './moonPhases';
 import { saturnRings } from './saturnRings';
 import { seasons } from './seasons';
+import { shuttleDocking } from './shuttleDocking';
 import { solarEclipse } from './solarEclipse';
 import { supermoon } from './supermoon';
 
@@ -28,4 +29,5 @@ export const stories: readonly Story[] = [
   apollo11Landing,
   artemis1,
   artemis2,
+  shuttleDocking,
 ];

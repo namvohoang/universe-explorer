@@ -2,7 +2,7 @@
  * Checks the stories of the Watch screen beyond what the types can: sources resolve, chapters
  * run forwards in time, and everything a story draws is in the catalogue. Pure: takes the records.
  */
-import type { GroundPath, SampledPath, StagedPath, Story } from '../../src/data/types';
+import type { ChasePath, GroundPath, SampledPath, StagedPath, Story } from '../../src/data/types';
 import { sourceErrors } from './catalogue';
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -89,6 +89,32 @@ function pathErrors(
   return errors;
 }
 
+/** A craft that chases another needs that other one, on a sampled path, and a note that the chase is drawn. */
+function chaseErrors(
+  story: Story,
+  name: string,
+  path: ChasePath,
+  known: ReadonlySet<string>,
+): string[] {
+  const errors: string[] = [];
+  const at = `story ${story.id}: path of "${name}"`;
+  if (!known.has(path.centreId)) {
+    errors.push(`${at} is measured from "${path.centreId}", not in the catalogue`);
+  }
+  const ahead = (story.craft ?? []).find((craft) => craft.id === path.followsId);
+  if (!ahead || !('samples' in ahead.path)) {
+    errors.push(`${at} follows "${path.followsId}", not a craft of the story with a sampled path`);
+  }
+  const start = story.chapters[0]?.atJd.value ?? Infinity;
+  if (!(path.joinsAtJd.value > start && path.joinsAtJd.value <= story.endJd.value)) {
+    errors.push(`${at} joins the other craft outside the story`);
+  }
+  if (story.noteKey === undefined) {
+    errors.push(`${at} is a drawing, but the story has no note to say so`);
+  }
+  return errors;
+}
+
 export function checkStories(stories: readonly Story[], catalogueIds: readonly string[]): string[] {
   const errors: string[] = [];
   const known = new Set(catalogueIds);
@@ -107,7 +133,10 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
       errors.push(`story ${story.id}: says its path is tracked but flies no tracked craft`);
     }
     // A path drawn between a few known places must never be passed off as the path flown.
-    if (story.path !== 'staged' && craft.some((one) => 'points' in one.path)) {
+    if (
+      story.path !== 'staged' &&
+      craft.some((one) => 'points' in one.path || 'followsId' in one.path)
+    ) {
       errors.push(`story ${story.id}: flies a craft on a drawn path but does not say it is staged`);
     }
     if (story.dustAlongId !== undefined) {
@@ -148,6 +177,10 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
       }
     }
     for (const one of craft) {
+      if ('followsId' in one.path) {
+        errors.push(...chaseErrors(story, one.id, one.path, known));
+        continue;
+      }
       if (!ID.test(one.id))
         errors.push(`story ${story.id}: craft id "${one.id}" is not kebab-case`);
       if (known.has(one.id)) {

@@ -311,3 +311,33 @@ export const JPL_HORIZONS_TURN_AURORA_2027_EARTH: Source = {
   url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272461420.500800745%27',
   retrieved: '2026-10-07',
 };
+
+export const JPL_HORIZONS_PATH_STS_133_STATION: Source = {
+  id: 'jpl-horizons-path-sts133station',
+  title:
+    'JPL Horizons — position and velocity of the International Space Station (-125544, from its tracked orbit) from the centre of Earth every minute, 2011-02-26 13:00 to 20:40 TDB, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-125544%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%272%27&CSV_FORMAT=%27YES%27&START_TIME=%272011-02-26+13%3A00%27&STOP_TIME=%272011-02-26+20%3A40%27&STEP_SIZE=%271m%27',
+  retrieved: '2026-10-07',
+};
+
+export const JPL_HORIZONS_TURN_STS_133_EARTH: Source = {
+  id: 'jpl-horizons-turn-sts133earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2011-02-26 13:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272455619.042432700%27',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_STS_133: Source = {
+  id: 'nasa-sts-133',
+  title: 'NASA — STS-133',
+  url: 'https://www.nasa.gov/mission/sts-133/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_STS_133_DOCKING_PHOTO: Source = {
+  id: 'nasa-sts-133-docking-photo',
+  title: 'NASA — International Space Station (photo S133-E-006859, 26 Feb. 2011)',
+  url: 'https://www.nasa.gov/image-article/international-space-station-40/',
+  retrieved: '2026-10-07',
+};

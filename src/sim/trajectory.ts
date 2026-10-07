@@ -83,6 +83,22 @@ export function sampleInstants(samples: readonly PathSample[], stepsPerSample: n
   return instants;
 }
 
+/**
+ * How fast one craft is drawn catching another up: for every second until they join, it is
+ * this many seconds behind along the same path. A drawing choice: three hours before joining
+ * the chaser is drawn a minute and a half behind, some 700 km for a craft in low orbit.
+ */
+export const CHASE_GAIN = 1 / 120;
+
+/**
+ * Where a craft catching another up is drawn at a date: where the one ahead was a little
+ * earlier, by a gap that closes to nothing when they join. From then on they are together.
+ */
+export function chasePositionKm(ahead: readonly PathSample[], joinsAtJd: number, jd: number): Vec3 {
+  const behindDays = Math.max(0, joinsAtJd - jd) * CHASE_GAIN;
+  return pathPositionKm(ahead, jd - behindDays);
+}
+
 /** The farthest a path gets from its centre, in km. */
 export function pathReachKm(samples: readonly PathSample[]): number {
   return Math.max(0, ...samples.map((sample) => length(positionOf(sample))));

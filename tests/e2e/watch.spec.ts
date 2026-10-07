@@ -33,6 +33,7 @@ const STORIES = [
   ['artemis-2', 'Artemis II: with astronauts'],
   ['apollo-11-launch', 'Apollo 11: the launch'],
   ['apollo-11-landing', 'Apollo 11: the landing'],
+  ['shuttle-docking', 'A shuttle meets the station'],
 ] as const;
 
 for (const screen of SCREENS) {
@@ -233,5 +234,15 @@ test.describe('a space flight', () => {
     // The camera can be let loose from over the lander to see the whole Moon.
     await page.getByRole('button', { name: 'Look around' }).click();
     await expect(page.locator('.marker', { hasText: 'The Moon' })).toBeVisible();
+  });
+
+  test('whose path is partly real and partly drawn says which is which', async ({ page }) => {
+    await page.goto('/#watch/shuttle-docking');
+    await expect(page.locator('.watch-path')).toHaveText('Station: real path. Shuttle: a drawing.');
+    await expect(page.locator('.craft-tag')).toHaveText(['The space station', 'Discovery']);
+    await page.getByRole('button', { name: 'Next part' }).click();
+    await page.getByRole('button', { name: 'Next part' }).click();
+    await expect(page.locator('.watch-text')).toContainText('docking');
+    await expect(page.locator('.watch-date')).toHaveText('26 February 2011, 19:14:00');
   });
 });

@@ -5,7 +5,7 @@ import { catalogue } from '../src/data/catalogue';
 import type { PathSample, Story } from '../src/data/types';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from '../src/sim/layout';
 import { groundPlaceAt, groundRoute } from '../src/sim/groundPath';
-import { drawnThrough, pathPositionKm } from '../src/sim/trajectory';
+import { chasePositionKm, drawnThrough, pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
 import { TAIL_STARTS_AU, tailStrength } from '../src/sim/comet';
@@ -29,6 +29,7 @@ import { supermoon } from '../src/data/stories/supermoon';
 import { moonPhases } from '../src/data/stories/moonPhases';
 import { saturnRings } from '../src/data/stories/saturnRings';
 import { seasons } from '../src/data/stories/seasons';
+import { shuttleDocking } from '../src/data/stories/shuttleDocking';
 
 /**
  * How far the lit share of the Moon the app draws may be from the phase the almanac names, at
@@ -624,6 +625,61 @@ describe('the aurora', () => {
     const toSun = normalize(scale(eclipticOffsetKm(earth, catalogue, jd), -1));
     // The Sun stands over a southern latitude: the north pole leans away from it.
     expect(dot(toSun, pole)).toBeLessThan(-0.3);
+  });
+});
+
+describe('the shuttle joining the space station', () => {
+  const station = shuttleDocking.craft?.find((craft) => 'samples' in craft.path)?.path;
+  const shuttle = shuttleDocking.craft?.find((craft) => 'followsId' in craft.path)?.path;
+  if (!station || !('samples' in station) || !shuttle || !('followsId' in shuttle)) {
+    throw new Error('a station on a sampled path and a shuttle that follows it are expected');
+  }
+  const samples = station.samples.value;
+  const joined = shuttle.joinsAtJd.value;
+  const earthKm = bodyRadiusKm(catalogue.find((object) => object.id === 'earth') ?? fail()) ?? 0;
+  const apartKm = (jd: number): number => {
+    const ahead = pathPositionKm(samples, jd);
+    const behind = chasePositionKm(samples, joined, jd);
+    return Math.hypot(ahead.x - behind.x, ahead.y - behind.y, ahead.z - behind.z);
+  };
+
+  it('draws the station through JPL Horizons samples it was not given', () => {
+    const file = join(import.meta.dirname, 'fixtures', 'sts133Station.heldout.json');
+    const heldOut = JSON.parse(readFileSync(file, 'utf8')) as {
+      samples: readonly (readonly number[])[];
+    };
+    expect(heldOut.samples.length).toBeGreaterThan(30);
+    for (const [jd = 0, x = 0, y = 0, z = 0] of heldOut.samples) {
+      const drawn = pathPositionKm(samples, jd);
+      // The samples kept were chosen to draw every one left out to within 2 km.
+      expect(Math.hypot(drawn.x - x, drawn.y - y, drawn.z - z), String(jd)).toBeLessThan(2.01);
+    }
+  });
+
+  it('keeps the station at the height of a low orbit, well clear of the ground', () => {
+    for (const sample of samples) {
+      const heightKm = Math.hypot(sample[1], sample[2], sample[3]) - earthKm;
+      expect(heightKm).toBeGreaterThan(300);
+      expect(heightKm).toBeLessThan(400);
+    }
+  });
+
+  it('brings the shuttle steadily nearer, and has the two together from the instant NASA gives', () => {
+    const [chasing, closingIn, joinedChapter] = shuttleDocking.chapters;
+    if (!chasing || !closingIn || !joinedChapter) throw new Error('three chapters expected');
+    // NASA: "Docking occurred at 2:14 p.m. (EST) on Feb. 26, 2011", which is 19:14 UTC.
+    const docking = Date.parse('2011-02-26T19:14:00Z') / 1000 / 86_400 + 2_440_587.5;
+    expect(joinedChapter.atJd.value).toBeCloseTo(docking, 8);
+    expect(joined).toBe(joinedChapter.atJd.value);
+    expect(apartKm(chasing.atJd.value)).toBeGreaterThan(apartKm(closingIn.atJd.value));
+    expect(apartKm(closingIn.atJd.value)).toBeGreaterThan(100);
+    expect(apartKm(joined)).toBe(0);
+    expect(apartKm(shuttleDocking.endJd.value)).toBe(0);
+  });
+
+  it('says on screen which path is real and which is a drawing', () => {
+    expect(shuttleDocking.path).toBe('staged');
+    expect(shuttleDocking.noteKey).toBe('storyShuttleDockingNote');
   });
 });
 

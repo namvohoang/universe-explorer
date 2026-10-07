@@ -14,7 +14,7 @@ import { createSolarSystem, type TrackedCraft } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
 import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
-import { drawnThrough, pathPositionKm, sampleInstants } from './sim/trajectory';
+import { chasePositionKm, drawnThrough, pathPositionKm, sampleInstants } from './sim/trajectory';
 import { length, subtract, type Vec3 } from './sim/vec3';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
@@ -765,8 +765,24 @@ function start(): void {
     };
   };
   /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
-  const flightOf = ({ id, path }: StoryCraft): TrackedCraft => {
+  const flightOf = (
+    { id, path }: StoryCraft,
+    _index: number,
+    all: readonly StoryCraft[],
+  ): TrackedCraft => {
     const { centreId } = path;
+    if ('followsId' in path) {
+      // Catching another craft up: drawn on that craft's own path, a closing gap behind it.
+      const aheadPath = all.find((craft) => craft.id === path.followsId)?.path;
+      const ahead = aheadPath && 'samples' in aheadPath ? aheadPath.samples.value : [];
+      return {
+        id,
+        centreId,
+        frame: 'space',
+        instants: sampleInstants(ahead, STEPS_PER_SAMPLE),
+        placeAt: (jd) => chasePositionKm(ahead, path.joinsAtJd.value, jd),
+      };
+    }
     if ('heading' in path) {
       // Places over the ground of a body: the path rides round with that body.
       const centre = catalogue.find((object) => object.id === centreId);

@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { PathPoint, PathSample } from '../data/types';
 import { SECONDS_PER_DAY } from './constants';
 import {
+  CHASE_GAIN,
+  chasePositionKm,
   drawnThrough,
   pathPositionKm,
   pathReachKm,
@@ -113,5 +115,24 @@ describe('drawnThrough', () => {
 
   it('stands still when it is given one place only', () => {
     expect(drawnThrough([[5, 1, 2, 3]])).toEqual([[5, 1, 2, 3, 0, 0, 0]]);
+  });
+});
+
+describe('chasePositionKm', () => {
+  it('is where the craft ahead was a little earlier, by a gap that closes steadily', () => {
+    // STRAIGHT runs along x at 1 km/s. A day before joining, the gap is a day times the gain.
+    const chaser = chasePositionKm(STRAIGHT, 2, 1);
+    const ahead = pathPositionKm(STRAIGHT, 1);
+    expect(ahead.x - chaser.x).toBeCloseTo(SECONDS_PER_DAY * CHASE_GAIN, 6);
+    const later = chasePositionKm(STRAIGHT, 2, 1.5);
+    expect(pathPositionKm(STRAIGHT, 1.5).x - later.x).toBeCloseTo(
+      (SECONDS_PER_DAY / 2) * CHASE_GAIN,
+      6,
+    );
+  });
+
+  it('is with the craft ahead when they join, and stays with it', () => {
+    expect(chasePositionKm(STRAIGHT, 2, 2)).toEqual(pathPositionKm(STRAIGHT, 2));
+    expect(chasePositionKm(STRAIGHT, 2, 2.5)).toEqual(pathPositionKm(STRAIGHT, 2.5));
   });
 });

@@ -1194,6 +1194,16 @@ export const en = {
     'High up, the particles hit the air and make it glow. That glow is an aurora. It is seen most in a ring round the far north.',
   storyAuroraSouthToo:
     'There is a ring round the far south too. The green light comes from oxygen, about 100 km above the ground.',
+  storyShuttleDockingTitle: 'A shuttle meets the station',
+  storyShuttleDockingNote: 'Station: real path. Shuttle: a drawing.',
+  craftSpaceStation: 'The space station',
+  craftDiscovery: 'Discovery',
+  storyShuttleDockingChasing:
+    'Space shuttle Discovery left Florida two days ago, with six astronauts. It has been chasing the space station ever since.',
+  storyShuttleDockingClosingIn:
+    'Discovery creeps closer and closer. Both are racing round Earth, so it has to be done very carefully.',
+  storyShuttleDockingJoined:
+    'They have joined up! This is called docking. Now the astronauts can open the hatches and float across.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

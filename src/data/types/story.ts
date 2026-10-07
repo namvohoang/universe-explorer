@@ -104,6 +104,19 @@ export interface GroundPath {
 }
 
 /**
+ * The path of a craft that is catching another one up, where only the instant they join is
+ * known. It is drawn on the other craft's own path, behind it by a gap that closes steadily
+ * to nothing at that instant. The gap is a drawing; the story must say so with `noteKey`.
+ */
+export interface ChasePath {
+  readonly centreId: string;
+  /** The `id` of another craft of the same story, one with a sampled path. */
+  readonly followsId: string;
+  /** The instant the two join, as a Julian date. */
+  readonly joinsAtJd: Sourced<number>;
+}
+
+/**
  * Which way a body was turned at one instant: the direction (a unit vector in the ecliptic
  * frame of J2000) of the point at latitude 0, longitude 0 on it. The catalogue knows how fast
  * a body spins but not which side faced where; a rocket leaving the ground needs the ground
@@ -148,7 +161,7 @@ export interface StoryCraft {
   readonly id: string;
   /** Key of its name in the UI strings. */
   readonly nameKey: string;
-  readonly path: SampledPath | StagedPath | GroundPath;
+  readonly path: SampledPath | StagedPath | GroundPath | ChasePath;
 }
 
 /** Something that happens, played on a real clock: a sky event or a space flight. */

@@ -241,12 +241,14 @@ export function createWatch(host: WatchHost): Watch {
     showChips();
     title.textContent = text(picked.titleKey);
     // What kind of path it is, or what else in the story is a drawing.
+    // A story's own note says it better than the general one for its kind of path.
     const note =
-      picked.path === 'tracked'
+      text(picked.noteKey ?? '') ||
+      (picked.path === 'tracked'
         ? words.watchPathTracked
         : picked.path === 'staged'
           ? words.watchPathStaged
-          : text(picked.noteKey ?? '');
+          : '');
     pathNote.textContent = note;
     pathNote.hidden = note === '';
     marks.replaceChildren(

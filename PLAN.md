@@ -641,7 +641,7 @@ recorded last.
       seen close up, the way home, and the landing. The times of the burn, the pass and the
       dropping of the service module are from Horizons' data sheet for the flight; a test
       holds the drawn pass to the sheet's distance and minute.
-- [~] 12.11 Staged flights. Done: the launch of Apollo 11. The ten places the Saturn V passes
+- [x] 12.11 Staged flights: the launch of Apollo 11. The ten places the Saturn V passes
       through, with their times, are rows of NASA's own table of the climb (SP-2000-4029);
       JPL Horizons turns each place on the ground into a place in space
       (`tools/horizons/fetchAscent.ts`), and the app draws a curve through them, so the screen
@@ -658,8 +658,13 @@ recorded last.
       and a test holds Columbia's to NASA's own count of its orbits. The path is drawn in the
       Moon's own turning frame, so the lander stays put on the ground for the 21 hours it
       stood there. The Moon keeps one face to Earth exactly; its slight rocking is not drawn.
-      Left: a shuttle joining the space station. No published places have been found for any
-      shuttle flight, so it would be a drawing between real times only.
+      Done too: space shuttle Discovery joining the space station on its last flight (STS-133,
+      26 February 2011). The station flies its real path from JPL Horizons, Earth is turned the
+      way it faced, and the instant of docking is NASA's. No path of a shuttle has been found
+      published anywhere, so Discovery is drawn on the station's own path, a closing gap behind
+      it, and the screen says "Station: real path. Shuttle: a drawing." The launch two days
+      earlier is told in words. (NASA's catalogue page gives the launch hour in the wrong time
+      zone; NASA's mission page is used.)
 - [ ] 12.12 Recordings for the captions, Vietnamese text, and a note on the grown-ups' page
       about what "real path" and "drawing" mean.
 

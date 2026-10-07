@@ -18,6 +18,8 @@ export const saturnRings: Story = {
   titleKey: 'storySaturnRingsTitle',
   actorIds: ['saturn', 'earth', 'sun'],
   diagram: 'round-the-star',
+  // Each part covers years: at the usual pace Earth whirls round the Sun too fast to follow.
+  chapterSeconds: 32,
   chapters: [
     {
       id: 'wide-open',

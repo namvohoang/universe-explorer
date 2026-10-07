@@ -132,3 +132,13 @@ describe('time skipped between two chapters, run through', () => {
     expect(steppedInGap(SKIPS, 150.3, 2)).toBe(150.3);
   });
 });
+
+describe('a story told slower', () => {
+  const SLOW: StoryTimes = { chapterJds: [100, 110], endJd: 120, chapterSeconds: 28 };
+
+  it('takes its own time over each chapter', () => {
+    expect(advanceStory(SLOW, 100, 14).jd).toBeCloseTo(105, 9);
+    expect(advanceStory(SLOW, 100, 28).jd).toBeCloseTo(110, 9);
+    expect(advanceStory(SLOW, 100, 56)).toEqual({ jd: 120, ended: true });
+  });
+});

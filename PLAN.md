@@ -718,7 +718,8 @@ recorded last.
       time, in place of a jump. The aurora and the meteor shower show a real NASA photo from
       the ground as the look from Earth (credited in `CREDITS.md`; the meteor is a Perseid,
       and its caption says so, since NASA's library has no ground photo of Halley's showers).
-      Open: the owner's note on Saturn's rings ("slow speed") is not yet understood.
+      Saturn's rings play slower: 32 seconds a part in place of 14, since each part covers
+      years (`chapterSeconds` on a story).
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

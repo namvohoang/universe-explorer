@@ -16,6 +16,8 @@ export interface StoryTimes {
    */
   readonly chapterStopJds?: readonly (number | null)[];
   readonly endJd: number;
+  /** Real seconds each chapter takes, for a story told slower or faster than the usual. */
+  readonly chapterSeconds?: number;
 }
 
 export function storyTimes(story: Story): StoryTimes {
@@ -23,6 +25,7 @@ export function storyTimes(story: Story): StoryTimes {
     chapterJds: story.chapters.map((chapter) => chapter.atJd.value),
     chapterStopJds: story.chapters.map((chapter) => chapter.untilJd?.value ?? null),
     endJd: story.endJd.value,
+    ...(story.chapterSeconds === undefined ? {} : { chapterSeconds: story.chapterSeconds }),
   };
 }
 
@@ -54,7 +57,7 @@ export function chapterEndJd(times: StoryTimes, index: number): number {
 export function chapterDaysPerSecond(times: StoryTimes, index: number): number {
   const from = times.chapterJds[index];
   if (from === undefined) throw new RangeError(`No chapter ${String(index)}`);
-  return (chapterEndJd(times, index) - from) / CHAPTER_SECONDS;
+  return (chapterEndJd(times, index) - from) / (times.chapterSeconds ?? CHAPTER_SECONDS);
 }
 
 /**

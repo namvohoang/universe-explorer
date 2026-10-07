@@ -232,6 +232,11 @@ export interface Story {
    * the 3D picture. `captionKey` says plainly what, where and when the photo is of.
    */
   readonly fromEarth?: { readonly media: MediaRef; readonly captionKey: string };
+  /**
+   * Real seconds each chapter takes to play, where the usual pace is too quick to follow:
+   * years of a planet's path in one chapter, say. A choice of pace, not a measurement.
+   */
+  readonly chapterSeconds?: number;
   /** Names the season in each half of this actor, worked out from how it leans to its star. */
   readonly seasonsOf?: string;
   readonly sources: readonly Source[];

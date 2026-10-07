@@ -6,8 +6,11 @@ import { describe, expect, it } from 'vitest';
 const ROOT = join(import.meta.dirname, '..');
 const SHIPPED_EXTENSIONS = ['.ts', '.css', '.html', '.json'];
 const URL_PATTERN = /(?:https?:)?\/\/[a-z0-9.-]+\.[a-z]{2,}[^\s"'`)]*/gi;
-// Citations: where catalogue values were read from. Shown as text, never fetched by the app.
-const CITATION_FILES = [join(ROOT, 'src/data/catalogue/sources.ts')];
+// Citations: where catalogue values and the stories' times and paths were read from. Shown as text, never fetched by the app.
+const CITATION_FILES = [
+  join(ROOT, 'src/data/catalogue/sources.ts'),
+  join(ROOT, 'src/data/stories/sources.ts'),
+];
 // XML namespaces are identifiers, not requests.
 const ALLOWED = [/^http:\/\/www\.w3\.org\//];
 

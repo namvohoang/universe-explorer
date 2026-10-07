@@ -12,6 +12,7 @@ import type { DeepModel, DeepModelNote } from './scene/deep';
 import { createSolarSystem } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo } from './scene/stage';
 import { bodyRadiusKm } from './sim/layout';
+import { pathPositionKm } from './sim/trajectory';
 import { length, subtract, type Vec3 } from './sim/vec3';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
@@ -55,6 +56,8 @@ const HOME_DIRECTION = { x: 0, y: 0.5, z: 1 };
 const STAGE_DIRECTION = { x: 0, y: 1, z: 0.45 };
 /** How much wider than a story's stage its view is, leaving room for the panel under it. */
 const STAGE_FRAMING = 2.6;
+/** How many of its own radii away a body stands when a story looks at it close up. */
+const CLOSE_UP_RADII = 12;
 /** Camera distance that frames a sphere of radius 1 with a little room around it. */
 const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
@@ -648,10 +651,22 @@ function start(): void {
         idleTurn: false,
       };
     }
+    if (chapter.closeUp === true) {
+      const seen = chapter.lookAtId;
+      return {
+        target: () => system.positionOf(seen),
+        distance: system.radiusOf(seen) * CLOSE_UP_RADII,
+        direction: litSideBearing(system.positionOf(seen), system.positionOf('sun')),
+        minDistance: system.radiusOf(seen) * BODY_CLOSEST_RADII,
+        maxDistance: system.radiusOf(seen) * CLOSE_UP_RADII * 8,
+        idleTurn: false,
+      };
+    }
     // The whole stage: its middle, and everything that is not the far-off star that lights it.
     const middle = story.actorIds[0] ?? chapter.lookAtId;
     const reach = Math.max(
       system.radiusOf(middle),
+      ...(story.craft ?? []).map((craft) => system.reachOf(craft.id)),
       ...story.actorIds
         .filter((id) => catalogue.find((object) => object.id === id)?.kind !== 'star')
         .map((id) => length(subtract(system.positionOf(id), system.positionOf(middle)))),
@@ -668,6 +683,20 @@ function start(): void {
       maxDistance: distance * 4,
       idleTurn: false,
     };
+  };
+  // A spacecraft in a story gets a ring and its name, like a body too small to see.
+  const craftTags = new Map<string, HTMLElement>();
+  const nameOfCraft = (key: string): string =>
+    (words as Readonly<Record<string, string>>)[key] ?? '';
+  const tagCraft = (craft: readonly { id: string; name: string }[]): void => {
+    for (const tag of craftTags.values()) tag.remove();
+    craftTags.clear();
+    for (const { id, name } of craft) {
+      const tag = create('div', 'marker ringed craft-tag');
+      tag.append(create('span', 'marker-name', name));
+      mustFind('#markers').append(tag);
+      craftTags.set(id, tag);
+    }
   };
   const watch = {
     isOpen: (): boolean => watchWanted,
@@ -698,6 +727,25 @@ function start(): void {
             onStory(story) {
               watchActors = new Set(story.actorIds);
               system.showOnly(watchActors);
+              const craft = story.craft ?? [];
+              system.setTracks(
+                craft.length === 0 && !story.tracked
+                  ? null
+                  : {
+                      bodies: new Map(
+                        Object.entries(story.tracked ?? {}).map(([id, path]) => [
+                          id,
+                          (jd: number) => pathPositionKm(path.samples.value, jd),
+                        ]),
+                      ),
+                      craft: craft.map(({ id, path }) => ({
+                        id,
+                        centreId: path.centreId,
+                        samples: path.samples.value,
+                      })),
+                    },
+              );
+              tagCraft(craft.map(({ id, nameKey }) => ({ id, name: nameOfCraft(nameKey) })));
               // The story's first instant is drawn before the camera is aimed at it.
               system.setDate(story.chapters[0]?.atJd.value ?? clock.jd);
               try {
@@ -720,6 +768,8 @@ function start(): void {
       liftView();
       watchActors = null;
       system.showOnly(null);
+      system.setTracks(null);
+      tagCraft([]);
       document.body.classList.remove('watching');
       system.setDate(clock.jd);
       // Putting the scale back also puts the address back to the place in focus.
@@ -972,6 +1022,11 @@ function start(): void {
           radiusPixels: system.radiusOf(id) * point.pixelsPerUnit,
         };
       });
+      for (const [id, tag] of craftTags) {
+        const point = stage.toScreen(system.positionOf(id));
+        tag.hidden = !point.visible;
+        tag.style.transform = `translate(${point.x.toFixed(1)}px, ${point.y.toFixed(1)}px)`;
+      }
       return;
     }
     const body = focus !== null && !isBelt(focus) ? focus : null;

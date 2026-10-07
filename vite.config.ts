@@ -126,6 +126,8 @@ export default defineConfig({
           groups: [
             { name: 'three-core', test: /node_modules[\\/]three[\\/]build[\\/]three\.core/ },
             { name: 'three', test: /node_modules[\\/]three[\\/]/ },
+            // The stories of the Watch screen, with their tracked paths, wait until it is opened.
+            { name: 'stories', test: /src[\\/]data[\\/](stories|paths)[\\/]/ },
             { name: 'catalogue', test: /src[\\/]data[\\/]/ },
             { name: 'words', test: /src[\\/]ui[\\/]strings[\\/]/ },
           ],

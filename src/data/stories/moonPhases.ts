@@ -3,8 +3,8 @@
 // table of phase times; the Naval Observatory is the United States' own almanac office.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
 import type { Story } from '../types';
-import { s } from '../catalogue/helpers';
-import { NASA_MOON_PHASES, USNO_MOON_PHASES } from '../catalogue/sources';
+import { s } from './sourced';
+import { NASA_MOON_PHASES, USNO_MOON_PHASES } from './sources';
 
 export const moonPhases: Story = {
   id: 'moon-phases',

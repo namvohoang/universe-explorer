@@ -1237,9 +1237,29 @@ body.watching .view-controls .turn {
   cursor: default;
 }
 
+/* A spacecraft in a story: a ring in the colour of its trail, with its name under it. */
+.craft-tag {
+  pointer-events: none;
+}
+
+.craft-tag.ringed::after {
+  border-color: var(--sun);
+}
+
+.craft-tag .marker-name {
+  top: 38px;
+  border-color: var(--sun);
+}
+
 /* In a story a name says what a thing is; the story's own buttons do the moving about. */
 body.watching .marker {
   pointer-events: none;
+}
+
+/* A group shown by its picture alone is still a full-sized thing to tap. */
+.watch-row .tabs button {
+  min-width: 44px;
+  justify-content: center;
 }
 
 /* The scrubber: a line that fills as the story plays, with a notch where each part starts. */

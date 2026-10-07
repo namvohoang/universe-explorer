@@ -1,22 +1,43 @@
 import { AmbientLight, Group, PointLight } from 'three';
-import type { CelestialObject, RingSystem } from '../data/types';
+import type { CelestialObject, PathSample, RingSystem } from '../data/types';
 import { isShowpiece } from '../data/types';
 import { J2000_JD, KM_PER_AU } from '../sim/constants';
 import { poleOf } from '../sim/frames';
 import { sceneDistance } from '../sim/belt';
-import { bodyRadiusKm, eclipticOffsetKm, sceneOrbitNormal, scenePositions } from '../sim/layout';
+import {
+  bodyRadiusKm,
+  eclipticOffsetKm,
+  sceneOffsetFromKm,
+  sceneOrbitNormal,
+  scenePositions,
+  type TrackedOffsets,
+} from '../sim/layout';
+import { pathPositionKm } from '../sim/trajectory';
 import type { Scale } from '../sim/scale';
 import { length, type Vec3 } from '../sim/vec3';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
+import { createTrail, type Trail } from './trail';
 
 /** How far ahead to look to find which way a comet is heading, in days. */
 const HEADING_DAYS = 0.5;
 /** Enough fill light to make out a night side; the Sun does the rest. */
 const NIGHT_SIDE_LIGHT = 0.06;
 const SUNLIGHT = 2.8;
+
+/** A spacecraft flown along samples of its real path, measured from the body `centreId`. */
+export interface TrackedCraft {
+  readonly id: string;
+  readonly centreId: string;
+  readonly samples: readonly PathSample[];
+}
+
+export interface Tracks {
+  readonly bodies: TrackedOffsets;
+  readonly craft: readonly TrackedCraft[];
+}
 
 export interface SolarSystem {
   readonly group: Group;
@@ -30,6 +51,8 @@ export interface SolarSystem {
    * those that wait until somebody visits.
    */
   showDetail(id: string): void;
+  /** How far a tracked spacecraft's path reaches from the body it is measured from; 0 for anything else. */
+  reachOf(id: string): number;
   /** Drawn radius of a body under the current scale. */
   radiusOf(id: string): number;
   /** How big a body's glow is right now (a comet near the Sun); 0 for anything with none. */
@@ -38,6 +61,13 @@ export interface SolarSystem {
   setViewer(camera: Vec3): void;
   /** Streams the comets' gas and dust for so many real seconds. */
   flowTails(seconds: number): void;
+  /**
+   * Puts these bodies where their tracks say (km from their parent, ecliptic frame) in place
+   * of where their orbits would, and adds these spacecraft, each a point on a drawn trail.
+   * A tracked body's orbit line is not drawn, since the body no longer sits on it. `null`
+   * puts everything back.
+   */
+  setTracks(tracks: Tracks | null): void;
   /**
    * Draws only these bodies and their paths, for a story told with a few of them; `null` draws
    * everything again. The light of the star stays either way.
@@ -112,6 +142,21 @@ export function createSolarSystem(
   group.add(new AmbientLight(0xffffff, NIGHT_SIDE_LIGHT));
 
   let currentScale = scale;
+  let tracks: Tracks | null = null;
+  let shownIds: ReadonlySet<string> | null = null;
+  const trails = new Map<string, { readonly craft: TrackedCraft; readonly trail: Trail }>();
+  const showLines = (): void => {
+    for (const orbit of orbitLines) {
+      const shown = shownIds === null || shownIds.has(orbit.objectId);
+      orbit.line.visible = shown && !tracks?.bodies.has(orbit.objectId);
+    }
+  };
+  const drawTrails = (): void => {
+    for (const { craft, trail } of trails.values()) {
+      const centre = catalogue.find((object) => object.id === craft.centreId);
+      if (centre) trail.draw((km) => sceneOffsetFromKm(km, centre, currentScale));
+    }
+  };
   let positions = new Map<string, Vec3>();
   let redrawOrbits = true;
 
@@ -122,7 +167,20 @@ export function createSolarSystem(
   };
 
   const setDate = (jd: number): void => {
-    positions = scenePositions(catalogue, jd, currentScale);
+    positions = scenePositions(catalogue, jd, currentScale, tracks?.bodies);
+    for (const { craft, trail } of trails.values()) {
+      const centre = catalogue.find((object) => object.id === craft.centreId);
+      const origin = positions.get(craft.centreId);
+      if (!centre || !origin) continue;
+      const offset = sceneOffsetFromKm(pathPositionKm(craft.samples, jd), centre, currentScale);
+      trail.group.position.set(origin.x, origin.y, origin.z);
+      trail.setDate(jd, offset);
+      positions.set(craft.id, {
+        x: origin.x + offset.x,
+        y: origin.y + offset.y,
+        z: origin.z + offset.z,
+      });
+    }
     for (const [id, body] of bodies) {
       const position = positions.get(id);
       if (position) body.group.position.set(position.x, position.y, position.z);
@@ -170,6 +228,22 @@ export function createSolarSystem(
       currentScale = next;
       redrawOrbits = true;
       for (const body of bodies.values()) body.setScale(next);
+      drawTrails();
+    },
+    setTracks(next) {
+      for (const { trail } of trails.values()) {
+        group.remove(trail.group);
+        trail.dispose();
+      }
+      trails.clear();
+      tracks = next;
+      for (const craft of next?.craft ?? []) {
+        const trail = createTrail(craft.samples);
+        trails.set(craft.id, { craft, trail });
+        group.add(trail.group);
+      }
+      drawTrails();
+      showLines();
     },
     positionOf(id) {
       const position = positions.get(id);
@@ -193,12 +267,15 @@ export function createSolarSystem(
     },
     showOnly(ids) {
       const shown = (id: string): boolean => ids === null || ids.has(id);
+      shownIds = ids;
       for (const [id, body] of bodies) body.group.visible = shown(id);
-      for (const orbit of orbitLines) orbit.line.visible = shown(orbit.objectId);
+      showLines();
       for (const [id, tail] of tails) tail.group.visible = shown(id);
       for (const belt of belts) belt.points.visible = ids === null;
     },
-    radiusOf: (id) => bodyOf(id).radius(),
+    reachOf: (id) => trails.get(id)?.trail.reach() ?? 0,
+    // A spacecraft is a point: at true scale it has no size to draw.
+    radiusOf: (id) => (trails.has(id) ? 0 : bodyOf(id).radius()),
     glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,
     flowTails(seconds) {
       for (const tail of tails.values()) tail.flow(seconds);
@@ -219,6 +296,7 @@ export function createSolarSystem(
       for (const orbit of orbitLines) orbit.dispose();
       for (const belt of belts) belt.dispose();
       for (const tail of tails.values()) tail.dispose();
+      for (const { trail } of trails.values()) trail.dispose();
     },
   };
 }

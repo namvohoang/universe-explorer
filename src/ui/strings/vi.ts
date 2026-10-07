@@ -827,6 +827,17 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   modelAltChandra:
     'Mô hình 3D của Chandra: một ống dài màu bạc với một tấm pin mặt trời ở mỗi bên.',
   sceneCraft: 'Tàu vũ trụ',
+  storyArtemis1Title: 'Artemis I: vòng quanh Mặt Trăng',
+  craftOrion: 'Orion',
+  storyArtemis1OnItsWay:
+    'Một tên lửa khổng lồ vừa đưa tàu Orion lên đường tới Mặt Trăng. Trên tàu không có ai. Đây là chuyến bay thử.',
+  storyArtemis1FirstPass: 'Orion bay ngang qua Mặt Trăng, rất gần mặt đất.',
+  storyArtemis1FarOrbit:
+    'Giờ Orion văng ra xa phía bên kia Mặt Trăng. Vòng bay quanh Mặt Trăng của nó rất, rất lớn.',
+  storyArtemis1Farthest:
+    'Đây là lúc Orion ở xa Trái Đất nhất. Chưa có con tàu nào làm để chở người từng đi xa đến thế.',
+  storyArtemis1SecondPass: 'Orion bay sát qua Mặt Trăng lần thứ hai, rồi quay về nhà.',
+  storyArtemis1Home: 'Orion bay về Trái Đất. Cuối cùng nó chậm lại và hạ xuống biển bằng dù.',
   sceneWatch: 'Xem',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',

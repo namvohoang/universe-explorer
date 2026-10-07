@@ -18,43 +18,51 @@ function overlap(a: Box, b: Box): boolean {
   return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
 }
 
+/** A story with a short caption, and one with a long caption and a note about its path. */
+const STORIES = [
+  ['moon-phases', 'The Moon’s phases'],
+  ['artemis-1', 'Artemis I: round the Moon'],
+] as const;
+
 for (const screen of SCREENS) {
   test.describe(`${screen.name} (${String(screen.width)}×${String(screen.height)})`, () => {
     test.use({ viewport: { width: screen.width, height: screen.height } });
 
-    test('a story fits the screen and leaves room for the 3D view', async ({ page }) => {
-      await page.goto('/#watch/moon-phases');
-      const caption = page.locator('.watch-caption');
-      await expect(caption.locator('h2')).toHaveText('The Moon’s phases');
-      await expect(page.locator('.card')).toBeHidden();
-      await expect(page.locator('.clock')).toBeHidden();
+    for (const [story, title] of STORIES) {
+      test(`${story} fits the screen and leaves room for the 3D view`, async ({ page }) => {
+        await page.goto(`/#watch/${story}`);
+        const caption = page.locator('.watch-caption');
+        await expect(caption.locator('h2')).toHaveText(title);
+        await expect(page.locator('.card')).toBeHidden();
+        await expect(page.locator('.clock')).toBeHidden();
 
-      const parts = [caption, page.locator('.watch-controls'), page.locator('.watch-row')];
-      const boxes = await Promise.all(parts.map(boxOf));
-      for (const box of boxes) {
-        expect(box.x).toBeGreaterThanOrEqual(0);
-        expect(box.x + box.width).toBeLessThanOrEqual(screen.width);
-        expect(box.y + box.height).toBeLessThanOrEqual(screen.height);
-      }
-      // The parts of the panel do not lie on one another, nor on the top bar.
-      for (const [i, a] of boxes.entries()) {
-        for (const b of boxes.slice(i + 1)) expect(overlap(a, b)).toBe(false);
-      }
-      for (const part of await page.locator('.top > *, .tools > *').all()) {
-        if (!(await part.isVisible())) continue;
-        const box = await part.boundingBox();
-        if (box) for (const own of boxes) expect(overlap(own, box)).toBe(false);
-      }
-      for (const button of await page.locator('.watch button:visible').all()) {
-        const box = await boxOf(button);
-        expect(box.width).toBeGreaterThanOrEqual(44);
-        expect(box.height).toBeGreaterThanOrEqual(44);
-      }
-      // At least a third of the height is left for what the story shows.
-      const top = Math.min(...boxes.map((box) => box.y));
-      const bar = await boxOf(page.locator('.brand'));
-      expect((top - (bar.y + bar.height)) / screen.height).toBeGreaterThanOrEqual(0.33);
-    });
+        const parts = [caption, page.locator('.watch-controls'), page.locator('.watch-row')];
+        const boxes = await Promise.all(parts.map(boxOf));
+        for (const box of boxes) {
+          expect(box.x).toBeGreaterThanOrEqual(0);
+          expect(box.x + box.width).toBeLessThanOrEqual(screen.width);
+          expect(box.y + box.height).toBeLessThanOrEqual(screen.height);
+        }
+        // The parts of the panel do not lie on one another, nor on the top bar.
+        for (const [i, a] of boxes.entries()) {
+          for (const b of boxes.slice(i + 1)) expect(overlap(a, b)).toBe(false);
+        }
+        for (const part of await page.locator('.top > *, .tools > *').all()) {
+          if (!(await part.isVisible())) continue;
+          const box = await part.boundingBox();
+          if (box) for (const own of boxes) expect(overlap(own, box)).toBe(false);
+        }
+        for (const button of await page.locator('.watch button:visible').all()) {
+          const box = await boxOf(button);
+          expect(box.width).toBeGreaterThanOrEqual(44);
+          expect(box.height).toBeGreaterThanOrEqual(44);
+        }
+        // At least a third of the height is left for what the story shows.
+        const top = Math.min(...boxes.map((box) => box.y));
+        const bar = await boxOf(page.locator('.brand'));
+        expect((top - (bar.y + bar.height)) / screen.height).toBeGreaterThanOrEqual(0.33);
+      });
+    }
   });
 }
 
@@ -122,5 +130,36 @@ test.describe('a story', () => {
     await expect(page.locator('.marker', { hasText: 'Earth' })).toBeVisible();
     await back.click();
     await expect(look).toHaveAttribute('aria-pressed', 'false');
+  });
+});
+
+test.describe('a space flight', () => {
+  test.use({ viewport: { width: 1024, height: 768 } });
+
+  test('says its path is the real one and names the spaceship', async ({ page }) => {
+    await page.goto('/#watch/artemis-1');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'This is the real path the spaceship flew.',
+    );
+    await expect(page.locator('.craft-tag')).toHaveText('Orion');
+    await expect(page.locator('.watch-date')).toContainText('16 November 2022');
+    // The Moon is looked at close up as the spaceship passes it.
+    await page.getByRole('button', { name: 'Next part' }).click();
+    await expect(page.locator('.watch-text')).toContainText('flies past the Moon');
+    await expect(page.locator('.marker', { hasText: 'The Moon' })).toBeVisible();
+  });
+
+  test('is picked from its own group, and a sky event from the other', async ({ page }) => {
+    await page.goto('/#watch/artemis-1');
+    await expect(page.getByRole('tab', { name: 'Space flights' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await page.getByRole('tab', { name: 'Sky events' }).click();
+    await page.getByRole('button', { name: 'The Moon’s phases' }).click();
+    await expect(page.locator('.watch-caption h2')).toHaveText('The Moon’s phases');
+    await expect(page.locator('.watch-path')).toBeHidden();
+    await expect(page.locator('.craft-tag')).toHaveCount(0);
+    await expect(page).toHaveURL(/#watch\/moon-phases$/);
   });
 });

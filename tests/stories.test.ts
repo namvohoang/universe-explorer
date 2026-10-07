@@ -1,8 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../src/data/catalogue';
-import { scenePositions } from '../src/sim/layout';
+import { bodyRadiusKm, scenePositions } from '../src/sim/layout';
+import { pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
+import { artemis1 } from '../src/data/stories/artemis1';
 import { moonPhases } from '../src/data/stories/moonPhases';
 
 /**
@@ -47,3 +51,63 @@ describe('the Moon’s phases story', () => {
     expect(litShareAt((full + last) / 2)).toBeGreaterThan(litShareAt(last));
   });
 });
+
+/**
+ * How far the drawn path may be from a Horizons sample that was left out of the app, in km.
+ * The samples kept were chosen to draw every one left out to within 1 km (tools/horizons);
+ * rounding the numbers to the metre adds a little.
+ */
+const PATH_TOLERANCE_KM = 1.01;
+
+describe('Artemis I', () => {
+  interface HeldOut {
+    readonly samples: readonly (readonly number[])[];
+  }
+  const heldOut = (name: string): HeldOut =>
+    JSON.parse(
+      readFileSync(join(import.meta.dirname, 'fixtures', `${name}.heldout.json`), 'utf8'),
+    ) as HeldOut;
+  const orion = artemis1.craft?.[0]?.path.samples.value ?? [];
+  const moon = artemis1.tracked?.moon?.samples.value ?? [];
+
+  it.each([
+    ['artemis1Orion', orion],
+    ['artemis1Moon', moon],
+  ] as const)('draws %s through JPL Horizons samples it was not given', (name, samples) => {
+    const checks = heldOut(name).samples;
+    expect(checks.length).toBeGreaterThan(100);
+    for (const [jd = 0, x = 0, y = 0, z = 0] of checks) {
+      const drawn = pathPositionKm(samples, jd);
+      expect(Math.hypot(drawn.x - x, drawn.y - y, drawn.z - z), String(jd)).toBeLessThan(
+        PATH_TOLERANCE_KM,
+      );
+    }
+  });
+
+  it('passes the Moon twice, above its ground, and both passes are chapters', () => {
+    const moonRadiusKm = bodyRadiusKm(catalogue.find((object) => object.id === 'moon') ?? fail());
+    if (moonRadiusKm === null) throw new Error('the Moon has no radius');
+    const heightAt = (jd: number): number => {
+      const craft = pathPositionKm(orion, jd);
+      const body = pathPositionKm(moon, jd);
+      return Math.hypot(craft.x - body.x, craft.y - body.y, craft.z - body.z) - moonRadiusKm;
+    };
+    const passes = artemis1.chapters.filter((chapter) => chapter.closeUp === true);
+    expect(passes).toHaveLength(2);
+    for (const [index, pass] of passes.entries()) {
+      const next = artemis1.chapters[artemis1.chapters.indexOf(pass) + 1];
+      if (!next) throw new Error('a pass is followed by another chapter');
+      let lowest = Infinity;
+      for (let jd = pass.atJd.value; jd <= next.atJd.value; jd += 1 / 1440) {
+        lowest = Math.min(lowest, heightAt(jd));
+      }
+      // NASA: "coming within 80 miles of the lunar surface" (about 130 km). Never below ground.
+      expect(lowest, String(index)).toBeGreaterThan(100);
+      expect(lowest, String(index)).toBeLessThan(140);
+    }
+  });
+});
+
+function fail(): never {
+  throw new Error('missing from the catalogue');
+}

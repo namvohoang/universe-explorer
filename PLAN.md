@@ -593,11 +593,18 @@ recorded last.
 - [ ] 12.7 Aurora: particles from the Sun steered by Earth's magnetism to a ring round each
       pole, where the air glows. Nothing in the catalogue describes Earth's magnetism, so the
       lines and particles are a diagram, labelled; NASA photos from the space station, credited.
-- [ ] 12.8 `tools/horizons` (state vectors in km and km/s into `src/data/paths/`),
-      `src/sim/trajectory.ts` (Hermite interpolation, tested against held-out samples), and
-      the craft drawn bigger than life with its own label.
-- [ ] 12.9 Artemis I round the Moon, `tracked`, with an Orion model from a trusted source (or
-      a labelled marker if none exists).
+- [x] 12.8 `tools/horizons/fetchPath.ts` (position and velocity in km and km/s into
+      `src/data/paths/`, thinned to the fewest samples that still draw every one left out to
+      within 1 km, with some of those left out kept as a test fixture) and
+      `src/sim/trajectory.ts` (the curve between samples, tested). A spacecraft is not drawn
+      bigger than life after all: at true scale it is a point of light with a ring and its
+      name, like any body too small to see, on a trail that lights up behind it.
+- [x] 12.9 Artemis I round the Moon, `tracked`: Orion's 223 samples and, for this story, the
+      Moon's own from Horizons too, since the catalogue's Moon is a degree or so out and Orion
+      passes 130 km above the ground. Six parts, the two passes seen close up. The path starts
+      two hours after launch and stops 40 minutes before splashdown, as Horizons does, so the
+      launch and the landing are told in words, not shown. Not done: an Orion model (the craft
+      is a named point), and the stories still wait for their recordings (12.12).
 - [ ] 12.10 Artemis II: four astronauts round the Moon, `tracked`.
 - [ ] 12.11 Staged flights: how a rocket reaches space (the Saturn V's stages, times from
       NASA's Apollo reports), Apollo 11's landing (with the S-IVB's real path as a side note),

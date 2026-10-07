@@ -1083,6 +1083,18 @@ export const en = {
     'A full Moon! The Moon is on the other side of Earth from the Sun, so we see all of its sunny side.',
   storyMoonPhasesLastQuarter:
     'We see half again, but the other half. The Sun always lights half of the Moon. What changes is how much of that half we can see.',
+  storyArtemis1Title: 'Artemis I: round the Moon',
+  craftOrion: 'Orion',
+  storyArtemis1OnItsWay:
+    'A giant rocket has just sent the Orion spaceship on its way to the Moon. Nobody is on board. This is a test flight.',
+  storyArtemis1FirstPass: 'Orion flies past the Moon, very close to the ground.',
+  storyArtemis1FarOrbit:
+    'Now Orion swings far out beyond the Moon. Its loop round the Moon is very, very big.',
+  storyArtemis1Farthest:
+    'This is the farthest Orion got from Earth. No spaceship built to carry people had ever been so far.',
+  storyArtemis1SecondPass: 'Orion flies close past the Moon a second time, and turns for home.',
+  storyArtemis1Home:
+    'Orion flies back to Earth. At the end it slows down and lands in the sea under parachutes.',
   languageEnglish: 'English',
   languageVietnamese: 'Tiếng Việt',
 } as const;

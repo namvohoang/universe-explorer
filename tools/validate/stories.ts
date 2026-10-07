@@ -2,7 +2,7 @@
  * Checks the stories of the Watch screen beyond what the types can: sources resolve, chapters
  * run forwards in time, and everything a story draws is in the catalogue. Pure: takes the records.
  */
-import type { Story } from '../../src/data/types';
+import type { SampledPath, Story } from '../../src/data/types';
 import { sourceErrors } from './catalogue';
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -22,9 +22,10 @@ function chapterErrors(story: Story): string[] {
       errors.push(`${at} chapter "${chapter.id}" does not start after the one before it`);
     }
     previousJd = chapter.atJd.value;
-    if (!story.actorIds.includes(chapter.lookAtId)) {
+    const craftIds = (story.craft ?? []).map((craft) => craft.id);
+    if (![...story.actorIds, ...craftIds].includes(chapter.lookAtId)) {
       errors.push(
-        `${at} chapter "${chapter.id}" looks at "${chapter.lookAtId}", not one of its actors`,
+        `${at} chapter "${chapter.id}" looks at "${chapter.lookAtId}", not one of its actors or craft`,
       );
     }
     if (chapter.viewFromId !== undefined && !story.actorIds.includes(chapter.viewFromId)) {
@@ -45,6 +46,36 @@ function chapterErrors(story: Story): string[] {
   return errors;
 }
 
+/** A path must run forwards in time, and a story must not run past either end of it. */
+function pathErrors(
+  story: Story,
+  name: string,
+  path: SampledPath,
+  known: ReadonlySet<string>,
+): string[] {
+  const errors: string[] = [];
+  const at = `story ${story.id}: path of "${name}"`;
+  const samples = path.samples.value;
+  if (!known.has(path.centreId)) {
+    errors.push(`${at} is measured from "${path.centreId}", not in the catalogue`);
+  }
+  if (samples.length < 2) return [...errors, `${at} has fewer than two samples`];
+  for (const [index, sample] of samples.entries()) {
+    const before = samples[index - 1];
+    if (before && !(sample[0] > before[0])) {
+      errors.push(`${at} does not run forwards in time at sample ${String(index)}`);
+      break;
+    }
+  }
+  const first = samples[0]?.[0] ?? Infinity;
+  const last = samples[samples.length - 1]?.[0] ?? -Infinity;
+  const start = story.chapters[0]?.atJd.value ?? first;
+  if (start < first || story.endJd.value > last) {
+    errors.push(`${at} does not cover the whole story`);
+  }
+  return errors;
+}
+
 export function checkStories(stories: readonly Story[], catalogueIds: readonly string[]): string[] {
   const errors: string[] = [];
   const known = new Set(catalogueIds);
@@ -57,6 +88,24 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
     for (const actor of story.actorIds) {
       if (!known.has(actor))
         errors.push(`story ${story.id}: actor "${actor}" is not in the catalogue`);
+    }
+    const craft = story.craft ?? [];
+    if (story.path === 'tracked' && craft.length === 0) {
+      errors.push(`story ${story.id}: says its path is tracked but flies no tracked craft`);
+    }
+    for (const one of craft) {
+      if (!ID.test(one.id))
+        errors.push(`story ${story.id}: craft id "${one.id}" is not kebab-case`);
+      if (known.has(one.id)) {
+        errors.push(`story ${story.id}: craft "${one.id}" has the id of a catalogue object`);
+      }
+      errors.push(...pathErrors(story, one.id, one.path, known));
+    }
+    for (const [id, path] of Object.entries(story.tracked ?? {})) {
+      if (!story.actorIds.includes(id)) {
+        errors.push(`story ${story.id}: tracks "${id}", not one of its actors`);
+      }
+      errors.push(...pathErrors(story, id, path, known));
     }
     const quoted = story.chapters.map((chapter) => chapter.text.sourceId);
     errors.push(...sourceErrors(story, quoted), ...chapterErrors(story));

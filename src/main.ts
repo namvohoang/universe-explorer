@@ -1049,10 +1049,21 @@ function start(): void {
     if (from !== undefined) {
       const seen = chapter.lookAtId;
       const bearing = (): Vec3 => subtract(system.positionOf(from), system.positionOf(seen));
+      // A comet is stood back from as its glow and tails grow, so they are seen whole and big.
+      const squeeze = roomSqueeze();
+      const distanceNow = (): number =>
+        squeeze *
+        Math.max(
+          system.radiusOf(seen) * CLOSE_UP_RADII * ROOM_FILL,
+          system.glowRadiusOf(seen) * GLOW_VIEW_RADII,
+        );
       return {
         target: () => system.positionOf(seen),
         // A ringed world is stood back from far enough to see its rings whole.
-        distance: system.spanOf(seen) * WATCH_VIEW_RADII * roomSqueeze(),
+        distance: tailed.has(seen)
+          ? distanceNow()
+          : system.spanOf(seen) * WATCH_VIEW_RADII * squeeze,
+        ...(tailed.has(seen) ? { distanceNow } : {}),
         direction: bearing(),
         bearing,
         minDistance: system.radiusOf(seen) * BODY_CLOSEST_RADII,

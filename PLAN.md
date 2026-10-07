@@ -706,6 +706,19 @@ recorded last.
       the Sun is whole, then bitten, then hidden for about as long as NASA lists, then whole.
       The seasons are still seen from the Sun, and the comet and the aurora close up: there
       is no sky with a horizon to stand under yet.
+- [x] 12.18 The owner's notes on every sky story (2026-10-07). The eye button is gone: both
+      looks are always on show. The whole picture marks the viewer ("You") and draws their
+      line of sight. The eclipses and the supermoon are drawn like the Moon's phases: orbit
+      rings kept, shadows as thin outlined shapes. Mars: whole orbits at true scale with the
+      line of sight run out to the sky, and the app's star patterns behind its track. The
+      comet is watched from Earth against the same stars, beside a true-scale picture that
+      keeps the Sun, Earth and the comet in view. The seasons name the season in each half of
+      Earth (worked out from how the pole leans, with a warm or an icy label), and the months
+      between the four days are swept through in three seconds, a whole turn of Earth at a
+      time, in place of a jump. The aurora and the meteor shower show a real NASA photo from
+      the ground as the look from Earth (credited in `CREDITS.md`; the meteor is a Perseid,
+      and its caption says so, since NASA's library has no ground photo of Halley's showers).
+      Open: the owner's note on Saturn's rings ("slow speed") is not yet understood.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

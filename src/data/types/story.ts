@@ -1,4 +1,5 @@
 import type { BackedText } from './content';
+import type { MediaRef } from './media';
 import type { Source, Sourced } from './source';
 
 /** The rows the Watch screen sorts its stories into, in the order shown. */
@@ -218,5 +219,20 @@ export interface Story {
    * for things that happen along that line; `round-the-star` shows the orbits whole.
    */
   readonly diagram?: 'in-line' | 'round-the-star';
+  /**
+   * Without a diagram: what the whole picture, at true scale, is fitted to. `orbits` puts the
+   * star in the middle with every actor's path round it; `star-and-first` keeps the star and
+   * the first actor both in view as they near and part. Left out, it is the first actor and
+   * what is near it.
+   */
+  readonly whole?: 'orbits' | 'star-and-first';
+  /**
+   * A real photo of what the story tells, taken from the ground on Earth, for a thing the app
+   * cannot draw as it is seen from there. It stands in the place of the look from Earth, beside
+   * the 3D picture. `captionKey` says plainly what, where and when the photo is of.
+   */
+  readonly fromEarth?: { readonly media: MediaRef; readonly captionKey: string };
+  /** Names the season in each half of this actor, worked out from how it leans to its star. */
+  readonly seasonsOf?: string;
   readonly sources: readonly Source[];
 }

@@ -14,9 +14,18 @@ export interface SideTags {
    * Frames the two looks and says what each one is; `null` takes the frames and the names
    * away, for when there is one look only.
    */
-  frame(looks: readonly { box: PaneBox; label: string }[] | null): void;
+  frame(
+    looks:
+      | readonly {
+          box: PaneBox;
+          label: string;
+          /** A real picture that fills the frame in place of a 3D look, with what it shows. */
+          picture?: { src: string; alt: string; caption: string };
+        }[]
+      | null,
+  ): void;
   /** The things to name in the second look. */
-  name(things: readonly { id: string; name: string }[]): void;
+  name(things: readonly { id: string; name: string; above?: boolean }[]): void;
   /** Call every frame with where each thing is in the second look and how big it is drawn. */
   update(place: (id: string) => MarkerPlace): void;
 }
@@ -28,17 +37,24 @@ export interface SideTags {
  */
 export function createSideTags(layer: HTMLElement): SideTags {
   const frames: HTMLElement[] = [];
-  let tags: { id: string; name: string; tag: HTMLElement; pill: HTMLElement }[] = [];
+  let tags: { id: string; name: string; above: boolean; tag: HTMLElement; pill: HTMLElement }[] =
+    [];
   return {
     frame(looks) {
       for (const frame of frames.splice(0)) frame.remove();
       for (const { tag } of tags) tag.hidden = looks === null;
-      for (const { box, label } of looks ?? []) {
+      for (const { box, label, picture } of looks ?? []) {
         const frame = create('div', 'pane');
         frame.style.left = `${String(box.x)}px`;
         frame.style.top = `${String(box.y)}px`;
         frame.style.width = `${String(box.width)}px`;
         frame.style.height = `${String(box.height)}px`;
+        if (picture) {
+          const image = create('img', 'pane-photo');
+          image.src = picture.src;
+          image.alt = picture.alt;
+          frame.append(image, create('p', 'pane-caption', picture.caption));
+        }
         frame.append(create('span', 'pane-label', label));
         frames.push(frame);
       }
@@ -47,23 +63,25 @@ export function createSideTags(layer: HTMLElement): SideTags {
     },
     name(things) {
       for (const { tag } of tags) tag.remove();
-      tags = things.map(({ id, name }) => {
-        const tag = create('div', 'side-tag');
+      tags = things.map(({ id, name, above = false }) => {
+        // A name above its spot is the viewer's: it is told apart from the bodies' names.
+        const tag = create('div', above ? 'side-tag side-you' : 'side-tag');
         const pill = create('span', 'marker-name', name);
         tag.hidden = true;
         tag.append(pill);
         layer.append(tag);
-        return { id, name, tag, pill };
+        return { id, name, above, tag, pill };
       });
     },
     update(place) {
       // A name that would cover one already placed is left out, as in the first look.
       const placed: { left: number; right: number; top: number; bottom: number }[] = [];
-      for (const { id, name, tag, pill } of tags) {
+      for (const { id, name, above, tag, pill } of tags) {
         const { point, radiusPixels } = place(id);
         tag.hidden = !point.visible;
         if (!point.visible) continue;
         tag.style.transform = `translate(${point.x.toFixed(1)}px, ${point.y.toFixed(1)}px)`;
+        if (above) continue;
         const ringed = radiusPixels * 2 < RING_BELOW_PIXELS;
         tag.classList.toggle('ringed', ringed);
         const drop = Math.round(Math.max(radiusPixels, ringed ? 8 : 0) + 6);

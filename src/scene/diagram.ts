@@ -3,6 +3,7 @@ import type { CelestialObject } from '../data/types';
 import type { Scale } from '../sim/scale';
 import { length, subtract } from '../sim/vec3';
 import { createShadowCones, type ShadowConesDrawing } from './shadowCones';
+import type { SightLine } from './sightLine';
 import { createSolarSystem, type SolarSystem } from './solarSystem';
 
 const BACKGROUND = '#05070f';
@@ -19,6 +20,8 @@ export interface Diagram {
   readonly system: SolarSystem;
   /** Moves everything to a date, and the drawn shadows with it. */
   setDate(jd: number): void;
+  /** Puts a line of sight in the drawing. */
+  add(sight: SightLine): void;
   dispose(): void;
 }
 
@@ -53,6 +56,9 @@ export function createDiagram(
           reach,
         );
       }
+    },
+    add(sight) {
+      scene.add(sight.line);
     },
     dispose() {
       for (const cone of cones) cone.dispose();

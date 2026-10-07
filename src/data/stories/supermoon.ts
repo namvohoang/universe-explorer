@@ -27,6 +27,7 @@ export const supermoon: Story = {
   path: 'orbits',
   titleKey: 'storySupermoonTitle',
   actorIds: ['earth', 'moon', 'sun'],
+  diagram: 'in-line',
   tracked: {
     moon: {
       centreId: 'earth',

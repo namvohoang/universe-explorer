@@ -244,16 +244,8 @@ test.describe('a story', () => {
       await expect(second).toBeVisible();
       await expect.poll(() => inside(first, own)).toBe(true);
       await expect.poll(() => inside(second, whole)).toBe(true);
-      // Let loose, the camera looks round the diagram alone, and the screen says what it is.
-      await page.getByRole('button', { name: 'Look around' }).click();
-      await expect(panes).toHaveCount(0);
-      await expect(second).toBeHidden();
-      await expect(page.locator('#scale-label')).toHaveText(
-        'A drawing: sizes and distances are not real.',
-      );
-      await expect(page.locator('.marker', { hasText: 'The Sun' })).toBeVisible();
-      await page.getByRole('button', { name: 'Back to the story view' }).click();
-      await expect(page.locator('#scale-label')).toHaveText('Real sizes and real distances.');
+      // There is no button to swap the looks: both are always on show.
+      await expect(page.locator('.watch-look')).toHaveCount(0);
     }
   });
 
@@ -264,21 +256,69 @@ test.describe('a story', () => {
     await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
   });
 
-  test('with no look of its own shows the whole stage alone', async ({ page }) => {
-    await page.goto('/#watch/meteor-shower');
-    await expect(page.locator('.watch-caption h2')).toHaveText('A meteor shower');
-    await expect(page.locator('.pane')).toHaveCount(0);
+  test('marks where the viewer stands in the whole picture', async ({ page }) => {
+    await page.goto('/#watch/moon-phases');
+    const you = page.locator('.side-you');
+    await expect(you).toBeVisible();
+    await expect(you).toHaveText('You');
+    // The Moon's path round Earth is drawn for the supermoon too, in a diagram like this one.
+    await page.getByRole('button', { name: 'A supermoon' }).click();
+    await expect(page.locator('.pane-label')).toHaveText([
+      'Seen from: Earth',
+      'The whole picture (not to scale)',
+    ]);
+    await expect(page.locator('.side-you')).toBeVisible();
   });
 
-  test('lets the camera loose and takes it back', async ({ page }) => {
-    await page.goto('/#watch/moon-phases');
-    const look = page.getByRole('button', { name: 'Look around' });
-    await look.click();
-    const back = page.getByRole('button', { name: 'Back to the story view' });
-    await expect(back).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('.marker', { hasText: 'Earth' })).toBeVisible();
-    await back.click();
-    await expect(look).toHaveAttribute('aria-pressed', 'false');
+  test('shows a real photo from the ground where the app cannot draw the look from Earth', async ({
+    page,
+  }) => {
+    for (const [story, credit, beside] of [
+      ['aurora', 'NASA/Ben Smegelsky', 'Close up'],
+      ['meteor-shower', 'NASA/Bill Ingalls', 'The whole picture'],
+    ] as const) {
+      await page.goto(`/#watch/${story}`);
+      await expect(page.locator('.pane-label')).toHaveText([
+        'Seen from Earth: a real photo',
+        beside,
+      ]);
+      const photo = page.locator('.pane-photo');
+      await expect(photo).toBeVisible();
+      await expect(photo).toHaveAttribute('alt', /.+/);
+      await expect
+        .poll(() => photo.evaluate((image: HTMLImageElement) => image.naturalWidth))
+        .toBeGreaterThan(0);
+      await expect(page.locator('.pane-caption')).toContainText(`Photo: ${credit}`);
+      // The 3D look stands in the other frame, clear of the photo.
+      const [first, second] = await Promise.all([
+        boxOf(page.locator('.pane').nth(0)),
+        boxOf(page.locator('.pane').nth(1)),
+      ]);
+      expect(overlap(first, second)).toBe(false);
+      const earth = await boxOf(page.locator('.marker', { hasText: 'Earth' }));
+      expect(earth.x + earth.width / 2).toBeGreaterThan(second.x);
+    }
+  });
+
+  test('names the season in each half of Earth, and the comet is watched from Earth', async ({
+    page,
+  }) => {
+    await page.goto('/#watch/seasons');
+    await page.getByRole('button', { name: 'Next part' }).click();
+    await expect(page.locator('.season-tag.summer')).toHaveText('Summer');
+    await expect(page.locator('.season-tag.winter')).toHaveText('Winter');
+    // In June the north, at the top, has summer.
+    await expect
+      .poll(async () => {
+        const summer = await boxOf(page.locator('.season-tag.summer'));
+        const winter = await boxOf(page.locator('.season-tag.winter'));
+        return summer.y < winter.y;
+      })
+      .toBe(true);
+    await page.goto('/#watch/halley-tail');
+    await expect(page.locator('.pane-label')).toHaveText(['Seen from: Earth', 'The whole picture']);
+    await expect(page.locator('.season-tag:visible')).toHaveCount(0);
+    await expect(page.locator('.side-tag', { hasText: 'The Sun' })).toBeVisible();
   });
 });
 
@@ -336,9 +376,8 @@ test.describe('a space flight', () => {
     }
     await expect(page.locator('.watch-text')).toContainText('Sea of Tranquility');
     await expect(page.locator('.watch-date')).toHaveText('20 July 1969, 20:17');
-    // The camera can be let loose from over the lander to see the whole Moon.
-    await page.getByRole('button', { name: 'Look around' }).click();
-    await expect(page.locator('.marker', { hasText: 'The Moon' })).toBeVisible();
+    // The whole Moon is in the picture beside the close look.
+    await expect(page.locator('.side-tag', { hasText: 'The Moon' })).toBeVisible();
   });
 
   test('whose path is partly real and partly drawn says which is which', async ({ page }) => {

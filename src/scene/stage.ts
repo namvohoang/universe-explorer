@@ -76,11 +76,12 @@ export interface PaneBox {
  */
 export interface Panes {
   readonly main: PaneBox;
-  readonly side: PaneBox;
+  /** `null` when the second part of the screen holds something else, and only `main` is drawn. */
+  readonly side: PaneBox | null;
   /** Where the second camera looks, in scene units. Called every frame. */
   readonly target: () => Vec3;
   /** How far from it the second camera stands, and on which bearing from it, asked every frame. */
-  readonly distance: number;
+  readonly distance: () => number;
   readonly direction: () => Vec3;
   /** What the second camera draws, when it is not the scene the first one draws. */
   readonly scene?: Scene;
@@ -220,7 +221,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   /** Puts the second camera where its look says, facing what it looks at. */
   const moveSideCamera = (look: Panes): void => {
     const target = look.target();
-    const { distance } = look;
+    const distance = look.distance();
     const direction = look.direction();
     const far = Math.hypot(direction.x, direction.y, direction.z) || 1;
     sideCamera.position.set(
@@ -229,7 +230,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       target.z + (direction.z / far) * distance,
     );
     sideCamera.lookAt(target.x, target.y, target.z);
-    sideCamera.aspect = look.side.width / look.side.height;
+    if (look.side) sideCamera.aspect = look.side.width / look.side.height;
     sideCamera.near = nearPlaneFor(distance);
     sideCamera.updateProjectionMatrix();
     sideCamera.updateMatrixWorld();
@@ -327,6 +328,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     renderer.clear();
     renderer.setScissorTest(true);
     drawIn(panes.main, camera, otherScene ?? scene);
+    if (!panes.side) return;
     moveSideCamera(panes);
     for (const callback of sideCallbacks) callback(toVec3(sideCamera.position));
     drawIn(panes.side, sideCamera, panes.scene ?? scene);
@@ -369,7 +371,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     },
     toScreen: (position) => project(position, camera, panes?.main ?? whole()),
     toSideScreen(position) {
-      if (!panes) return { x: 0, y: 0, visible: false, pixelsPerUnit: 0, distance: 0 };
+      if (!panes?.side) return { x: 0, y: 0, visible: false, pixelsPerUnit: 0, distance: 0 };
       return project(position, sideCamera, panes.side);
     },
     flyTo: (request) => {

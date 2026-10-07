@@ -255,7 +255,7 @@ describe('the landing of Apollo 11', () => {
 
 describe('a story drawn as a diagram', () => {
   const diagram = createScale('diagram');
-  const drawn = [moonPhases, solarEclipse, lunarEclipse, seasons, saturnRings];
+  const drawn = [moonPhases, supermoon, solarEclipse, lunarEclipse, seasons, saturnRings];
   /** How far a body reaches in the diagram, rings and all. */
   const reach = (id: string): number => {
     const body = catalogue.find((object) => object.id === id) ?? fail();

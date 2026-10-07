@@ -1261,6 +1261,29 @@ body.watching .view-controls .turn {
   white-space: nowrap;
 }
 
+/* A real photo in a frame, in place of a 3D look: it fills the frame, with what it shows below. */
+.pane-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 13px;
+}
+
+.pane-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 8px 10px;
+  font: 600 12px/1.35 var(--body);
+  color: var(--ink);
+  background: rgba(6, 9, 20, 0.78);
+  border-radius: 0 0 13px 13px;
+}
+
 /* A name in the second look: placed like a marker, but it is not a button. */
 .side-tag {
   position: absolute;
@@ -1278,6 +1301,87 @@ body.watching .view-controls .turn {
   border: 2px solid var(--sky);
   border-radius: 50%;
   opacity: 0.85;
+}
+
+/* The season in each half of a world, named beside its pole: warm for summer, icy for winter. */
+.season-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: 700 13px/1 var(--body);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(6, 9, 20, 0.7);
+  color: var(--ink);
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.season-tag .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.season-tag.summer {
+  color: #ffc53d;
+  border-color: #ffc53d;
+  animation: season-warm 2.4s ease-in-out infinite;
+}
+
+.season-tag.winter {
+  color: #9fdcff;
+  border-color: #9fdcff;
+  animation: season-cold 3.2s ease-in-out infinite;
+}
+
+.season-tag.winter .icon {
+  animation: season-turn 9s linear infinite;
+}
+
+@keyframes season-warm {
+  50% {
+    box-shadow: 0 0 16px 3px rgba(255, 150, 40, 0.55);
+  }
+}
+
+@keyframes season-cold {
+  50% {
+    box-shadow: 0 0 14px 2px rgba(160, 220, 255, 0.45);
+  }
+}
+
+@keyframes season-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season-tag,
+  .season-tag .icon {
+    animation: none !important;
+  }
+}
+
+/* Where the viewer stands in the whole picture: a bright dot with "You" above it. */
+.side-you::after {
+  content: '';
+  position: absolute;
+  inset: 17px;
+  border-radius: 50%;
+  background: var(--sun);
+  box-shadow: 0 0 0 2px rgba(6, 9, 20, 0.8);
+}
+
+.side-you .marker-name {
+  top: auto;
+  bottom: 30px;
+  border-color: var(--sun);
+  color: var(--sun);
 }
 
 /* A spacecraft in a story: a ring in the colour of its trail, with its name under it. */

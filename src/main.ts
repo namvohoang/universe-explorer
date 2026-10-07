@@ -9,6 +9,7 @@ import {
   type StoryCraft,
 } from './data/types';
 import { createDiagram, type Diagram } from './scene/diagram';
+import { createSightLine } from './scene/sightLine';
 import {
   ZOOM_SECONDS,
   distanceForAspect,
@@ -19,7 +20,9 @@ import {
 import type { DeepModel, DeepModelNote } from './scene/deep';
 import { createSolarSystem, type TrackedCraft } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo, type PaneBox } from './scene/stage';
-import { bodyRadiusKm } from './sim/layout';
+import { northPoleEcliptic, poleOf } from './sim/frames';
+import { bodyRadiusKm, eclipticOffsetKm } from './sim/layout';
+import { seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
 import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
 import { chasePositionKm, drawnThrough, pathPositionKm, sampleInstants } from './sim/trajectory';
 import { length, subtract, type Vec3 } from './sim/vec3';
@@ -70,6 +73,11 @@ const STAGE_FRAMING = 2.6;
 /** A story's whole picture drawn as a diagram: its scale, and the room left round it. */
 const DIAGRAM_SCALE = createScale('diagram');
 const DIAGRAM_MARGIN = 1.2;
+/** Room left round a star and one actor kept in view together, and round whole orbits. */
+const PAIR_MARGIN = 1.5;
+const ORBITS_MARGIN = 1.25;
+/** How wide a comet's look from another world is, top to bottom, in degrees: room for its tails. */
+const COMET_FIELD_DEG = 14;
 /**
  * A diagram of things in a line is seen from almost straight above the line, like a drawing
  * on a page: each ball shows its lit half and its dark half. The little lean says which way is up.
@@ -251,9 +259,10 @@ function start(): void {
   const roomSqueeze = (): number => {
     // A look with a part of the room to itself fills that part; a part taller than it is wide
     // is fitted by its width.
-    if (paired) {
-      const { main } = roomHalves();
-      return Math.max(1, main.height / main.width);
+    if (paired || pictured) {
+      const halves = roomHalves();
+      const box = pictured ? halves.side : halves.main;
+      return Math.max(1, box.height / box.width);
     }
     const room = roomAbovePanel();
     return window.innerHeight / Math.max(1, room.bottom - room.top);
@@ -263,6 +272,11 @@ function start(): void {
    * be seen at once: what it looks like from there, and where everything is.
    */
   let paired: { story: Story; chapter: Chapter } | null = null;
+  /**
+   * The part of a story shown beside a real photo from the ground: the photo fills the first
+   * half of the room, and the 3D look is drawn in the second.
+   */
+  let pictured: { story: Story; chapter: Chapter } | null = null;
   const sideTags = createSideTags(mustFind('#markers'));
   /** The room cut in two: side by side where it is wide, one above the other where it is tall. */
   const roomHalves = (): { main: PaneBox; side: PaneBox } => {
@@ -288,12 +302,81 @@ function start(): void {
       side: { x, y: y + half, width, height: height - half },
     };
   };
+  /**
+   * Where the viewer of a part's own look stands and what they look at, drawn in the whole
+   * picture as a dot named "You" and a line of sight.
+   */
+  const sight = createSightLine();
+  const VIEWER = 'viewer';
+  let sightOf: (() => { from: Vec3; to: Vec3 }) | null = null;
+  /** How many times further than the thing looked at a line of sight to the sky is drawn. */
+  const SIGHT_TO_SKY = 2.2;
+  const sightFor = (story: Story, chapter: Chapter): typeof sightOf => {
+    const viewer = chapter.standAtId ?? chapter.viewFromId;
+    if (viewer === undefined) return null;
+    const shown = diagram?.system ?? system;
+    const [lonDegEast, latDeg] = chapter.standOn?.value ?? [0, 0];
+    const spot = bodyFramePoint({ lonDegEast, latDeg, altitudeKm: 0 }, 1);
+    return () => {
+      const centre = shown.positionOf(viewer);
+      const seen = shown.positionOf(chapter.lookAtId);
+      const out = subtract(seen, centre);
+      const far = length(out) || 1;
+      const step = (by: number): Vec3 => ({
+        x: centre.x + (out.x / far) * by,
+        y: centre.y + (out.y / far) * by,
+        z: centre.z + (out.z / far) * by,
+      });
+      // On the ground at the story's place, or on the side of the body that faces what is seen.
+      const from = chapter.standOn
+        ? shown.groundPointOf(viewer, spot)
+        : step(shown.radiusOf(viewer));
+      // A track across the sky is seen far beyond the body that makes it.
+      return { from, to: story.skyTrack ? step(far * SIGHT_TO_SKY) : seen };
+    };
+  };
   /** Draws the two looks in the two halves of the room, or one look in all of it. */
   const layPanes = (): void => {
+    sight.line.removeFromParent();
+    sightOf = paired ? sightFor(paired.story, paired.chapter) : null;
+    const photo = pictured?.story.fromEarth;
+    if (pictured && photo) {
+      const { main, side } = roomHalves();
+      stage.setPanes({
+        main: side,
+        side: null,
+        target: () => ORIGIN,
+        distance: () => 1,
+        direction: () => STAGE_DIRECTION,
+      });
+      const { chapter } = pictured;
+      const strings: Readonly<Record<string, string>> = words;
+      sideTags.frame([
+        {
+          box: main,
+          label: words.watchPanePhoto,
+          picture: {
+            src: mediaUrl(photo.media.file),
+            alt: strings[photo.media.altKey] ?? '',
+            caption: `${strings[photo.captionKey] ?? ''} ${fill(words.watchPhotoBy, { credit: photo.media.credit ?? '' })}`,
+          },
+        },
+        {
+          box: side,
+          label: chapter.closeUp === true ? words.watchPaneClose : words.watchPaneWhole,
+        },
+      ]);
+      return;
+    }
     if (!paired) {
       stage.setPanes(null);
       sideTags.frame(null);
       return;
+    }
+    if (sightOf) {
+      if (diagram) diagram.add(sight);
+      else stage.scene.add(sight.line);
+      sight.line.visible = false;
     }
     const { story, chapter } = paired;
     const { main, side } = roomHalves();
@@ -302,7 +385,7 @@ function start(): void {
       main,
       side,
       target: whole.target,
-      distance: whole.distance,
+      distance: whole.distanceNow ?? (() => whole.distance),
       direction: stageBearing(story, side.width / side.height),
       ...(diagram ? { scene: diagram.scene } : {}),
     });
@@ -321,7 +404,7 @@ function start(): void {
   const liftView = (): void => {
     const { top, bottom, left } = roomAbovePanel();
     stage.setLift(Math.round(window.innerHeight / 2 - (top + bottom) / 2), Math.round(left / 2));
-    if (paired) layPanes();
+    if (paired || pictured) layPanes();
     // A story's look was fitted to the room as it was; in a room of another size it is fitted again.
     const size = [top, bottom, left, window.innerWidth].map(Math.round).join();
     if (size !== roomSize) onRoomChanged?.();
@@ -803,6 +886,8 @@ function start(): void {
   // The story's panel covers the bottom of the screen, so the view is drawn in the room above it.
   /** What the story on show draws; everything else steps out of the picture. */
   let watchActors: ReadonlySet<string> | null = null;
+  /** The world whose sky the story's own look is at, with the star patterns behind. */
+  let skyFromId: string | null = null;
   /** The diagram of the story on show, if its whole picture is drawn as one. */
   let diagram: Diagram | null = null;
   /** The diagram is drawn on its own, in place of the stage. */
@@ -822,9 +907,9 @@ function start(): void {
     };
   };
   /** The view a chapter asks for: held on a line between two actors, or the whole stage. */
-  const watchView = (story: Story, chapter: Chapter, free: boolean): FlyTo => {
+  const watchView = (story: Story, chapter: Chapter): FlyTo => {
     const stand = chapter.standAtId;
-    if (stand !== undefined && !free && story.skyTrack) {
+    if (stand !== undefined && story.skyTrack) {
       // Looking at one patch of sky from the body stood on, while the other body moves across it.
       const gaze = (): Vec3 => system.skyGaze() ?? system.positionOf(chapter.lookAtId);
       const away = (): Vec3 => subtract(system.positionOf(stand), gaze());
@@ -838,7 +923,7 @@ function start(): void {
         idleTurn: false,
       };
     }
-    if (stand !== undefined && !free) {
+    if (stand !== undefined) {
       const seen = chapter.lookAtId;
       // On the ground at one place, where the story names one, or at the body's middle.
       const [lonDegEast, latDeg] = chapter.standOn?.value ?? [0, 0];
@@ -857,7 +942,7 @@ function start(): void {
       };
     }
     const from = chapter.viewFromId;
-    if (from !== undefined && !free) {
+    if (from !== undefined) {
       const seen = chapter.lookAtId;
       const bearing = (): Vec3 => subtract(system.positionOf(from), system.positionOf(seen));
       return {
@@ -873,7 +958,7 @@ function start(): void {
       };
     }
     const flown = (story.craft ?? []).find((craft) => craft.id === chapter.lookAtId);
-    if (chapter.closeUp === true && flown && !free) {
+    if (chapter.closeUp === true && flown) {
       const ground = flown.path.centreId;
       // Held over the craft, a little to the south of straight overhead, however far round it goes.
       const bearing = (): Vec3 => {
@@ -891,7 +976,7 @@ function start(): void {
         idleTurn: false,
       };
     }
-    if (chapter.closeUp === true && !free) {
+    if (chapter.closeUp === true) {
       const seen = chapter.lookAtId;
       // Something with a glow that grows (a comet near the Sun) is stood back from as it grows.
       const squeeze = roomSqueeze();
@@ -916,7 +1001,7 @@ function start(): void {
     // The stage has to fit in the room above the panel, not in the whole height of the screen.
     const room = roomAbovePanel();
     const high = Math.max(1, room.bottom - room.top);
-    const squeeze = window.innerHeight / high;
+    const squeeze = pictured ? roomSqueeze() : window.innerHeight / high;
     // A diagram is fitted to the room itself: beside the words, and clear of the zoom buttons
     // by as much on the other side, since the view is drawn in the middle of the room.
     const buttons = mustFind('#view-controls').getBoundingClientRect();
@@ -967,7 +1052,46 @@ function start(): void {
         idleTurn: false,
       };
     }
-    const middle = diagram && star !== undefined ? star : first;
+    if (!diagram && story.whole === 'star-and-first' && star !== undefined) {
+      // The star and the first actor are kept in view together, however far apart they are,
+      // with the other actors and room for a tail that streams away from the star.
+      const other = story.actorIds.find((id) => id !== star) ?? first;
+      const middleNow = (): Vec3 => {
+        const a = shown.positionOf(star);
+        const b = shown.positionOf(other);
+        return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, z: (a.z + b.z) / 2 };
+      };
+      const distanceNow = (): number => {
+        const middle = middleNow();
+        const half = Math.max(
+          ...story.actorIds.map((id) => length(subtract(shown.positionOf(id), middle))),
+        );
+        return distanceToFit(half, half, aspect, FIELD_OF_VIEW_DEG) * PAIR_MARGIN * squeeze;
+      };
+      return {
+        target: middleNow,
+        distance: distanceNow(),
+        distanceNow,
+        direction: STAGE_DIRECTION,
+        minDistance: 0,
+        maxDistance: Infinity,
+        idleTurn: false,
+      };
+    }
+    const orbits = !diagram && story.whole === 'orbits' && star !== undefined;
+    const middle = (diagram || orbits) && star !== undefined ? star : first;
+    if (orbits) {
+      const reach = Math.max(...story.actorIds.map((id) => from(id, middle))) * ORBITS_MARGIN;
+      const distance = distanceToFit(reach, reach, aspect, FIELD_OF_VIEW_DEG) * squeeze;
+      return {
+        target: () => shown.positionOf(middle),
+        distance,
+        direction: STAGE_DIRECTION,
+        minDistance: 0,
+        maxDistance: distance * 4,
+        idleTurn: false,
+      };
+    }
     const reach = Math.max(
       shown.radiusOf(middle),
       ...(story.craft ?? []).map((craft) => shown.reachOf(craft.id)),
@@ -1090,6 +1214,57 @@ function start(): void {
   onRoomChanged = () => {
     if (watchWanted) watchPanel?.reframe();
   };
+  // The season in each half of a story's world, named beside its poles in the story's own look.
+  const SEASON_WORDS: Readonly<Record<Season, string>> = {
+    spring: words.seasonSpring,
+    summer: words.seasonSummer,
+    autumn: words.seasonAutumn,
+    winter: words.seasonWinter,
+  };
+  const seasonTags = (['north', 'south'] as const).map((half) => {
+    const tag = create('div', 'season-tag');
+    tag.hidden = true;
+    mustFind('#markers').append(tag);
+    return { half, tag, shown: '' };
+  });
+  let seasonsOfId: string | null = null;
+  /** How far from a world's middle its season names stand, in its radii. */
+  const SEASON_TAG_RADII = 1.3;
+  const SEASON_TAG_BELOW_PIXELS = 26;
+  const showSeasons = (jd: number): void => {
+    const world = catalogue.find((object) => object.id === seasonsOfId);
+    const shape = world?.shape;
+    const pole =
+      shape?.type === 'spheroid' || shape?.type === 'triaxial' ? poleOf(shape.orientation) : null;
+    if (!world || !pole || !paired) {
+      for (const { tag } of seasonTags) tag.hidden = true;
+      return;
+    }
+    const north = northPoleEcliptic(pole);
+    // Where the star stands over the world now and a day on: its offset is from the star.
+    const overhead = (at: number): number => {
+      const from = eclipticOffsetKm(world, catalogue, at);
+      return starLatitudeDeg(north, { x: -from.x, y: -from.y, z: -from.z });
+    };
+    const seasons = seasonsAt(overhead(jd), overhead(jd + 1));
+    for (const entry of seasonTags) {
+      const season = seasons[entry.half];
+      if (entry.shown !== season) {
+        entry.shown = season;
+        entry.tag.className = `season-tag ${season}`;
+        entry.tag.replaceChildren(
+          ...(season === 'summer' ? [icon('sun')] : season === 'winter' ? [icon('snow')] : []),
+          create('span', '', SEASON_WORDS[season]),
+        );
+      }
+      const up = entry.half === 'north' ? SEASON_TAG_RADII : -SEASON_TAG_RADII;
+      const point = stage.toScreen(system.groundPointOf(world.id, { x: 0, y: up, z: 0 }));
+      entry.tag.hidden = !point.visible;
+      // The world's own name stands under it, so the southern season stands under that.
+      const below = entry.half === 'south' ? SEASON_TAG_BELOW_PIXELS : 0;
+      entry.tag.style.transform = `translate(calc(${point.x.toFixed(1)}px - 50%), calc(${(point.y + below).toFixed(1)}px - 50%))`;
+    }
+  };
   /** The things that grow a glow and tails. */
   const tailed = new Set(catalogue.filter((object) => object.kind === 'comet').map((o) => o.id));
   const watch = {
@@ -1117,32 +1292,50 @@ function start(): void {
             // The recordings and the device voice are English; other languages are read by eye only.
             speaker: language === 'en' ? createBrowserSpeaker() : null,
             recordings: language === 'en',
-            aim(story, chapter, free) {
-              // A part with a look of its own shows it beside the whole stage, unless the
-              // camera has been let loose to look round the stage alone.
+            aim(story, chapter) {
+              // A part with a look of its own shows it beside the whole picture.
               const own =
                 chapter.viewFromId !== undefined ||
                 chapter.standAtId !== undefined ||
                 chapter.closeUp === true;
-              paired = own && !free ? { story, chapter } : null;
+              // A story with a real photo from the ground shows that beside its 3D look.
+              pictured = story.fromEarth ? { story, chapter } : null;
+              paired = own && !pictured ? { story, chapter } : null;
               // A diagram on its own fills the room, and the screen says it is a drawing.
               diagramAlone = !paired && diagram !== null;
               stage.setScene(diagramAlone && diagram ? diagram.scene : null);
               scaleLabel.textContent = words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
-                chapter.standAtId === undefined || free
+                chapter.standAtId === undefined
                   ? null
                   : story.skyTrack
                     ? Math.min(
                         SKY_FIELD_MAX_DEG,
                         (SKY_FIELD_WIDTH_DEG / stage.aspect()) * roomSqueeze(),
                       )
-                    : TELESCOPE_FIELD_DEG * TELESCOPE_ROOM_FILL * roomSqueeze();
+                    : tailed.has(chapter.lookAtId)
+                      ? COMET_FIELD_DEG
+                      : TELESCOPE_FIELD_DEG * TELESCOPE_ROOM_FILL * roomSqueeze();
+              // A wide look at the sky from a world has the star patterns behind it.
+              skyFromId =
+                chapter.standAtId !== undefined &&
+                (story.skyTrack !== undefined || tailed.has(chapter.lookAtId))
+                  ? chapter.standAtId
+                  : null;
               for (const id of story.actorIds) system.showDetail(id);
-              stage.flyTo(watchView(story, chapter, free));
+              stage.flyTo(watchView(story, chapter));
+            },
+            turnDays(story) {
+              const shape = catalogue.find((object) => object.id === story.actorIds[0])?.shape;
+              const hours =
+                shape?.type === 'spheroid' || shape?.type === 'triaxial'
+                  ? shape.orientation.rotationPeriodHours.value
+                  : null;
+              return hours === null ? 0 : hours / 24;
             },
             onStory(story) {
+              seasonsOfId = story.seasonsOf ?? null;
               watchActors = new Set(story.actorIds);
               system.showOnly(watchActors);
               const craft = story.craft ?? [];
@@ -1204,12 +1397,13 @@ function start(): void {
                   DIAGRAM_SCALE,
                   story.shadows ?? [],
                 );
-                diagram.system.setTracks({ ...tracks, craft: [] });
+                diagram.system.setTracks({ ...tracks, craft: [], keepOrbitLines: true });
                 for (const id of story.actorIds) diagram.system.showDetail(id);
                 diagram.setDate(story.chapters[0]?.atJd.value ?? clock.jd);
               }
               tagCraft(craft.map(({ id, nameKey }) => ({ id, name: nameOfCraft(nameKey) })));
               sideTags.name([
+                { id: VIEWER, name: words.watchYou, above: true },
                 ...drawn
                   .filter((object) => story.actorIds.includes(object.id))
                   .map((object) => ({ id: object.id, name: displayName(object) })),
@@ -1235,9 +1429,13 @@ function start(): void {
       watchWanted = false;
       watchPanel?.close();
       paired = null;
+      pictured = null;
       layPanes();
       sideTags.name([]);
       diagramAlone = false;
+      skyFromId = null;
+      seasonsOfId = null;
+      showSeasons(clock.jd);
       stage.setScene(null);
       diagram?.dispose();
       diagram = null;
@@ -1501,6 +1699,8 @@ function start(): void {
   });
   stage.onCameraMoved(() => {
     system.setViewer(stage.camera.position);
+    sight.line.visible = false;
+    system.setSky(watch.isOpen() ? skyFromId : null, true);
     // A body behind the one in view gets no marker: its name would sit on the wrong globe.
     if (isDeep(focus)) return;
     if (watch.isOpen()) {
@@ -1518,6 +1718,7 @@ function start(): void {
         tag.hidden = !point.visible;
         tag.style.transform = `translate(${point.x.toFixed(1)}px, ${point.y.toFixed(1)}px)`;
       }
+      showSeasons(watchJd);
       return;
     }
     const body = focus !== null && !isBelt(focus) ? focus : null;
@@ -1539,8 +1740,18 @@ function start(): void {
   stage.onSideMoved((viewer) => {
     // The second look of a story: things turn to face its camera, and get their names in it.
     system.setViewer(viewer);
+    // The stars are a backdrop for the look from a world, not part of the whole picture.
+    system.setSky(skyFromId, false);
     const shown = diagram?.system ?? system;
+    const seen = sightOf?.() ?? null;
+    if (seen) sight.set(seen.from, seen.to);
+    // The line of sight is for the whole picture only: seen from its own end it is a dot.
+    sight.line.visible = seen !== null;
     sideTags.update((id) => {
+      if (id === VIEWER) {
+        const point = stage.toSideScreen(seen?.from ?? ORIGIN);
+        return { point: seen ? point : { ...point, visible: false }, radiusPixels: 0 };
+      }
       const point = stage.toSideScreen(shown.positionOf(id));
       return { point, radiusPixels: shown.radiusOf(id) * point.pixelsPerUnit };
     });

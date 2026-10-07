@@ -3,6 +3,8 @@ import {
   BufferGeometry,
   DoubleSide,
   Group,
+  LineBasicMaterial,
+  LineSegments,
   Mesh,
   MeshBasicMaterial,
   Vector3,
@@ -12,9 +14,12 @@ import type { Vec3 } from '../sim/vec3';
 
 /** The pale edge is a faint haze; the dark middle is painted back to near the dark of space. */
 const PENUMBRA_COLOR = 0x9fb4d8;
-const PENUMBRA_OPACITY = 0.16;
+const PENUMBRA_OPACITY = 0.08;
 const UMBRA_COLOR = 0x05070f;
-const UMBRA_OPACITY = 0.8;
+const UMBRA_OPACITY = 0.7;
+/** The edges of both shadows are thin lines, as in a diagram in a book. */
+const EDGE_COLOR = 0xffc53d;
+const EDGE_OPACITY = 0.55;
 
 /**
  * The shadow one ball casts, drawn in a diagram as it is in a book: the two cones cut through
@@ -48,8 +53,22 @@ function createSheet(color: number, opacity: number, order: number) {
   mesh.renderOrder = order;
   // The sheet is long and thin and changes every frame; it is always drawn.
   mesh.frustumCulled = false;
+  // Its two long edges, drawn from the same corners.
+  const edgeGeometry = new BufferGeometry();
+  edgeGeometry.setAttribute('position', positions);
+  edgeGeometry.setIndex([0, 2, 1, 3]);
+  const edgeMaterial = new LineBasicMaterial({
+    color: EDGE_COLOR,
+    opacity: EDGE_OPACITY,
+    transparent: true,
+    depthWrite: false,
+  });
+  const edges = new LineSegments(edgeGeometry, edgeMaterial);
+  edges.renderOrder = order + 2;
+  edges.frustumCulled = false;
   return {
     mesh,
+    edges,
     /** From `from` along the line with this half-width, to `to` with that one. */
     shape(
       origin: Vector3,
@@ -79,6 +98,8 @@ function createSheet(color: number, opacity: number, order: number) {
     dispose(): void {
       geometry.dispose();
       material.dispose();
+      edgeGeometry.dispose();
+      edgeMaterial.dispose();
     },
   };
 }
@@ -89,7 +110,7 @@ export function createShadowCones(): ShadowConesDrawing {
   const group = new Group();
   const penumbra = createSheet(PENUMBRA_COLOR, PENUMBRA_OPACITY, 1);
   const umbra = createSheet(UMBRA_COLOR, UMBRA_OPACITY, 2);
-  group.add(penumbra.mesh, umbra.mesh);
+  group.add(penumbra.mesh, umbra.mesh, penumbra.edges, umbra.edges);
   const origin = new Vector3();
   const along = new Vector3();
   const across = new Vector3();

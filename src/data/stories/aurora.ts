@@ -28,6 +28,16 @@ export const aurora: Story = {
   path: 'orbits',
   titleKey: 'storyAuroraTitle',
   noteKey: 'storyAuroraNote',
+  fromEarth: {
+    media: {
+      file: 'public/media/stories/aurora-from-the-ground.webp',
+      kind: 'photo',
+      role: 'picture',
+      altKey: 'storyAuroraPhotoAlt',
+      credit: 'NASA/Ben Smegelsky',
+    },
+    captionKey: 'storyAuroraPhoto',
+  },
   actorIds: ['earth', 'sun'],
   turned: { earth: AURORA_2027_EARTH_TURN },
   aurora: {

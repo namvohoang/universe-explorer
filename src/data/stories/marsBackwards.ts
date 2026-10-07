@@ -20,6 +20,7 @@ export const marsBackwards: Story = {
   titleKey: 'storyMarsBackwardsTitle',
   actorIds: ['earth', 'mars', 'sun'],
   skyTrack: { ofId: 'mars', fromId: 'earth' },
+  whole: 'orbits',
   chapters: [
     {
       id: 'drifting',

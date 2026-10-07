@@ -33,6 +33,21 @@ const mediaUses = catalogue.flatMap((object) =>
     ...(media.credit === undefined ? {} : { credit: media.credit }),
   })),
 );
+// A story's real photo is credited under the story's own id.
+const storyMediaUses = stories.flatMap((story) =>
+  story.fromEarth
+    ? [
+        {
+          objectId: story.id,
+          file: story.fromEarth.media.file,
+          kind: story.fromEarth.media.kind,
+          ...(story.fromEarth.media.credit === undefined
+            ? {}
+            : { credit: story.fromEarth.media.credit }),
+        },
+      ]
+    : [],
+);
 const errors = [
   ...checkCatalogue(catalogue),
   ...checkStories(
@@ -40,7 +55,7 @@ const errors = [
     catalogue.map((object) => object.id),
   ),
   ...checkCredits(mediaFiles, credits),
-  ...checkMediaUses(mediaUses, credits),
+  ...checkMediaUses([...mediaUses, ...storyMediaUses], credits),
 ];
 
 if (errors.length > 0) {

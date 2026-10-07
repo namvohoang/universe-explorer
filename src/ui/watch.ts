@@ -1,7 +1,9 @@
 import { stories } from '../data/stories';
 import { STORY_GROUPS, type Chapter, type Story, type StoryGroup } from '../data/types';
 import {
+  SWEEP_SECONDS,
   advanceStory,
+  steppedInGap,
   chapterEndJd,
   chapterIndexAt,
   clampToStory,
@@ -51,11 +53,10 @@ export interface WatchHost {
   readonly speaker: Speaker | null;
   /** Whether recordings may be played: only where the words shown are the English they were made from. */
   readonly recordings: boolean;
-  /**
-   * Aims the camera for a chapter: held where the chapter says, or (`free`) on the whole stage
-   * with the camera loose.
-   */
-  aim(story: Story, chapter: Chapter, free: boolean): void;
+  /** Aims the camera for a chapter: its own look beside the whole picture, or the whole picture alone. */
+  aim(story: Story, chapter: Chapter): void;
+  /** How long the story's first world takes to turn once, in days; 0 if it is not known. */
+  turnDays(story: Story): number;
   /** A story was picked; the address should follow it. */
   onStory(story: Story): void;
 }
@@ -131,9 +132,7 @@ export function createWatch(host: WatchHost): Watch {
   const speakerIcon = icon('speaker');
   const stopIcon = icon('stop');
   read.append(speakerIcon, stopIcon);
-  const look = button('watch-look', 'eye');
-  look.setAttribute('aria-pressed', 'false');
-  controls.append(previous, playPause, next, track, read, look);
+  controls.append(previous, playPause, next, track, read);
 
   // What else there is to watch.
   const row = create('div', 'place-row watch-row');
@@ -237,8 +236,6 @@ export function createWatch(host: WatchHost): Watch {
   let jd = 0;
   let playing = false;
   let ended = false;
-  /** The camera let loose to look round the whole stage, in place of the chapter's own view. */
-  let free = false;
   let shownChapter = -1;
   let shownDate = '';
   let shownProgress = -1;
@@ -273,16 +270,6 @@ export function createWatch(host: WatchHost): Watch {
     name(playPause, playing ? words.watchPause : ended ? words.watchAgain : words.watchPlay);
   };
 
-  const showLook = (chapter: Chapter): void => {
-    // A chapter with no view of its own already shows the whole stage with the camera loose.
-    look.hidden =
-      chapter.viewFromId === undefined &&
-      chapter.standAtId === undefined &&
-      chapter.closeUp !== true;
-    look.setAttribute('aria-pressed', String(free));
-    name(look, free ? words.watchStoryView : words.watchLookAround);
-  };
-
   /** Brings the caption, the buttons and the camera in line with the date. */
   const show = (aim: boolean): void => {
     if (!story || !times) return;
@@ -297,10 +284,9 @@ export function createWatch(host: WatchHost): Watch {
       step.textContent = fill(words.watchStep, { n: index + 1, count: story.chapters.length });
       previous.disabled = index === 0;
       next.disabled = index === story.chapters.length - 1;
-      showLook(chapter);
       aim = true;
     }
-    if (aim) host.aim(story, chapter, free);
+    if (aim) host.aim(story, chapter);
     // A story over within a day is told to the second, one of a few days to the minute, a
     // longer one to the hour.
     // Counted over the time that is played, leaving out any that is skipped.
@@ -371,7 +357,6 @@ export function createWatch(host: WatchHost): Watch {
         return mark;
       }),
     );
-    free = false;
     shownChapter = -1;
     shownProgress = -1;
     jd = times.chapterJds[0] ?? 0;
@@ -406,13 +391,6 @@ export function createWatch(host: WatchHost): Watch {
   scrubber.addEventListener('input', () => {
     if (times) goToJd(jdAtProgress(times, Number(scrubber.value) / SCRUBBER_STEPS));
   });
-  look.addEventListener('click', () => {
-    free = !free;
-    const chapter = story?.chapters[shownChapter];
-    if (!story || !chapter) return;
-    showLook(chapter);
-    host.aim(story, chapter, free);
-  });
 
   return {
     element,
@@ -429,7 +407,14 @@ export function createWatch(host: WatchHost): Watch {
     },
     tick(realSeconds) {
       if (times && playing) {
-        const moved = advanceStory(times, jd, realSeconds);
+        // Time a story skips is run through quickly, so what changes is seen changing; with
+        // motion to be reduced it is jumped.
+        const moved = advanceStory(
+          times,
+          jd,
+          realSeconds,
+          host.reducedMotion ? undefined : SWEEP_SECONDS,
+        );
         jd = moved.jd;
         if (moved.ended) {
           ended = true;
@@ -438,7 +423,8 @@ export function createWatch(host: WatchHost): Watch {
         }
         show(false);
       }
-      return jd;
+      // In skipped time the story's world is drawn a whole turn at a time, not as a blur.
+      return times && story ? steppedInGap(times, jd, host.turnDays(story)) : jd;
     },
     refreshWatched() {
       watched = parseVisited(recall(WATCHED_KEY), storyIds);
@@ -447,7 +433,7 @@ export function createWatch(host: WatchHost): Watch {
     },
     reframe() {
       const chapter = story?.chapters[shownChapter];
-      if (story && chapter) host.aim(story, chapter, free);
+      if (story && chapter) host.aim(story, chapter);
     },
   };
 }

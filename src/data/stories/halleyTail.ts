@@ -17,6 +17,7 @@ export const halleyTail: Story = {
   path: 'orbits',
   titleKey: 'storyHalleyTailTitle',
   actorIds: ['sun', 'halley', 'earth'],
+  whole: 'star-and-first',
   chapters: [
     {
       id: 'far-away',
@@ -27,7 +28,7 @@ export const halleyTail: Story = {
         quote: 'Each comet has a frozen part, called a nucleus, often a few miles across.',
       },
       lookAtId: 'halley',
-      closeUp: true,
+      standAtId: 'earth',
     },
     {
       id: 'warming-up',
@@ -42,7 +43,7 @@ export const halleyTail: Story = {
         quote: 'A comet warms up as it nears the Sun and develops an atmosphere, or coma.',
       },
       lookAtId: 'halley',
-      closeUp: true,
+      standAtId: 'earth',
     },
     {
       id: 'closest',
@@ -54,7 +55,7 @@ export const halleyTail: Story = {
           'The pressure of sunlight and high-speed solar particles (solar wind) can blow the coma dust and gas away from the Sun, sometimes forming a long, bright tail.',
       },
       lookAtId: 'halley',
-      closeUp: true,
+      standAtId: 'earth',
     },
     {
       id: 'leaving',
@@ -66,7 +67,7 @@ export const halleyTail: Story = {
           'The dust and gases form a tail that stretches away from the Sun for millions of miles.',
       },
       lookAtId: 'halley',
-      closeUp: true,
+      standAtId: 'earth',
     },
   ],
   endJd: s(2446719.974, ORBIT, '250 days after it is closest to the Sun.'),

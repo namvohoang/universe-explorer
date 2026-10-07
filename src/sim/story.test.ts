@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   CHAPTER_SECONDS,
+  SWEEP_SECONDS,
   advanceStory,
+  steppedInGap,
   chapterDaysPerSecond,
   chapterIndexAt,
   clampToStory,
@@ -97,5 +99,36 @@ describe('story clock', () => {
       // A date in the skipped time counts as the end of the chapter before it.
       expect(storyProgress(SKIPPING, 120)).toBeCloseTo(0.5, 12);
     });
+  });
+});
+
+describe('time skipped between two chapters, run through', () => {
+  // One day shown at 100, then nothing until 150, where one more day is shown.
+  const SKIPS: StoryTimes = { chapterJds: [100, 150], chapterStopJds: [101, null], endJd: 151 };
+
+  it('is crossed in a few seconds once the chapter has stopped', () => {
+    const stopped = advanceStory(SKIPS, 100, CHAPTER_SECONDS, SWEEP_SECONDS);
+    expect(stopped.jd).toBeCloseTo(101, 9);
+    const half = advanceStory(SKIPS, 101, SWEEP_SECONDS / 2, SWEEP_SECONDS);
+    expect(half.jd).toBeCloseTo(125.5, 9);
+    expect(half.ended).toBe(false);
+    expect(advanceStory(SKIPS, 125.5, SWEEP_SECONDS / 2, SWEEP_SECONDS).jd).toBeCloseTo(150, 9);
+  });
+
+  it('then plays the next chapter at its own rate, to the end', () => {
+    const on = advanceStory(SKIPS, 149.5, SWEEP_SECONDS + CHAPTER_SECONDS / 2, SWEEP_SECONDS);
+    expect(on.jd).toBeGreaterThan(150);
+    expect(on.jd).toBeLessThan(151);
+    expect(advanceStory(SKIPS, 100, 1000, SWEEP_SECONDS)).toEqual({ jd: 151, ended: true });
+  });
+
+  it('is still jumped when no sweep is asked for', () => {
+    expect(advanceStory(SKIPS, 100.5, CHAPTER_SECONDS).jd).toBeGreaterThanOrEqual(150);
+  });
+
+  it('is drawn a whole step at a time, and other dates as they are', () => {
+    expect(steppedInGap(SKIPS, 110.7, 2)).toBeCloseTo(109, 9);
+    expect(steppedInGap(SKIPS, 100.4, 2)).toBe(100.4);
+    expect(steppedInGap(SKIPS, 150.3, 2)).toBe(150.3);
   });
 });

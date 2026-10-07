@@ -4,7 +4,7 @@ import { isShowpiece } from '../data/types';
 import { J2000_JD, KM_PER_AU, SECONDS_PER_DAY } from '../sim/constants';
 import { DUST_TRAIL_RADIUS_KM, DUST_TRAIL_WITHIN_AU, strewnAlong } from '../sim/dust';
 import { lightTravelSeconds } from '../sim/elements';
-import { eclipticToScene, poleOf } from '../sim/frames';
+import { directionFromRaDec, eclipticToScene, equatorialToEcliptic, poleOf } from '../sim/frames';
 import { sceneDistance } from '../sim/belt';
 import {
   bodyRadiusKm,
@@ -23,6 +23,7 @@ import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
 import { createDustTrail, type DustTrail } from './dustTrail';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
+import { createSkyFigures } from './skyFigures';
 import { createSkyTrail, type SkyTrail } from './skyTrail';
 import { createTrail, type Trail } from './trail';
 
@@ -52,6 +53,11 @@ export interface Tracks {
   /** Bodies turned to face the way they really did: a direction in the ecliptic frame at a date. */
   readonly turns: ReadonlyMap<string, { readonly atJd: number; readonly towards: Vec3 }>;
   readonly craft: readonly TrackedCraft[];
+  /**
+   * Keeps the orbit line of a tracked body on show. In a drawing not to scale the body is
+   * off its line by less than can be seen, and the line says what goes round what.
+   */
+  readonly keepOrbitLines?: boolean;
   /** One body's shadow drawn on another. */
   readonly shadows: readonly {
     readonly casterId: string;
@@ -96,6 +102,11 @@ export interface SolarSystem {
    * off in each direction it is seen in; `null` takes it away.
    */
   setSkyTrack(track: { ofId: string; fromId: string; fromJd: number; toJd: number } | null): void;
+  /**
+   * Shows the star patterns as a backdrop round a body, as its sky is seen from there, or
+   * (`null`) takes them away. `shown` hides them for a look that is not from that body.
+   */
+  setSky(fromId: string | null, shown?: boolean): void;
   /** A point far off in the middle of the sky track, to look at from the body it is seen from; `null` with no track. */
   skyGaze(): Vec3 | null;
   /** Draws the two auroral bands of a body, riding round with its ground; `null` takes them away. */
@@ -194,6 +205,8 @@ export function createSolarSystem(
   const SKY_TRACK_STEPS = 400;
   const SKY_TRACK_FAR = 200_000;
   let sky: { trail: SkyTrail; fromId: string; middle: Vec3 } | null = null;
+  let stars: { readonly group: Group; dispose(): void } | null = null;
+  let starsFromId: string | null = null;
   let currentScale = scale;
   let tracks: Tracks | null = null;
   let shownIds: ReadonlySet<string> | null = null;
@@ -201,7 +214,8 @@ export function createSolarSystem(
   const showLines = (): void => {
     for (const orbit of orbitLines) {
       const shown = shownIds === null || shownIds.has(orbit.objectId);
-      orbit.line.visible = shown && !tracks?.bodies.has(orbit.objectId);
+      orbit.line.visible =
+        shown && (tracks?.keepOrbitLines === true || !tracks?.bodies.has(orbit.objectId));
     }
   };
   const drawTrails = (): void => {
@@ -259,6 +273,8 @@ export function createSolarSystem(
       if (from) sky.trail.group.position.set(from.x, from.y, from.z);
       sky.trail.setDate(jd);
     }
+    const starsFrom = starsFromId === null ? undefined : positions.get(starsFromId);
+    if (stars && starsFrom) stars.group.position.set(starsFrom.x, starsFrom.y, starsFrom.z);
     for (const belt of belts) {
       const parent = positions.get(belt.parentId);
       if (parent) belt.points.position.set(parent.x, parent.y, parent.z);
@@ -412,6 +428,34 @@ export function createSolarSystem(
       };
       group.add(sky.trail.group);
     },
+    setSky(fromId, shown = true) {
+      if (fromId !== null && !stars) {
+        // The stars are so far off that they lie the same way from every world round the Sun.
+        stars = createSkyFigures(
+          catalogue.flatMap((object) =>
+            object.kind === 'constellation'
+              ? [
+                  {
+                    stars: object.stars.value.map(([, raDeg, decDeg, , magnitude]) => ({
+                      towards: eclipticToScene(
+                        equatorialToEcliptic(directionFromRaDec(raDeg, decDeg)),
+                      ),
+                      magnitude,
+                    })),
+                    lines: object.lines,
+                  },
+                ]
+              : [],
+          ),
+          SKY_TRACK_FAR,
+        );
+        group.add(stars.group);
+      }
+      starsFromId = fromId;
+      if (stars) stars.group.visible = fromId !== null && shown;
+      const from = fromId === null ? undefined : positions.get(fromId);
+      if (stars && from) stars.group.position.set(from.x, from.y, from.z);
+    },
     skyGaze() {
       const from = sky ? positions.get(sky.fromId) : undefined;
       if (!sky || !from) return null;
@@ -501,6 +545,7 @@ export function createSolarSystem(
       dust?.dispose();
       aurora?.dispose();
       sky?.trail.dispose();
+      stars?.dispose();
     },
   };
 }

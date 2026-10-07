@@ -87,19 +87,60 @@ export interface StoryStep {
   readonly ended: boolean;
 }
 
-/** The date after `realSeconds` of play. A step that runs past a chapter carries on at the next one's rate. */
-export function advanceStory(times: StoryTimes, jd: number, realSeconds: number): StoryStep {
+/** Real seconds taken to run through the time skipped between two chapters, when it is not jumped. */
+export const SWEEP_SECONDS = 3;
+
+/**
+ * The date after `realSeconds` of play. A step that runs past a chapter carries on at the next
+ * one's rate. Time skipped between two chapters is jumped over, or with `sweepSeconds` run
+ * through in that many seconds, so that what changed in between is seen changing.
+ */
+export function advanceStory(
+  times: StoryTimes,
+  jd: number,
+  realSeconds: number,
+  sweepSeconds?: number,
+): StoryStep {
   let at = clampToStory(times, jd);
   let left = realSeconds;
   while (left > 0 && at < times.endJd) {
     const index = chapterIndexAt(times, at);
     const end = chapterEndJd(times, index);
+    const next = times.chapterJds[index + 1];
+    const gap = next !== undefined && next > end;
+    if (gap && at >= end) {
+      // In the time skipped: over it at once, or through it quickly.
+      if (sweepSeconds === undefined) {
+        at = next;
+        continue;
+      }
+      const rate = (next - end) / sweepSeconds;
+      const toNext = (next - at) / rate;
+      if (left < toNext) return { jd: at + left * rate, ended: false };
+      at = next;
+      left -= toNext;
+      continue;
+    }
     const rate = chapterDaysPerSecond(times, index);
     const toEnd = rate > 0 ? (end - at) / rate : 0;
     if (left < toEnd) return { jd: at + left * rate, ended: false };
-    // On to the next chapter, skipping any time between where this one stops and that one starts.
-    at = times.chapterJds[index + 1] ?? times.endJd;
+    at = gap ? end : (next ?? times.endJd);
     left -= Math.max(0, toEnd);
+    // A chapter that stops short ends there for this step; the skipped time starts on the next.
+    if (gap && sweepSeconds === undefined) at = next;
   }
   return { jd: at, ended: at >= times.endJd };
+}
+
+/**
+ * The date to draw for a date in the time skipped between two chapters: the last whole step
+ * of `stepDays` since the chapter stopped. With a step of one turn of a world, the world is
+ * seen swinging round its star without spinning into a blur. Any other date is drawn as it is.
+ */
+export function steppedInGap(times: StoryTimes, jd: number, stepDays: number): number {
+  const index = chapterIndexAt(times, jd);
+  const end = chapterEndJd(times, index);
+  const next = times.chapterJds[index + 1];
+  if (next === undefined || !(jd > end) || !(jd < next) || !(stepDays > 0)) return jd;
+  return end + Math.floor((jd - end) / stepDays) * stepDays;
 }

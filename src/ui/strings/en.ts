@@ -90,7 +90,7 @@ export const en = {
     'Only the view called Real keeps both sizes and distances true. The other two bring things closer so they can be seen, and say so on screen.',
   grownUpsWatchTitle: 'The stories on the Watch screen',
   grownUpsWatch1:
-    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells. Where a part has a look of its own (from Earth, say), that look is shown beside the whole picture. For the Moon’s phases, the seasons, the eclipses and Saturn’s rings the whole picture is a diagram marked “not to scale”: the same bodies in their true directions, lit and turned as they really are, but drawn big and close enough to see together, with an eclipse’s two shadows drawn behind the body that casts them.',
+    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells. Where a part has a look of its own (from Earth, say), that look is shown beside the whole picture. For the Moon’s phases, the supermoon, the seasons, the eclipses and Saturn’s rings the whole picture is a diagram marked “not to scale”: the same bodies in their true directions, lit and turned as they really are, but drawn big and close enough to see together, with an eclipse’s two shadows drawn behind the body that casts them. A dot named “You” and a line show where the look is from. For the aurora and the meteor shower the look from Earth is a real NASA photo, with what it shows and who took it written under it; the meteor in it is from another shower, and the caption says so. The stars behind Mars and the comet are the app’s star patterns, in their real places.',
   grownUpsWatch2:
     'Where a story says “This is the real path the spaceship flew”, the positions are NASA/JPL’s own record of the flight, from the JPL Horizons service. For the eclipses, the supermoon and the Artemis flights the Moon, too, is put where Horizons has it, and the space station is in the shuttle story. The solar eclipse is watched from the ground at the place the middle of the Moon’s shadow crosses when the eclipse is greatest, with Earth turned as it will be.',
   grownUpsWatch3:
@@ -1077,11 +1077,23 @@ export const en = {
   watchPrevious: 'Part before',
   watchStep: 'Part {n} of {count}',
   watchScrubber: 'Where you are in the story',
-  watchLookAround: 'Look around',
-  watchStoryView: 'Back to the story view',
   watchPaneFrom: 'Seen from: {name}',
   watchPaneClose: 'Close up',
   watchPaneWhole: 'The whole picture',
+  watchYou: 'You',
+  watchPanePhoto: 'Seen from Earth: a real photo',
+  watchPhotoBy: 'Photo: {credit}',
+  storyAuroraPhoto: 'A red aurora over Florida, USA, on 11 November 2025.',
+  storyAuroraPhotoAlt:
+    'A night sky glowing deep red low over a flat field, behind three tall thin towers.',
+  storyMeteorShowerPhoto:
+    'A meteor of another shower, the Perseids, over West Virginia, USA, on 11 August 2021.',
+  storyMeteorShowerPhotoAlt:
+    'One thin bright streak across a sky full of stars and the Milky Way, above dark fir trees.',
+  seasonSpring: 'Spring',
+  seasonSummer: 'Summer',
+  seasonAutumn: 'Autumn',
+  seasonWinter: 'Winter',
   watchPaneDrawing: 'The whole picture (not to scale)',
   watchClose: 'Stop watching',
   watchPathTracked: 'This is the real path the spaceship flew.',

@@ -102,7 +102,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Chỉ chế độ tên là Thật mới giữ đúng cả kích thước lẫn khoảng cách. Hai chế độ kia kéo mọi thứ lại gần để dễ nhìn, và có ghi rõ trên màn hình.',
   grownUpsWatchTitle: 'Các câu chuyện ở màn hình Xem',
   grownUpsWatch1:
-    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện. Khi một phần có góc nhìn riêng (chẳng hạn từ Trái Đất), góc nhìn đó được đặt cạnh toàn cảnh. Với các pha của Mặt Trăng, các mùa, nhật thực, nguyệt thực và vành Sao Thổ, toàn cảnh là một hình vẽ ghi “không đúng tỉ lệ”: vẫn những thiên thể ấy, đúng hướng thật, được chiếu sáng và quay như thật, nhưng vẽ đủ to và đủ gần để thấy cùng lúc, với hai vùng bóng của nhật thực, nguyệt thực vẽ phía sau thiên thể tạo ra bóng.',
+    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện. Khi một phần có góc nhìn riêng (chẳng hạn từ Trái Đất), góc nhìn đó được đặt cạnh toàn cảnh. Với các pha của Mặt Trăng, siêu trăng, các mùa, nhật thực, nguyệt thực và vành Sao Thổ, toàn cảnh là một hình vẽ ghi “không đúng tỉ lệ”: vẫn những thiên thể ấy, đúng hướng thật, được chiếu sáng và quay như thật, nhưng vẽ đủ to và đủ gần để thấy cùng lúc, với hai vùng bóng của nhật thực, nguyệt thực vẽ phía sau thiên thể tạo ra bóng. Một chấm ghi “Bạn” và một đường thẳng cho biết góc nhìn xuất phát từ đâu. Với cực quang và mưa sao băng, góc nhìn từ Trái Đất là một bức ảnh thật của NASA, bên dưới ghi rõ ảnh chụp gì và ai chụp; sao băng trong ảnh thuộc một trận mưa khác, và chú thích nói rõ điều đó. Các ngôi sao phía sau Sao Hỏa và sao chổi là các chòm sao của ứng dụng, ở đúng vị trí thật.',
   grownUpsWatch2:
     'Khi câu chuyện ghi “Đây là đường bay thật của con tàu”, các vị trí là ghi nhận của chính NASA/JPL về chuyến bay, lấy từ dịch vụ JPL Horizons. Với nhật thực, nguyệt thực, siêu trăng và các chuyến bay Artemis, Mặt Trăng cũng được đặt theo Horizons, và trạm vũ trụ trong câu chuyện tàu con thoi cũng vậy. Nhật thực được nhìn từ mặt đất, tại nơi phần giữa của bóng Mặt Trăng đi qua lúc nhật thực lớn nhất, với Trái Đất quay đúng như khi đó.',
   grownUpsWatch3:
@@ -970,11 +970,23 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPrevious: 'Phần trước',
   watchStep: 'Phần {n} trên {count}',
   watchScrubber: 'Bạn đang ở đâu trong câu chuyện',
-  watchLookAround: 'Nhìn xung quanh',
-  watchStoryView: 'Về góc nhìn của câu chuyện',
   watchPaneFrom: 'Nhìn từ: {name}',
   watchPaneClose: 'Nhìn gần',
   watchPaneWhole: 'Toàn cảnh',
+  watchYou: 'Bạn',
+  watchPanePhoto: 'Nhìn từ Trái Đất: ảnh thật',
+  watchPhotoBy: 'Ảnh: {credit}',
+  storyAuroraPhoto: 'Cực quang đỏ trên bầu trời Florida, Mỹ, ngày 11 tháng 11 năm 2025.',
+  storyAuroraPhotoAlt:
+    'Bầu trời đêm ửng đỏ sẫm ở sát chân trời trên một bãi đất phẳng, phía sau ba ngọn tháp cao và mảnh.',
+  storyMeteorShowerPhoto:
+    'Một sao băng của trận mưa khác, Perseid, trên bầu trời Tây Virginia, Mỹ, ngày 11 tháng 8 năm 2021.',
+  storyMeteorShowerPhotoAlt:
+    'Một vệt sáng mảnh vắt ngang bầu trời đầy sao và dải Ngân Hà, phía trên những cây thông tối màu.',
+  seasonSpring: 'Mùa xuân',
+  seasonSummer: 'Mùa hè',
+  seasonAutumn: 'Mùa thu',
+  seasonWinter: 'Mùa đông',
   watchPaneDrawing: 'Toàn cảnh (không đúng tỉ lệ)',
   watchClose: 'Thôi xem',
   watchPathTracked: 'Đây là đường bay thật của con tàu.',

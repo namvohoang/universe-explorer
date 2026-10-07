@@ -18,6 +18,16 @@ export const meteorShower: Story = {
   path: 'orbits',
   titleKey: 'storyMeteorShowerTitle',
   noteKey: 'storyMeteorShowerNote',
+  fromEarth: {
+    media: {
+      file: 'public/media/stories/meteor-from-the-ground.webp',
+      kind: 'photo',
+      role: 'picture',
+      altKey: 'storyMeteorShowerPhotoAlt',
+      credit: 'NASA/Bill Ingalls',
+    },
+    captionKey: 'storyMeteorShowerPhoto',
+  },
   actorIds: ['sun', 'earth'],
   dustAlongId: 'halley',
   chapters: [

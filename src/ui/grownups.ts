@@ -1,6 +1,6 @@
 import { cards } from '../data/content/cards';
 import { concepts } from '../data/content/concepts';
-import type { CelestialObject, Source } from '../data/types';
+import type { CelestialObject, Source, Story } from '../data/types';
 import type { DateLimits } from '../sim/time';
 import { create } from './dom';
 import { fill, yearOf } from './format';
@@ -23,6 +23,15 @@ export function allSources(catalogue: readonly CelestialObject[]): Source[] {
   for (const object of catalogue) object.sources.forEach(add);
   for (const card of cards) card.sources.forEach(add);
   for (const concept of concepts) add(concept.source);
+  return [...byId.values()].sort((a, b) => a.title.localeCompare(b.title));
+}
+
+/** Every page a story of the Watch screen was read from, once each, in a stable order. */
+export function storySourcesOf(stories: readonly Story[]): Source[] {
+  const byId = new Map<string, Source>();
+  for (const story of stories) {
+    for (const source of story.sources) if (!byId.has(source.id)) byId.set(source.id, source);
+  }
   return [...byId.values()].sort((a, b) => a.title.localeCompare(b.title));
 }
 
@@ -74,16 +83,28 @@ export function createGrownUps(
     pictures.append(create('li', '', `${picture.name}: ${line}`));
   }
 
-  const sources = create('ul', '');
-  for (const source of allSources(catalogue)) {
+  const sourceItem = (source: Source): HTMLElement => {
     const item = create('li', '');
     const link = create('a', '', source.title);
     link.href = source.url;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     item.append(link);
-    sources.append(item);
-  }
+    return item;
+  };
+  const sources = create('ul', '');
+  for (const source of allSources(catalogue)) sources.append(sourceItem(source));
+
+  // The stories of the Watch screen, and so their sources, are fetched only when wanted.
+  const storySources = create('ul', '');
+  let storiesAsked = false;
+  const listStorySources = (): void => {
+    if (storiesAsked) return;
+    storiesAsked = true;
+    void import('../data/stories').then(({ stories }) => {
+      storySources.replaceChildren(...storySourcesOf(stories).map(sourceItem));
+    });
+  };
 
   const clear = create('button', '', words.grownUpsClear);
   clear.type = 'button';
@@ -109,6 +130,14 @@ export function createGrownUps(
       create('p', '', accuracy2),
       create('p', '', words.grownUpsAccuracy3),
     ),
+    section(
+      words.grownUpsWatchTitle,
+      create('p', '', words.grownUpsWatch1),
+      create('p', '', words.grownUpsWatch2),
+      create('p', '', words.grownUpsWatch3),
+      create('p', 'notice', words.grownUpsLinksNotice),
+      storySources,
+    ),
     section(words.grownUpsPicturesTitle, pictures),
     section(words.grownUpsSourcesTitle, create('p', 'notice', words.grownUpsLinksNotice), sources),
   );
@@ -117,6 +146,7 @@ export function createGrownUps(
     element,
     open() {
       cleared.textContent = '';
+      listStorySources();
       element.hidden = false;
       close.focus();
     },

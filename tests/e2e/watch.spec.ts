@@ -246,3 +246,19 @@ test.describe('a space flight', () => {
     await expect(page.locator('.watch-date')).toHaveText('26 February 2011, 19:14:00');
   });
 });
+
+test('the grown-ups page says what is real and what is drawn, and lists the stories’ sources', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto('/?grownups');
+  const dialog = page.getByRole('dialog', { name: 'For grown-ups' });
+  await expect(
+    dialog.getByRole('heading', { name: 'The stories on the Watch screen' }),
+  ).toBeVisible();
+  await expect(dialog).toContainText('JPL Horizons');
+  await expect(dialog.getByRole('link', { name: 'NASA — Artemis I', exact: true })).toHaveAttribute(
+    'target',
+    '_blank',
+  );
+});

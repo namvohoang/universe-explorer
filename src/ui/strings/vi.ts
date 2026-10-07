@@ -100,6 +100,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Vị trí các hành tinh đúng đến một phần nhỏ của một độ trong khoảng từ năm {from} đến năm {to}. Các mặt trăng được vẽ trên quỹ đạo đơn giản hóa: phần lớn lệch trong vài độ, Mặt Trăng của Trái Đất lệch trong khoảng ba độ, còn Mimas có thể nằm xa vị trí thật trên quỹ đạo của nó. Nhật thực và nguyệt thực không được thể hiện.',
   grownUpsAccuracy3:
     'Chỉ chế độ tên là Thật mới giữ đúng cả kích thước lẫn khoảng cách. Hai chế độ kia kéo mọi thứ lại gần để dễ nhìn, và có ghi rõ trên màn hình.',
+  grownUpsWatchTitle: 'Các câu chuyện ở màn hình Xem',
+  grownUpsWatch1:
+    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện.',
+  grownUpsWatch2:
+    'Khi câu chuyện ghi “Đây là đường bay thật của con tàu”, các vị trí là ghi nhận của chính NASA/JPL về chuyến bay, lấy từ dịch vụ JPL Horizons. Với nhật thực, nguyệt thực, siêu trăng và các chuyến bay Artemis, Mặt Trăng cũng được đặt theo Horizons, và trạm vũ trụ trong câu chuyện tàu con thoi cũng vậy.',
+  grownUpsWatch3:
+    'Khi câu chuyện ghi một đường là hình vẽ, chỉ các thời điểm và vị trí được nêu là thật, lấy từ các bảng của NASA, còn ứng dụng vẽ một đường trơn nối giữa chúng. Bụi của mưa sao băng và các vòng xanh của cực quang là hình vẽ những nơi NASA và NOAA cho biết chúng nằm. Tàu vũ trụ được thể hiện bằng một điểm có tên, vì ở tỉ lệ thật nó quá nhỏ để nhìn thấy.',
   grownUpsPicturesTitle: 'Hình ảnh lấy từ đâu',
   grownUpsSourcesTitle: 'Con số và thông tin lấy từ đâu',
   grownUpsLinksNotice: 'Các liên kết này mở trang web khác.',

@@ -88,6 +88,13 @@ export const en = {
     'Planet positions are good to a small fraction of a degree between the years {from} and {to}. Moons are drawn on simplified orbits: most are within a few degrees, Earth’s Moon within about three, and Mimas can be far from its true place along its orbit. Eclipses are not shown.',
   grownUpsAccuracy3:
     'Only the view called Real keeps both sizes and distances true. The other two bring things closer so they can be seen, and say so on screen.',
+  grownUpsWatchTitle: 'The stories on the Watch screen',
+  grownUpsWatch1:
+    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells.',
+  grownUpsWatch2:
+    'Where a story says “This is the real path the spaceship flew”, the positions are NASA/JPL’s own record of the flight, from the JPL Horizons service. For the eclipses, the supermoon and the Artemis flights the Moon, too, is put where Horizons has it, and the space station is in the shuttle story.',
+  grownUpsWatch3:
+    'Where a story says a line or a path is a drawing, only the times and places it names are real, from NASA’s own tables, and the app draws a smooth line between them. The dust of the meteor shower and the green rings of the aurora are drawings of where NASA and NOAA say they lie. A spacecraft is shown as a named point, since at true scale it is far too small to see.',
   grownUpsPicturesTitle: 'Where the pictures come from',
   grownUpsSourcesTitle: 'Where the numbers and facts come from',
   grownUpsLinksNotice: 'These links open other websites.',

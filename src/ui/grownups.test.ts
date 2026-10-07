@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import { cards } from '../data/content/cards';
-import { allPictureCredits, allSources } from './grownups';
+import { stories } from '../data/stories';
+import { allPictureCredits, allSources, storySourcesOf } from './grownups';
 
 describe('grown-ups page', () => {
   it('lists every source once, including the pages card sentences quote', () => {
@@ -29,5 +30,14 @@ describe('grown-ups page', () => {
   it('says so when a picture is an artist’s drawing', () => {
     const saturn = allPictureCredits(catalogue).find((c) => c.name === 'Saturn');
     expect(saturn?.kind).toMatch(/artist/i);
+  });
+
+  it('lists every source of the stories on the Watch screen once', () => {
+    const sources = storySourcesOf(stories);
+    expect(new Set(sources.map((s) => s.id)).size).toBe(sources.length);
+    for (const story of stories) {
+      for (const source of story.sources) expect(sources).toContainEqual(source);
+    }
+    for (const source of sources) expect(source.url).toMatch(/^https:\/\//);
   });
 });

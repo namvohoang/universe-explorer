@@ -81,6 +81,33 @@ export function temperatureFromBpRp(bpRp: number): number {
  */
 export const temperatureFromBV = temperatureFromBpRp;
 
+/** The colour names stars are sorted under, from the coolest to the hottest. */
+export const STAR_COLOURS = ['red', 'orange', 'yellow', 'white', 'blue-white'] as const;
+export type StarColour = (typeof STAR_COLOURS)[number];
+
+/**
+ * The temperature at which one colour name gives way to the next, in kelvins. NASA says a
+ * star's colour comes from its temperature: red stars are cool (around 3,000 K), the "yellow"
+ * Sun is about 6,000 K, and hotter stars are white or blue. Star colours shade into one
+ * another, so where exactly each name ends is a choice made here for sorting, not a
+ * measurement.
+ */
+const COLOUR_ENDS_K: Readonly<Record<Exclude<StarColour, 'blue-white'>, number>> = {
+  red: 3700,
+  orange: 5200,
+  yellow: 6000,
+  white: 7500,
+};
+
+/** The colour name a star of a temperature is sorted under. */
+export function starColourName(kelvin: number): StarColour {
+  if (kelvin < COLOUR_ENDS_K.red) return 'red';
+  if (kelvin < COLOUR_ENDS_K.orange) return 'orange';
+  if (kelvin < COLOUR_ENDS_K.yellow) return 'yellow';
+  if (kelvin < COLOUR_ENDS_K.white) return 'white';
+  return 'blue-white';
+}
+
 /** How many times the middle of a pattern on the sky is nudged towards its farthest star. */
 const SKY_MIDDLE_STEPS = 200;
 

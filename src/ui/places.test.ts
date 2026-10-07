@@ -8,6 +8,7 @@ import {
   neighbour,
   placeRowFor,
   sceneOfGroup,
+  starShelfOf,
 } from './places';
 
 const ids = (objects: readonly { id: string }[]): string[] => objects.map((object) => object.id);
@@ -61,6 +62,19 @@ describe('groups of places', () => {
     expect(sceneOfGroup('space-rocks')).toBe('solar');
     expect(sceneOfGroup('galaxies')).toBe('deep');
     expect(sceneOfGroup('spaceships')).toBe('craft');
+  });
+
+  it('sorts the stars by colour, coolest first, and nearest first within a colour', () => {
+    const stars = membersOf('stars', catalogue);
+    const shelves = stars.map((star) => starShelfOf(star));
+    expect([...new Set(shelves)]).toEqual(['red', 'orange', 'yellow', 'blue-white', 'leftover']);
+    expect(ids(stars).slice(0, 2)).toEqual(['proxima-centauri', 'mira']);
+    // A white dwarf and a neutron star no longer shine the way the Sun does.
+    expect(ids(stars.filter((star) => starShelfOf(star) === 'leftover'))).toEqual([
+      'sirius-b',
+      'vela-pulsar',
+    ]);
+    expect(ids(stars.filter((star) => starShelfOf(star) === 'blue-white'))).toContain('rigel');
   });
 });
 

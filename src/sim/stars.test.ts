@@ -8,6 +8,7 @@ import {
   figureDepth,
   figureLayout,
   middleDirection,
+  starColourName,
   starPositionPc,
   temperatureFromBpRp,
 } from './stars';
@@ -136,5 +137,26 @@ describe('a star pattern', () => {
   it('counts about 3.26 light-years to a parsec', () => {
     expect(LIGHT_YEARS_PER_PARSEC).toBeGreaterThan(3.26);
     expect(LIGHT_YEARS_PER_PARSEC).toBeLessThan(3.27);
+  });
+});
+
+describe('starColourName', () => {
+  it('names a star by how hot it is, from red for the coolest to blue-white for the hottest', () => {
+    expect(starColourName(2900)).toBe('red');
+    expect(starColourName(4893)).toBe('orange');
+    // The Sun, which NASA calls yellow.
+    expect(starColourName(5772)).toBe('yellow');
+    expect(starColourName(7000)).toBe('white');
+    expect(starColourName(10273)).toBe('blue-white');
+  });
+
+  it('gives hotter stars a name no earlier in the list', () => {
+    const order = ['red', 'orange', 'yellow', 'white', 'blue-white'];
+    let last = 0;
+    for (let kelvin = 2000; kelvin <= 30000; kelvin += 250) {
+      const at = order.indexOf(starColourName(kelvin));
+      expect(at).toBeGreaterThanOrEqual(last);
+      last = at;
+    }
   });
 });

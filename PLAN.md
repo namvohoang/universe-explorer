@@ -524,6 +524,15 @@ often hold a better file of the same thing, with its surface, and are used where
       colours). So the Sun is yellow-orange while every other star is the colour its
       temperature gives it, and it can look more orange than a cooler star such as Pollux; the
       note on the card says the Sun is NASA's drawing and the others are coloured by heat.
+- [x] 11.10 Stars sorted by colour (asked for on 2026-10-07): the Stars row lists them red,
+      orange, yellow, white, blue-white, coolest first, with a small label where each colour
+      starts and a dot of that colour on every star; within a colour the nearest comes first.
+      A star's colour name comes from its temperature in the catalogue, the same one its drawn
+      colour comes from. NASA says only that colour follows temperature (red stars about
+      3,000 K, the "yellow" Sun about 6,000 K, hotter stars white or blue), so where one name
+      ends and the next begins is a choice made for sorting, and the code says so. No star
+      here falls under white yet. The white dwarf Sirius B and the Vela pulsar stand last,
+      under "what is left of a star". The other Deep Space rows are still nearest first.
 - [ ] 11.7 Exploded stars with NASA 3D models (Cassiopeia A, Tycho, SN 1987A): they need the
       Deep Space view to show a ready-made model for a nebula.
 

@@ -4,7 +4,7 @@ import { dotColour } from './dotColours';
 import { fill } from './format';
 import { icon, type IconName } from './icons';
 import { displayName } from './names';
-import { GROUPS, groupOf, type Group, type PlaceRow } from './places';
+import { GROUPS, groupOf, starShelfOf, type Group, type PlaceRow, type StarShelf } from './places';
 import { words } from './strings';
 import { createTabs, type Tabs } from './tabs';
 
@@ -17,6 +17,15 @@ export const GROUP_LABELS: Readonly<Record<Group, string>> = {
   galaxies: words.groupGalaxies,
   'space-wonders': words.groupSpaceWonders,
   spaceships: words.sceneCraft,
+};
+
+const SHELF_LABELS: Readonly<Record<StarShelf, string>> = {
+  red: words.starsRed,
+  orange: words.starsOrange,
+  yellow: words.starsYellow,
+  white: words.starsWhite,
+  'blue-white': words.starsBlueWhite,
+  leftover: words.starsLeftover,
 };
 
 const GROUP_ICONS: Readonly<Record<Group, IconName>> = {
@@ -103,6 +112,7 @@ export function createPlaceRow(
       // Rebuild only when the set of places changes, so focus is not lost on every pick.
       const signature = `${row.host?.id ?? ''}>${row.places.map((place) => place.id).join('|')}`;
       if (signature !== shown) {
+        let shelf: StarShelf | null = null;
         chips.replaceChildren(
           ...row.places.flatMap((place) => {
             const button = create('button', '');
@@ -114,6 +124,12 @@ export function createPlaceRow(
             button.addEventListener('click', () => {
               onPick(place.id);
             });
+            // The stars are sorted by colour: say which colour starts here.
+            const on = row.host === null ? starShelfOf(place) : null;
+            if (on !== null && on !== shelf) {
+              shelf = on;
+              return [create('span', 'row-lead', SHELF_LABELS[on]), button];
+            }
             if (place !== row.host) return [button];
             // After the body itself, say what the rest of the row is.
             return [

@@ -1,4 +1,5 @@
 import { isSatellite, isShowpiece, type CelestialObject } from '../data/types';
+import { STAR_COLOURS, starColourName, temperatureFromBV, type StarColour } from '../sim/stars';
 import { isDeepSky } from './cardModel';
 
 export type Scene = 'solar' | 'deep' | 'craft';
@@ -61,12 +62,46 @@ export function hostIdOf(object: CelestialObject): string | null {
   return isSatellite(object) && !isShowpiece(object) ? object.parentId : null;
 }
 
-/** The places of a group, in the catalogue's order. */
+/**
+ * The shelf a star stands on in the list of stars: the colour its temperature gives it, or
+ * `leftover` for what remains of a star that has stopped shining the way the Sun does (a white
+ * dwarf, a neutron star). `null` for anything that is not listed among the stars.
+ */
+export type StarShelf = StarColour | 'leftover';
+export const STAR_SHELVES: readonly StarShelf[] = [...STAR_COLOURS, 'leftover'];
+
+/** A star this many Suns wide or less is a white dwarf, about the size of a planet. */
+const DWARF_IN_SUNS = 0.05;
+
+export function starShelfOf(object: CelestialObject): StarShelf | null {
+  if (groupOf(object) !== 'stars') return null;
+  if (object.kind !== 'star') return 'leftover';
+  const wide = object.radiusInSuns?.value ?? null;
+  if (wide !== null && wide <= DWARF_IN_SUNS) return 'leftover';
+  // Its temperature, or failing that its measured colour, as for the colour it is drawn in.
+  const kelvin =
+    object.effectiveTemperatureK.value ??
+    (object.colourBV ? temperatureFromBV(object.colourBV.value) : null);
+  return kelvin === null ? 'leftover' : starColourName(kelvin);
+}
+
+/**
+ * The places of a group, in the catalogue's order (nearest first for things beyond the solar
+ * system). The stars are sorted by colour first, coolest to hottest, and by nearness within a
+ * colour.
+ */
 export function membersOf(
   group: Group,
   catalogue: readonly CelestialObject[],
 ): readonly CelestialObject[] {
-  return catalogue.filter((object) => groupOf(object) === group);
+  const members = catalogue.filter((object) => groupOf(object) === group);
+  if (group !== 'stars') return members;
+  const shelf = (object: CelestialObject): number => {
+    const on = starShelfOf(object);
+    return on === null ? STAR_SHELVES.length : STAR_SHELVES.indexOf(on);
+  };
+  // The sort is stable, so stars of one colour keep the catalogue's order.
+  return [...members].sort((a, b) => shelf(a) - shelf(b));
 }
 
 /** The moons and satellites going round a body, in the catalogue's order. */

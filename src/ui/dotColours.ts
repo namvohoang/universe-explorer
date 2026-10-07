@@ -1,5 +1,5 @@
 import type { CelestialObject } from '../data/types';
-import { groupOf, type Group } from './places';
+import { groupOf, starShelfOf, type Group, type StarShelf } from './places';
 
 /**
  * The colour of the dot beside a place's name. These are drawing choices to help tell the
@@ -28,12 +28,24 @@ const GROUP_DOTS: Readonly<Record<Group, string>> = {
   spaceships: '#6fd3ff',
 };
 
+/** A star's dot is the colour it is sorted under. */
+const SHELF_DOTS: Readonly<Record<StarShelf, string>> = {
+  red: '#ff8266',
+  orange: '#ffb066',
+  yellow: '#ffe08a',
+  white: '#ffffff',
+  'blue-white': '#a9c8ff',
+  leftover: '#cfd3dc',
+};
+
 const MOON_DOT = '#cfd3dc';
 const SPACECRAFT_DOT = '#6fd3ff';
 
 export function dotColour(object: CelestialObject): string {
   const own = BODY_DOTS[object.id];
   if (own !== undefined) return own;
+  const shelf = starShelfOf(object);
+  if (shelf !== null) return SHELF_DOTS[shelf];
   const group = groupOf(object);
   if (group !== null) return GROUP_DOTS[group];
   return object.kind === 'spacecraft' ? SPACECRAFT_DOT : MOON_DOT;

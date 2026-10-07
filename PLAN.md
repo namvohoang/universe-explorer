@@ -538,6 +538,72 @@ often hold a better file of the same thing, with its surface, and are used where
 
 **Acceptance:** as for Phase 7.
 
+### Phase 12 — Watch: sky events and space flights (asked for on 2026-10-07)
+
+The owner asked for a new screen that plays things happening: sky events (eclipses, the Moon's
+phases, aurora, a meteor shower, a supermoon) and famous flights (a rocket launch, a flight to
+the Moon, a landing, a shuttle joining the space station). Each is a **story**: a live 3D scene
+on a real clock, cut into chapters with one or two sentences each, with play, pause, a
+scrubber, and the camera free to turn and zoom.
+
+A story's movement is one of three kinds, and the screen says which:
+
+| Path | Meaning | What the kid is told |
+|---|---|---|
+| `orbits` | Worked out from the catalogue's own orbits | Only the scale label |
+| `tracked` | Positions sampled from JPL Horizons | "This is the real path the spaceship flew." |
+| `staged` | Real event times from the agency; the movement between them is drawn | "The times are real. The path is a drawing." |
+
+Found on 2026-10-07: JPL Horizons holds tracked paths for Artemis I (-1023) and Artemis II
+(-1024), and for Apollo 11 only its dropped S-IVB stage (-399110, from 1969-07-17 16:40); it
+holds nothing for a space shuttle. So Apollo 11 and the shuttle can only be `staged`.
+
+Decided on 2026-10-07 (the owner said to continue with what was recommended): staged stories
+are allowed with their label, which sets aside task 7.7's "no made-up path" for this screen
+only; a model an agency offers only in another file format may be converted, with the change in
+`CREDITS.md`; the tab is called Watch; sky events come first; captions are text first and
+recorded last.
+
+- [ ] 12.1 Story types (`src/data/types/story.ts`), the pure story clock (`src/sim/story.ts`:
+      the chapter at a date, progress, a named rate per chapter) and `validate` checks (every
+      chapter time sourced and in order; a staged story says so).
+- [ ] 12.2 The Watch shell: a fifth tab, loaded on demand; a story row in two groups (Sky
+      events, Space flights); a caption card; Previous and Next chapter; play and pause; a
+      scrubber with a mark per chapter; the date; the path label; the address follows the
+      story; reduced motion stops auto-play and swooping; layout test at the five sizes.
+- [ ] 12.3 The Moon's phases, and day, night and the seasons: Earth, Moon and Sun from the
+      catalogue, in a `near-earth` scale mode where Earth, the Moon and the gap between them
+      share one true factor.
+- [ ] 12.4 `src/sim/shadow.ts` (the dark middle and the pale edge of a shadow) and the two
+      eclipses, each on a real date from NASA's eclipse pages. First measure how far the
+      catalogue's Moon is from JPL Horizons at those hours; if the shadow would miss, the Moon
+      takes Horizons samples for those hours. No tolerance is widened.
+- [ ] 12.5 A supermoon (the Moon's stretched orbit: a full Moon at its nearest beside one at its
+      farthest, the ratio from the catalogue; the word is not an official one and the card says
+      so), Halley's tail growing near the Sun, Mars going backwards in Earth's sky, and
+      Saturn's rings seen edge-on.
+- [ ] 12.6 A meteor shower: Earth crossing the dust a comet leaves along its path. Halley if
+      NASA's pages name it as a shower's comet, since its orbit is here. First a test of how
+      near the comet's orbit passes Earth's; the dust and the streaks are a drawing, labelled.
+- [ ] 12.7 Aurora: particles from the Sun steered by Earth's magnetism to a ring round each
+      pole, where the air glows. Nothing in the catalogue describes Earth's magnetism, so the
+      lines and particles are a diagram, labelled; NASA photos from the space station, credited.
+- [ ] 12.8 `tools/horizons` (state vectors in km and km/s into `src/data/paths/`),
+      `src/sim/trajectory.ts` (Hermite interpolation, tested against held-out samples), and
+      the craft drawn bigger than life with its own label.
+- [ ] 12.9 Artemis I round the Moon, `tracked`, with an Orion model from a trusted source (or
+      a labelled marker if none exists).
+- [ ] 12.10 Artemis II: four astronauts round the Moon, `tracked`.
+- [ ] 12.11 Staged flights: how a rocket reaches space (the Saturn V's stages, times from
+      NASA's Apollo reports), Apollo 11's landing (with the S-IVB's real path as a side note),
+      and a shuttle joining the space station, seen from the station.
+- [ ] 12.12 Recordings for the captions, Vietnamese text, and a note on the grown-ups' page
+      about what "real path" and "drawing" mean.
+
+**Acceptance:** every story's times and numbers have a cited source; a craft or body always
+sits on its drawn path; every staged or enlarged thing carries its label on screen; each story
+works by keyboard and with reduced motion; the gate passes.
+
 ## 7. Testing
 
 | Layer | Tests |
@@ -561,6 +627,8 @@ Tolerances are named constants with a comment saying why. They are never widened
 6. **Models of SpaceX and Chinese craft.** None is published by a source on the trusted list
    (`.claude/rules/media.md`). Either the owner approves another source, with its licence, or
    these craft are shown with an agency's photo in place of a 3D model.
+8. **Paths that are drawn.** Decided on 2026-10-07: on the Watch screen a flight with no
+   published path may be shown as a drawing between real event times, labelled as one. See Phase 12.
 7. **A picture of TON 618.** The heaviest black hole found has one picture on a NASA page, credited
    to the Sloan Digital Sky Survey (sdss.org), which is not on the trusted list. Either the owner
    approves that source, with its licence, or TON 618 stays out.

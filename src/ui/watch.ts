@@ -54,7 +54,11 @@ export interface WatchHost {
   /** Whether recordings may be played: only where the words shown are the English they were made from. */
   readonly recordings: boolean;
   /** Aims the camera for a chapter: its own look beside the whole picture, or the whole picture alone. */
-  aim(story: Story, chapter: Chapter): void;
+  /**
+   * `again` asks for the look to be fitted afresh though the part has not changed: the room
+   * for it has changed size.
+   */
+  aim(story: Story, chapter: Chapter, again?: boolean): void;
   /** How long the story's first world takes to turn once, in days; 0 if it is not known. */
   turnDays(story: Story): number;
   /** A story was picked; the address should follow it. */
@@ -433,7 +437,7 @@ export function createWatch(host: WatchHost): Watch {
     },
     reframe() {
       const chapter = story?.chapters[shownChapter];
-      if (story && chapter) host.aim(story, chapter);
+      if (story && chapter) host.aim(story, chapter, true);
     },
   };
 }

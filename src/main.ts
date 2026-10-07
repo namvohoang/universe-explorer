@@ -926,6 +926,8 @@ function start(): void {
   let watchActors: ReadonlySet<string> | null = null;
   /** The world whose sky the story's own look is at, with the star patterns behind. */
   let skyFromId: string | null = null;
+  /** How the part on show is looked at, to tell when the next part is looked at the same way. */
+  let aimedLook = '';
   /** The diagram of the story on show, if its whole picture is drawn as one. */
   let diagram: Diagram | null = null;
   /** The diagram is drawn on its own, in place of the stage. */
@@ -1396,24 +1398,35 @@ function start(): void {
   const meteors = createMeteorStreaks(METEOR_FAR);
   stage.scene.add(meteors.group);
   /** The world they are seen from, and the way they come from (scene axes), while a part shows them. */
-  let meteorSky: { fromId: string; towards: Vec3; falling: (jd: number) => boolean } | null = null;
-  const meteorSkyFor = (story: Story, chapter: Chapter): typeof meteorSky => {
+  interface MeteorSky {
+    readonly fromId: string;
+    readonly towards: Vec3;
+    falling(jd: number): boolean;
+  }
+  let meteorSky: MeteorSky | null = null;
+  const showers = new Map<string, MeteorSky>();
+  const meteorSkyFor = (story: Story, chapter: Chapter): MeteorSky | null => {
     const world = catalogue.find((object) => object.id === chapter.standAtId);
     const comet = catalogue.find((object) => object.id === story.dustAlongId);
     if (!world || !comet) return null;
+    // Finding the comet's path past Earth takes a long search: done once for each part.
+    const known = showers.get(chapter.id);
+    if (known) return known;
     const shower = showerAt(
       (jd) => eclipticOffsetKm(comet, catalogue, jd),
       (jd) => eclipticOffsetKm(world, catalogue, jd),
       chapter.atJd.value,
       COMET_SEARCH_DAYS,
     );
-    return {
+    const found: MeteorSky = {
       fromId: world.id,
       towards: eclipticToScene(shower.towards),
       // They fall only while the world is inside the trail of dust.
       falling: (jd) =>
         shower.missFrom(eclipticOffsetKm(world, catalogue, jd)) < DUST_TRAIL_RADIUS_KM,
     };
+    showers.set(chapter.id, found);
+    return found;
   };
   /** The things that grow a glow and tails. */
   const tailed = new Set(catalogue.filter((object) => object.kind === 'comet').map((o) => o.id));
@@ -1442,7 +1455,27 @@ function start(): void {
             // The recordings and the device voice are English; other languages are read by eye only.
             speaker: language === 'en' ? createBrowserSpeaker() : null,
             recordings: language === 'en',
-            aim(story, chapter) {
+            aim(story, chapter, again = false) {
+              // A part that is looked at the same way as the one before needs nothing done: the
+              // camera is already held there, and flying to where it is would only make it stutter.
+              const look = JSON.stringify([
+                story.id,
+                chapter.lookAtId,
+                chapter.standAtId,
+                chapter.viewFromId,
+                chapter.closeUp,
+                chapter.over,
+                chapter.standOn?.value,
+                chapter.lookUpAt?.value,
+                // Shooting stars come from another spot in the sky at each meeting with the dust.
+                story.dustAlongId === undefined ? null : chapter.id,
+              ]);
+              const sameLook = look === aimedLook;
+              aimedLook = look;
+              if (sameLook && !again) {
+                if (paired) paired = { story, chapter };
+                return;
+              }
               // A part with a look of its own shows it beside the whole picture.
               const own =
                 chapter.viewFromId !== undefined ||
@@ -1492,7 +1525,9 @@ function start(): void {
                     ])
                   : null;
               for (const id of story.actorIds) system.showDetail(id);
-              stage.flyTo(watchView(story, chapter));
+              // The same look fitted to a room of another size is set at once, not flown to.
+              if (sameLook) stage.lookAt(watchView(story, chapter));
+              else stage.flyTo(watchView(story, chapter));
             },
             turnDays(story) {
               const shape = catalogue.find((object) => object.id === story.actorIds[0])?.shape;
@@ -1503,6 +1538,8 @@ function start(): void {
               return hours === null ? 0 : hours / 24;
             },
             onStory(story) {
+              aimedLook = '';
+              showers.clear();
               seasonsOfId = story.seasonsOf ?? null;
               watchActors = new Set(story.actorIds);
               system.showOnly(watchActors);
@@ -1604,6 +1641,7 @@ function start(): void {
       watchWanted = false;
       watchPanel?.close();
       paired = null;
+      aimedLook = '';
       layPanes();
       sideTags.name([]);
       diagramAlone = false;

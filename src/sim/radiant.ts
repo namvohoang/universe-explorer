@@ -4,6 +4,9 @@ import { length, subtract, type Vec3 } from './vec3';
 /** How far apart in time two places are taken to tell a speed, in days. */
 const SPEED_STEP_DAYS = 0.01;
 
+/** How far apart in time a comet is looked for along its path, in days. */
+const SEARCH_STEP_DAYS = 4;
+
 /** Where something moving is at a date, in km. */
 export type Path = (jd: number) => Vec3;
 
@@ -91,7 +94,8 @@ export function showerAt(
   /** How far a place is from the comet's path where it runs past here, taken as a straight line. */
   missFrom(place: Vec3): number;
 } {
-  const pass = nearestPass(comet, world(jd), jd - spanDays, jd + spanDays, 1);
+  // A step of a few days is fine enough to land beside the nearest pass; it is then closed in on.
+  const pass = nearestPass(comet, world(jd), jd - spanDays, jd + spanDays, SEARCH_STEP_DAYS);
   const dust = velocityKmS(comet, pass.jd);
   const on = comet(pass.jd);
   const speed = length(dust) || 1;

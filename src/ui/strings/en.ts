@@ -582,6 +582,15 @@ export const en = {
     "Scientists think Europa has a salty ocean under its ice, with more than twice the water of all Earth's oceans.",
   modelAltEuropaClipper:
     'A 3D model of Europa Clipper: a spacecraft with a big dish, between two enormous solar panels.',
+  nameCanadarm: 'The Canadarm',
+  cardCanadarmHello:
+    'The Canadarm was a robot arm from Canada that worked on the space shuttle for 30 years.',
+  cardCanadarmFact1: 'It had joints like your arm: a shoulder, an elbow and a wrist.',
+  cardCanadarmFact2: 'It was first used in space in November 1981.',
+  cardCanadarmFact3:
+    'It could lift more than 30,000 kilograms, using less electricity than a kettle.',
+  modelAltCanadarm:
+    'A 3D model of the Canadarm folded out straight: a long, thin white pole with joints along it and a small grabbing end.',
   cardNgc5264Hello:
     'NGC 5264 is a small galaxy with no tidy shape. That is called an irregular galaxy.',
   cardNgc5264Fact1: 'It is just over 15 million light-years away.',

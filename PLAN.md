@@ -509,9 +509,10 @@ often hold a better file of the same thing, with its surface, and are used where
       textured external tank and solid rocket booster. They are in the same units as the
       orbiter, so they keep NASA's sizes against it; each is turned so its struts face its
       neighbour. Where exactly they join is a careful fit, not a NASA drawing, and the credits
-      say so. Looked at, not added: the Canadarm. Its model is the arm folded straight, a plain
-      white pole; on the shuttle here it would be hidden behind the closed cargo doors, and its
-      page credits a company (DigitalSpace Corporation), not NASA.
+      say so. The Canadarm, the shuttle's robot arm, is a place of its own in Spaceships
+      (the owner said to add it): its model is the arm folded out straight, its facts come from
+      the Canadian Space Agency, and its credit row says the model's source is a company
+      (DigitalSpace Corporation), not NASA, with no licence stated.
 - [ ] 11.7 Exploded stars with NASA 3D models (Cassiopeia A, Tycho, SN 1987A): they need the
       Deep Space view to show a ready-made model for a nebula.
 

@@ -1364,3 +1364,10 @@ export const JPL_SBDB_KLEOPATRA: Source = {
   url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Kleopatra',
   retrieved: '2026-10-07',
 };
+
+export const CSA_CANADARM: Source = {
+  id: 'csa-canadarm',
+  title: 'Canadian Space Agency — About Canadarm',
+  url: 'https://www.asc-csa.gc.ca/eng/canadarm/about.asp',
+  retrieved: '2026-10-07',
+};

@@ -22,6 +22,7 @@ import { newHorizons } from './newHorizons';
 import { curiosity } from './curiosity';
 import { perseverance } from './perseverance';
 import { ingenuity } from './ingenuity';
+import { canadarm } from './canadarm';
 import { dawn } from './dawn';
 import { kepler } from './kepler';
 import { spitzer } from './spitzer';
@@ -253,6 +254,7 @@ export const catalogue: readonly CelestialObject[] = [
   mir,
   rosetta,
   osirisRex,
+  canadarm,
   dawn,
   kepler,
   spitzer,

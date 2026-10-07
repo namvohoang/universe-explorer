@@ -616,6 +616,14 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Các nhà khoa học cho rằng dưới lớp băng của Europa có một đại dương mặn, nhiều nước hơn gấp đôi mọi đại dương trên Trái Đất.',
   modelAltEuropaClipper:
     'Mô hình 3D của Europa Clipper: một tàu vũ trụ có đĩa ăng-ten lớn, nằm giữa hai tấm pin mặt trời khổng lồ.',
+  nameCanadarm: 'Cánh tay Canadarm',
+  cardCanadarmHello:
+    'Canadarm là một cánh tay rô-bốt của Canada đã làm việc trên tàu con thoi suốt 30 năm.',
+  cardCanadarmFact1: 'Nó có các khớp giống cánh tay của bạn: vai, khuỷu tay và cổ tay.',
+  cardCanadarmFact2: 'Nó được dùng lần đầu trong không gian vào tháng 11 năm 1981.',
+  cardCanadarmFact3: 'Nó có thể nâng hơn 30.000 ki-lô-gam mà dùng ít điện hơn một cái ấm đun nước.',
+  modelAltCanadarm:
+    'Mô hình 3D của Canadarm duỗi thẳng: một cây sào trắng dài và mảnh có các khớp dọc thân và một đầu kẹp nhỏ.',
   cardNgc5264Hello:
     'NGC 5264 là một thiên hà nhỏ không có hình dạng gọn gàng. Người ta gọi đó là thiên hà vô định hình.',
   cardNgc5264Fact1: 'Nó ở cách ta hơn 15 triệu năm ánh sáng một chút.',

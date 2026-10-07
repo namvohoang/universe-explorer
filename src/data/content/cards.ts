@@ -93,6 +93,7 @@ import {
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_GALAXIES,
+  CSA_CANADARM,
   NASA_VIKING_1,
   NASA_SPITZER,
   NASA_EUROPA_CLIPPER,
@@ -3031,5 +3032,33 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_EUROPA_CLIPPER],
+  },
+  {
+    id: 'canadarm',
+    hello: {
+      key: 'cardCanadarmHello',
+      sourceId: 'csa-canadarm',
+      quote: 'This robotic arm supported U.S. space shuttle missions for 30 years (1981–2011).',
+    },
+    facts: [
+      {
+        key: 'cardCanadarmFact1',
+        sourceId: 'csa-canadarm',
+        quote: 'The robotic arm had rotating joints at the shoulder, the elbow and the wrist.',
+      },
+      {
+        key: 'cardCanadarmFact2',
+        sourceId: 'csa-canadarm',
+        quote: 'Canadarm was deployed in space for the first time on November 13, 1981.',
+      },
+      {
+        key: 'cardCanadarmFact3',
+        sourceId: 'csa-canadarm',
+        quote:
+          'Canadarm could lift over 30,000 kg (up to 266,000 kg in microgravity) using less electricity than a teakettle!',
+      },
+    ],
+    moons: null,
+    sources: [CSA_CANADARM],
   },
 ];

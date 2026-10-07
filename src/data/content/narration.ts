@@ -502,6 +502,11 @@ export const NARRATION: Readonly<
     fingerprint: '7dca9520',
     starts: [0.0, 2.25, 8.12, 12.4, 19.7],
   },
+  canadarm: {
+    file: 'public/voice/canadarm.mp3',
+    fingerprint: '3ff94d10',
+    starts: [0.0, 2.1, 8.68, 13.4, 18.1],
+  },
   dawn: {
     file: 'public/voice/dawn.mp3',
     fingerprint: '0e74bd11',

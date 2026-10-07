@@ -7,6 +7,8 @@
 // pages give the last instant as 10:07:49, two seconds from the one here, and a table of where
 // the middle line falls; tests hold the story to both. Times are on Horizons' clock (TDB), 69 s
 // ahead of clock time.
+// The Sun is watched from the ground, at the place the middle line of the shadow crosses at that
+// last instant: only from inside the path is the Sun hidden whole.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
 import type { Story } from '../types';
 import { ECLIPSE_2027_EARTH } from '../paths/eclipse2027Earth';
@@ -22,6 +24,13 @@ import {
 
 const PATH = 'jpl-horizons-path-eclipse2027moon';
 const NASA = 'nasa-eclipse-types';
+
+/** Longitude east and latitude north, from Earth's centre. */
+const UNDER_THE_SHADOW = s(
+  [33.108, 25.464] as const,
+  PATH,
+  'Where the middle line of the shadow falls at 10:07:47, worked out from these positions and the way Earth is turned.',
+);
 
 export const solarEclipse: Story = {
   id: 'solar-eclipse',
@@ -43,8 +52,9 @@ export const solarEclipse: Story = {
         quote:
           'A solar eclipse happens when the Moon passes between the Sun and Earth, casting a shadow on Earth that either fully or partially blocks the Sun’s light in some areas.',
       },
-      lookAtId: 'earth',
-      viewFromId: 'moon',
+      lookAtId: 'sun',
+      standAtId: 'earth',
+      standOn: UNDER_THE_SHADOW,
     },
     {
       id: 'dark-spot',
@@ -55,8 +65,9 @@ export const solarEclipse: Story = {
         quote:
           'People located in the center of the Moon’s shadow when it hits Earth will experience a total eclipse.',
       },
-      lookAtId: 'earth',
-      viewFromId: 'moon',
+      lookAtId: 'sun',
+      standAtId: 'earth',
+      standOn: UNDER_THE_SHADOW,
     },
     {
       id: 'pale-ring',
@@ -67,8 +78,9 @@ export const solarEclipse: Story = {
         quote:
           'During a total or annular solar eclipse, people outside the area covered by the Moon’s inner shadow see a partial solar eclipse.',
       },
-      lookAtId: 'earth',
-      viewFromId: 'moon',
+      lookAtId: 'sun',
+      standAtId: 'earth',
+      standOn: UNDER_THE_SHADOW,
     },
     {
       id: 'leaving',
@@ -79,8 +91,9 @@ export const solarEclipse: Story = {
         quote:
           'Except for the fleeting moments of totality during a total solar eclipse, observers should always use eclipse glasses or an alternative safe solar viewing method, such as a pinhole projector, to view the Sun.',
       },
-      lookAtId: 'earth',
-      viewFromId: 'moon',
+      lookAtId: 'sun',
+      standAtId: 'earth',
+      standOn: UNDER_THE_SHADOW,
     },
   ],
   endJd: s(2461620.030786, PATH, 'The penumbra leaves Earth, 12:44:19.'),

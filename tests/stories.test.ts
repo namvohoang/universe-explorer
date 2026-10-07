@@ -13,8 +13,8 @@ import { KM_PER_AU } from '../src/sim/constants';
 import { DUST_TRAIL_RADIUS_KM, DUST_TRAIL_WITHIN_AU, nearestOnPath } from '../src/sim/dust';
 import { lightTravelSeconds } from '../src/sim/elements';
 import { northPoleEcliptic, poleOf } from '../src/sim/frames';
-import { shadowAt, shadowCentreOn } from '../src/sim/shadow';
-import { groundUnder } from '../src/sim/turn';
+import { shadowAt, shadowCentreOn, sunCover } from '../src/sim/shadow';
+import { groundDirection, groundUnder } from '../src/sim/turn';
 import { add, dot, normalize, scale, subtract } from '../src/sim/vec3';
 import { apollo11Landing } from '../src/data/stories/apollo11Landing';
 import { apollo11Launch } from '../src/data/stories/apollo11Launch';
@@ -410,6 +410,63 @@ describe('the eclipses', () => {
         expect(Math.abs(under.latDeg - fromCentreDeg), ut).toBeLessThan(PLACE_TOLERANCE_DEG);
         expect(Math.abs(under.lonDegEast - lonDeg), ut).toBeLessThan(PLACE_TOLERANCE_DEG);
       }
+    });
+
+    describe('watched from the ground', () => {
+      const earthObject = catalogue.find((object) => object.id === 'earth') ?? fail();
+      if (earthObject.shape?.type !== 'spheroid') throw new Error('Earth is a spheroid');
+      const { orientation } = earthObject.shape;
+      const turn = solarEclipse.turned?.earth ?? fail();
+      const [x, y, z] = turn.primeMeridian.value;
+      const turned = {
+        pole: northPoleEcliptic(poleOf(orientation) ?? fail()),
+        atJd: turn.atJd.value,
+        primeMeridian: { x, y, z },
+        rotationPeriodHours: orientation.rotationPeriodHours.value ?? fail(),
+      };
+      const [lonDegEast, latDeg] = solarEclipse.chapters[0]?.standOn?.value ?? fail();
+      /** The share of the Sun the Moon hides at a date, from the place the story stands on. */
+      const hidden = (jd: number): number => {
+        const { earth, moon } = places(jd);
+        const out = groundDirection({ lonDegEast, latDeg }, turned, jd);
+        const ground = add(earth, scale(out, radiusKm('earth')));
+        return sunCover(ground, SUN, radiusKm('sun'), moon, radiusKm('moon'));
+      };
+
+      it('stands in every part where the middle of the shadow falls when it is greatest', () => {
+        for (const chapter of solarEclipse.chapters) {
+          expect(chapter.standAtId).toBe('earth');
+          expect(chapter.lookAtId).toBe('sun');
+          expect(chapter.standOn?.value).toEqual([lonDegEast, latDeg]);
+        }
+        const jd = chapterJd(solarEclipse, 'pale-ring');
+        const { earth, moon } = places(jd);
+        const centre = shadowCentreOn(SUN, moon, earth, radiusKm('earth')) ?? fail();
+        const under = groundUnder(subtract(centre, earth), turned, jd);
+        expect(under.lonDegEast).toBeCloseTo(lonDegEast, 2);
+        expect(under.latDeg).toBeCloseTo(latDeg, 2);
+      });
+
+      it('sees the whole Sun, then all of it hidden, then the whole Sun again', () => {
+        expect(hidden(chapterJd(solarEclipse, 'shadow-arrives'))).toBe(0);
+        expect(hidden(chapterJd(solarEclipse, 'dark-spot'))).toBe(0);
+        expect(hidden(chapterJd(solarEclipse, 'pale-ring'))).toBe(1);
+        expect(hidden(solarEclipse.endJd.value)).toBe(0);
+        // A bite is out of the Sun for over an hour on each side of the dark.
+        const hour = 1 / 24;
+        expect(hidden(chapterJd(solarEclipse, 'pale-ring') - hour)).toBeGreaterThan(0);
+        expect(hidden(chapterJd(solarEclipse, 'pale-ring') - hour)).toBeLessThan(1);
+        expect(hidden(chapterJd(solarEclipse, 'pale-ring') + hour)).toBeGreaterThan(0);
+      });
+
+      it('is in the dark for about as long as NASA says the eclipse lasts at its greatest', () => {
+        // NASA, solar eclipses 2021-2030 (read 2026-10-07): central duration 06m23s for 2027 Aug 02.
+        const middle = chapterJd(solarEclipse, 'pale-ring');
+        const second = 1 / SECONDS;
+        let dark = 0;
+        for (let t = -300; t <= 300; t += 1) if (hidden(middle + t * second) === 1) dark += 1;
+        expect(Math.abs(dark - (6 * 60 + 23))).toBeLessThan(15);
+      });
     });
 
     it('is greatest at the instant NASA lists', () => {

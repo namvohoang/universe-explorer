@@ -92,7 +92,7 @@ export const en = {
   grownUpsWatch1:
     'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells. Where a part has a look of its own (from Earth, say), that look is shown beside the whole picture. For the Moon’s phases, the seasons, the eclipses and Saturn’s rings the whole picture is a diagram marked “not to scale”: the same bodies in their true directions, lit and turned as they really are, but drawn big and close enough to see together, with an eclipse’s two shadows drawn behind the body that casts them.',
   grownUpsWatch2:
-    'Where a story says “This is the real path the spaceship flew”, the positions are NASA/JPL’s own record of the flight, from the JPL Horizons service. For the eclipses, the supermoon and the Artemis flights the Moon, too, is put where Horizons has it, and the space station is in the shuttle story.',
+    'Where a story says “This is the real path the spaceship flew”, the positions are NASA/JPL’s own record of the flight, from the JPL Horizons service. For the eclipses, the supermoon and the Artemis flights the Moon, too, is put where Horizons has it, and the space station is in the shuttle story. The solar eclipse is watched from the ground at the place the middle of the Moon’s shadow crosses when the eclipse is greatest, with Earth turned as it will be.',
   grownUpsWatch3:
     'Where a story says a line or a path is a drawing, only the times and places it names are real, from NASA’s own tables, and the app draws a smooth line between them. The dust of the meteor shower and the green rings of the aurora are drawings of where NASA and NOAA say they lie. A spacecraft is shown as a named point, since at true scale it is far too small to see.',
   grownUpsPicturesTitle: 'Where the pictures come from',
@@ -1148,7 +1148,7 @@ export const en = {
   storySolarEclipseDarkSpot:
     'Now the small dark middle of the shadow lands on Earth. People inside it see the Moon hide the whole Sun.',
   storySolarEclipsePaleRing:
-    'The big pale shadow is all around the dark spot. People there see the Moon hide only part of the Sun.',
+    'Now the dark spot is over us: the Moon hides the whole Sun. In the pale shadow around it, people see only part of it hidden.',
   storySolarEclipseLeaving:
     'The dark spot slides off the edge of Earth. Remember: never look at the Sun without special eclipse glasses.',
   storyLunarEclipseTitle: 'A lunar eclipse',

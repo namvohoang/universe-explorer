@@ -188,11 +188,11 @@ test.describe('a story', () => {
     ] as const) {
       await page.setViewportSize({ width, height });
       await page.goto('/#watch/solar-eclipse');
-      const earth = page.locator('.marker', { hasText: 'Earth' });
+      const earth = page.locator('.marker', { hasText: 'The Sun' });
       await expect(earth).toBeVisible();
       const words = await boxOf(page.locator('.watch-caption'));
       const controls = await boxOf(page.locator('.watch-controls'));
-      // The spot that marks Earth's middle is above the panel and clear of the words.
+      // The spot that marks the Sun's middle is above the panel and clear of the words.
       await expect
         .poll(async () => {
           const spot = await boxOf(earth);
@@ -214,7 +214,7 @@ test.describe('a story', () => {
       const panes = page.locator('.pane');
       await expect(panes).toHaveCount(2);
       await expect(panes.locator('.pane-label')).toHaveText([
-        'Seen from: The Moon',
+        'Seen from: Earth',
         'The whole picture (not to scale)',
       ]);
       const [own, whole] = await Promise.all([boxOf(panes.nth(0)), boxOf(panes.nth(1))]);
@@ -231,14 +231,14 @@ test.describe('a story', () => {
       const sun = page.locator('.side-tag', { hasText: 'The Sun' });
       await expect(sun).toBeVisible();
       await expect(sun).not.toHaveClass(/ringed/);
-      // Earth is named in both looks, each name inside its own frame.
+      // The Sun is named in the look from Earth and Earth in the diagram, each in its own frame.
       const inside = async (name: Locator, pane: Box): Promise<boolean> => {
         const spot = await boxOf(name);
         const x = spot.x + spot.width / 2;
         const y = spot.y + spot.height / 2;
         return x > pane.x && x < pane.x + pane.width && y > pane.y && y < pane.y + pane.height;
       };
-      const first = page.locator('.marker', { hasText: 'Earth' });
+      const first = page.locator('.marker', { hasText: 'The Sun' });
       const second = page.locator('.side-tag', { hasText: 'Earth' });
       await expect(first).toBeVisible();
       await expect(second).toBeVisible();

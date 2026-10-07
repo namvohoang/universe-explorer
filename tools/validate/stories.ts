@@ -37,6 +37,15 @@ function chapterErrors(story: Story): string[] {
         `${at} chapter "${chapter.id}" stands at "${chapter.standAtId}", not one of its actors`,
       );
     }
+    if (chapter.standOn !== undefined) {
+      const [lonDegEast, latDeg] = chapter.standOn.value;
+      if (chapter.standAtId === undefined) {
+        errors.push(`${at} chapter "${chapter.id}" names a place to stand on, but no body`);
+      }
+      if (!(Math.abs(lonDegEast) <= 180) || !(Math.abs(latDeg) <= 90)) {
+        errors.push(`${at} chapter "${chapter.id}" stands on a place that is not on a globe`);
+      }
+    }
     if (chapter.viewFromId !== undefined && !story.actorIds.includes(chapter.viewFromId)) {
       errors.push(
         `${at} chapter "${chapter.id}" is seen from "${chapter.viewFromId}", not one of its actors`,

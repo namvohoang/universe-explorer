@@ -100,6 +100,11 @@ export interface SolarSystem {
   skyGaze(): Vec3 | null;
   /** Draws the two auroral bands of a body, riding round with its ground; `null` takes them away. */
   setAurora(onId: string | null, shape: AuroraShape | null): void;
+  /**
+   * Where a point of a body's own turning frame is now, in scene units: a place on its ground,
+   * say, given in units of the body's radius (see `bodyFramePoint`).
+   */
+  groundPointOf(id: string, place: Vec3): Vec3;
   /** Which way a body's north pole points, as a unit vector in scene axes. */
   northOf(id: string): Vec3;
   /**
@@ -349,6 +354,12 @@ export function createSolarSystem(
       }
       drawTrails();
       showLines();
+    },
+    groundPointOf(id, place) {
+      const body = bodyOf(id);
+      body.group.updateWorldMatrix(true, true);
+      const world = body.frame.localToWorld(inWorld.set(place.x, place.y, place.z));
+      return { x: world.x, y: world.y, z: world.z };
     },
     positionOf(id) {
       const position = positions.get(id);

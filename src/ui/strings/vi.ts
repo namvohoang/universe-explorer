@@ -104,7 +104,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsWatch1:
     'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện. Khi một phần có góc nhìn riêng (chẳng hạn từ Trái Đất), góc nhìn đó được đặt cạnh toàn cảnh. Với các pha của Mặt Trăng, các mùa, nhật thực, nguyệt thực và vành Sao Thổ, toàn cảnh là một hình vẽ ghi “không đúng tỉ lệ”: vẫn những thiên thể ấy, đúng hướng thật, được chiếu sáng và quay như thật, nhưng vẽ đủ to và đủ gần để thấy cùng lúc, với hai vùng bóng của nhật thực, nguyệt thực vẽ phía sau thiên thể tạo ra bóng.',
   grownUpsWatch2:
-    'Khi câu chuyện ghi “Đây là đường bay thật của con tàu”, các vị trí là ghi nhận của chính NASA/JPL về chuyến bay, lấy từ dịch vụ JPL Horizons. Với nhật thực, nguyệt thực, siêu trăng và các chuyến bay Artemis, Mặt Trăng cũng được đặt theo Horizons, và trạm vũ trụ trong câu chuyện tàu con thoi cũng vậy.',
+    'Khi câu chuyện ghi “Đây là đường bay thật của con tàu”, các vị trí là ghi nhận của chính NASA/JPL về chuyến bay, lấy từ dịch vụ JPL Horizons. Với nhật thực, nguyệt thực, siêu trăng và các chuyến bay Artemis, Mặt Trăng cũng được đặt theo Horizons, và trạm vũ trụ trong câu chuyện tàu con thoi cũng vậy. Nhật thực được nhìn từ mặt đất, tại nơi phần giữa của bóng Mặt Trăng đi qua lúc nhật thực lớn nhất, với Trái Đất quay đúng như khi đó.',
   grownUpsWatch3:
     'Khi câu chuyện ghi một đường là hình vẽ, chỉ các thời điểm và vị trí được nêu là thật, lấy từ các bảng của NASA, còn ứng dụng vẽ một đường trơn nối giữa chúng. Bụi của mưa sao băng và các vòng xanh của cực quang là hình vẽ những nơi NASA và NOAA cho biết chúng nằm. Tàu vũ trụ được thể hiện bằng một điểm có tên, vì ở tỉ lệ thật nó quá nhỏ để nhìn thấy.',
   grownUpsPicturesTitle: 'Hình ảnh lấy từ đâu',
@@ -884,7 +884,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storySolarEclipseDarkSpot:
     'Giờ phần giữa nhỏ và tối của cái bóng rơi lên Trái Đất. Người ở trong đó thấy Mặt Trăng che kín Mặt Trời.',
   storySolarEclipsePaleRing:
-    'Cái bóng mờ lớn bao quanh đốm tối. Người ở đó thấy Mặt Trăng chỉ che một phần Mặt Trời.',
+    'Giờ đốm tối ở ngay trên ta: Mặt Trăng che kín Mặt Trời. Ở vùng bóng mờ xung quanh, người ta chỉ thấy một phần Mặt Trời bị che.',
   storySolarEclipseLeaving:
     'Đốm tối trượt ra khỏi rìa Trái Đất. Hãy nhớ: không bao giờ nhìn Mặt Trời nếu không có kính xem nhật thực.',
   storyLunarEclipseTitle: 'Nguyệt thực',

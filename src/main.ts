@@ -840,12 +840,17 @@ function start(): void {
     }
     if (stand !== undefined && !free) {
       const seen = chapter.lookAtId;
-      const away = (): Vec3 => subtract(system.positionOf(stand), system.positionOf(seen));
+      // On the ground at one place, where the story names one, or at the body's middle.
+      const [lonDegEast, latDeg] = chapter.standOn?.value ?? [0, 0];
+      const spot = bodyFramePoint({ lonDegEast, latDeg, altitudeKm: 0 }, 1);
+      const standing = (): Vec3 =>
+        chapter.standOn ? system.groundPointOf(stand, spot) : system.positionOf(stand);
+      const away = (): Vec3 => subtract(standing(), system.positionOf(seen));
       return {
         target: () => system.positionOf(seen),
         distance: length(away()),
         direction: away(),
-        standAt: () => system.positionOf(stand),
+        standAt: standing,
         minDistance: 0,
         maxDistance: Infinity,
         idleTurn: false,

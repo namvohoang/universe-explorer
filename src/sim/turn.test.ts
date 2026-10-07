@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { groundUnder, type Turned } from './turn';
+import { groundDirection, groundUnder, type Turned } from './turn';
 
 // A placeholder body for testing the maths, not astronomy: pole along z, turning once in 24 hours.
 const BODY: Turned = {
@@ -35,5 +35,26 @@ describe('groundUnder', () => {
   it('squares a meridian that is not quite at right angles to the pole', () => {
     const leaning: Turned = { ...BODY, primeMeridian: { x: 1, y: 0, z: 0.2 } };
     expect(groundUnder({ x: 1, y: 0, z: 0 }, leaning, 100).lonDegEast).toBeCloseTo(0, 9);
+  });
+});
+
+describe('groundDirection', () => {
+  it('points out through latitude 0, longitude 0 along the meridian at its date', () => {
+    const out = groundDirection({ lonDegEast: 0, latDeg: 0 }, BODY, 100);
+    expect(out.x).toBeCloseTo(1, 12);
+    expect(out.y).toBeCloseTo(0, 12);
+    expect(out.z).toBeCloseTo(0, 12);
+  });
+
+  it('is undone by groundUnder, at any place and date', () => {
+    for (const [lonDegEast, latDeg, jd] of [
+      [33.1, 25.5, 100.3],
+      [-120, -40, 99.2],
+      [179, 80, 107.77],
+    ] as const) {
+      const under = groundUnder(groundDirection({ lonDegEast, latDeg }, BODY, jd), BODY, jd);
+      expect(under.lonDegEast).toBeCloseTo(lonDegEast, 9);
+      expect(under.latDeg).toBeCloseTo(latDeg, 9);
+    }
   });
 });

@@ -32,6 +32,13 @@ export interface Chapter {
    * field, like a telescope: how big a thing looks from there is then how big it is drawn.
    */
   readonly standAtId?: string;
+  /**
+   * With `standAtId`: stands on that body's ground at this place, not at its middle, and so
+   * turns round with it. Longitude in degrees east and latitude in degrees north, both
+   * measured from the body's centre. What is seen from one place on the ground and not from
+   * another (the Sun wholly hidden in an eclipse) needs it.
+   */
+  readonly standOn?: Sourced<readonly [lonDegEast: number, latDeg: number]>;
   /** Stands close to what is looked at, in place of showing the whole stage. */
   readonly closeUp?: boolean;
   /** With `closeUp`: stands over this pole of the body, on its night side, in place of its sunlit side. */

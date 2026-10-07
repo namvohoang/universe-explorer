@@ -699,6 +699,13 @@ recorded last.
       Not given a diagram: the supermoon (squeezed distances would hide the very thing it
       shows), Mars going backwards (Earth and Mars would touch), the comet, the meteor
       shower and the aurora, which keep the true-scale picture.
+- [x] 12.17 The solar eclipse seen from Earth (asked for by the owner, 2026-10-07: sky events
+      are to be seen from Earth). A part of a story can stand on a body's ground at a place
+      (`standOn`), turning with it. The eclipse is watched from where the middle of the shadow
+      falls at its greatest (25.464° N, 33.108° E, worked out from the Horizons positions):
+      the Sun is whole, then bitten, then hidden for about as long as NASA lists, then whole.
+      The seasons are still seen from the Sun, and the comet and the aurora close up: there
+      is no sky with a horizon to stand under yet.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

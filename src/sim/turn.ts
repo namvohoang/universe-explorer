@@ -15,6 +15,33 @@ export interface Turned {
 }
 
 /**
+ * The direction from a turning body's centre out through a place on its ground at a date: the
+ * other way round from `groundUnder`. A unit vector in the frame of `turned`.
+ */
+export function groundDirection(
+  place: { readonly lonDegEast: number; readonly latDeg: number },
+  turned: Turned,
+  jd: number,
+): Vec3 {
+  const { pole } = turned;
+  const meridian = normalize(
+    subtract(turned.primeMeridian, scale(pole, dot(turned.primeMeridian, pole))),
+  );
+  const east = cross(pole, meridian);
+  const turns =
+    ((jd - turned.atJd) * SECONDS_PER_DAY) / (turned.rotationPeriodHours * SECONDS_PER_HOUR);
+  // The ground has turned east since the date the meridian is known at.
+  const lon = (place.lonDegEast + 360 * turns) * DEG;
+  const lat = place.latDeg * DEG;
+  const level = Math.cos(lat);
+  return {
+    x: level * (Math.cos(lon) * meridian.x + Math.sin(lon) * east.x) + Math.sin(lat) * pole.x,
+    y: level * (Math.cos(lon) * meridian.y + Math.sin(lon) * east.y) + Math.sin(lat) * pole.y,
+    z: level * (Math.cos(lon) * meridian.z + Math.sin(lon) * east.z) + Math.sin(lat) * pole.z,
+  };
+}
+
+/**
  * The point of a turning body's ground that lies under a direction from its centre at a date:
  * longitude in degrees east (from -180 to 180) and latitude in degrees north, both measured
  * from the centre.

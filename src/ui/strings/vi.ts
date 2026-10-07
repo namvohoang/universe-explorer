@@ -529,6 +529,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Đá của nó đã gần 4,6 tỉ năm tuổi. Chúng đến từ một thế giới cổ hơn đã bị đập vỡ.',
   cardBennuFact3:
     'Tàu vũ trụ OSIRIS-REx của NASA đã nhặt các mẩu của Bennu và mang về Trái Đất năm 2023.',
+  modelAltKleopatra:
+    'Mô hình 3D của Kleopatra: một tảng đá xám trơn, dài, thắt ở giữa, hình như khúc xương. Bề mặt để trống vì chưa ai nhìn thấy nó ở gần.',
   modelAltBennu:
     'Mô hình 3D của Bennu: một tảng đá xám sẫm có hình hơi giống con quay, phủ đầy đá tảng.',
   nameOsirisRex: 'OSIRIS-REx',

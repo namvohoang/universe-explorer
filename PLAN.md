@@ -498,9 +498,12 @@ often hold a better file of the same thing, with its surface, and are used where
       model is coloured purple and orange and would teach a wrong picture of it; the Roman
       telescope, since NASA's page lists a launch date but still speaks of it in the future;
       Explorer 1 and the Space Launch System, which the list offers only in other file formats.
-- [ ] 11.6 More small worlds from the list: the asteroids Itokawa, Toutatis and Kleopatra have
-      shape files for 3D printers but no surface, and Arrokoth is neither an asteroid nor a
-      dwarf planet, so it needs a kind of its own.
+- [x] 11.6 One more small world from the list: Kleopatra, an asteroid shaped like a dog's bone,
+      with its shape from NASA's file for 3D printers (plain grey, since the file has no
+      surface) and its size and orbit from JPL. Left out: Itokawa, whose print file is not the
+      asteroid's shape as it stands (it is flat, about a quarter as thick as JPL's sizes say);
+      Toutatis, which tumbles and has no pole in JPL's database; and Arrokoth, which is
+      neither an asteroid nor a dwarf planet and needs a kind of its own.
 - [ ] 11.7 Exploded stars with NASA 3D models (Cassiopeia A, Tycho, SN 1987A): they need the
       Deep Space view to show a ready-made model for a nebula.
 

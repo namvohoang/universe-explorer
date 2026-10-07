@@ -60,6 +60,7 @@ SAY: dict[str, str] = {
     "Markarian": "mɑɹkˈɑɹiən",  # mar-KAR-ee-un
     "Bennu": "bˈɛnu",  # BEN-oo
     "Glenn": "ɡlˈɛn",  # GLEN
+    "Kleopatra": "klˌiəpˈætɹə",  # klee-uh-PAT-ruh
     "Osiris": "OsˈIɹɪs",  # oh-SIGH-riss
 }
 

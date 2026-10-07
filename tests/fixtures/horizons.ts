@@ -3,7 +3,8 @@
  * its API: geometric position vectors in km, in the ecliptic of J2000, at Julian dates (TDB),
  * measured from the Sun for planets and from the planet for moons and spacecraft. A spacecraft's
  * rows span only a few hours round the instant its orbit was taken: its path is not predictable.
- * Bennu's rows were fetched on 2026-10-07 and start in 2005: see the note in the test.
+ * Bennu's and Kleopatra's rows were fetched on 2026-10-07; Bennu's start in 2005: see the note
+ * in the test.
  * Generated from the API replies; do not edit by hand. `url` reproduces each query.
  */
 export interface HorizonsSeries {
@@ -772,6 +773,22 @@ export const HORIZONS: readonly HorizonsSeries[] = [
       [2463232.5, 151764609.3919622, -10797804.15461514, -1681046.77853813],
       [2466154.5, -33724057.57853137, -197886476.1113548, -20801259.88348147],
       [2469776.5, 152761458.613615, -31892886.55558589, -3817468.64746598],
+    ],
+  },
+  {
+    bodyId: 'kleopatra',
+    target: '216 Kleopatra (A880 GB)',
+    center: 'Sun (10)',
+    url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27216%3B%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%4010%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&VEC_TABLE=%271%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TLIST=%272382148.5+2396909.5+2415020.5+2433463.5+2447951.5+2455270.5+2461317.5+2469776.5%27',
+    positionsKm: [
+      [2382148.5, -498559421.6455792, -95975466.38546108, -54716448.23209451],
+      [2396909.5, 126696517.4097255, 295776994.3717947, -35903622.84861676],
+      [2415020.5, -162102276.4641365, -458341553.1550201, 61787256.65143505],
+      [2433463.5, -465323713.5233661, -234351310.9904943, -20588236.93222626],
+      [2447951.5, 314900712.4020839, 50563288.39427061, 33412066.08211668],
+      [2455270.5, -381319508.9124467, 201685240.7771897, -89707804.7710195],
+      [2461317.5, 142162589.3090002, -382009396.6185424, 91775336.80099693],
+      [2469776.5, 39471633.94249673, -437383230.9287105, 88693759.94239514],
     ],
   },
   {

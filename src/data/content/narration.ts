@@ -89,6 +89,7 @@ export const NARRATION: Readonly<
     fingerprint: '665117b8',
     starts: [0.0, 2.05, 6.65, 10.8, 14.45],
   },
+  kleopatra: { file: 'public/voice/kleopatra.mp3', fingerprint: '8731c245', starts: [0.0, 2.23] },
   'asteroid-belt': {
     file: 'public/voice/asteroid-belt.mp3',
     fingerprint: '45d5d740',

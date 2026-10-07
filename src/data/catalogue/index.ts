@@ -63,6 +63,7 @@ import { eris } from './eris';
 import { asteroidBelt } from './asteroidBelt';
 import { eros } from './eros';
 import { bennu } from './bennu';
+import { kleopatra } from './kleopatra';
 import { osirisRex } from './osirisRex';
 import { ida } from './ida';
 import { psyche } from './psyche';
@@ -149,6 +150,7 @@ export const catalogue: readonly CelestialObject[] = [
   bennu,
   ida,
   psyche,
+  kleopatra,
   asteroidBelt,
   vesta,
   ceres,

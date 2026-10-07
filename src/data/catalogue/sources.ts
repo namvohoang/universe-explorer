@@ -1357,3 +1357,10 @@ export const NASA_EUROPA_CLIPPER: Source = {
   url: 'https://science.nasa.gov/mission/europa-clipper/',
   retrieved: '2026-10-07',
 };
+
+export const JPL_SBDB_KLEOPATRA: Source = {
+  id: 'jpl-sbdb-kleopatra',
+  title: 'JPL Small-Body Database — 216 Kleopatra (A880 GB) (orbit solution 157)',
+  url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=Kleopatra',
+  retrieved: '2026-10-07',
+};

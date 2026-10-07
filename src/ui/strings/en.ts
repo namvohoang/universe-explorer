@@ -499,6 +499,8 @@ export const en = {
     'Its rocks are nearly 4.6 billion years old. They come from an older world that was smashed apart.',
   cardBennuFact3:
     'A NASA spacecraft called OSIRIS-REx picked up bits of Bennu and brought them to Earth in 2023.',
+  modelAltKleopatra:
+    'A 3D model of Kleopatra: a long plain grey rock with a narrow middle, shaped like a bone. Its surface is left blank because nobody has seen it up close.',
   modelAltBennu:
     'A 3D model of Bennu: a dark grey rock shaped a little like a spinning top, covered in boulders.',
   nameOsirisRex: 'OSIRIS-REx',

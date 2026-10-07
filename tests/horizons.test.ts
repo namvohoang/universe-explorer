@@ -31,7 +31,8 @@ const MOON_DISTANCE_TOLERANCE_KM = 9_000;
  * Tolerances for the moons of the other planets (16 dates across 1960–2040) and for the dwarf
  * planets (eight dates across 1810–2049, where the worst seen was 1.2° and 1.0%). Each
  * is drawn on one ellipse (slowly turning where the source says how), so what is left out is
- * the tug of its neighbours. The worst seen was 4.2° (Tethys) and 1.2% in distance.
+ * the tug of its neighbours. The worst seen was 4.2° (Tethys) and 1.2% in distance; among the
+ * asteroids, 4.9° for Kleopatra in 1810, two centuries from the date of its database orbit.
  */
 const OTHER_MOONS_DIRECTION_TOLERANCE_DEG = 5;
 const OTHER_MOONS_DISTANCE_TOLERANCE = 0.02;

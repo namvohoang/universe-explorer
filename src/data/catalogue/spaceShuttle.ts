@@ -38,7 +38,7 @@ export const spaceShuttle: Spacecraft = {
       kind: 'artist-concept',
       role: 'model',
       altKey: 'modelAltSpaceShuttle',
-      credit: 'NASA/Johnson Space Center and NASA/Michael D. Carbajal',
+      credit: 'NASA/Johnson Space Center',
     },
   ],
   sources: [NASA_SHUTTLE_KIDS, NASA_SHUTTLE_REFERENCE],

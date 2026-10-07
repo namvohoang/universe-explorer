@@ -504,6 +504,14 @@ often hold a better file of the same thing, with its surface, and are used where
       asteroid's shape as it stands (it is flat, about a quarter as thick as JPL's sizes say);
       Toutatis, which tumbles and has no pole in JPL's database; and Arrokoth, which is
       neither an asteroid nor a dwarf planet and needs a kind of its own.
+- [x] 11.8 A better space shuttle (asked for on 2026-10-07, from NASA's Space Shuttle Parts): the
+      plain tank and boosters, which had been tinted by hand, are replaced by NASA's own
+      textured external tank and solid rocket booster. They are in the same units as the
+      orbiter, so they keep NASA's sizes against it; each is turned so its struts face its
+      neighbour. Where exactly they join is a careful fit, not a NASA drawing, and the credits
+      say so. Looked at, not added: the Canadarm. Its model is the arm folded straight, a plain
+      white pole; on the shuttle here it would be hidden behind the closed cargo doors, and its
+      page credits a company (DigitalSpace Corporation), not NASA.
 - [ ] 11.7 Exploded stars with NASA 3D models (Cassiopeia A, Tycho, SN 1987A): they need the
       Deep Space view to show a ready-made model for a nebula.
 

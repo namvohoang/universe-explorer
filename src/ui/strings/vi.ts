@@ -560,6 +560,60 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardIngenuityFact3: 'Các cánh quạt quay của nó dài khoảng 1,2 mét tính từ đầu này tới đầu kia.',
   modelAltIngenuity:
     'Mô hình 3D của trực thăng Ingenuity: một chiếc hộp nhỏ trên bốn chân mảnh, có hai cánh quạt dài và một tấm pin mặt trời nhỏ ở trên.',
+  nameDawn: 'Dawn',
+  cardDawnHello:
+    'Dawn là một tàu vũ trụ của NASA đã ghé thăm hai thế giới trong vành đai tiểu hành tinh: Vesta và Ceres.',
+  cardDawnFact1: 'Nó ở lại Vesta một thời gian dài, rồi bay tiếp và ở lại Ceres.',
+  cardDawnFact2:
+    'Khi các tấm pin mặt trời mở rộng, nó dài khoảng 20 mét, bằng một chiếc xe tải lớn.',
+  cardDawnFact3: 'Nó tự đẩy mình đi bằng động cơ ion, chạy bằng điện từ các tấm pin mặt trời.',
+  modelAltDawn:
+    'Mô hình 3D của Dawn: một chiếc hộp nhỏ có gắn đĩa ăng-ten, nằm giữa hai tấm pin mặt trời rất dài.',
+  nameKepler: 'Kính viễn vọng không gian Kepler',
+  cardKeplerHello:
+    'Kepler là một kính viễn vọng không gian săn tìm hành tinh quanh các ngôi sao khác.',
+  cardKeplerFact1: 'Nó nhìn chăm chú 150.000 ngôi sao cùng lúc, trong một mảng trời.',
+  cardKeplerFact2:
+    'Khi một hành tinh đi qua trước ngôi sao của nó, ngôi sao mờ đi một chút xíu. Kepler tìm ra hành tinh bằng cách đó.',
+  cardKeplerFact3: 'Nó cho thấy trên bầu trời đêm của chúng ta có nhiều hành tinh hơn cả sao.',
+  modelAltKepler:
+    'Mô hình 3D của kính Kepler: một ống ngắn và rộng bọc lá vàng, có các tấm pin mặt trời quanh thân.',
+  nameSpitzer: 'Kính viễn vọng không gian Spitzer',
+  cardSpitzerHello:
+    'Spitzer là một kính viễn vọng không gian nhìn bằng ánh sáng hồng ngoại, thứ mắt chúng ta không thấy được.',
+  cardSpitzerFact1: 'Nó nghiên cứu bầu trời hơn 16 năm.',
+  cardSpitzerFact2:
+    'Nó tìm thấy một vành đai khổng lồ và mờ quanh Sao Thổ, rộng gấp 300 lần hành tinh.',
+  cardSpitzerFact3: 'Nó góp phần tìm ra ngôi sao đầu tiên được biết có bảy hành tinh cỡ Trái Đất.',
+  modelAltSpitzer:
+    'Mô hình 3D của kính Spitzer: một ống sẫm màu đứng trên đế bạc, có một tấm phẳng cao dọc một bên.',
+  nameVikingLander: 'Tàu đổ bộ Viking',
+  cardVikingLanderHello:
+    'Viking 1 là tàu vũ trụ đầu tiên hạ cánh xuống Sao Hỏa và tiếp tục hoạt động ở đó.',
+  cardVikingLanderFact1:
+    'Nó hạ cánh vào tháng 7 năm 1976 và gửi về những bức ảnh đầu tiên chụp từ mặt đất Sao Hỏa.',
+  cardVikingLanderFact2:
+    'Nó gồm hai phần. Một phần tiếp tục bay quanh Sao Hỏa, phần kia đi xuống mặt đất.',
+  cardVikingLanderFact3: 'Hai tàu đổ bộ Viking đã gửi về 4.500 bức ảnh.',
+  modelAltVikingLander:
+    'Mô hình 3D của tàu đổ bộ Viking: một cỗ máy dẹt trên ba chân, có đĩa ăng-ten ở trên và một cánh tay để xúc đất.',
+  nameFriendship7: 'Friendship 7',
+  cardFriendship7Hello:
+    'Friendship 7 là con tàu vũ trụ nhỏ đã đưa phi hành gia John Glenn bay ba vòng quanh Trái Đất.',
+  cardFriendship7Fact1: 'Nó bay vào tháng 2 năm 1962, trên đỉnh một tên lửa Atlas.',
+  cardFriendship7Fact2: 'Cả chuyến bay kéo dài gần năm giờ.',
+  cardFriendship7Fact3: 'Nó rơi xuống biển, và một con tàu đã vớt nó lên 21 phút sau đó.',
+  modelAltFriendship7:
+    'Mô hình 3D của Friendship 7: một khoang nhỏ màu bạc hình cái chuông, rộng ở đáy, có một ô cửa sổ nhỏ.',
+  nameEuropaClipper: 'Europa Clipper',
+  cardEuropaClipperHello:
+    'Europa Clipper là một tàu vũ trụ của NASA đang trên đường tới Europa, một mặt trăng băng giá của Sao Mộc.',
+  cardEuropaClipperFact1: 'Nó được phóng năm 2024 và sẽ tới Sao Mộc vào tháng 4 năm 2030.',
+  cardEuropaClipperFact2: 'Nó sẽ bay sát qua Europa 49 lần.',
+  cardEuropaClipperFact3:
+    'Các nhà khoa học cho rằng dưới lớp băng của Europa có một đại dương mặn, nhiều nước hơn gấp đôi mọi đại dương trên Trái Đất.',
+  modelAltEuropaClipper:
+    'Mô hình 3D của Europa Clipper: một tàu vũ trụ có đĩa ăng-ten lớn, nằm giữa hai tấm pin mặt trời khổng lồ.',
   cardNgc5264Hello:
     'NGC 5264 là một thiên hà nhỏ không có hình dạng gọn gàng. Người ta gọi đó là thiên hà vô định hình.',
   cardNgc5264Fact1: 'Nó ở cách ta hơn 15 triệu năm ánh sáng một chút.',

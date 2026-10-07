@@ -526,6 +526,60 @@ export const en = {
   cardIngenuityFact3: 'Its spinning blades are about 1.2 metres from tip to tip.',
   modelAltIngenuity:
     'A 3D model of the Ingenuity helicopter: a small box on four thin legs, with two long blades and a little solar panel on top.',
+  nameDawn: 'Dawn',
+  cardDawnHello:
+    'Dawn was a NASA spacecraft that visited two worlds in the asteroid belt: Vesta and Ceres.',
+  cardDawnFact1: 'It stayed a long time at Vesta, then flew on and stayed at Ceres.',
+  cardDawnFact2:
+    'With its solar panels spread out it was about 20 metres long, as long as a big lorry.',
+  cardDawnFact3:
+    'It pushed itself along with an ion engine, which ran on power from its solar panels.',
+  modelAltDawn:
+    'A 3D model of Dawn: a small box with a dish on it, between two very long solar panels.',
+  nameKepler: 'The Kepler Space Telescope',
+  cardKeplerHello: 'Kepler was a space telescope that hunted for planets around other stars.',
+  cardKeplerFact1: 'It stared at 150,000 stars at once, in one patch of sky.',
+  cardKeplerFact2:
+    'When a planet passed in front of its star, the star dimmed a tiny bit. That is how Kepler found planets.',
+  cardKeplerFact3: 'It showed that there are more planets than stars in our night sky.',
+  modelAltKepler:
+    'A 3D model of the Kepler telescope: a short, wide tube wrapped in gold foil, with solar panels around its side.',
+  nameSpitzer: 'The Spitzer Space Telescope',
+  cardSpitzerHello:
+    'Spitzer was a space telescope that saw infrared light, which our eyes cannot see.',
+  cardSpitzerFact1: 'It studied the sky for more than 16 years.',
+  cardSpitzerFact2: 'It found a huge, faint ring around Saturn, 300 times as wide as the planet.',
+  cardSpitzerFact3:
+    'It helped find the first star known to have seven planets about the size of Earth.',
+  modelAltSpitzer:
+    'A 3D model of the Spitzer telescope: a dark tube standing on a silver base, with a tall flat panel along one side.',
+  nameVikingLander: 'The Viking Lander',
+  cardVikingLanderHello:
+    'Viking 1 was the first spacecraft to land on Mars and keep working there.',
+  cardVikingLanderFact1:
+    'It landed in July 1976 and sent back the first pictures from the ground on Mars.',
+  cardVikingLanderFact2:
+    'It came in two parts. One stayed going around Mars and the other went down to the ground.',
+  cardVikingLanderFact3: 'The two Viking landers sent back 4,500 photos.',
+  modelAltVikingLander:
+    'A 3D model of the Viking lander: a flat machine on three legs, with a dish on top and an arm for scooping soil.',
+  nameFriendship7: 'Friendship 7',
+  cardFriendship7Hello:
+    'Friendship 7 was the small spacecraft that carried the astronaut John Glenn around Earth three times.',
+  cardFriendship7Fact1: 'It flew in February 1962, on top of an Atlas rocket.',
+  cardFriendship7Fact2: 'The whole flight took just under five hours.',
+  cardFriendship7Fact3: 'It came down in the sea, and a ship picked it up 21 minutes later.',
+  modelAltFriendship7:
+    'A 3D model of Friendship 7: a small silver capsule shaped like a bell, wide at the bottom, with one little window.',
+  nameEuropaClipper: 'Europa Clipper',
+  cardEuropaClipperHello:
+    'Europa Clipper is a NASA spacecraft on its way to Europa, an icy moon of Jupiter.',
+  cardEuropaClipperFact1: 'It was launched in 2024 and will reach Jupiter in April 2030.',
+  cardEuropaClipperFact2: 'It will fly close past Europa 49 times.',
+  cardEuropaClipperFact3:
+    "Scientists think Europa has a salty ocean under its ice, with more than twice the water of all Earth's oceans.",
+  modelAltEuropaClipper:
+    'A 3D model of Europa Clipper: a spacecraft with a big dish, between two enormous solar panels.',
   cardNgc5264Hello:
     'NGC 5264 is a small galaxy with no tidy shape. That is called an irregular galaxy.',
   cardNgc5264Fact1: 'It is just over 15 million light-years away.',

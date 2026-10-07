@@ -93,6 +93,13 @@ import {
   NASA_HUBBLE_PROXIMA,
   NASA_MILKY_WAY,
   NASA_GALAXIES,
+  NASA_VIKING_1,
+  NASA_SPITZER,
+  NASA_EUROPA_CLIPPER,
+  NASA_KEPLER,
+  NASA_DAWN_SPACECRAFT,
+  NASA_DAWN,
+  NASA_FRIENDSHIP_7,
   NASA_PERSEVERANCE,
   NASA_INGENUITY,
   NASA_BENNU,
@@ -2849,5 +2856,180 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_INGENUITY],
+  },
+  {
+    id: 'dawn',
+    hello: {
+      key: 'cardDawnHello',
+      sourceId: 'nasa-dawn',
+      quote: 'giant asteroid Vesta and dwarf planet Ceres',
+    },
+    facts: [
+      {
+        key: 'cardDawnFact1',
+        sourceId: 'nasa-dawn',
+        quote: 'Dawn was NASA’s first truly interplanetary spaceship.',
+      },
+      {
+        key: 'cardDawnFact2',
+        sourceId: 'nasa-dawn-spacecraft',
+        quote:
+          'With its wide solar arrays extended, Dawn is about as long as a tractor-trailer at 65 feet (19.7 meters).',
+      },
+      {
+        key: 'cardDawnFact3',
+        sourceId: 'nasa-dawn-spacecraft',
+        quote: 'The ion thruster is powered by large solar panels.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_DAWN, NASA_DAWN_SPACECRAFT],
+  },
+  {
+    id: 'kepler',
+    hello: {
+      key: 'cardKeplerHello',
+      sourceId: 'nasa-kepler',
+      quote: 'The Kepler space telescope was NASA’s first planet-hunting mission',
+    },
+    facts: [
+      {
+        key: 'cardKeplerFact1',
+        sourceId: 'nasa-kepler',
+        quote:
+          'Originally positioned to stare continuously at 150,000 stars in one star-studded patch of the sky in the constellation Cygnus',
+      },
+      {
+        key: 'cardKeplerFact2',
+        sourceId: 'nasa-kepler',
+        quote:
+          'Kepler detected planets by observing transits, or tiny dips in the brightness of a star that occur when a planet crosses in front of the star.',
+      },
+      {
+        key: 'cardKeplerFact3',
+        sourceId: 'nasa-kepler',
+        quote: 'They proved that our night sky is filled with more planets than even stars',
+      },
+    ],
+    moons: null,
+    sources: [NASA_KEPLER],
+  },
+  {
+    id: 'spitzer',
+    hello: {
+      key: 'cardSpitzerHello',
+      sourceId: 'nasa-spitzer',
+      quote:
+        'Spitzer uses an ultra-sensitive infrared telescope to study asteroids, comets, planets and distant galaxies.',
+    },
+    facts: [
+      {
+        key: 'cardSpitzerFact1',
+        sourceId: 'nasa-spitzer',
+        quote: 'After more than 16 years studying the universe in infrared light',
+      },
+      {
+        key: 'cardSpitzerFact2',
+        sourceId: 'nasa-spitzer',
+        quote:
+          'In 2009, Spitzer found a ring of Saturn, a wispy, fine structure with 300 times the diameter of the gas giant planet.',
+      },
+      {
+        key: 'cardSpitzerFact3',
+        sourceId: 'nasa-spitzer',
+        quote: 'the first known star system with seven Earth-sized exoplanets',
+      },
+    ],
+    moons: null,
+    sources: [NASA_SPITZER],
+  },
+  {
+    id: 'viking-lander',
+    hello: {
+      key: 'cardVikingLanderHello',
+      sourceId: 'nasa-viking-1',
+      quote: "NASA's Viking 1 made the first truly successful landing on Mars.",
+    },
+    facts: [
+      {
+        key: 'cardVikingLanderFact1',
+        sourceId: 'nasa-viking-1',
+        quote:
+          'July 20, 1976, when NASA’s Viking 1 lander touched down safely and began transmitting the first images from the surface of the Red Planet',
+      },
+      {
+        key: 'cardVikingLanderFact2',
+        sourceId: 'nasa-viking-1',
+        quote:
+          'Both NASA Viking missions used a combination of orbiter and lander to explore Mars in unprecedented detail.',
+      },
+      {
+        key: 'cardVikingLanderFact3',
+        sourceId: 'nasa-viking-1',
+        quote: 'The landers returned 4,500 photos of the two landing sites.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_VIKING_1],
+  },
+  {
+    id: 'friendship-7',
+    hello: {
+      key: 'cardFriendship7Hello',
+      sourceId: 'nasa-friendship-7',
+      quote:
+        'An Atlas launch vehicle propelled a Mercury spacecraft into Earth orbit and enabled astronaut John Glenn to circle Earth three times.',
+    },
+    facts: [
+      {
+        key: 'cardFriendship7Fact1',
+        sourceId: 'nasa-friendship-7',
+        quote: 'Launch of the Mercury-Atlas 6 mission on Feb. 20, 1962.',
+      },
+      {
+        key: 'cardFriendship7Fact2',
+        sourceId: 'nasa-friendship-7',
+        quote:
+          'The flight lasted a total of 4 hours, 55 minutes, and 23 seconds before the Friendship 7 spacecraft splashed down in the ocean.',
+      },
+      {
+        key: 'cardFriendship7Fact3',
+        sourceId: 'nasa-friendship-7',
+        quote:
+          'The Noa had the spacecraft aboard 21 minutes after landing and astronaut John Glenn remained in the spacecraft during pickup.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_FRIENDSHIP_7],
+  },
+  {
+    id: 'europa-clipper',
+    hello: {
+      key: 'cardEuropaClipperHello',
+      sourceId: 'nasa-europa-clipper',
+      quote:
+        "Europa Clipper launched Oct. 14, 2024, on a journey to explore Europa, Jupiter's ocean world.",
+    },
+    facts: [
+      {
+        key: 'cardEuropaClipperFact1',
+        sourceId: 'nasa-europa-clipper',
+        quote:
+          'The spacecraft will travel 1.8 billion miles (2.9 billion kilometers) to reach Jupiter in April 2030.',
+      },
+      {
+        key: 'cardEuropaClipperFact2',
+        sourceId: 'nasa-europa-clipper',
+        quote: 'It will orbit Jupiter, and conduct 49 close flybys of Europa.',
+      },
+      {
+        key: 'cardEuropaClipperFact3',
+        sourceId: 'nasa-europa-clipper',
+        quote:
+          'Scientists think that under the icy surface of Jupiter’s moon Europa a saltwater ocean exists that may contain more than twice as much liquid water as all of Earth’s oceans combined.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_EUROPA_CLIPPER],
   },
 ];

@@ -1308,3 +1308,52 @@ export const NASA_INGENUITY: Source = {
   url: 'https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-mars-helicopter/',
   retrieved: '2026-10-07',
 };
+
+export const NASA_DAWN: Source = {
+  id: 'nasa-dawn',
+  title: 'NASA Science — Dawn',
+  url: 'https://science.nasa.gov/mission/dawn/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_DAWN_SPACECRAFT: Source = {
+  id: 'nasa-dawn-spacecraft',
+  title: 'NASA Science — Dawn: Spacecraft',
+  url: 'https://science.nasa.gov/mission/dawn/technology/spacecraft/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_KEPLER: Source = {
+  id: 'nasa-kepler',
+  title: 'NASA Science — Kepler / K2',
+  url: 'https://science.nasa.gov/mission/kepler/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_SPITZER: Source = {
+  id: 'nasa-spitzer',
+  title: 'NASA Science — Spitzer Space Telescope',
+  url: 'https://science.nasa.gov/mission/spitzer/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_VIKING_1: Source = {
+  id: 'nasa-viking-1',
+  title: 'NASA Science — Viking 1',
+  url: 'https://science.nasa.gov/mission/viking-1/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_FRIENDSHIP_7: Source = {
+  id: 'nasa-friendship-7',
+  title: 'NASA — Mercury-Atlas 6: Friendship 7',
+  url: 'https://www.nasa.gov/mission/mercury-atlas-6-friendship-7/',
+  retrieved: '2026-10-07',
+};
+
+export const NASA_EUROPA_CLIPPER: Source = {
+  id: 'nasa-europa-clipper',
+  title: 'NASA Science — Europa Clipper',
+  url: 'https://science.nasa.gov/mission/europa-clipper/',
+  retrieved: '2026-10-07',
+};

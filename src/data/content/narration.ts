@@ -501,6 +501,36 @@ export const NARRATION: Readonly<
     fingerprint: '7dca9520',
     starts: [0.0, 2.25, 8.12, 12.4, 19.7],
   },
+  dawn: {
+    file: 'public/voice/dawn.mp3',
+    fingerprint: '0e74bd11',
+    starts: [0.0, 1.93, 9.05, 14.0, 20.52],
+  },
+  kepler: {
+    file: 'public/voice/kepler.mp3',
+    fingerprint: '1e19bbac',
+    starts: [0.0, 2.77, 8.25, 13.82, 21.27],
+  },
+  spitzer: {
+    file: 'public/voice/spitzer.mp3',
+    fingerprint: '77e8afe0',
+    starts: [0.0, 2.73, 8.7, 12.43, 18.88],
+  },
+  'viking-lander': {
+    file: 'public/voice/viking-lander.mp3',
+    fingerprint: '5020f8ab',
+    starts: [0.0, 2.35, 8.18, 15.12, 21.6],
+  },
+  'friendship-7': {
+    file: 'public/voice/friendship-7.mp3',
+    fingerprint: '3de336b6',
+    starts: [0.0, 2.25, 9.78, 15.4, 18.88],
+  },
+  'europa-clipper': {
+    file: 'public/voice/europa-clipper.mp3',
+    fingerprint: '4bddde77',
+    starts: [0.0, 2.33, 9.07, 15.03, 19.15],
+  },
   webb: {
     file: 'public/voice/webb.mp3',
     fingerprint: 'ecb5a302',

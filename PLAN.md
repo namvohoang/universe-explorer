@@ -491,10 +491,18 @@ often hold a better file of the same thing, with its surface, and are used where
       in the Hubble picture, so it cannot stand in for the cloud. It would need a way to show a
       second model beside the first, and a word for the kid about what each one is.
 
-Also in the list and not taken yet, each a task of its own if wanted: more spacecraft (Dawn,
-Galileo, Kepler, Spitzer, Viking, Explorer 1, the Mercury capsules, the Space Launch System, the
-Roman telescope, Europa Clipper, whose model is 35 MB), more asteroids (Itokawa, Toutatis,
-Kleopatra), Arrokoth, and 3D models of exploded stars (Cassiopeia A, Tycho, SN 1987A).
+- [x] 11.5 Six more spacecraft from the list (asked for on 2026-10-07), as NASA's models in
+      Spaceships, each with a card, a recording and Vietnamese text: Dawn, the Kepler and
+      Spitzer space telescopes, the Viking lander, John Glenn's Friendship 7 capsule and Europa
+      Clipper (its 35 MB model is cut down to 3.3 MB). Left out: Galileo, whose only ready
+      model is coloured purple and orange and would teach a wrong picture of it; the Roman
+      telescope, since NASA's page lists a launch date but still speaks of it in the future;
+      Explorer 1 and the Space Launch System, which the list offers only in other file formats.
+- [ ] 11.6 More small worlds from the list: the asteroids Itokawa, Toutatis and Kleopatra have
+      shape files for 3D printers but no surface, and Arrokoth is neither an asteroid nor a
+      dwarf planet, so it needs a kind of its own.
+- [ ] 11.7 Exploded stars with NASA 3D models (Cassiopeia A, Tycho, SN 1987A): they need the
+      Deep Space view to show a ready-made model for a nebula.
 
 **Acceptance:** as for Phase 7.
 

@@ -199,6 +199,8 @@ export interface Body {
   loadMap(onLoaded?: () => void): void;
   /** Turns the body to where it is at this date. */
   setDate(jd: number): void;
+  /** How far the body reaches from its centre with its rings, if it has any, in scene units. */
+  span(): number;
   /** Draws another body's shadow on this one, or none for `null`. A ringed body shows none. */
   setEclipse(eclipse: Eclipse | null): void;
   /**
@@ -464,6 +466,7 @@ export function createBody(
     id: object.id,
     group,
     radius: () => longest,
+    span: () => longest * Math.max(1, ringMap?.outer ?? 1),
     frame: modelFrame,
     loadDetail,
     loadMap: (onLoaded) => {

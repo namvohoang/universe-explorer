@@ -672,6 +672,13 @@ recorded last.
       it, and the screen says "Station: real path. Shuttle: a drawing." The launch two days
       earlier is told in words. (NASA's catalogue page gives the launch hour in the wrong time
       zone; NASA's mission page is used.)
+- [x] 12.13 Phone and tablet views (the owner's phone screenshot, 2026-10-07): a held view is
+      stood back to fit the room above the panel, not the whole screen, so the caption no
+      longer covers what is shown; on a phone the panel sits on the tab bar (it had left room
+      for a card that is not there), its words are smaller, and the two groups and the stories
+      share one line; from 1000 px wide the words stand in a card at the left, as a place's
+      card does, and the view is drawn in the room beside it; a ringed world is stood back from
+      far enough to see its rings whole.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

@@ -1345,6 +1345,91 @@ body.watching .marker {
   }
 }
 
+/* A phone: the panel is kept as low and as short as it can be, to leave room for the view. */
+@media (max-width: 700px) {
+  /* No card peeks up from the bottom in a story, so the panel sits right on the tab bar. */
+  body.watching .tray {
+    bottom: calc(var(--tabbar-h) + 6px);
+  }
+
+  .watch {
+    gap: 5px;
+  }
+
+  .watch-caption {
+    padding: 9px 12px;
+    border-radius: 16px;
+  }
+
+  .watch-caption h2 {
+    font-size: 18px;
+  }
+
+  .watch-date,
+  .watch-step {
+    font-size: 12px;
+  }
+
+  .watch-text {
+    margin-top: 5px;
+    font-size: 15px;
+    line-height: 1.33;
+  }
+
+  .watch-path {
+    margin-top: 5px;
+    font-size: 13px;
+  }
+
+  .watch-controls {
+    padding: 4px 8px;
+  }
+
+  /* The two groups and the stories share one line; a group is shown by its picture alone. */
+  .watch-row {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .watch-row .chips {
+    flex: 1 1 0;
+  }
+
+  .watch-row .tabs .tab-label,
+  .watch-row .tabs .tab-note {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* A wide screen: the words stand in a card at the left, as a place's card does, and only the
+   controls and the stories are at the bottom. */
+@media (min-width: 1000px) and (min-height: 501px) {
+  .watch-caption {
+    position: fixed;
+    z-index: 4;
+    left: 16px;
+    top: calc(var(--top-h) + 12px);
+    width: min(340px, calc(100vw - 32px));
+    max-height: calc(var(--free-h) - 24px);
+    overflow: auto;
+    padding: 16px;
+  }
+
+  .watch-head {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .watch-caption h2 {
+    font-size: 26px;
+  }
+}
+
 /* A phone on its side: the words on the left, the controls and the stories on the right. */
 @media (max-height: 500px) and (min-width: 701px) {
   .watch {
@@ -1377,6 +1462,17 @@ body.watching .marker {
 
   .watch-controls {
     width: 100%;
+  }
+
+  /* A group is shown by its picture alone, to leave the line to the stories. */
+  .watch-row .tabs .tab-label,
+  .watch-row .tabs .tab-note {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 

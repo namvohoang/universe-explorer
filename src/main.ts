@@ -60,6 +60,13 @@ const STAGE_DIRECTION = { x: 0, y: 1, z: 0.45 };
 const STAGE_FRAMING = 2.6;
 /** How many of its own radii away a body stands when a story looks at it close up. */
 const CLOSE_UP_RADII = 12;
+/**
+ * How many of its own radii away a body stands when a story holds the camera on it, before the
+ * view is stood back to fit the room above the panel: near enough to fill most of that room.
+ */
+const WATCH_VIEW_RADII = 3.6;
+/** The share of a close-up's usual distance that fits the same picture into the room, once stood back for it. */
+const ROOM_FILL = 0.6;
 /** How far a view from over a pole leans towards the night side, against one for straight overhead. */
 const NIGHT_LEAN = 0.45;
 /** How many of its own radii away a body stands when a story looks down on one of its poles. */
@@ -69,6 +76,8 @@ const POLE_VIEW_RADII = 5;
  * three times the width of the full Moon as seen from Earth.
  */
 const TELESCOPE_FIELD_DEG = 1.3;
+/** The share of the telescope's field that is used once it is widened to fit the room above the panel. */
+const TELESCOPE_ROOM_FILL = 0.6;
 /**
  * How wide a patch of sky is shown when a planet's track across it is drawn, side to side, in
  * degrees, and the most it may take in top to bottom on a tall screen.
@@ -650,17 +659,34 @@ function start(): void {
   let watchFieldDeg: number | null = null;
   let scaleBeforeWatch: ScaleMode | null = null;
   // The story's panel covers the bottom of the screen, so the view is drawn in the room above it.
-  const roomAbovePanel = (): { top: number; bottom: number } => ({
-    top: mustFind('.top').getBoundingClientRect().bottom,
-    bottom: mustFind('#tray').getBoundingClientRect().top,
-  });
+  // On a wide screen the words stand in a card at the left, and the view is drawn in the room
+  // beside it too.
+  const roomAbovePanel = (): { top: number; bottom: number; left: number } => {
+    const words = document.querySelector('.watch-caption')?.getBoundingClientRect();
+    const bottom = mustFind('#tray').getBoundingClientRect().top;
+    // A card of words that ends above the tray stands beside the view, not under it.
+    const beside = words !== undefined && words.width > 0 && words.bottom <= bottom + 1;
+    return {
+      top: mustFind('.top').getBoundingClientRect().bottom,
+      bottom,
+      left: beside ? words.right : 0,
+    };
+  };
+  /**
+   * How many times taller the screen is than the room left for the view. A view that would
+   * fill the screen is stood this many times further back, so it fills the room instead.
+   */
+  const roomSqueeze = (): number => {
+    const room = roomAbovePanel();
+    return window.innerHeight / Math.max(1, room.bottom - room.top);
+  };
   const liftView = (): void => {
     if (!watchWanted) {
       stage.setLift(0);
       return;
     }
-    const { top, bottom } = roomAbovePanel();
-    stage.setLift(Math.round(window.innerHeight / 2 - (top + bottom) / 2));
+    const { top, bottom, left } = roomAbovePanel();
+    stage.setLift(Math.round(window.innerHeight / 2 - (top + bottom) / 2), Math.round(left / 2));
   };
   new ResizeObserver(liftView).observe(mustFind('#tray'));
   window.addEventListener('resize', liftView);
@@ -716,7 +742,8 @@ function start(): void {
       const bearing = (): Vec3 => subtract(system.positionOf(from), system.positionOf(seen));
       return {
         target: () => system.positionOf(seen),
-        distance: system.radiusOf(seen) * BODY_VIEW_RADII,
+        // A ringed world is stood back from far enough to see its rings whole.
+        distance: system.spanOf(seen) * WATCH_VIEW_RADII * roomSqueeze(),
         direction: bearing(),
         bearing,
         minDistance: system.radiusOf(seen) * BODY_CLOSEST_RADII,
@@ -736,7 +763,7 @@ function start(): void {
       };
       return {
         target: () => system.positionOf(flown.id),
-        distance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII,
+        distance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII * roomSqueeze(),
         direction: bearing(),
         bearing,
         minDistance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII * 0.1,
@@ -747,9 +774,11 @@ function start(): void {
     if (chapter.closeUp === true && !free) {
       const seen = chapter.lookAtId;
       // Something with a glow that grows (a comet near the Sun) is stood back from as it grows.
+      const squeeze = roomSqueeze();
       const distanceNow = (): number =>
+        squeeze *
         Math.max(
-          system.radiusOf(seen) * (chapter.over ? POLE_VIEW_RADII : CLOSE_UP_RADII),
+          system.radiusOf(seen) * (chapter.over ? POLE_VIEW_RADII : CLOSE_UP_RADII) * ROOM_FILL,
           system.glowRadiusOf(seen) * GLOW_VIEW_RADII,
         );
       return {
@@ -892,8 +921,11 @@ function start(): void {
                 chapter.standAtId === undefined || free
                   ? null
                   : story.skyTrack
-                    ? Math.min(SKY_FIELD_MAX_DEG, SKY_FIELD_WIDTH_DEG / stage.aspect())
-                    : TELESCOPE_FIELD_DEG;
+                    ? Math.min(
+                        SKY_FIELD_MAX_DEG,
+                        (SKY_FIELD_WIDTH_DEG / stage.aspect()) * roomSqueeze(),
+                      )
+                    : TELESCOPE_FIELD_DEG * TELESCOPE_ROOM_FILL * roomSqueeze();
               for (const id of story.actorIds) system.showDetail(id);
               stage.flyTo(watchView(story, chapter, free));
             },

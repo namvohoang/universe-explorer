@@ -70,8 +70,13 @@ for (const screen of SCREENS) {
           expect(box.width).toBeGreaterThanOrEqual(44);
           expect(box.height).toBeGreaterThanOrEqual(44);
         }
-        // At least a third of the height is left for what the story shows.
-        const top = Math.min(...boxes.map((box) => box.y));
+        // At least a third of the height is left for what the story shows. On a wide screen
+        // the words stand in a card at the side, and the room is what is above the controls.
+        const beside =
+          boxes[0] !== undefined &&
+          boxes[1] !== undefined &&
+          boxes[0].y < boxes[1].y - boxes[0].height - 40;
+        const top = Math.min(...boxes.slice(beside ? 1 : 0).map((box) => box.y));
         const bar = await boxOf(page.locator('.brand'));
         expect((top - (bar.y + bar.height)) / screen.height).toBeGreaterThanOrEqual(0.33);
       });
@@ -172,6 +177,29 @@ test.describe('a story', () => {
     await page.goto('/?lang=vi#watch/moon-phases');
     await expect(page.locator('.watch-caption h2')).toHaveText('Các pha của Mặt Trăng');
     await expect(page.locator('.watch-read')).toBeHidden();
+  });
+
+  test('keeps what it shows clear of the words, on a phone and on a wide screen', async ({
+    page,
+  }) => {
+    for (const [width, height] of [
+      [390, 844],
+      [1024, 768],
+    ] as const) {
+      await page.setViewportSize({ width, height });
+      await page.goto('/#watch/solar-eclipse');
+      const earth = page.locator('.marker', { hasText: 'Earth' });
+      await expect(earth).toBeVisible();
+      const words = await boxOf(page.locator('.watch-caption'));
+      const controls = await boxOf(page.locator('.watch-controls'));
+      // The spot that marks Earth's middle is above the panel and clear of the words.
+      await expect
+        .poll(async () => {
+          const spot = await boxOf(earth);
+          return spot.y + spot.height <= controls.y && !overlap(spot, words);
+        })
+        .toBe(true);
+    }
   });
 
   test('lets the camera loose and takes it back', async ({ page }) => {

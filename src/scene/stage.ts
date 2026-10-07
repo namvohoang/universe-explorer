@@ -85,9 +85,10 @@ export interface Stage {
   readonly camera: PerspectiveCamera;
   /**
    * Draws everything this many CSS pixels higher than the middle of the screen, for when a
-   * panel covers the bottom of it. 0 puts the middle back.
+   * panel covers the bottom of it, and this many to the right, for when one covers the left.
+   * 0 and 0 put the middle back.
    */
-  setLift(pixels: number): void;
+  setLift(pixelsUp: number, pixelsRight?: number): void;
   /** Width over height of the view, for choosing camera distances. */
   aspect(): number;
   /** Projects a scene position onto the screen, e.g. to place a label over a body. */
@@ -146,10 +147,11 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   let viewWidth = 1;
   let viewHeight = 1;
   let lift = 0;
+  let shift = 0;
   /** Looks through a window slid down the picture, so what is in the middle is drawn higher up. */
   const applyLift = (): void => {
-    if (lift === 0) camera.clearViewOffset();
-    else camera.setViewOffset(viewWidth, viewHeight, 0, lift, viewWidth, viewHeight);
+    if (lift === 0 && shift === 0) camera.clearViewOffset();
+    else camera.setViewOffset(viewWidth, viewHeight, -shift, lift, viewWidth, viewHeight);
   };
   const projected = new Vector3();
 
@@ -243,9 +245,10 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     scene,
     camera,
     aspect: () => camera.aspect,
-    setLift(pixels) {
-      if (pixels === lift) return;
-      lift = pixels;
+    setLift(pixelsUp, pixelsRight = 0) {
+      if (pixelsUp === lift && pixelsRight === shift) return;
+      lift = pixelsUp;
+      shift = pixelsRight;
       applyLift();
     },
     setFieldOfView(degrees) {

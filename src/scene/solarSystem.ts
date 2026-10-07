@@ -73,6 +73,8 @@ export interface SolarSystem {
   showDetail(id: string): void;
   /** How far a tracked spacecraft's path reaches from the body it is measured from; 0 for anything else. */
   reachOf(id: string): number;
+  /** How far a body reaches from its centre, rings and all, under the current scale. */
+  spanOf(id: string): number;
   /** Drawn radius of a body under the current scale. */
   radiusOf(id: string): number;
   /** How big a body's glow is right now (a comet near the Sun); 0 for anything with none. */
@@ -445,6 +447,7 @@ export function createSolarSystem(
         flown.craft.frame === 'body' ? (bodies.get(flown.craft.centreId)?.radius() ?? 0) : 1;
       return flown.trail.reach() * unit;
     },
+    spanOf: (id) => (trails.has(id) ? 0 : bodyOf(id).span()),
     // A spacecraft is a point: at true scale it has no size to draw.
     radiusOf: (id) => (trails.has(id) ? 0 : bodyOf(id).radius()),
     glowRadiusOf: (id) => tails.get(id)?.glowRadius() ?? 0,

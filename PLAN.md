@@ -486,7 +486,15 @@ often hold a better file of the same thing, with its surface, and are used where
       Left out: Saturn's spongy moon Hyperion. NASA has its shape model, but Hyperion tumbles,
       and a body here can only turn forwards, backwards or keep one face to its planet; it
       waits for a fourth way of turning.
-- [ ] 11.4 The Crab Nebula as NASA's own 3D model in place of a cloud whose depth is a guess.
+- [ ] 11.4 The Crab Nebula's 3D model. Looked at, not done: NASA's model is of the inside of the
+      nebula as X-rays show it (the pulsar, a ringed disc and two jets), not of the whole cloud
+      in the Hubble picture, so it cannot stand in for the cloud. It would need a way to show a
+      second model beside the first, and a word for the kid about what each one is.
+
+Also in the list and not taken yet, each a task of its own if wanted: more spacecraft (Dawn,
+Galileo, Kepler, Spitzer, Viking, Explorer 1, the Mercury capsules, the Space Launch System, the
+Roman telescope, Europa Clipper, whose model is 35 MB), more asteroids (Itokawa, Toutatis,
+Kleopatra), Arrokoth, and 3D models of exploded stars (Cassiopeia A, Tycho, SN 1987A).
 
 **Acceptance:** as for Phase 7.
 

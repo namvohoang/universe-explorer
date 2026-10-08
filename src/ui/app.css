@@ -1800,6 +1800,12 @@ button.icon-button.phone-menu {
   display: none;
 }
 
+/* Where the scale menu is hidden, the menu button is the way into the settings. */
+body.deep button.icon-button.phone-menu,
+body.watching button.icon-button.phone-menu {
+  display: grid;
+}
+
 .sheet-row {
   display: flex;
   align-items: center;

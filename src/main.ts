@@ -888,7 +888,9 @@ function start(): void {
   });
   const settings = createSettings(words.settings, words.settingsClose);
   mustFind('#settings-slot').append(settings.element);
-  const scaleSection = settings.addSection(words.scaleQuestion, scaleChoice.element, names);
+  const scaleSection = settings.addSection(words.scaleQuestion, scaleChoice.element);
+  // Names are drawn in the Solar System and in a story, so the switch stays for both.
+  const namesSection = settings.addSection(null, names);
   // The button that opens the menu says which mode is on.
   const menuButton = create('button', 'view-menu');
   menuButton.type = 'button';
@@ -1811,7 +1813,7 @@ function start(): void {
       mainTabs.show(sceneOfId(focus));
     },
   };
-  for (const control of [menuButton, scaleSection, scaleLabel]) {
+  for (const control of [menuButton, scaleSection, namesSection, scaleLabel]) {
     control.classList.add('solar-only');
   }
   for (const control of [menuButton, scaleSection]) control.classList.add('not-watching');
@@ -1833,6 +1835,7 @@ function start(): void {
     grownUps.open();
   });
   // On a phone one menu button opens the settings, and the grown-ups page is a row inside them.
+  // On a wide screen it stands in for the scale menu wherever that one is hidden.
   const phoneMenu = create('button', 'icon-button phone-menu');
   phoneMenu.type = 'button';
   phoneMenu.setAttribute('aria-label', words.menu);

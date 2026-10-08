@@ -34,6 +34,25 @@ test('the language is chosen in the settings and remembered', async ({ page }) =
   await expect(page.getByRole('button', { name: 'Read it to me' })).toBeVisible();
 });
 
+test('the language can be chosen away from the Solar System', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/?speed=pause&go=andromeda');
+  await expect(page.locator('.view-menu')).toBeHidden();
+  await page.locator('.phone-menu').click();
+  await page.getByRole('button', { name: 'Tiếng Việt' }).click();
+  await expect(page.locator('.brand h1')).toHaveText('Khám Phá Vũ Trụ');
+});
+
+test('the names can be switched off in a story', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/#watch/moon-phases');
+  await page.locator('.phone-menu').click();
+  const sheet = page.locator('.settings');
+  await expect(sheet.getByRole('radio')).toHaveCount(0);
+  await sheet.getByRole('switch').click();
+  await expect(page.locator('#markers')).toHaveClass(/no-names/);
+});
+
 for (const screen of SCREENS) {
   test(`Vietnamese fits on ${screen.name}`, async ({ page }) => {
     await page.setViewportSize({ width: screen.width, height: screen.height });

@@ -67,9 +67,7 @@ for (const screen of SCREENS) {
     expect(chips?.height).toBeLessThan(70);
     for (const part of await page.locator('.top > *, .tools > *, #main-tabs .tabs, .brand').all()) {
       const box = await part.boundingBox();
-      const visible = await part.isVisible();
-      console.log('Part:', await part.getAttribute('class'), box, 'visible:', visible);
-      if (!box || !visible) continue;
+      if (!box || !(await part.isVisible())) continue;
       expect(box.x, (await part.getAttribute('class')) ?? '').toBeGreaterThanOrEqual(0);
       expect(box.x + box.width).toBeLessThanOrEqual(screen.width + 0.5);
     }

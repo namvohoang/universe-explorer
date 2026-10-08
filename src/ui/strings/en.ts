@@ -134,7 +134,6 @@ export const en = {
   readToMe: 'Read it to me',
   peekHint: 'Tap to read about',
   firstHint: 'Tap a planet to fly there',
-  menu: 'Menu',
   stopReading: 'Stop reading',
   coolFacts: 'Cool facts',
   moreFacts: 'More facts',

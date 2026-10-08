@@ -146,7 +146,6 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   readToMe: 'Đọc cho em nghe',
   peekHint: 'Chạm để đọc về',
   firstHint: 'Chạm vào một hành tinh để bay tới đó',
-  menu: 'Trình đơn',
   stopReading: 'Dừng đọc',
   coolFacts: 'Điều thú vị',
   moreFacts: 'Xem thêm',

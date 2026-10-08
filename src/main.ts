@@ -280,9 +280,10 @@ function start(): void {
       const box = panel.getBoundingClientRect();
       if (box.width > 0 && box.right <= window.innerWidth / 2) left = Math.max(left, box.right);
     }
+    // Whole pixels, inwards: a bar that ends on a part of a pixel still has the room clear of it.
     return {
-      top: mustFind('.top').getBoundingClientRect().bottom,
-      bottom: mustFind('#tray').getBoundingClientRect().top,
+      top: Math.ceil(mustFind('.top').getBoundingClientRect().bottom),
+      bottom: Math.floor(mustFind('#tray').getBoundingClientRect().top),
       left,
     };
   };
@@ -804,6 +805,12 @@ function start(): void {
     else card.hide();
   });
 
+  // The sentence that says what is and is not to scale is always on screen.
+  const showScale = (): void => {
+    scaleLabel.textContent = words[scale.labelKey];
+  };
+  showScale();
+
   // Big, always-there buttons for getting closer, further, and back out again.
   const viewControls = mustFind('#view-controls');
   viewControls.setAttribute('aria-label', words.viewControls);
@@ -849,6 +856,7 @@ function start(): void {
     scale = createScale(mode);
     system.setScale(scale);
     system.setDate(clock.jd);
+    showScale();
     try {
       history.replaceState(history.state, '', addressOf(focus));
     } catch {
@@ -884,7 +892,7 @@ function start(): void {
   const scaleSection = settings.addSection(words.scaleQuestion, scaleChoice.element);
   // Names are drawn in the Solar System and in a story, so the switch stays for both.
   const namesSection = settings.addSection(null, names);
-  // The button that opens the menu says which mode is on.
+  // The pill by the title says which mode is on, and opens the settings at the scale choice.
   const menuButton = create('button', 'view-menu');
   menuButton.type = 'button';
   const viewLabel = create('span', '', SCALE_OPTION_LABELS[scale.mode]);
@@ -895,9 +903,9 @@ function start(): void {
   );
   settings.openWith(menuButton);
   menuButton.addEventListener('click', () => {
-    scaleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scaleSection.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
   });
-  mustFind('#scale-label').append(menuButton);
+  mustFind('.brand').after(menuButton);
 
   const settingsButton = create('button', 'icon-button settings-button');
   settingsButton.type = 'button';
@@ -1600,7 +1608,7 @@ function start(): void {
               // A diagram on its own fills the room, and the screen says it is a drawing.
               diagramAlone = !paired && diagram !== null;
               stage.setScene(diagramAlone && diagram ? diagram.scene : null);
-              viewLabel.textContent = words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+              scaleLabel.textContent = words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -1842,8 +1850,8 @@ function start(): void {
     },
   );
   mustFind('#tray').append(clockControl.element, placeRow.element);
-  // On a phone the dock has no room for the speeds, so they are in the settings sheet too.
-  settings.addSection(words.speedQuestion, clockControl.forSettings);
+  // The speeds are in the settings too, wherever time runs: a small dock has no room for them.
+  settings.addSection(words.speedQuestion, clockControl.forSettings).classList.add('solar-only');
   const grownUpsRow = create('button', 'sheet-row');
   grownUpsRow.type = 'button';
   grownUpsRow.append(

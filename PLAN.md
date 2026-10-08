@@ -778,6 +778,41 @@ recorded last.
 sits on its drawn path; every staged or enlarged thing carries its label on screen; each story
 works by keyboard and with reduced motion; the gate passes.
 
+### Phase 13 — Menus and layouts a child can read (UX/UI review of 2026-10-08)
+
+A review of the menus, the workflows and the five screen sizes, written up as the "UX/UI Fix
+Spec" of 2026-10-08. Every control has a visible word, the settings are in one fixed place, and
+the controls leave the view its room. Tasks keep the spec's names and its order of priority.
+
+- [x] 13.1 **M2 — Every main tab has its word, at every width.** Beside the title where they
+      fit; a bar along the bottom on a phone, upright or on its side. No word is hidden by
+      width or scrolled out of its row.
+- [x] 13.2 **M3 — Every group of places has its word.** The switch is never squeezed: the
+      chips are what scrolls. Where the line is short a group is its picture over its word.
+- [x] 13.3 **M1 — One Settings button in a fixed place.** Last in the top right corner in
+      every scene, with its word wider than a phone. The grown-ups page is a row in the
+      settings. The pill that names the view opens the same settings at the choice of scale,
+      and the sentence saying what is to scale stays on screen beside the title.
+- [ ] 13.4 **W1 — The overview shows only the Sun and the planets**, with a "Which one?"
+      picker where a tap lands on more than one.
+- [ ] 13.5 **W4 — Compare is its own mode**, with the card, the tray and the clock put away.
+- [ ] 13.6 **P1 — Slimmer bars on a phone**: 200 px or less at the bottom with no card open.
+- [ ] 13.7 **T1 — An upright tablet uses the phone's layout**, and Fit frames the free room.
+- [ ] 13.8 **M4 — One Back button that says where it goes.**
+- [ ] 13.9 **M5 — A row of chips shows that it scrolls.**
+- [ ] 13.10 **W3 — The same time control on every screen.**
+- [ ] 13.11 **W2 — A card of three heights on a phone.**
+- [ ] 13.12 **W5 — "Clear progress" is protected**, and can be undone.
+- [ ] 13.13 **P2 — On a phone on its side the card is a drawer.**
+- [ ] 13.14 **M6 — Group headers in place of "red:".**
+- [ ] 13.15 **M7 — "Next:" is written on the next button.**
+- [ ] 13.16 **W6 — The Deep Space photo has a caption.**
+- [ ] 13.17 **D1 — No name is drawn under the card on a wide screen.**
+
+**Acceptance:** each task's checks in the spec pass as Playwright tests on the five screens of
+`tests/e2e/screens.ts`, in English and Vietnamese where words are measured; every control is
+still 44 px or more; what is to scale is always said on screen; the gate passes.
+
 ## 7. Testing
 
 | Layer | Tests |

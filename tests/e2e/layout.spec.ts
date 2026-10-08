@@ -91,16 +91,7 @@ for (const screen of SCREENS) {
       const chips = await boxOf(page.locator('.chips'));
       expect(chips.height, place).toBeLessThan(70);
       const row = await boxOf(page.locator('.place-row'));
-      if (row.height >= 120) {
-        console.log(`Failed on ${place}. row:`, row);
-        const children = await page.locator('.place-row > *').all();
-        for (let i = 0; i < children.length; i++) {
-          const c = children[i];
-          const b = await c.boundingBox();
-          const cls = await c.getAttribute('class');
-          console.log(`child ${i} (${cls}):`, b);
-        }
-      }
+      // On a phone the group tabs take a line of their own above the chips.
       expect(row.height, place).toBeLessThan(screen.name === 'phone' ? 120 : 70);
       expect(row.x, place).toBeGreaterThanOrEqual(0);
       expect(row.x + row.width, place).toBeLessThanOrEqual(screen.width);

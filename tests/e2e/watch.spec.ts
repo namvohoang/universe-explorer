@@ -378,6 +378,16 @@ test.describe('a story', () => {
     await expect(page.locator('.side-tag', { hasText: 'The Sun' })).toBeVisible();
   });
 
+  test('never shows Earth in the look at the shooting stars from Earth', async ({ page }) => {
+    await page.goto('/#watch/meteor-shower');
+    await expect(page.locator('.pane-label')).toHaveText(['Seen from: Earth', 'The whole picture']);
+    // Stepping back from the look would put Earth in front of the eye: it stays out of it.
+    const out = page.getByRole('button', { name: 'Zoom out' });
+    for (let presses = 0; presses < 4; presses += 1) await out.click();
+    await expect(page.locator('.marker:visible')).toHaveCount(0);
+    await expect(page.locator('.side-tag', { hasText: 'Earth' })).toBeVisible();
+  });
+
   test('names the season in each half of Earth, and the comet is watched from Earth', async ({
     page,
   }) => {

@@ -1555,7 +1555,9 @@ function start(): void {
               eyeOnly =
                 paired && fromAWorld
                   ? new Set([
-                      chapter.lookAtId,
+                      // Shooting stars are watched from the world they fall on: it is under
+                      // the feet, and stepping back from the look must not bring it into view.
+                      ...(meteorSky ? [] : [chapter.lookAtId]),
                       // The ground stood on is part of a look up from it.
                       ...(chapter.lookUpAt && chapter.standAtId ? [chapter.standAtId] : []),
                       ...(story.shadows ?? []).map((shadow) => shadow.casterId),

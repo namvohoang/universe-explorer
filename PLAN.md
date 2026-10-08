@@ -751,6 +751,8 @@ recorded last.
       `moon-path` scale: the diagram, but with the Moon's distances all shrunk by one factor,
       so its path keeps its true shape with Earth off the middle, and the December Moon is
       drawn as much nearer as it really is (about an eighth).
+      The look at the shooting stars from Earth draws no Earth: zoomed out, the eye stepped
+      back out of the world it stood on and showed it.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

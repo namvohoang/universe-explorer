@@ -19,7 +19,8 @@ export const saturnRings: Story = {
   actorIds: ['saturn', 'earth', 'sun'],
   diagram: 'round-the-star',
   // Each part covers years: at the usual pace Earth whirls round the Sun too fast to follow.
-  chapterSeconds: 32,
+  // At this one it takes about eight seconds to go round once in the two long parts.
+  chapterSeconds: 60,
   chapters: [
     {
       id: 'wide-open',

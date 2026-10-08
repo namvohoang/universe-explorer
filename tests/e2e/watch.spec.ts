@@ -163,6 +163,36 @@ test.describe('a story', () => {
     await expect(page.locator('.watch-date')).toHaveText('24 December 2026, 01:28:00');
   });
 
+  test('cuts from one tracked night to the next, with no made-up Moon between', async ({
+    page,
+  }) => {
+    // Motion is wanted: other stories then run through the time they skip.
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/#watch/supermoon');
+    const date = page.locator('.watch-date');
+    await expect(date).toContainText('31 May 2026');
+    const scrubber = page.locator('.watch-scrubber');
+    await scrubber.evaluate((input: HTMLInputElement) => {
+      input.value = String(Math.floor(Number(input.max) * 0.495));
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await expect(date).toContainText('31 May 2026, 14:');
+    // With motion wanted the story is already playing.
+    await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible();
+    const seen = new Set<string>();
+    await expect
+      .poll(
+        async () => {
+          const text = (await date.textContent()) ?? '';
+          seen.add(text.replace(/,.*/, ''));
+          return text;
+        },
+        { timeout: 20_000 },
+      )
+      .toContain('24 December 2026');
+    expect([...seen].sort()).toEqual(['24 December 2026', '31 May 2026']);
+  });
+
   test('with something drawn in it says what is a drawing', async ({ page }) => {
     await page.goto('/#watch/meteor-shower');
     await expect(page.locator('.watch-path')).toContainText(

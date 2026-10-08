@@ -412,12 +412,13 @@ export function createWatch(host: WatchHost): Watch {
     tick(realSeconds) {
       if (times && playing) {
         // Time a story skips is run through quickly, so what changes is seen changing; with
-        // motion to be reduced it is jumped.
+        // motion to be reduced it is jumped. So it is where a body is put by tracked samples:
+        // there are none for the skipped time, and where it was then is not to be made up.
         const moved = advanceStory(
           times,
           jd,
           realSeconds,
-          host.reducedMotion ? undefined : SWEEP_SECONDS,
+          host.reducedMotion || story?.tracked ? undefined : SWEEP_SECONDS,
         );
         jd = moved.jd;
         if (moved.ended) {

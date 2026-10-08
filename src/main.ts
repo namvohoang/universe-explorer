@@ -275,15 +275,21 @@ function start(): void {
   const roomAbovePanel = (): { top: number; bottom: number; left: number } => {
     // A card of words that keeps to the left half of the screen stands beside the view: a
     // place's card, or a story's words on a wide screen. One as wide as the screen does not.
-    let left = 0;
+    // On a phone on its side the main tabs are a rail down the left, and the room starts past it.
+    const rail = mustFind('#main-tabs').getBoundingClientRect();
+    let left = rail.height > rail.width ? rail.right : 0;
+    const trayTop = mustFind('#tray').getBoundingClientRect().top;
     for (const panel of document.querySelectorAll('.card, .watch-caption')) {
       const box = panel.getBoundingClientRect();
-      if (box.width > 0 && box.right <= window.innerWidth / 2) left = Math.max(left, box.right);
+      // A story's words that are part of the tray are under the view, not beside it.
+      if (box.width > 0 && box.top < trayTop && box.right <= window.innerWidth / 2) {
+        left = Math.max(left, box.right);
+      }
     }
     // Whole pixels, inwards: a bar that ends on a part of a pixel still has the room clear of it.
     return {
       top: Math.ceil(mustFind('.top').getBoundingClientRect().bottom),
-      bottom: Math.floor(mustFind('#tray').getBoundingClientRect().top),
+      bottom: Math.floor(trayTop),
       left,
     };
   };
@@ -1885,12 +1891,15 @@ function start(): void {
 
   // On a small screen the clock is a pill under the title; otherwise it heads the bottom dock.
   const smallScreen = window.matchMedia('(max-width: 700px), (max-height: 500px)');
+  const phoneScreen = window.matchMedia('(max-width: 700px)');
   const arrange = (): void => {
     if (smallScreen.matches) mustFind('.top').append(clockControl.element);
     else mustFind('#tray').prepend(clockControl.element);
+    // The pill is read where it is seen: after the date on a phone, by the title anywhere else.
+    if (phoneScreen.matches) mustFind('.top').append(menuButton);
+    else mustFind('.brand').after(menuButton);
   };
   // On an upright phone, Fit and Back join the line of group tabs just above the chips.
-  const phoneScreen = window.matchMedia('(max-width: 700px)');
   const controlsHome = viewControls.nextElementSibling;
   const arrangeControls = (): void => {
     if (phoneScreen.matches)
@@ -1898,6 +1907,7 @@ function start(): void {
     else controlsHome?.before(viewControls);
   };
   phoneScreen.addEventListener('change', arrangeControls);
+  phoneScreen.addEventListener('change', arrange);
   arrangeControls();
   smallScreen.addEventListener('change', arrange);
   arrange();

@@ -785,8 +785,9 @@ Spec" of 2026-10-08. Every control has a visible word, the settings are in one f
 the controls leave the view its room. Tasks keep the spec's names and its order of priority.
 
 - [x] 13.1 **M2 — Every main tab has its word, at every width.** Beside the title where they
-      fit; a bar along the bottom on a phone, upright or on its side. No word is hidden by
-      width or scrolled out of its row.
+      fit; a bar along the bottom on an upright phone; a rail down the left on a phone on its
+      side, which costs the view no height. No word is hidden by width or scrolled out of
+      its row.
 - [x] 13.2 **M3 — Every group of places has its word.** The switch is never squeezed: the
       chips are what scrolls. Where the line is short a group is its picture over its word.
 - [x] 13.3 **M1 — One Settings button in a fixed place.** Last in the top right corner in
@@ -808,6 +809,11 @@ the controls leave the view its room. Tasks keep the spec's names and its order 
 - [ ] 13.15 **M7 — "Next:" is written on the next button.**
 - [ ] 13.16 **W6 — The Deep Space photo has a caption.**
 - [ ] 13.17 **D1 — No name is drawn under the card on a wide screen.**
+- [x] 13.18 **The sizes in between.** A sweep of 27 screen sizes found what the five test
+      screens miss: the pill pushed onto Settings just wider than a phone, a small phone on
+      its side left with no room for the view, a tab's word cut on a 320 px phone, and the
+      first-visit hint under the card. All are fixed and checked at five more sizes in
+      `tests/e2e/navigation.spec.ts`.
 
 **Acceptance:** each task's checks in the spec pass as Playwright tests on the five screens of
 `tests/e2e/screens.ts`, in English and Vietnamese where words are measured; every control is

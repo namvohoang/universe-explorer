@@ -54,7 +54,13 @@ export function createTabs<T extends string>(
   show(initial);
 
   element.addEventListener('keydown', (event) => {
-    const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+    // Down and up as well: on a phone on its side the main tabs are a rail, one over the other.
+    const step =
+      event.key === 'ArrowRight' || event.key === 'ArrowDown'
+        ? 1
+        : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+          ? -1
+          : 0;
     if (step === 0) return;
     const at = tabs.findIndex(({ button }) => button === document.activeElement);
     const next = tabs[(at + step + tabs.length) % tabs.length];

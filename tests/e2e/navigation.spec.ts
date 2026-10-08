@@ -9,9 +9,19 @@ const SCENES = [
   ['Watch', '#watch/moon-phases'],
 ] as const;
 
+/** Vietnamese runs longer, and is checked where the words are longest: the first two scenes. */
 const LANGUAGES = [
-  { code: 'en', settings: 'Settings' },
-  { code: 'vi', settings: 'Cài đặt' },
+  { code: 'en', settings: 'Settings', scenes: 4 },
+  { code: 'vi', settings: 'Cài đặt', scenes: 2 },
+] as const;
+
+/** Sizes between and beyond the five screens, where a layout changes or runs out of room. */
+const TIGHT = [
+  { name: 'a narrow phone', width: 320, height: 568 },
+  { name: 'just wider than a phone', width: 701, height: 900 },
+  { name: 'a small tablet', width: 768, height: 1024 },
+  { name: 'a small phone on its side', width: 667, height: 375 },
+  { name: 'a phone on its side', width: 740, height: 360 },
 ] as const;
 
 async function open(page: Page, language: string, place: string): Promise<void> {
@@ -59,7 +69,7 @@ for (const screen of SCREENS) {
       test('every tab has its word, and the one settings button stays put', async ({ page }) => {
         test.setTimeout(90_000);
         const places: string[] = [];
-        for (const [scene, place] of SCENES) {
+        for (const [scene, place] of SCENES.slice(0, language.scenes)) {
           await open(page, language.code, place);
           expect(await hiddenWords(page, '#main-tabs [role="tab"]'), scene).toEqual([]);
 
@@ -135,4 +145,65 @@ for (const screen of SCREENS) {
     await expect(label).toBeVisible();
     await expect(label).toHaveText('Real sizes and real distances.');
   });
+}
+
+for (const screen of TIGHT) {
+  for (const language of LANGUAGES) {
+    test(`the bars keep clear of each other on ${screen.name}, ${language.code}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: screen.width, height: screen.height });
+      // The longest sentence about scale, and the hint of a first visit, are both on show.
+      await open(page, language.code, '&scale=true-sizes');
+      await expect(page.locator('#first-hint')).toBeVisible();
+      await expect(page.locator('#scale-label')).toBeVisible();
+      expect(await hiddenWords(page, '.tabs [role="tab"]')).toEqual([]);
+
+      const parts = page.locator(
+        [
+          '.brand h1',
+          '#scale-label',
+          '.view-menu',
+          '.settings-button',
+          '.top .clock',
+          '#main-tabs',
+          '.card',
+          '.place-row',
+          '#view-controls',
+          '#first-hint',
+        ].join(', '),
+      );
+      const lying = await parts.evaluateAll((all) => {
+        const shown = all.filter((part) => part.getClientRects().length > 0);
+        const found: string[] = [];
+        const name = (part: Element): string => part.id || part.className;
+        for (const [i, a] of shown.entries()) {
+          const one = a.getBoundingClientRect();
+          if (one.left < -0.5 || one.right > window.innerWidth + 0.5) found.push(name(a));
+          for (const b of shown.slice(i + 1)) {
+            if (a.contains(b) || b.contains(a)) continue;
+            const other = b.getBoundingClientRect();
+            if (
+              one.left < other.right - 0.5 &&
+              other.left < one.right - 0.5 &&
+              one.top < other.bottom - 0.5 &&
+              other.top < one.bottom - 0.5
+            ) {
+              found.push(`${name(a)} on ${name(b)}`);
+            }
+          }
+        }
+        return found;
+      });
+      expect(lying).toEqual([]);
+
+      // Something is left of the height for the view itself.
+      const free = await page.evaluate(() => {
+        const top = document.querySelector('.top')?.getBoundingClientRect().bottom ?? 0;
+        const tray = document.querySelector('#tray')?.getBoundingClientRect().top ?? 0;
+        return (tray - top) / window.innerHeight;
+      });
+      expect(free).toBeGreaterThanOrEqual(0.25);
+    });
+  }
 }

@@ -121,10 +121,11 @@ button:focus-visible {
   /* The title, what is to scale and the settings on one line, the tabs under them. The settings
      button is always the last thing in the top right corner, whatever else is shown. */
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  /* The brand gives way first: its sentence drops under the title before the pill is pushed. */
+  grid-template-columns: minmax(0, max-content) max-content minmax(0, 1fr) auto;
   grid-template-areas:
-    'brand view tools'
-    'tabs tabs tabs';
+    'brand view . tools'
+    'tabs tabs tabs tabs';
   align-items: start;
   gap: 10px 16px;
   pointer-events: none;
@@ -179,12 +180,14 @@ button:focus-visible {
 }
 
 /* From a tablet on its side up, the tabs fit on the title's line. What is to scale goes under the
-   title, and the pill under that. */
+   title, and the pill beside that, under the tabs. */
 @media (min-width: 1000px) and (min-height: 501px) {
   .top {
+    grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-areas:
       'brand tabs tools'
-      'view tabs tools';
+      'brand view tools';
+    row-gap: 6px;
   }
 
   .brand {
@@ -200,6 +203,7 @@ button:focus-visible {
   .top {
     grid-template-columns: auto auto minmax(0, 1fr) auto;
     grid-template-areas: 'brand view tabs tools';
+    row-gap: 10px;
   }
 }
 
@@ -574,20 +578,29 @@ body.deep-3d #picture.big {
 .first-hint {
   position: fixed;
   z-index: 3;
-  left: 50%;
+  /* Centred, and never wider than the screen: a long one goes onto two lines. */
+  left: 12px;
+  right: 12px;
+  width: fit-content;
   bottom: calc(var(--bottom-h) + 14px);
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0;
+  margin: 0 auto;
   padding: 10px 16px;
   background: var(--sun);
   color: var(--sun-ink);
   border-radius: 999px;
   font-weight: 700;
-  white-space: nowrap;
   pointer-events: none;
+}
+
+/* Beside a card at the left, the hint is centred in the room that is left, not under the card. */
+@media (min-width: 701px) {
+  .first-hint {
+    left: 372px;
+    right: 16px;
+  }
 }
 
 .marker-name {
@@ -1762,7 +1775,7 @@ body.watching .marker {
 }
 
 /* A phone on its side: the words on the left, the controls and the stories on the right. */
-@media (max-height: 500px) and (min-width: 701px) {
+@media (max-height: 500px) {
   .watch {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1772,7 +1785,7 @@ body.watching .marker {
 
   /* No card stands on the left in a story, so the panel has the whole width. */
   body.watching .tray {
-    left: 16px;
+    left: calc(var(--rail-w, 0px) + 12px);
   }
 
   .watch-caption {
@@ -2172,7 +2185,8 @@ body.watching .marker {
 }
 
 /* A phone, upright or on its side: the five main tabs do not fit beside the title with their
-   words, so they are a bar along the bottom. */
+   words, so they are a bar of their own, each an icon over its name. Upright it runs along the
+   bottom; on its side it is turned into a rail down the left, further below. */
 @media (max-width: 700px), (max-height: 500px) {
   /* The main tabs: a bar along the bottom, each an icon over its name. */
   #main-tabs {
@@ -2256,31 +2270,59 @@ body.watching .marker {
   }
 }
 
-/* Phone on its side: the title, the date and the settings on one line, the card as a panel down
-   the left. */
+/* Phone on its side: the main tabs are a rail down the left, which costs the view no height. The
+   title, the date and the settings are on one line, and the card is a panel beside the rail. */
 @media (max-height: 500px) and (min-width: 701px) {
   :root {
-    --tabbar-h: calc(45px + env(safe-area-inset-bottom, 0px));
+    --rail-w: calc(76px + env(safe-area-inset-left, 0px));
   }
 
-  /* As on an upright phone, closer and further are a pinch: the tab bar leaves no room for them. */
-  .zoom {
-    display: none !important;
+  #main-tabs {
+    top: 0;
+    right: auto;
+    width: var(--rail-w);
+    height: auto;
+    padding: 0 0 0 env(safe-area-inset-left, 0px);
+    border-top: 0;
+    border-right: 1px solid var(--line);
+  }
+
+  #main-tabs .tabs {
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #main-tabs .tabs button {
+    flex: 1 1 0;
+    min-height: 44px;
+    gap: 2px;
+    font-size: 11px;
+    line-height: 1.05;
+    white-space: normal;
+    text-align: center;
+  }
+
+  #main-tabs .tabs .icon {
+    width: 20px;
+    height: 20px;
   }
 
   .top {
     top: calc(6px + env(safe-area-inset-top, 0px));
-    left: calc(12px + env(safe-area-inset-left, 0px));
+    left: calc(var(--rail-w) + 12px);
     right: calc(12px + env(safe-area-inset-right, 0px));
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
+  /* What is to scale stands under the title, to leave the line to the date and the settings. */
   .brand {
-    flex: 1 1 0;
+    flex: 0 1 auto;
+    flex-direction: column;
     flex-wrap: nowrap;
-    gap: 8px;
+    align-items: flex-start;
+    gap: 1px;
   }
 
   .brand h1 {
@@ -2288,30 +2330,26 @@ body.watching .marker {
   }
 
   .brand p {
-    flex: 0 1 auto;
-    min-width: 0;
-    max-width: 30ch;
+    max-width: 172px;
     font-size: 11px;
     line-height: 1.15;
   }
 
-  /* The settings stay last, after the date. */
-  .tools {
+  /* The date and the settings keep to the right, the settings last, whether or not there is a
+     date to show. */
+  .top::before {
+    content: '';
+    order: 1;
+    flex: 1 1 0;
+  }
+
+  .clock {
     order: 2;
+  }
+
+  .tools {
+    order: 3;
     align-self: flex-start;
-  }
-
-  #main-tabs .tabs {
-    padding: 0 4px;
-  }
-
-  #main-tabs .tabs button {
-    gap: 1px;
-  }
-
-  #main-tabs .tabs .icon {
-    width: 18px;
-    height: 18px;
   }
 
   /* The place row is kept low, to leave the height to the view. */
@@ -2345,10 +2383,10 @@ body.watching .marker {
   }
 
   .card {
-    left: calc(12px + env(safe-area-inset-left, 0px));
+    left: calc(var(--rail-w) + 12px);
     top: calc(var(--top-h) + 8px);
     width: 320px;
-    max-height: calc(100dvh - var(--top-h) - var(--tabbar-h) - 16px);
+    max-height: calc(100dvh - var(--top-h) - 16px - env(safe-area-inset-bottom, 0px));
   }
 
   .card h2 {
@@ -2357,16 +2395,26 @@ body.watching .marker {
 
   /* The place row keeps to the right of the panel. */
   .tray {
-    left: calc(344px + env(safe-area-inset-left, 0px));
+    left: calc(var(--rail-w) + 344px);
     right: calc(12px + env(safe-area-inset-right, 0px));
-    bottom: calc(var(--tabbar-h) + 3px);
+    bottom: calc(6px + env(safe-area-inset-bottom, 0px));
     align-items: flex-start;
   }
 
+  /* Between the card and the buttons at the right. */
+  .first-hint {
+    left: calc(var(--rail-w) + 344px);
+    right: calc(68px + env(safe-area-inset-right, 0px));
+  }
+
+  /* Three buttons to a column: with a model on show there are five, and they stand in two. */
   .view-controls,
   body.deep-3d .view-controls {
     top: calc(var(--top-h) + var(--free-h) / 2);
     right: calc(12px + env(safe-area-inset-right, 0px));
+    display: grid;
+    grid-template-rows: repeat(3, 44px);
+    grid-auto-flow: column;
     gap: 6px;
   }
 
@@ -2376,21 +2424,117 @@ body.watching .marker {
   }
 
   #picture {
-    padding-left: 356px;
+    padding-left: calc(var(--rail-w) + 356px);
   }
 
   body.deep-3d #picture:not(.big) {
-    right: calc(68px + env(safe-area-inset-right, 0px));
+    right: calc(118px + env(safe-area-inset-right, 0px));
     width: 150px;
   }
 
   .compare {
-    left: calc(344px + env(safe-area-inset-left, 0px));
-    bottom: calc(var(--tabbar-h) + 6px);
-    max-height: calc(100dvh - var(--top-h) - var(--tabbar-h) - 16px);
+    left: calc(var(--rail-w) + 344px);
+    max-height: calc(100dvh - var(--top-h) - 16px);
   }
 
   .settings {
     max-height: calc(100dvh - var(--top-h) - 16px);
+  }
+}
+
+/* A very narrow phone: a tab's two words go one over the other, and the pill drops its picture
+   to leave the date its room. */
+@media (max-width: 350px) {
+  #main-tabs .tabs button {
+    padding: 0 1px;
+    font-size: 11px;
+    line-height: 1.05;
+    white-space: normal;
+    text-align: center;
+  }
+
+  #main-tabs .tabs .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .view-menu .icon:first-child {
+    display: none;
+  }
+
+  .clock-date {
+    font-size: 14px;
+  }
+}
+
+/* A small phone on its side: the upright layout, with each bar cut down to one low line. */
+@media (max-width: 700px) and (max-height: 500px) {
+  :root {
+    --tabbar-h: calc(46px + env(safe-area-inset-bottom, 0px));
+    --peek-h: 56px;
+  }
+
+  .top {
+    top: calc(6px + env(safe-area-inset-top, 0px));
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    grid-template-areas: 'brand clock view menu';
+  }
+
+  .brand h1 {
+    font-size: 20px;
+  }
+
+  .brand p {
+    margin-top: 1px;
+    font-size: 11px;
+    line-height: 1.15;
+  }
+
+  #main-tabs .tabs {
+    padding: 0 4px;
+  }
+
+  #main-tabs .tabs button {
+    gap: 1px;
+  }
+
+  #main-tabs .tabs .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Groups, chips and Fit share one line. */
+  .place-row {
+    flex-wrap: nowrap;
+  }
+
+  .place-row .tabs {
+    flex: none;
+  }
+
+  .place-row .tabs button {
+    padding: 2px 8px;
+  }
+
+  .place-row .chips {
+    flex: 1 1 0;
+    order: 0;
+  }
+
+  .place-row .view-controls {
+    order: 4;
+    margin-left: 0;
+  }
+
+  .peek-hint {
+    display: none;
+  }
+
+  .card:not(.open) .card-peek {
+    padding-top: 10px;
+  }
+
+  .card:not(.open) .peek-read {
+    top: 5px;
   }
 }

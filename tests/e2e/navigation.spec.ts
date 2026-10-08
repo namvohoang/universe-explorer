@@ -54,36 +54,27 @@ for (const screen of SCREENS) {
     test.describe(`${screen.name}, ${language.code}`, () => {
       test.use({ viewport: { width: screen.width, height: screen.height } });
 
-      test('every main tab shows its word', async ({ page }) => {
+      // One load of each scene serves every check: a load is the slow part where 3D is drawn in
+      // software.
+      test('every tab has its word, and the one settings button stays put', async ({ page }) => {
+        test.setTimeout(90_000);
+        const places: string[] = [];
         for (const [scene, place] of SCENES) {
           await open(page, language.code, place);
           expect(await hiddenWords(page, '#main-tabs [role="tab"]'), scene).toEqual([]);
-        }
-      });
 
-      test('every group of places shows its word and is big enough to tap', async ({ page }) => {
-        for (const [scene, place] of SCENES) {
-          await open(page, language.code, place);
+          // Every group of places shows its word and is big enough to tap. The spaceships are
+          // one group, so they have no switch.
           const groups = page.locator('.place-row .tabs [role="tab"]:visible');
-          // The spaceships are one group, so they have no switch.
-          if (scene === 'Spaceships') {
-            await expect(groups).toHaveCount(0);
-            continue;
-          }
-          expect(await groups.count(), scene).toBeGreaterThan(1);
+          if (scene === 'Spaceships') await expect(groups).toHaveCount(0);
+          else expect(await groups.count(), scene).toBeGreaterThan(1);
           expect(await hiddenWords(page, '.place-row .tabs [role="tab"]'), scene).toEqual([]);
           for (const group of await groups.all()) {
             const box = await group.boundingBox();
             expect(box?.width, scene).toBeGreaterThanOrEqual(44);
             expect(box?.height, scene).toBeGreaterThanOrEqual(44);
           }
-        }
-      });
 
-      test('one settings button, in the same place in every scene', async ({ page }) => {
-        const places: string[] = [];
-        for (const [scene, place] of SCENES) {
-          await open(page, language.code, place);
           const button = page.getByRole('button', { name: language.settings, exact: true });
           await expect(button, scene).toHaveCount(1);
           const box = await button.boundingBox();

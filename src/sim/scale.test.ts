@@ -194,6 +194,46 @@ describe('the diagram scale', () => {
   });
 });
 
+describe('the moon-path scale', () => {
+  const scale = createScale('moon-path');
+  const diagram = createScale('diagram');
+  // Rounded: only how the drawing treats them is checked.
+  const EARTH_KM = 6_378;
+  const NEAR_KM = 357_000;
+  const FAR_KM = 406_000;
+
+  it('says that nothing in it is to scale, and draws sizes as the diagram does', () => {
+    expect(scale.labelKey).toBe('scaleLabelDiagram');
+    expect(SCALE_MODES).not.toContain(scale.mode);
+    expect(scale.sizeToScene(1_737)).toBe(diagram.sizeToScene(1_737));
+  });
+
+  it('draws a moon as much nearer as it really is, where the diagram all but hides it', () => {
+    const drawn = (of: Scale): number =>
+      of.distanceToScene(FAR_KM, EARTH_KM) / of.distanceToScene(NEAR_KM, EARTH_KM);
+    expect(drawn(scale)).toBeCloseTo(FAR_KM / NEAR_KM, 12);
+    expect(drawn(diagram)).toBeLessThan(1.03);
+  });
+
+  it('keeps the Moon clear of Earth at its nearest', () => {
+    const gap = scale.distanceToScene(NEAR_KM, EARTH_KM);
+    expect(gap).toBeGreaterThan(scale.sizeToScene(EARTH_KM) + scale.sizeToScene(1_737));
+  });
+
+  it('meets the diagram where its reach ends, and is the diagram beyond', () => {
+    let previous = 0;
+    for (let km = 50 * EARTH_KM; km < 80 * EARTH_KM; km += EARTH_KM / 7) {
+      const scene = scale.distanceToScene(km, EARTH_KM);
+      expect(scene).toBeGreaterThan(previous);
+      expect(scene - previous).toBeLessThan(0.02 + (previous === 0 ? scene : 0));
+      previous = scene;
+    }
+    expect(scale.distanceToScene(149_600_000, 696_000)).toBe(
+      diagram.distanceToScene(149_600_000, 696_000),
+    );
+  });
+});
+
 describe.each(SCALE_MODES)('%s mode', (mode) => {
   const scale = createScale(mode);
 

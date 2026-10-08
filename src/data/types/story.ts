@@ -233,6 +233,11 @@ export interface Story {
    */
   readonly diagramSeen?: 'side';
   /**
+   * Keeps a moon's path its true shape in the diagram, with its planet as far off the middle
+   * as it really is, for a story about how near and how far the moon gets.
+   */
+  readonly diagramPaths?: 'true-shape';
+  /**
    * Without a diagram: what the whole picture, at true scale, is fitted to. `orbits` puts the
    * star in the middle with every actor's path round it; `star-and-first` keeps the star and
    * the first actor both in view as they near and part. Left out, it is the first actor and

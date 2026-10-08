@@ -76,6 +76,7 @@ const ORIGIN = { x: 0, y: 0, z: 0 };
 const STAGE_FRAMING = 2.6;
 /** A story's whole picture drawn as a diagram: its scale, and the room left round it. */
 const DIAGRAM_SCALE = createScale('diagram');
+const MOON_PATH_SCALE = createScale('moon-path');
 const DIAGRAM_MARGIN = 1.2;
 /** Room left round a star and one actor kept in view together, and round whole orbits. */
 const PAIR_MARGIN = 1.5;
@@ -1654,7 +1655,7 @@ function start(): void {
                       ids.has(object.id) ||
                       (object.kind === 'ring-system' && ids.has(object.parentId)),
                   ),
-                  DIAGRAM_SCALE,
+                  story.diagramPaths === 'true-shape' ? MOON_PATH_SCALE : DIAGRAM_SCALE,
                   story.shadows ?? [],
                   tracks.bodies,
                   story.seasonsOf === undefined ? [] : [story.seasonsOf],

@@ -745,6 +745,12 @@ recorded last.
       The shooting stars are more, and keep falling while the story is stopped.
       Known: Earth's pole in the catalogue is the one for 2000, so the app's equinoxes of
       2027 fall about nine hours late; the season names allow for it.
+- [x] 12.21 The supermoon (owner's notes, 2026-10-08). The story cuts from the May night to
+      the December one: the Moon is tracked for those two nights only, and run through the
+      months between it was drawn on a curve it never flew. Its whole picture is drawn at a
+      `moon-path` scale: the diagram, but with the Moon's distances all shrunk by one factor,
+      so its path keeps its true shape with Earth off the middle, and the December Moon is
+      drawn as much nearer as it really is (about an eighth).
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

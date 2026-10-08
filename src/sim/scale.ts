@@ -11,9 +11,12 @@ import { KM_PER_AU } from './constants';
 export const SCALE_MODES = ['true', 'true-sizes', 'easy'] as const;
 export type ScaleMode = (typeof SCALE_MODES)[number];
 
+/** A story's drawing: `diagram`, or `moon-path`, the same with a moon's path kept its true shape. */
+export type DrawingMode = 'diagram' | 'moon-path';
+
 export interface Scale {
-  /** One of the modes a viewer picks, or `diagram`, which only a story's drawing uses. */
-  readonly mode: ScaleMode | 'diagram';
+  /** One of the modes a viewer picks, or one of the drawings, which only a story uses. */
+  readonly mode: ScaleMode | DrawingMode;
   /** Whether one body's size next to another's is the real ratio. */
   readonly sizes: 'true' | 'compressed';
   /** Whether distances are the real ratio to each other and to sizes. */
@@ -72,6 +75,23 @@ const DIAGRAM_SIZE_REFERENCE_KM = 5000;
 const DIAGRAM_SIZE_EXPONENT = 0.2;
 const DIAGRAM_DISTANCES: DistanceCompression = { near: 1.5, exponent: 0.2 };
 
+/**
+ * Moon path: the diagram, but for a story about how near and how far a moon gets. Raised to a
+ * power, a path a tenth longer one way is drawn a fiftieth longer, and looks a perfect circle.
+ * So out to this many of the parent's radii, a little past where Earth's Moon gets, every
+ * distance is shrunk by the same factor: a moon's path keeps its true shape, with its planet
+ * as far off the middle as it really is. Beyond, distances are the diagram's, and the two meet
+ * there. Only for a moon that keeps well out from its planet: one near it would be drawn inside.
+ */
+const MOON_PATH_REACH_RADII = 64;
+
+function moonPathDistance(distanceKm: number, parentRadiusKm: number): number {
+  const reachKm = MOON_PATH_REACH_RADII * parentRadiusKm;
+  const drawn = (km: number): number =>
+    compressedDistance(DIAGRAM_DISTANCES, diagramRadius(parentRadiusKm), km, parentRadiusKm);
+  return distanceKm >= reachKm ? drawn(distanceKm) : (drawn(reachKm) * distanceKm) / reachKm;
+}
+
 function diagramRadius(radiusKm: number): number {
   return (radiusKm / DIAGRAM_SIZE_REFERENCE_KM) ** DIAGRAM_SIZE_EXPONENT;
 }
@@ -101,7 +121,15 @@ function easyRadius(radiusKm: number): number {
   return (radiusKm / EASY_SIZE_REFERENCE_KM) ** EASY_SIZE_EXPONENT;
 }
 
-const SCALES: Readonly<Record<ScaleMode | 'diagram', Scale>> = {
+const SCALES: Readonly<Record<ScaleMode | DrawingMode, Scale>> = {
+  'moon-path': {
+    mode: 'moon-path',
+    sizes: 'compressed',
+    distances: 'compressed',
+    labelKey: 'scaleLabelDiagram',
+    sizeToScene: diagramRadius,
+    distanceToScene: moonPathDistance,
+  },
   diagram: {
     mode: 'diagram',
     sizes: 'compressed',
@@ -149,7 +177,7 @@ const SCALES: Readonly<Record<ScaleMode | 'diagram', Scale>> = {
   },
 };
 
-export function createScale<Mode extends ScaleMode | 'diagram'>(
+export function createScale<Mode extends ScaleMode | DrawingMode>(
   mode: Mode,
 ): Scale & { readonly mode: Mode } {
   const scale = SCALES[mode];

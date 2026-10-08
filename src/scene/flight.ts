@@ -1,4 +1,4 @@
-import { add, cross, length, normalize, scale, subtract, type Vec3 } from '../sim/vec3';
+import { add, cross, dot, length, normalize, scale, subtract, type Vec3 } from '../sim/vec3';
 
 /** How long a fly-to takes, in seconds (as in the prototype). */
 export const FLIGHT_SECONDS = 1.6;
@@ -160,4 +160,36 @@ export function zoomedDistance(
   farthest: number,
 ): number {
   return Math.min(farthest, Math.max(nearest, distance * factor));
+}
+
+/** How long a second look takes to swing round to a new side of what it looks at, in seconds. */
+export const SWING_SECONDS = 1.4;
+
+/**
+ * A camera's offset from what it looks at, part of the way from one offset to another: swung
+ * round at an even rate, never cut straight across, so it keeps its distance from the thing
+ * while it goes to the other side of it. `through` runs from 0 to 1.
+ */
+export function swungBetween(from: Vec3, to: Vec3, through: number): Vec3 {
+  const fromFar = length(from);
+  const toFar = length(to);
+  if (through <= 0 || toFar === 0) return from;
+  if (through >= 1 || fromFar === 0) return to;
+  const a = scale(from, 1 / fromFar);
+  const b = scale(to, 1 / toFar);
+  const far = fromFar + (toFar - fromFar) * through;
+  const cos = Math.min(1, Math.max(-1, dot(a, b)));
+  const angle = Math.acos(cos);
+  const sin = Math.sin(angle);
+  // Straight across from each other there is no one way round: any way square to the start.
+  if (sin < 1e-6) {
+    if (cos > 0) return scale(b, far);
+    const aside = Math.abs(a.y) < 0.9 ? { x: 0, y: 1, z: 0 } : { x: 1, y: 0, z: 0 };
+    const square = normalize(cross(a, aside));
+    const turned = Math.PI * through;
+    return scale(add(scale(a, Math.cos(turned)), scale(square, Math.sin(turned))), far);
+  }
+  const fromShare = Math.sin((1 - through) * angle) / sin;
+  const toShare = Math.sin(through * angle) / sin;
+  return scale(add(scale(a, fromShare), scale(b, toShare)), far);
 }

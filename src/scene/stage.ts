@@ -2,12 +2,15 @@ import { Color, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { Vec3 } from '../sim/vec3';
 import {
+  SWING_SECONDS,
   ZOOM_SECONDS,
+  easeInOutCubic,
   followTarget,
   heldAtDistance,
   heldOnBearing,
   startFlight,
   stepFlight,
+  swungBetween,
   zoomedDistance,
   type Flight,
   type View,
@@ -188,6 +191,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   const sideCallbacks: ((viewer: Vec3) => void)[] = [];
   const sideCamera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, 1e6);
   let panes: Panes | null = null;
+  /** Where the second camera last stood from what it looks at, and a swing to a new look under way. */
+  let sideOffset: Vec3 | null = null;
+  let sideSwing: { readonly from: Vec3; elapsed: number } | null = null;
   let otherScene: Scene | null = null;
   let following: FlyTo | null = null;
   let flight: Flight | null = null;
@@ -224,19 +230,24 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     };
   };
   /** Puts the second camera where its look says, facing what it looks at. */
-  const moveSideCamera = (look: Panes): void => {
+  const moveSideCamera = (look: Panes, dt: number): void => {
     const target = look.target();
-    const distance = look.distance();
     const direction = look.direction();
     const far = Math.hypot(direction.x, direction.y, direction.z) || 1;
-    sideCamera.position.set(
-      target.x + (direction.x / far) * distance,
-      target.y + (direction.y / far) * distance,
-      target.z + (direction.z / far) * distance,
-    );
+    const by = look.distance() / far;
+    let offset = { x: direction.x * by, y: direction.y * by, z: direction.z * by };
+    if (sideSwing) {
+      // A look newly asked for is swung round to, not cut to.
+      sideSwing.elapsed += dt;
+      const through = sideSwing.elapsed / SWING_SECONDS;
+      offset = swungBetween(sideSwing.from, offset, easeInOutCubic(Math.min(1, through)));
+      if (through >= 1) sideSwing = null;
+    }
+    sideOffset = offset;
+    sideCamera.position.set(target.x + offset.x, target.y + offset.y, target.z + offset.z);
     sideCamera.lookAt(target.x, target.y, target.z);
     if (look.side) sideCamera.aspect = look.side.width / look.side.height;
-    sideCamera.near = nearPlaneFor(distance);
+    sideCamera.near = nearPlaneFor(Math.hypot(offset.x, offset.y, offset.z));
     sideCamera.updateProjectionMatrix();
     sideCamera.updateMatrixWorld();
   };
@@ -337,7 +348,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     renderer.setScissorTest(true);
     drawIn(panes.main, camera, otherScene ?? scene);
     if (!panes.side) return;
-    moveSideCamera(panes);
+    moveSideCamera(panes, dt);
     for (const callback of sideCallbacks) callback(toVec3(sideCamera.position));
     drawIn(panes.side, sideCamera, panes.scene ?? scene);
   };
@@ -371,6 +382,15 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
         renderer.setScissorTest(split);
         if (!split) renderer.setViewport(0, 0, viewWidth, viewHeight);
       }
+      // Another look at the same scene is swung round to from where the second camera stands.
+      const swings =
+        !options.reducedMotion &&
+        sideOffset !== null &&
+        panes?.side != null &&
+        next?.side != null &&
+        panes.scene === next.scene;
+      sideSwing = swings && sideOffset ? { from: sideOffset, elapsed: 0 } : null;
+      if (!next?.side) sideOffset = null;
       panes = next;
       applyLift();
     },

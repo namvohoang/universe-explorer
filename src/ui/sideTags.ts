@@ -33,6 +33,11 @@ export interface SideTags {
         }[]
       | null,
   ): void;
+  /**
+   * Dips the first look to dark and back, for a look that moves to another place at once.
+   * It is darkest `DIP_DARK_MS` after the call: the moment to move.
+   */
+  dip(): void;
   /** The things to name in the second look. */
   name(things: readonly { id: string; name: string; above?: boolean; numbered?: boolean }[]): void;
   /** Call every frame with where each thing is in the second look and how big it is drawn. */
@@ -44,6 +49,9 @@ export interface SideTags {
  * what it is, and in the second look a name under each thing, with a ring where it is too
  * small to see. The names there only say what a thing is; they are not buttons.
  */
+/** How long after a dip starts the look is dark, in milliseconds; a third of the way through it. */
+export const DIP_DARK_MS = 300;
+
 export function createSideTags(layer: HTMLElement): SideTags {
   const frames: HTMLElement[] = [];
   /** Which picture has been made big; -1 for none. */
@@ -110,6 +118,14 @@ export function createSideTags(layer: HTMLElement): SideTags {
         layer.append(tag);
         return { id, name, above: above || numbered, tag, pill };
       });
+    },
+    dip() {
+      const first = frames[0];
+      if (!first) return;
+      first.classList.remove('dipped');
+      // Read back, so that a dip asked for during another starts again from the top.
+      first.getBoundingClientRect();
+      first.classList.add('dipped');
     },
     update(place) {
       // A name that would cover one already placed is left out, as in the first look.

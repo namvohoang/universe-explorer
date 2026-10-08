@@ -1249,6 +1249,25 @@ body.watching .view-controls .turn {
   border-radius: 14px;
 }
 
+/* A look that moves to another place at once goes dark and comes back, in 0.9 s. */
+.pane.dipped::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #05070f;
+  opacity: 0;
+  pointer-events: none;
+  animation: pane-dip 0.9s ease-in-out;
+}
+
+@keyframes pane-dip {
+  30%,
+  40% {
+    opacity: 1;
+  }
+}
+
 .pane-label {
   position: absolute;
   left: 8px;

@@ -9,6 +9,7 @@ import {
   heldAtDistance,
   heldOnBearing,
   litSideBearing,
+  swungBetween,
   zoomedDistance,
   startFlight,
   stepFlight,
@@ -189,5 +190,37 @@ describe('a quick flight', () => {
     const flight = startFlight(HOME, TARGET, 5, null, false, 0.35);
     expect(stepFlight(flight, 0.2, TARGET).flight).not.toBeNull();
     expect(stepFlight(flight, 0.35, TARGET).flight).toBeNull();
+  });
+});
+
+describe('swungBetween', () => {
+  const north: Vec3 = { x: 0, y: 2, z: 0 };
+  const east: Vec3 = { x: 4, y: 0, z: 0 };
+
+  it('starts at the one offset and ends at the other', () => {
+    expect(swungBetween(north, east, 0)).toEqual(north);
+    expect(swungBetween(north, east, 1)).toEqual(east);
+  });
+
+  it('goes round at an even rate, its distance changing evenly too', () => {
+    const half = swungBetween(north, east, 0.5);
+    expect(length(half)).toBeCloseTo(3, 12);
+    expect(dot(normalize(half), normalize(north))).toBeCloseTo(Math.SQRT1_2, 12);
+    expect(dot(normalize(half), normalize(east))).toBeCloseTo(Math.SQRT1_2, 12);
+  });
+
+  it('goes round, not through, to the far side of the thing', () => {
+    const south: Vec3 = { x: 0, y: -2, z: 0 };
+    for (const through of [0.1, 0.25, 0.5, 0.75, 0.9]) {
+      const at = swungBetween(north, south, through);
+      expect(length(at)).toBeCloseTo(2, 12);
+      expect(dot(normalize(at), normalize(north))).toBeCloseTo(Math.cos(Math.PI * through), 12);
+    }
+  });
+
+  it('only changes distance between offsets on the same side', () => {
+    const at = swungBetween(north, { x: 0, y: 6, z: 0 }, 0.25);
+    expect(at.x).toBeCloseTo(0, 12);
+    expect(at.y).toBeCloseTo(3, 12);
   });
 });

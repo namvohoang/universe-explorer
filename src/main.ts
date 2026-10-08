@@ -53,7 +53,7 @@ import { watchLayout } from './ui/layout';
 import { mediaUrl } from './ui/mediaUrl';
 import { createMarkers } from './ui/markers';
 import { displayName } from './ui/names';
-import { createSideTags } from './ui/sideTags';
+import { DIP_DARK_MS, createSideTags } from './ui/sideTags';
 import { createPlaceRow } from './ui/placeRow';
 import { neighbour, placeRowFor, type Group, type Scene } from './ui/places';
 import { discs, icon, type IconName } from './ui/icons';
@@ -933,6 +933,9 @@ function start(): void {
   let skyFromId: string | null = null;
   /** How the part on show is looked at, to tell when the next part is looked at the same way. */
   let aimedLook = '';
+  /** Whether the look last aimed stood on the ground of a world, and a move of it waiting for the dark. */
+  let aimedGround = false;
+  let dipTimer: number | undefined;
   /** The diagram of the story on show, if its whole picture is drawn as one. */
   let diagram: Diagram | null = null;
   /** The diagram is drawn on its own, in place of the stage. */
@@ -1509,6 +1512,9 @@ function start(): void {
               ]);
               const sameLook = look === aimedLook;
               aimedLook = look;
+              const ground = chapter.standOn !== undefined && chapter.lookUpAt !== undefined;
+              const fromGround = aimedGround && !sameLook;
+              if (!(sameLook && !again)) aimedGround = ground;
               if (sameLook && !again) {
                 if (paired) paired = { story, chapter };
                 return;
@@ -1565,8 +1571,16 @@ function start(): void {
                   : null;
               for (const id of story.actorIds) system.showDetail(id);
               // The same look fitted to a room of another size is set at once, not flown to.
+              window.clearTimeout(dipTimer);
               if (sameLook) stage.lookAt(watchView(story, chapter));
-              else stage.flyTo(watchView(story, chapter));
+              else if (ground && fromGround && !reducedMotion) {
+                // From one place on the ground to another: flown, the eye would go through the
+                // world. The look goes dark, is moved, and comes back.
+                sideTags.dip();
+                dipTimer = window.setTimeout(() => {
+                  stage.lookAt(watchView(story, chapter));
+                }, DIP_DARK_MS);
+              } else stage.flyTo(watchView(story, chapter));
             },
             turnDays(story) {
               const world = catalogue.find((object) => object.id === story.actorIds[0]);
@@ -1589,6 +1603,10 @@ function start(): void {
             },
             onStory(story) {
               aimedLook = '';
+              aimedGround = false;
+              window.clearTimeout(dipTimer);
+              aimedGround = false;
+              window.clearTimeout(dipTimer);
               showers.clear();
               seasonsOfId = story.seasonsOf ?? null;
               watchActors = new Set(story.actorIds);

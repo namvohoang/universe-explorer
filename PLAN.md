@@ -753,6 +753,9 @@ recorded last.
       drawn as much nearer as it really is (about an eighth).
       The look at the shooting stars from Earth draws no Earth: zoomed out, the eye stepped
       back out of the world it stood on and showed it.
+      The aurora's move from the northern ring to the southern one: the look from the ground
+      dips to dark and comes back at the new place (flown, the eye went through Earth), and
+      the second look swings round to its new side of a thing in place of cutting to it.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

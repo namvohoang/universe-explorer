@@ -162,6 +162,8 @@ button:focus-visible {
   border-radius: 999px;
   padding: 3px;
   gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
 .tabs button {
@@ -173,6 +175,7 @@ button:focus-visible {
   min-height: 44px;
   padding: 0 14px;
   white-space: nowrap;
+  flex: none;
 }
 
 .tabs button[aria-selected='true'] {
@@ -1652,16 +1655,6 @@ body.watching .marker {
   .watch-row .chips {
     flex: 1 1 0;
   }
-
-  .watch-row .tabs .tab-label,
-  .watch-row .tabs .tab-note {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
 }
 
 /* A wide screen: the words stand in a card at the left, as a place's card does, and only the
@@ -1723,22 +1716,9 @@ body.watching .marker {
   }
 
   /* A group is shown by its picture alone, to leave the line to the stories. */
-  .watch-row .tabs .tab-label,
-  .watch-row .tabs .tab-note {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
 }
 
 @media (max-width: 1100px) {
-  .tabs button {
-    padding: 0 10px;
-  }
-
   .brand p {
     max-width: 24ch;
     font-size: 13px;
@@ -1752,20 +1732,6 @@ body.watching .marker {
 
   select.speed-menu {
     display: block;
-  }
-
-  /* Still there for a screen reader, just not drawn. */
-  .place-row .tabs button:not([aria-selected='true']) .tab-note {
-    display: none;
-  }
-
-  .place-row .tabs button:not([aria-selected='true']) .tab-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
   }
 }
 

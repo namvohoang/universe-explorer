@@ -1482,42 +1482,6 @@ body.watching .view-controls .turn {
   }
 }
 
-/* A numbered moment of a story, marked in the sky and on the line of sight it was seen along. */
-.sky-mark {
-  position: absolute;
-  left: -11px;
-  top: -11px;
-  width: 22px;
-  height: 22px;
-  display: grid;
-  place-items: center;
-  font: 800 12px/1 var(--body);
-  color: #1a1206;
-  background: var(--sun);
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(6, 9, 20, 0.8);
-  will-change: transform;
-}
-
-.side-tag.side-mark::after {
-  display: none;
-}
-
-.side-tag.side-mark .marker-name {
-  top: 11px;
-  bottom: auto;
-  padding: 0;
-  width: 22px;
-  height: 22px;
-  display: grid;
-  place-items: center;
-  font: 800 12px/1 var(--body);
-  color: #1a1206;
-  background: var(--sun);
-  border: 0;
-  box-shadow: 0 0 0 2px rgba(6, 9, 20, 0.8);
-}
-
 /* Where the viewer stands in the whole picture: a bright dot with "You" above it. */
 .side-you::after {
   content: '';

@@ -39,7 +39,7 @@ export interface SideTags {
    */
   dip(): void;
   /** The things to name in the second look. */
-  name(things: readonly { id: string; name: string; above?: boolean; numbered?: boolean }[]): void;
+  name(things: readonly { id: string; name: string; above?: boolean }[]): void;
   /** Call every frame with where each thing is in the second look and how big it is drawn. */
   update(place: (id: string) => MarkerPlace): void;
 }
@@ -105,18 +105,14 @@ export function createSideTags(layer: HTMLElement): SideTags {
     },
     name(things) {
       for (const { tag } of tags) tag.remove();
-      tags = things.map(({ id, name, above = false, numbered = false }) => {
-        // A name above its spot is the viewer's: it is told apart from the bodies' names. A
-        // numbered moment is a small disc with its number.
-        const tag = create(
-          'div',
-          numbered ? 'side-tag side-mark' : above ? 'side-tag side-you' : 'side-tag',
-        );
+      tags = things.map(({ id, name, above = false }) => {
+        // A name above its spot is the viewer's: it is told apart from the bodies' names.
+        const tag = create('div', above ? 'side-tag side-you' : 'side-tag');
         const pill = create('span', 'marker-name', name);
         tag.hidden = true;
         tag.append(pill);
         layer.append(tag);
-        return { id, name, above: above || numbered, tag, pill };
+        return { id, name, above, tag, pill };
       });
     },
     dip() {

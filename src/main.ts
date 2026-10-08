@@ -11,7 +11,7 @@ import {
 import { createDiagram, type Diagram } from './scene/diagram';
 import { createMeteorStreaks } from './scene/meteorStreaks';
 import { createSightLine } from './scene/sightLine';
-import { createSightMarks } from './scene/sightMarks';
+import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
   ZOOM_SECONDS,
   distanceForAspect,
@@ -25,11 +25,21 @@ import { FIELD_OF_VIEW_DEG, createStage, type FlyTo, type PaneBox } from './scen
 import { eclipticToScene, northPoleEcliptic, poleOf } from './sim/frames';
 import { DUST_TRAIL_RADIUS_KM } from './sim/dust';
 import { showerAt } from './sim/radiant';
+import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
 import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
 import { chasePositionKm, drawnThrough, pathPositionKm, sampleInstants } from './sim/trajectory';
-import { dot, length, subtract, type Vec3 } from './sim/vec3';
+import {
+  add,
+  cross,
+  dot,
+  length,
+  normalize,
+  scale as scaleBy,
+  subtract,
+  type Vec3,
+} from './sim/vec3';
 import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
 import {
   DEFAULT_SPEED,
@@ -331,8 +341,6 @@ function start(): void {
   const sight = createSightLine();
   const VIEWER = 'viewer';
   let sightOf: (() => { from: Vec3; to: Vec3 }) | null = null;
-  /** How many times further than the thing looked at a line of sight to the sky is drawn. */
-  const SIGHT_TO_SKY = 2.2;
   const sightFor = (story: Story, chapter: Chapter): typeof sightOf => {
     const viewer = chapter.standAtId ?? chapter.viewFromId;
     if (viewer === undefined) return null;
@@ -374,7 +382,14 @@ function start(): void {
         return { from, to: shown.groundPointOf(viewer, high) };
       }
       // A track across the sky is seen far beyond the body that makes it.
-      return { from, to: story.skyTrack ? step(far * SIGHT_TO_SKY) : seen };
+      const starId = starOf(story);
+      return {
+        from,
+        to:
+          farSky && starId !== undefined
+            ? farSky.end(watchJd, centre, seen, shown.positionOf(starId))
+            : seen,
+      };
     };
   };
   /** Draws the two looks in the two halves of the room, or one look in all of it. */
@@ -1167,10 +1182,13 @@ function start(): void {
     const orbits = !diagram && story.whole === 'orbits' && star !== undefined;
     const middle = (diagram || orbits) && star !== undefined ? star : first;
     if (orbits) {
+      // With a far sky drawn, the picture holds the paths and the track on it, off to one side.
       const reach = Math.max(...story.actorIds.map((id) => from(id, middle))) * ORBITS_MARGIN;
-      const distance = distanceToFit(reach, reach, aspect, FIELD_OF_VIEW_DEG) * squeeze;
+      const frame = farSky?.frame ?? { middle: ORIGIN, halfWide: reach, halfTall: reach };
+      const distance =
+        distanceToFit(frame.halfWide, frame.halfTall, aspect, FIELD_OF_VIEW_DEG) * squeeze;
       return {
-        target: () => shown.positionOf(middle),
+        target: () => add(shown.positionOf(middle), frame.middle),
         distance,
         direction: STAGE_DIRECTION,
         minDistance: 0,
@@ -1382,57 +1400,100 @@ function start(): void {
     const wide = (2 * Math.atan((glow * COMET_GLOW_SHARE) / far) * 180) / Math.PI;
     return Math.min(COMET_FIELD_DEG, Math.max(COMET_FIELD_MIN_DEG, wide));
   };
-  // The numbered moments of a story that follows one world across another's sky: where both
-  // were at the start of each part and at the end, and the way the one was seen from the other.
-  // In the whole picture each is a line of sight that stays once its moment has come; in the
-  // look at the sky each is a numbered spot. Side by side they show the look swinging back.
-  const MARK = 'mark-';
-  /** A kept line of sight is drawn this many times the farthest the two worlds get apart. */
-  const MARK_LINE_REACH = 1.25;
+  // A story that follows one world across another's sky draws a far sky in its whole picture:
+  // the line of sight runs on past the world looked at and ends there, and its end leaves a
+  // track that grows as the story plays. It is the same track as in the look at the sky.
+  const FAR_SKY = 'far-sky';
+  /**
+   * The far sky is drawn this many times as far from the star as the story's worlds get. Far
+   * enough that the end of the line of sight goes back when the look does: on a sky drawn
+   * nearer, the viewer's own move forward would carry it on regardless.
+   */
+  const FAR_SKY_RADII = 4.8;
+  /** How much wider and taller than the worlds' paths and the track the whole picture is. */
+  const FAR_SKY_MARGIN = 1.12;
+  /** By the end of the story it is drawn this much bigger, so a way gone back over shows as a loop. */
+  const FAR_SKY_SPREAD = 0.22;
+  /** How many places the track is drawn through. */
+  const FAR_SKY_STEPS = 320;
   const TRUE_SCALE = createScale('true');
-  const sightMarks = createSightMarks(8);
-  sightMarks.lines.visible = false;
-  stage.scene.add(sightMarks.lines);
-  let skyMarks: { jd: number; from: Vec3; to: Vec3; towards: Vec3; spot: HTMLElement }[] = [];
-  const markSky = (story: Story | null): void => {
-    for (const { spot } of skyMarks) spot.remove();
-    skyMarks = [];
-    const track = story?.skyTrack;
-    if (!story || !track) return;
-    const jds = [...story.chapters.map((chapter) => chapter.atJd.value), story.endJd.value];
-    // How far the two worlds get from each other over the story.
-    const reach = Math.max(
-      ...jds.map((jd) => {
-        const then = scenePositions(catalogue, jd, TRUE_SCALE);
-        const a = then.get(track.fromId);
-        const b = then.get(track.ofId);
-        return a && b ? length(subtract(b, a)) : 0;
-      }),
-    );
-    for (const [index, jd] of jds.entries()) {
-      const then = scenePositions(catalogue, jd, TRUE_SCALE);
-      const from = then.get(track.fromId);
-      const of = then.get(track.ofId);
-      if (!from || !of) continue;
-      const sight = subtract(of, from);
-      const far = length(sight) || 1;
-      // Every line is drawn as long as the others: out past the world looked at, wherever it was.
-      const drawn = (reach * MARK_LINE_REACH) / far;
-      const spot = create('div', 'sky-mark', String(index + 1));
-      spot.hidden = true;
-      mustFind('#markers').append(spot);
-      skyMarks.push({
-        jd,
-        from,
-        to: {
-          x: from.x + sight.x * drawn,
-          y: from.y + sight.y * drawn,
-          z: from.z + sight.z * drawn,
-        },
-        towards: { x: sight.x / far, y: sight.y / far, z: sight.z / far },
-        spot,
-      });
+  interface FarSky {
+    readonly trail: FarSkyTrail;
+    /**
+     * What the whole picture has to hold, seen from the stage's side: the worlds' paths and
+     * the track. Its middle as an offset from the star, and half its width and height.
+     */
+    readonly frame: { readonly middle: Vec3; readonly halfWide: number; readonly halfTall: number };
+    /** Where the line of sight ends at a date, for the worlds where the scene has them now. */
+    end(jd: number, from: Vec3, of: Vec3, centre: Vec3): Vec3;
+  }
+  let farSky: FarSky | null = null;
+  const traceSky = (story: Story | null): void => {
+    if (farSky) {
+      farSky.trail.line.removeFromParent();
+      farSky.trail.dispose();
+      farSky = null;
     }
+    const track = story?.skyTrack;
+    const centreId = story ? starOf(story) : undefined;
+    if (!story || !track || centreId === undefined) return;
+    const fromJd = story.chapters[0]?.atJd.value ?? story.endJd.value;
+    const toJd = story.endJd.value;
+    const places = Array.from({ length: FAR_SKY_STEPS + 1 }, (_, step) => {
+      const jd = fromJd + ((toJd - fromJd) * step) / FAR_SKY_STEPS;
+      const then = scenePositions(catalogue, jd, TRUE_SCALE);
+      return {
+        jd,
+        from: then.get(track.fromId) ?? ORIGIN,
+        of: then.get(track.ofId) ?? ORIGIN,
+        centre: then.get(centreId) ?? ORIGIN,
+      };
+    });
+    // Well beyond the farthest either world gets from the star over the story.
+    const paths = Math.max(
+      ...places.flatMap(({ from, of, centre }) => [
+        length(subtract(from, centre)),
+        length(subtract(of, centre)),
+      ]),
+    );
+    const radius = FAR_SKY_RADII * paths;
+    const end: FarSky['end'] = (jd, from, of, centre) =>
+      onFarSky(
+        from,
+        normalize(subtract(of, from)),
+        centre,
+        // Before a story's first date is drawn there is no date yet: its start stands in.
+        farSkyRadius(radius, FAR_SKY_SPREAD, fromJd, toJd, Number.isFinite(jd) ? jd : fromJd),
+      );
+    const ends = places.map(({ jd, from, of, centre }) => ({
+      jd,
+      at: end(jd, from, of, centre),
+      centre,
+    }));
+    // Across and up the picture, for a camera on the stage's side with north of the paths up.
+    const back = normalize(STAGE_DIRECTION);
+    const across = normalize(cross({ x: 0, y: 1, z: 0 }, back));
+    const up = cross(back, across);
+    const wide = [-paths, paths];
+    const tall = [-paths, paths];
+    for (const { at, centre } of ends) {
+      const out = subtract(at, centre);
+      wide.push(dot(out, across));
+      tall.push(dot(out, up));
+    }
+    const [left, right] = [Math.min(...wide), Math.max(...wide)];
+    const [low, high] = [Math.min(...tall), Math.max(...tall)];
+    farSky = {
+      trail: createFarSkyTrail(ends),
+      frame: {
+        middle: add(scaleBy(across, (left + right) / 2), scaleBy(up, (low + high) / 2)),
+        halfWide: ((right - left) / 2) * FAR_SKY_MARGIN,
+        halfTall: ((high - low) / 2) * FAR_SKY_MARGIN,
+      },
+      end,
+    };
+    farSky.trail.line.visible = false;
+    stage.scene.add(farSky.trail.line);
   };
   // Shooting stars, seen from a world that passes through a comet's dust.
   const meteors = createMeteorStreaks(METEOR_FAR);
@@ -1687,14 +1748,10 @@ function start(): void {
                 diagram.setDate(story.chapters[0]?.atJd.value ?? clock.jd);
               }
               tagCraft(craft.map(({ id, nameKey }) => ({ id, name: nameOfCraft(nameKey) })));
-              markSky(story);
+              traceSky(story);
               sideTags.name([
                 { id: VIEWER, name: words.watchYou, above: true },
-                ...skyMarks.map((_, index) => ({
-                  id: `${MARK}${String(index)}`,
-                  name: String(index + 1),
-                  numbered: true,
-                })),
+                ...(farSky ? [{ id: FAR_SKY, name: words.watchSeenInSky, above: true }] : []),
                 ...drawn
                   .filter((object) => story.actorIds.includes(object.id))
                   .map((object) => ({ id: object.id, name: displayName(object) })),
@@ -1731,8 +1788,7 @@ function start(): void {
       eyeOnly = null;
       meteorSky = null;
       meteors.setRadiant(null);
-      markSky(null);
-      sightMarks.lines.visible = false;
+      traceSky(null);
       seasonsOfId = null;
       showSeasons(clock.jd);
       stage.setScene(null);
@@ -2011,23 +2067,7 @@ function start(): void {
       meteors.group.position.set(from.x, from.y, from.z);
     }
     meteors.group.visible = watch.isOpen() && meteorSky?.falling(watchJd) === true;
-    sightMarks.lines.visible = false;
-    // In the look at the sky, each moment gone by is a numbered spot where the world was seen.
-    const skyFrom = skyFromId === null ? null : system.positionOf(skyFromId);
-    for (const mark of skyMarks) {
-      const point =
-        skyFrom && paired && mark.jd <= watchJd
-          ? stage.toScreen({
-              x: skyFrom.x + mark.towards.x * METEOR_FAR,
-              y: skyFrom.y + mark.towards.y * METEOR_FAR,
-              z: skyFrom.z + mark.towards.z * METEOR_FAR,
-            })
-          : null;
-      mark.spot.hidden = !point?.visible;
-      if (point) {
-        mark.spot.style.transform = `translate(${point.x.toFixed(1)}px, ${point.y.toFixed(1)}px)`;
-      }
-    }
+    if (farSky) farSky.trail.line.visible = false;
     // A body behind the one in view gets no marker: its name would sit on the wrong globe.
     if (isDeep(focus)) return;
     if (watch.isOpen()) {
@@ -2077,16 +2117,18 @@ function start(): void {
     if (seen) sight.set(seen.from, seen.to);
     // The line of sight is for the whole picture only: seen from its own end it is a dot.
     sight.line.visible = seen !== null;
-    // The lines of sight of the moments gone by belong to the whole picture.
-    const gone = skyMarks.filter((mark) => mark.jd <= watchJd);
-    sightMarks.set(gone);
-    sightMarks.lines.visible = gone.length > 0;
+    // The track on the far sky belongs to the whole picture, and ends where the line does.
+    if (farSky) {
+      if (seen) farSky.trail.setDate(watchJd, seen.to);
+      farSky.trail.line.visible = seen !== null;
+    }
     sideTags.update((id) => {
-      if (id.startsWith(MARK)) {
-        const mark = skyMarks[Number(id.slice(MARK.length))];
-        const point = stage.toSideScreen(mark?.to ?? ORIGIN);
-        const come = mark !== undefined && mark.jd <= watchJd;
-        return { point: come ? point : { ...point, visible: false }, radiusPixels: 0 };
+      if (id === FAR_SKY) {
+        const point = stage.toSideScreen(seen?.to ?? ORIGIN);
+        return {
+          point: seen && farSky ? point : { ...point, visible: false },
+          radiusPixels: 0,
+        };
       }
       if (id === VIEWER) {
         const point = stage.toSideScreen(seen?.from ?? ORIGIN);

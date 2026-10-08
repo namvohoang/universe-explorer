@@ -102,7 +102,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Chỉ chế độ tên là Thật mới giữ đúng cả kích thước lẫn khoảng cách. Hai chế độ kia kéo mọi thứ lại gần để dễ nhìn, và có ghi rõ trên màn hình.',
   grownUpsWatchTitle: 'Các câu chuyện ở màn hình Xem',
   grownUpsWatch1:
-    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện. Khi một phần có góc nhìn riêng (chẳng hạn từ Trái Đất), góc nhìn đó được đặt cạnh toàn cảnh. Với các pha của Mặt Trăng, siêu trăng, các mùa, nhật thực, nguyệt thực và vành Sao Thổ, toàn cảnh là một hình vẽ ghi “không đúng tỉ lệ”: vẫn những thiên thể ấy, đúng hướng thật, được chiếu sáng và quay như thật, nhưng vẽ đủ to và đủ gần để thấy cùng lúc, với hai vùng bóng của nhật thực, nguyệt thực vẽ phía sau thiên thể tạo ra bóng. Một chấm ghi “Bạn” và một đường thẳng cho biết góc nhìn xuất phát từ đâu. Trong hình vẽ nhật thực, nguyệt thực, Mặt Trăng còn được dời sang ngang, để nó nằm sâu trong vùng bóng được vẽ đúng như nó thật sự nằm trong vùng bóng thật. Cực quang được nhìn từ mặt đất bên dưới dải sáng, còn sao băng được nhìn từ Trái Đất: mỗi vệt hiện ở đâu là hình vẽ, nhưng điểm mà chúng tỏa ra được tính từ đường đi của Trái Đất và sao chổi. Một bức ảnh thật của NASA về mỗi hiện tượng nằm ở góc; chạm vào để phóng to, kèm chú thích ảnh chụp gì và ai chụp. Sao băng trong ảnh thuộc một trận mưa khác, và chú thích nói rõ điều đó. Trong câu chuyện Sao Hỏa, các điểm đánh số là nơi nhìn thấy Sao Hỏa lúc bắt đầu mỗi phần và lúc kết thúc. Các ngôi sao là các chòm sao của ứng dụng, ở đúng vị trí thật.',
+    'Mỗi câu chuyện diễn ra trong cùng khung cảnh 3D như phần còn lại của ứng dụng, đúng tỉ lệ thật, và đồng hồ của nó cho thấy ngày giờ thật của sự kiện. Khi một phần có góc nhìn riêng (chẳng hạn từ Trái Đất), góc nhìn đó được đặt cạnh toàn cảnh. Với các pha của Mặt Trăng, siêu trăng, các mùa, nhật thực, nguyệt thực và vành Sao Thổ, toàn cảnh là một hình vẽ ghi “không đúng tỉ lệ”: vẫn những thiên thể ấy, đúng hướng thật, được chiếu sáng và quay như thật, nhưng vẽ đủ to và đủ gần để thấy cùng lúc, với hai vùng bóng của nhật thực, nguyệt thực vẽ phía sau thiên thể tạo ra bóng. Một chấm ghi “Bạn” và một đường thẳng cho biết góc nhìn xuất phát từ đâu. Trong hình vẽ nhật thực, nguyệt thực, Mặt Trăng còn được dời sang ngang, để nó nằm sâu trong vùng bóng được vẽ đúng như nó thật sự nằm trong vùng bóng thật. Cực quang được nhìn từ mặt đất bên dưới dải sáng, còn sao băng được nhìn từ Trái Đất: mỗi vệt hiện ở đâu là hình vẽ, nhưng điểm mà chúng tỏa ra được tính từ đường đi của Trái Đất và sao chổi. Một bức ảnh thật của NASA về mỗi hiện tượng nằm ở góc; chạm vào để phóng to, kèm chú thích ảnh chụp gì và ai chụp. Sao băng trong ảnh thuộc một trận mưa khác, và chú thích nói rõ điều đó. Trong câu chuyện Sao Hỏa, đường thẳng từ Trái Đất qua Sao Hỏa được vẽ tiếp đến một bầu trời ở xa, và đầu mút của nó để lại cùng một vệt vàng như Sao Hỏa trong cảnh nhìn từ Trái Đất. Bầu trời ở xa đó là hình vẽ: nó được đặt đủ gần để vừa bức tranh, và được vẽ lớn dần theo từng tuần để đường lùi không đè lên đường đi tới. Các ngôi sao là các chòm sao của ứng dụng, ở đúng vị trí thật.',
   grownUpsWatch2:
     'Khi câu chuyện ghi “Đây là đường bay thật của con tàu”, các vị trí là ghi nhận của chính NASA/JPL về chuyến bay, lấy từ dịch vụ JPL Horizons. Với nhật thực, nguyệt thực, siêu trăng và các chuyến bay Artemis, Mặt Trăng cũng được đặt theo Horizons, và trạm vũ trụ trong câu chuyện tàu con thoi cũng vậy. Nhật thực được nhìn từ mặt đất, tại nơi phần giữa của bóng Mặt Trăng đi qua lúc nhật thực lớn nhất, với Trái Đất quay đúng như khi đó.',
   grownUpsWatch3:
@@ -952,6 +952,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Discovery nhích lại gần, gần nữa. Cả hai đang lao nhanh quanh Trái Đất, nên việc này phải làm thật cẩn thận.',
   storyShuttleDockingJoined:
     'Chúng đã nối vào nhau! Việc này gọi là ghép nối. Giờ các phi hành gia có thể mở cửa và bay sang.',
+  storyMarsBackwardsNote:
+    'Vệt vàng cho thấy Sao Hỏa hiện ra ở đâu trên bầu trời. Đây là hình vẽ: các ngôi sao ở xa hơn thế rất nhiều.',
   storyMarsBackwardsTitle: 'Sao Hỏa đi lùi',
   storyMarsBackwardsDrifting:
     'Bạn đang ở trên Trái Đất, ngắm Sao Hỏa đêm này qua đêm khác. Nó trôi chậm về một phía trên bầu trời. Đường vẽ cho thấy nó đã ở đâu.',
@@ -973,6 +975,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPaneFrom: 'Nhìn từ: {name}',
   watchPaneClose: 'Nhìn gần',
   watchPaneWhole: 'Toàn cảnh',
+  watchSeenInSky: 'Thấy ở đây trên bầu trời',
   watchYou: 'Bạn',
   watchPhotoBigger: 'Ảnh thật. Phóng to',
   watchPhotoSmaller: 'Thu nhỏ ảnh lại',

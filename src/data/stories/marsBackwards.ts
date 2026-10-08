@@ -4,7 +4,8 @@
 // 2461416.125 (15:00 UT on 10 January 2027) and turns forward again at 2461497.083 (14:00 UT
 // on 1 April 2027), with Earth passing nearest to it between the two; those two instants are
 // worked out from the catalogue, to the hour, not read from a page. A test holds them.
-// There are no stars behind the track: the app has no map of the stars for this view.
+// In the whole picture the line from Earth through Mars runs on to a far sky drawn round the
+// Sun, where its end leaves the same track: a drawing, and `noteKey` says so.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
 import type { Story } from '../types';
 import { s } from './sourced';
@@ -21,6 +22,7 @@ export const marsBackwards: Story = {
   actorIds: ['earth', 'mars', 'sun'],
   skyTrack: { ofId: 'mars', fromId: 'earth' },
   whole: 'orbits',
+  noteKey: 'storyMarsBackwardsNote',
   chapters: [
     {
       id: 'drifting',

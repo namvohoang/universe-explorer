@@ -345,30 +345,41 @@ test.describe('a story', () => {
     }
   });
 
-  test('numbers the moments of Mars’s loop in the sky and in the whole picture', async ({
+  test('ends the line of sight to Mars on a far sky, where it goes on, back and on again', async ({
     page,
   }) => {
     await page.goto('/#watch/mars-backwards');
-    await expect(page.locator('.sky-mark:visible')).toHaveText(['1']);
-    await expect(page.locator('.side-mark:visible')).toHaveText(['1']);
+    await expect(page.locator('.watch-path')).toContainText('yellow track');
+    const end = page.locator('.side-tag', { hasText: 'Seen here in the sky' });
+    await expect(end).toBeVisible();
+    // Where the line ends at the start of each part, and at the end of the story.
+    const across: number[] = [];
+    const down: number[] = [];
+    const settled = async (): Promise<void> => {
+      let last = { x: NaN, y: NaN };
+      await expect
+        .poll(async () => {
+          const before = last;
+          last = await boxOf(end);
+          return Math.hypot(last.x - before.x, last.y - before.y);
+        })
+        .toBeLessThan(0.5);
+      across.push(last.x);
+      down.push(last.y);
+    };
+    await settled();
+    for (let part = 1; part < 3; part += 1) {
+      await page.getByRole('button', { name: 'Next part' }).click();
+      await settled();
+    }
     await page.getByRole('slider').focus();
     await page.keyboard.press('End');
-    await expect(page.locator('.sky-mark:visible')).toHaveText(['1', '2', '3', '4']);
-    // Mars went on, came back past where it began, and went on again.
-    const across = async (n: number): Promise<number> =>
-      (await boxOf(page.locator('.sky-mark').nth(n))).x;
-    await expect
-      .poll(async () => {
-        const [one, two, three, four] = await Promise.all([0, 1, 2, 3].map(across));
-        if (one === undefined || two === undefined || three === undefined || four === undefined) {
-          return false;
-        }
-        return (
-          Math.sign(two - one) === -Math.sign(three - two) &&
-          Math.sign(four - three) === Math.sign(two - one)
-        );
-      })
-      .toBe(true);
+    await settled();
+    const [one = 0, two = 0, three = 0, four = 0] = across;
+    expect(Math.sign(two - one)).toBe(-Math.sign(three - two));
+    expect(Math.sign(four - three)).toBe(Math.sign(two - one));
+    // The way back is long enough to see: it runs mostly up and down the picture.
+    expect(Math.hypot(three - two, (down[2] ?? 0) - (down[1] ?? 0))).toBeGreaterThan(20);
   });
 
   test('shows only what is looked at in a look from a world', async ({ page }) => {

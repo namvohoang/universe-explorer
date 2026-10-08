@@ -90,7 +90,7 @@ export const en = {
     'Only the view called Real keeps both sizes and distances true. The other two bring things closer so they can be seen, and say so on screen.',
   grownUpsWatchTitle: 'The stories on the Watch screen',
   grownUpsWatch1:
-    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells. Where a part has a look of its own (from Earth, say), that look is shown beside the whole picture. For the Moon’s phases, the supermoon, the seasons, the eclipses and Saturn’s rings the whole picture is a diagram marked “not to scale”: the same bodies in their true directions, lit and turned as they really are, but drawn big and close enough to see together, with an eclipse’s two shadows drawn behind the body that casts them. A dot named “You” and a line show where the look is from. In an eclipse’s diagram the Moon is also moved sideways, so that it is drawn as deep in the drawn shadow as it really is in the real one. The aurora is seen from the ground under its band, and the shooting stars from Earth: where each streak appears is a drawing, but the spot they fly out of is worked out from the paths of Earth and the comet. A real NASA photo of each is kept in the corner; a tap makes it big, with what it shows and who took it. The meteor in the photo is from another shower, and its caption says so. In the story of Mars the numbered spots are where Mars was seen at the start of each part and at the end. The stars are the app’s star patterns, in their real places.',
+    'Each story plays in the same 3D view as the rest of the app, at true scale, and its clock shows the real date and time of what it tells. Where a part has a look of its own (from Earth, say), that look is shown beside the whole picture. For the Moon’s phases, the supermoon, the seasons, the eclipses and Saturn’s rings the whole picture is a diagram marked “not to scale”: the same bodies in their true directions, lit and turned as they really are, but drawn big and close enough to see together, with an eclipse’s two shadows drawn behind the body that casts them. A dot named “You” and a line show where the look is from. In an eclipse’s diagram the Moon is also moved sideways, so that it is drawn as deep in the drawn shadow as it really is in the real one. The aurora is seen from the ground under its band, and the shooting stars from Earth: where each streak appears is a drawing, but the spot they fly out of is worked out from the paths of Earth and the comet. A real NASA photo of each is kept in the corner; a tap makes it big, with what it shows and who took it. The meteor in the photo is from another shower, and its caption says so. In the story of Mars the line from Earth through Mars is drawn on to a far sky, and its end leaves the same yellow track as Mars does in the look from Earth. That far sky is a drawing: it is put near enough to fit the picture, and drawn a little bigger as the weeks go by so that the way back does not lie on top of the way out. The stars are the app’s star patterns, in their real places.',
   grownUpsWatch2:
     'Where a story says “This is the real path the spaceship flew”, the positions are NASA/JPL’s own record of the flight, from the JPL Horizons service. For the eclipses, the supermoon and the Artemis flights the Moon, too, is put where Horizons has it, and the space station is in the shuttle story. The solar eclipse is watched from the ground at the place the middle of the Moon’s shadow crosses when the eclipse is greatest, with Earth turned as it will be.',
   grownUpsWatch3:
@@ -1080,6 +1080,7 @@ export const en = {
   watchPaneFrom: 'Seen from: {name}',
   watchPaneClose: 'Close up',
   watchPaneWhole: 'The whole picture',
+  watchSeenInSky: 'Seen here in the sky',
   watchYou: 'You',
   watchPhotoBigger: 'A real photo. Make it bigger',
   watchPhotoSmaller: 'Make the photo small again',
@@ -1234,6 +1235,8 @@ export const en = {
     'Discovery creeps closer and closer. Both are racing round Earth, so it has to be done very carefully.',
   storyShuttleDockingJoined:
     'They have joined up! This is called docking. Now the astronauts can open the hatches and float across.',
+  storyMarsBackwardsNote:
+    'The yellow track shows where Mars is seen in the sky. It is a drawing: the stars are much farther away.',
   storyMarsBackwardsTitle: 'Mars goes backwards',
   storyMarsBackwardsDrifting:
     'You are on Earth, watching Mars night after night. It drifts slowly one way across the sky. The line shows where it has been.',

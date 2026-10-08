@@ -757,6 +757,15 @@ recorded last.
       dips to dark and comes back at the new place (flown, the eye went through Earth), and
       the second look swings round to its new side of a thing in place of cutting to it.
       Saturn's rings play slower still: a minute a part, in place of 32 seconds.
+- [x] 12.22 Mars goes backwards, like the drawing the owner pointed to (2026-10-08, a video
+      of the Sun, the two paths and a line from Earth through Mars out to the sky). In the
+      whole picture the line of sight runs on past Mars to a far sky drawn round the Sun,
+      and its end leaves a track that grows as the story plays: on, back and on again. The
+      look from Earth draws the same track as Mars moves, with none of the way ahead shown.
+      The numbered spots and kept lines of 12.19 are gone. The far sky is a drawing (the
+      story says so): 4.8 times as far out as the two paths, since on a nearer one Earth's
+      own move forward carries the end of the line on and it never goes back; and drawn 22%
+      bigger by the end, so the way back lies beside the way out.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

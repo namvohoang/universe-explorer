@@ -91,7 +91,16 @@ for (const screen of SCREENS) {
       const chips = await boxOf(page.locator('.chips'));
       expect(chips.height, place).toBeLessThan(70);
       const row = await boxOf(page.locator('.place-row'));
-      // On a phone the group tabs take a line of their own above the chips.
+      if (row.height >= 120) {
+        console.log(`Failed on ${place}. row:`, row);
+        const children = await page.locator('.place-row > *').all();
+        for (let i = 0; i < children.length; i++) {
+          const c = children[i];
+          const b = await c.boundingBox();
+          const cls = await c.getAttribute('class');
+          console.log(`child ${i} (${cls}):`, b);
+        }
+      }
       expect(row.height, place).toBeLessThan(screen.name === 'phone' ? 120 : 70);
       expect(row.x, place).toBeGreaterThanOrEqual(0);
       expect(row.x + row.width, place).toBeLessThanOrEqual(screen.width);
@@ -105,7 +114,7 @@ test('a phone keeps nearly half the screen for the 3D view', async ({ page }) =>
   for (const place of ['', 'jupiter', 'andromeda']) {
     await page.goto(`/?speed=pause${place ? `&go=${place}` : ''}`);
     let top = 0;
-    for (const part of await page.locator('.brand, .phone-menu, .clock, .view-menu').all()) {
+    for (const part of await page.locator('.brand, .settings-button, .clock').all()) {
       if (!(await part.isVisible())) continue;
       const box = await boxOf(part);
       top = Math.max(top, box.y + box.height);
@@ -118,7 +127,7 @@ test('a phone keeps nearly half the screen for the 3D view', async ({ page }) =>
 test('the phone menu holds the settings and keeps the Tab key inside', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/?speed=pause');
-  await page.locator('.phone-menu').click();
+  await page.locator('.settings-button').click();
   const sheet = page.locator('.settings');
   await expect(sheet).toBeVisible();
   await expect(sheet.getByRole('radio')).toHaveCount(3);

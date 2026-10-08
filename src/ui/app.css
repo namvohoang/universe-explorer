@@ -164,6 +164,12 @@ button:focus-visible {
   gap: 2px;
   overflow-x: auto;
   scrollbar-width: none;
+  min-width: 0;
+}
+
+.tabs::-webkit-scrollbar,
+.chips::-webkit-scrollbar {
+  display: none;
 }
 
 .tabs button {
@@ -192,6 +198,9 @@ button:focus-visible {
   gap: 8px;
   background: var(--panel-solid);
   white-space: nowrap;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 16px;
 }
 
 button.icon-button {
@@ -201,6 +210,22 @@ button.icon-button {
   padding: 0;
   background: var(--panel-solid);
   color: var(--ink-dim);
+}
+
+.settings-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: 22px;
+}
+.settings-button .wide-label {
+  display: none;
+}
+@media (min-width: 700px) {
+  .settings-button .wide-label {
+    display: block;
+  }
 }
 
 /* The settings: a small menu under its button here, a sheet on a phone. */
@@ -881,6 +906,7 @@ button.primary {
   background: var(--panel-solid);
   border: 1px solid var(--line);
   border-radius: 28px;
+  min-width: 0;
 }
 
 /* Inside the row's panel the tabs sit in a darker well. */
@@ -901,7 +927,8 @@ button.primary {
 }
 
 .place-row .tabs {
-  flex: none;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .row-back {
@@ -1522,6 +1549,9 @@ body.watching .marker {
 }
 
 /* A group shown by its picture alone is still a full-sized thing to tap. */
+.watch-row .tabs {
+  flex: 0 0 auto;
+}
 .watch-row .tabs button {
   min-width: 44px;
   justify-content: center;
@@ -1748,15 +1778,8 @@ body.watching .marker {
 
 /* Parts that exist only for the phone layout below. */
 .card-peek,
-.card .peek-read,
-button.icon-button.phone-menu {
+.card .peek-read {
   display: none;
-}
-
-/* Where the scale menu is hidden, the menu button is the way into the settings. */
-body.deep button.icon-button.phone-menu,
-body.watching button.icon-button.phone-menu {
-  display: grid;
 }
 
 .sheet-row {
@@ -1809,37 +1832,29 @@ body.watching button.icon-button.phone-menu {
     grid-template-columns: 1fr auto;
     grid-template-areas:
       'brand menu'
-      'clock view';
+      'clock clock';
     align-items: center;
     gap: 8px;
   }
 
   .brand {
     grid-area: brand;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
   }
 
   .brand h1 {
     font-size: 24px;
   }
 
-  .brand p {
-    margin-top: 3px;
-    max-width: none;
-    font-size: 12px;
-  }
-
   .tools {
     display: contents;
   }
 
-  button.icon-button.phone-menu {
-    display: grid;
+  .settings-button {
     grid-area: menu;
-    justify-self: end;
-  }
-
-  .view-menu {
-    grid-area: view;
     justify-self: end;
   }
 
@@ -1890,6 +1905,7 @@ body.watching button.icon-button.phone-menu {
 
   #main-tabs .tabs button {
     flex: 1;
+    min-width: 0;
     flex-direction: column;
     justify-content: center;
     gap: 3px;
@@ -1969,6 +1985,8 @@ body.watching button.icon-button.phone-menu {
   .place-row .tabs {
     background: var(--panel-solid);
     border: 1px solid var(--line);
+    width: 10px;
+    flex-grow: 1;
   }
 
   .row-divider {
@@ -2151,10 +2169,6 @@ body.watching button.icon-button.phone-menu {
     display: none !important;
   }
 
-  button.icon-button.phone-menu {
-    display: grid;
-  }
-
   .top {
     top: calc(6px + env(safe-area-inset-top, 0px));
     left: calc(12px + env(safe-area-inset-left, 0px));
@@ -2162,6 +2176,18 @@ body.watching button.icon-button.phone-menu {
     flex-wrap: nowrap;
     align-items: center;
     gap: 8px;
+    min-width: 0;
+  }
+
+  #main-tabs {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  #main-tabs .tabs {
+    width: 100%;
   }
 
   .brand {

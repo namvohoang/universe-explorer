@@ -43,6 +43,7 @@ test('the places opened are ticked off, counted, and can be cleared', async ({ p
   // It is still there after closing and opening the app.
   await page.goto('/?speed=pause');
   await expect(planets).toContainText('2/9');
+  await page.getByRole('button', { name: 'Settings' }).click();
   await page.getByRole('button', { name: 'For grown-ups' }).click();
   await page.getByRole('button', { name: 'Clear progress' }).click();
   await expect(page.getByText('Progress cleared.')).toBeVisible();

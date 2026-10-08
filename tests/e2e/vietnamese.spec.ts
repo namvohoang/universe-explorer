@@ -38,7 +38,7 @@ test('the language can be chosen away from the Solar System', async ({ page }) =
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/?speed=pause&go=andromeda');
   await expect(page.locator('.view-menu')).toBeHidden();
-  await page.locator('.phone-menu').click();
+  await page.locator('.settings-button').click();
   await page.getByRole('button', { name: 'Tiếng Việt' }).click();
   await expect(page.locator('.brand h1')).toHaveText('Khám Phá Vũ Trụ');
 });
@@ -46,7 +46,7 @@ test('the language can be chosen away from the Solar System', async ({ page }) =
 test('the names can be switched off in a story', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/#watch/moon-phases');
-  await page.locator('.phone-menu').click();
+  await page.locator('.settings-button').click();
   const sheet = page.locator('.settings');
   await expect(sheet.getByRole('radio')).toHaveCount(0);
   await sheet.getByRole('switch').click();
@@ -65,9 +65,11 @@ for (const screen of SCREENS) {
     expect(overflow).toBeLessThanOrEqual(0);
     const chips = await page.locator('.chips').boundingBox();
     expect(chips?.height).toBeLessThan(70);
-    for (const part of await page.locator('.top > *, .tools > *, #main-tabs .tabs').all()) {
+    for (const part of await page.locator('.top > *, .tools > *, #main-tabs .tabs, .brand').all()) {
       const box = await part.boundingBox();
-      if (!box || !(await part.isVisible())) continue;
+      const visible = await part.isVisible();
+      console.log('Part:', await part.getAttribute('class'), box, 'visible:', visible);
+      if (!box || !visible) continue;
       expect(box.x, (await part.getAttribute('class')) ?? '').toBeGreaterThanOrEqual(0);
       expect(box.x + box.width).toBeLessThanOrEqual(screen.width + 0.5);
     }

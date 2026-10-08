@@ -520,6 +520,7 @@ test('a story that has been watched is ticked off, in this browser only, until p
   await page.reload();
   await expect(chip('The seasons')).toHaveClass(/visited/);
   // Clearing progress on the grown-ups page unticks them.
+  await page.getByRole('button', { name: 'Settings' }).click();
   await page.getByRole('button', { name: 'For grown-ups' }).click();
   await page.getByRole('button', { name: 'Clear progress' }).click();
   await page.getByRole('button', { name: 'Close' }).click();

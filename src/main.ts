@@ -804,12 +804,6 @@ function start(): void {
     else card.hide();
   });
 
-  // The sentence that says what is and is not to scale is always on screen.
-  const showScale = (): void => {
-    scaleLabel.textContent = words[scale.labelKey];
-  };
-  showScale();
-
   // Big, always-there buttons for getting closer, further, and back out again.
   const viewControls = mustFind('#view-controls');
   viewControls.setAttribute('aria-label', words.viewControls);
@@ -855,7 +849,6 @@ function start(): void {
     scale = createScale(mode);
     system.setScale(scale);
     system.setDate(clock.jd);
-    showScale();
     try {
       history.replaceState(history.state, '', addressOf(focus));
     } catch {
@@ -901,6 +894,17 @@ function start(): void {
     fill(words.viewMenu, { mode: SCALE_OPTION_LABELS[scale.mode] }),
   );
   settings.openWith(menuButton);
+  menuButton.addEventListener('click', () => {
+    scaleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  mustFind('#scale-label').append(menuButton);
+
+  const settingsButton = create('button', 'icon-button settings-button');
+  settingsButton.type = 'button';
+  settingsButton.setAttribute('aria-label', words.settings);
+  settingsButton.title = words.settings;
+  settingsButton.append(icon('menu'), create('span', 'wide-label', words.settings));
+  settings.openWith(settingsButton);
 
   // Compare is built the first time it is opened; its code is not part of the first download.
   let comparePanel: Compare | null = null;
@@ -1596,7 +1600,7 @@ function start(): void {
               // A diagram on its own fills the room, and the screen says it is a drawing.
               diagramAlone = !paired && diagram !== null;
               stage.setScene(diagramAlone && diagram ? diagram.scene : null);
-              scaleLabel.textContent = words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+              viewLabel.textContent = words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -1826,24 +1830,7 @@ function start(): void {
     placeRow.showVisited(visited, catalogue);
   });
   mustFind('#grownups-slot').append(grownUps.element);
-  const grownUpsButton = create('button', 'icon-button');
-  grownUpsButton.type = 'button';
-  grownUpsButton.setAttribute('aria-label', words.grownUps);
-  grownUpsButton.title = words.grownUps;
-  grownUpsButton.append(icon('info'));
-  grownUpsButton.addEventListener('click', () => {
-    grownUps.open();
-  });
-  // On a phone one menu button opens the settings, and the grown-ups page is a row inside them.
-  // On a wide screen it stands in for the scale menu wherever that one is hidden.
-  const phoneMenu = create('button', 'icon-button phone-menu');
-  phoneMenu.type = 'button';
-  phoneMenu.setAttribute('aria-label', words.menu);
-  phoneMenu.title = words.menu;
-  phoneMenu.append(icon('menu'));
-  settings.openWith(phoneMenu);
-  grownUpsButton.classList.add('wide-only');
-  tools.append(menuButton, grownUpsButton, phoneMenu);
+  tools.append(settingsButton);
 
   const clockControl = createClockControl(
     limits,
@@ -1856,8 +1843,7 @@ function start(): void {
   );
   mustFind('#tray').append(clockControl.element, placeRow.element);
   // On a phone the dock has no room for the speeds, so they are in the settings sheet too.
-  const speedSection = settings.addSection(words.speedQuestion, clockControl.forSettings);
-  speedSection.classList.add('solar-only', 'phone-only');
+  settings.addSection(words.speedQuestion, clockControl.forSettings);
   const grownUpsRow = create('button', 'sheet-row');
   grownUpsRow.type = 'button';
   grownUpsRow.append(
@@ -1887,7 +1873,7 @@ function start(): void {
     },
   );
   settings.addSection(words.languageQuestion, languageChoice.element);
-  settings.addSection(null, grownUpsRow).classList.add('phone-only');
+  settings.addSection(null, grownUpsRow);
 
   // On a small screen the clock is a pill under the title; otherwise it heads the bottom dock.
   const smallScreen = window.matchMedia('(max-width: 700px), (max-height: 500px)');

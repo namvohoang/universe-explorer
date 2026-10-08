@@ -9,10 +9,10 @@ const SCENES = [
   ['Watch', '#watch/moon-phases'],
 ] as const;
 
-/** Vietnamese runs longer, and is checked where the words are longest: the first two scenes. */
+/** Vietnamese runs longer, and is checked where the words are longest. */
 const LANGUAGES = [
-  { code: 'en', settings: 'Settings', scenes: 4 },
-  { code: 'vi', settings: 'Cài đặt', scenes: 2 },
+  { code: 'en', settings: 'Settings', skip: [] },
+  { code: 'vi', settings: 'Cài đặt', skip: ['Spaceships'] },
 ] as const;
 
 /** Sizes between and beyond the five screens, where a layout changes or runs out of room. */
@@ -69,7 +69,8 @@ for (const screen of SCREENS) {
       test('every tab has its word, and the one settings button stays put', async ({ page }) => {
         test.setTimeout(90_000);
         const places: string[] = [];
-        for (const [scene, place] of SCENES.slice(0, language.scenes)) {
+        for (const [scene, place] of SCENES) {
+          if ((language.skip as readonly string[]).includes(scene)) continue;
           await open(page, language.code, place);
           expect(await hiddenWords(page, '#main-tabs [role="tab"]'), scene).toEqual([]);
 
@@ -83,6 +84,47 @@ for (const screen of SCREENS) {
             const box = await group.boundingBox();
             expect(box?.width, scene).toBeGreaterThanOrEqual(44);
             expect(box?.height, scene).toBeGreaterThanOrEqual(44);
+          }
+          // With the longest count there can be beside it, a group still fits its own button
+          // and its row.
+          const spilt = await groups.evaluateAll(
+            (tabs) =>
+              tabs.filter((tab) => {
+                const note = tab.querySelector('.tab-note');
+                const row = tab.closest('.tabs');
+                if (!note || !row) return true;
+                note.textContent = '12/13';
+                const within = row.getBoundingClientRect();
+                const own = tab.getBoundingClientRect();
+                const spills = [...tab.querySelectorAll('.tab-note, .tab-label, .icon')].some(
+                  (part) => {
+                    const box = part.getBoundingClientRect();
+                    return (
+                      box.width > 0 &&
+                      (box.left < own.left - 0.5 ||
+                        box.right > own.right + 0.5 ||
+                        box.right > within.right + 0.5)
+                    );
+                  },
+                );
+                return spills || own.right > within.right + 0.5;
+              }).length,
+          );
+          expect(spilt, scene).toBe(0);
+
+          // The groups do not crowd out what they hold: the chip of the place or story in view
+          // is whole on the screen. On a phone on its side the row is kept to one line, and
+          // there the chip at least starts in sight, with room for its name to begin.
+          const chosen = page.locator('.chips:visible button[aria-current="true"]');
+          if ((await chosen.count()) > 0) {
+            const chip = await chosen.first().boundingBox();
+            const row = await page.locator('.chips:visible').first().boundingBox();
+            if (!chip || !row) throw new Error('not on the page');
+            const end = Math.min(row.x + row.width, screen.width);
+            expect(chip.x, scene).toBeGreaterThanOrEqual(row.x - 4);
+            if (screen.height > 500)
+              expect(chip.x + chip.width, scene).toBeLessThanOrEqual(end + 0.5);
+            else expect(end - chip.x, scene).toBeGreaterThanOrEqual(Math.min(chip.width, 120));
           }
 
           const button = page.getByRole('button', { name: language.settings, exact: true });

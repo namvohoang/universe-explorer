@@ -34,7 +34,12 @@ export function createTabs<T extends string>(
     button.title = option.label;
     const note = create('span', 'tab-note');
     const label = create('span', 'tab-label', option.label);
-    button.append(icon(option.icon), label, note);
+    // The picture and the note are kept together, so that where a tab is its picture over its
+    // word the two stand side by side above it. The word comes first in the page, so the tab
+    // is read out as "Planets 2/9"; the style sheet draws the picture before it.
+    const head = create('span', 'tab-head');
+    head.append(icon(option.icon), note);
+    button.append(label, head);
     button.addEventListener('click', () => {
       show(option.value);
       onChange(option.value);

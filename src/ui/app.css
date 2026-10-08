@@ -244,6 +244,16 @@ button:focus-visible {
   display: none;
 }
 
+/* In a row a tab reads picture, word, note. The picture and the note are one piece in the page,
+   after the word; here they are taken apart and the picture is drawn first. */
+.tab-head {
+  display: contents;
+}
+
+.tabs .tab-head .icon {
+  order: -1;
+}
+
 .view-menu {
   grid-area: view;
   justify-self: start;
@@ -993,8 +1003,15 @@ button.primary {
   flex: none;
 }
 
+/* The chips keep room for a name or two beside the groups. Where there is less, they take a line
+   of their own under them. */
+.place-row {
+  flex-wrap: wrap;
+  row-gap: 6px;
+}
+
 .place-row .chips {
-  flex: 1 1 0;
+  flex: 1 1 280px;
 }
 
 .row-back {
@@ -1738,16 +1755,6 @@ body.watching .marker {
   .watch-controls {
     padding: 4px 8px;
   }
-
-  /* The two groups and the stories share one line. */
-  .watch-row {
-    flex-wrap: nowrap;
-    gap: 6px;
-  }
-
-  .watch-row .chips {
-    flex: 1 1 0;
-  }
 }
 
 /* A wide screen: the words stand in a card at the left, as a place's card does, and only the
@@ -1778,7 +1785,8 @@ body.watching .marker {
 @media (max-height: 500px) {
   .watch {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    /* The wider part is for the controls and the stories, whose names need the room. */
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     align-items: end;
     justify-items: stretch;
   }
@@ -1997,21 +2005,8 @@ body.watching .marker {
     border-radius: 24px;
   }
 
-  .place-row .tabs button {
-    border-radius: 20px;
-  }
-
   .place-row .chips {
     flex: 1 1 100%;
-  }
-
-  /* In a story the two groups and the stories share one line. */
-  .watch-row .tabs {
-    flex: none;
-  }
-
-  .watch-row .chips {
-    flex: 1 1 0;
   }
 
   .row-divider {
@@ -2240,32 +2235,28 @@ body.watching .marker {
   .place-row .tabs button {
     flex: 1 1 0;
     min-width: 44px;
-    display: grid;
-    grid-template-areas:
-      'icon note'
-      'label label';
+    flex-direction: column;
     justify-content: center;
-    justify-items: center;
-    align-content: center;
-    gap: 2px 4px;
+    gap: 2px;
     padding: 5px 8px;
+    /* Squarer than a pill: round ends would cut the corners of two lines of words. */
+    border-radius: 16px;
     font-size: 12px;
     line-height: 1.1;
     white-space: normal;
     text-align: center;
   }
 
-  .place-row .tabs .icon {
-    grid-area: icon;
-  }
-
-  .place-row .tabs .tab-label {
-    grid-area: label;
+  .place-row .tabs .tab-head {
+    order: -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    white-space: nowrap;
   }
 
   .place-row .tabs .tab-note {
-    grid-area: note;
-    align-self: center;
     font-size: 11px;
   }
 }
@@ -2352,13 +2343,29 @@ body.watching .marker {
     align-self: flex-start;
   }
 
-  /* The place row is kept low, to leave the height to the view. */
+  /* The place row is kept low, to leave the height to the view: one line, however short. */
   .place-row {
+    flex-wrap: nowrap;
     padding: 4px;
   }
 
+  .place-row .chips {
+    flex: 1 1 0;
+  }
+
+  /* The groups are drawn small, and a name of two words goes onto two lines, to leave the
+     chips room for a name beside them. */
   .place-row .tabs button {
-    padding: 2px 8px;
+    padding: 2px 6px;
+    font-size: 11px;
+  }
+
+  .place-row .tabs .tab-label {
+    max-width: 52px;
+  }
+
+  .place-row .tabs .tab-note {
+    font-size: 10px;
   }
 
   .place-row .tabs .icon {
@@ -2442,6 +2449,22 @@ body.watching .marker {
   }
 }
 
+/* An upright phone, in a story: the two groups have a line of their own, each with its picture
+   beside its word, and the stories have the whole line under it. */
+@media (max-width: 700px) and (min-height: 501px) {
+  .watch-row .tabs button {
+    flex-direction: row;
+    gap: 6px;
+    padding: 0 8px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .watch-row .tabs .tab-head {
+    display: contents;
+  }
+}
+
 /* A very narrow phone: a tab's two words go one over the other, and the pill drops its picture
    to leave the date its room. */
 @media (max-width: 350px) {
@@ -2464,6 +2487,17 @@ body.watching .marker {
 
   .clock-date {
     font-size: 14px;
+  }
+
+  /* In a story the two groups go by their words alone. */
+  .watch-row .tabs button {
+    gap: 4px;
+    padding: 0 4px;
+    font-size: 12px;
+  }
+
+  .watch-row .tabs .icon {
+    display: none;
   }
 }
 

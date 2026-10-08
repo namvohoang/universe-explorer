@@ -356,6 +356,18 @@ test.describe('a story', () => {
     const across: number[] = [];
     const down: number[] = [];
     const settled = async (): Promise<void> => {
+      // Two frames on, so the view has been drawn again since the last press: a mark that has
+      // not started to move yet is not one that has settled.
+      await page.evaluate(
+        () =>
+          new Promise<void>((done) => {
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                done();
+              });
+            });
+          }),
+      );
       let last = { x: NaN, y: NaN };
       await expect
         .poll(async () => {

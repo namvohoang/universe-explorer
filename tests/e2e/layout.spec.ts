@@ -91,8 +91,10 @@ for (const screen of SCREENS) {
       const chips = await boxOf(page.locator('.chips'));
       expect(chips.height, place).toBeLessThan(70);
       const row = await boxOf(page.locator('.place-row'));
-      // On a phone the group tabs take a line of their own above the chips.
-      expect(row.height, place).toBeLessThan(screen.name === 'phone' ? 120 : 70);
+      // Where the groups, with their words, leave the chips no room beside them, the chips take
+      // a line of their own: always on a phone, and for the longer groups on an upright tablet.
+      const lines = screen.name === 'phone' || screen.name === 'tablet portrait' ? 2 : 1;
+      expect(row.height, place).toBeLessThan(lines === 2 ? 120 : 70);
       expect(row.x, place).toBeGreaterThanOrEqual(0);
       expect(row.x + row.width, place).toBeLessThanOrEqual(screen.width);
       await expect(page.locator('.chips button[aria-current="true"]')).toHaveCount(place ? 1 : 0);

@@ -149,7 +149,9 @@ export function createPlaceRow(
         // A long row scrolls sideways: keep the chip for where we are in sight.
         if (here && button.offsetParent !== null) {
           const left = button.offsetLeft - chips.offsetLeft;
-          if (left < chips.scrollLeft) chips.scrollLeft = left;
+          // A chip wider than the room shows its start, where its name begins.
+          const wider = button.offsetWidth > chips.clientWidth;
+          if (wider || left < chips.scrollLeft) chips.scrollLeft = left;
           else if (left + button.offsetWidth > chips.scrollLeft + chips.clientWidth) {
             chips.scrollLeft = left + button.offsetWidth - chips.clientWidth;
           }

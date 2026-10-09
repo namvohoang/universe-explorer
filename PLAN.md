@@ -847,6 +847,12 @@ recorded last.
       deployed" (110:09:43). Their sizes and places are drawings from memory of photos,
       and the flag is left standing at liftoff. The note names all three as drawings.
       Not drawn: the second astronaut, the service module.
+- [ ] 12.27 Apollo 11's landing, the two things left (asked for by the owner on 2026-10-09,
+      for the next day): the second astronaut, and Columbia's service module. Known so far:
+      NASA's timeline has "LMP on lunar surface" at 109:43:16, and no row was read for when
+      he went back in; no NASA 3D model of the service module was found on 2026-10-09
+      (the app's Apollo–Soyuz model has an Apollo joined to a Soyuz), so its source and
+      how it is labelled have to be settled first.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

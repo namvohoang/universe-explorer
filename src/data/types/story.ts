@@ -252,10 +252,16 @@ export interface StoryCraft {
     readonly tallKm: Sourced<number>;
     readonly fromJd: Sourced<number>;
     readonly untilJd: Sourced<number>;
+    /**
+     * When they plant a flag, which is drawn from then on, with the footprints that lead
+     * to it. The instant is real; what the flag and the prints look like is a drawing.
+     */
+    readonly flagFromJd?: Sourced<number>;
   };
   /**
    * With `modelOfId`, for a craft on a `GroundPath`: an instant at which it stands on the
-   * ground. The ground round that place is drawn finely enough to stand beside the craft.
+   * ground. The ground round that place is drawn finely enough to stand beside the craft,
+   * and dust is drawn blown about while the craft's engine burns just above it.
    */
   readonly groundedAtJd?: Sourced<number>;
   /**

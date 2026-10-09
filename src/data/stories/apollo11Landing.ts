@@ -117,6 +117,11 @@ export const apollo11Landing: Story = {
           TIMELINE,
           'CDR inside LM, assisted and monitored by LMP, 111:37:32.',
         ),
+        flagFromJd: s(
+          2440423.653969908,
+          TIMELINE,
+          'United States flag deployed (CDR, LMP), 110:09:43.',
+        ),
       },
     },
     {

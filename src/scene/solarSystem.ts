@@ -22,7 +22,7 @@ import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
 import { createDustTrail, type DustTrail } from './dustTrail';
-import { createFigure } from './figure';
+import { createLandingSite, type LandingSite } from './landingSite';
 import { createFlownModel, type Flame, type FlownModel } from './flownModel';
 import { createLaunchSite, type LaunchSite } from './launchSite';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
@@ -33,12 +33,8 @@ import { createTrail, type Trail } from './trail';
 const TRUE_SCALE = createScale('true');
 /** Two craft whose paths are within this many km of each other are drawn joined, or just apart. */
 const JOINED_WITHIN_KM = 0.5;
-/**
- * A figure stands this far ahead of the middle of the craft it stepped out of, and this far
- * out towards the side the craft is watched from, in km: clear of its legs and in the picture.
- */
-const WALKER_AHEAD_KM = 0.0022;
-const WALKER_ASIDE_KM = 0.0042;
+/** A landing craft's engine blows dust about once it is this near the ground, in km. A drawing choice. */
+const DUST_BELOW_KM = 0.03;
 /** How fast a drawn flame wavers, in radians for each second of the story's own time. */
 const FLAME_WAVERS_PER_SECOND = 1.7;
 /** How far ahead to look to find which way a comet is heading, in days. */
@@ -125,13 +121,16 @@ export interface TrackedCraft {
    */
   /**
    * With `leavesGroundAtJd`, for a craft in `body`: a 3D figure that stands on the ground
-   * beside the craft between two dates, `tallKm` tall.
+   * beside the craft between two dates, `tallKm` tall, leaving footprints, and planting a
+   * flag at `flagFromJd` when given. Dust is blown about under any such craft while its
+   * engine burns close to the ground.
    */
   readonly walker?: {
     readonly url: string;
     readonly tallKm: number;
     readonly fromJd: number;
     readonly untilJd: number;
+    readonly flagFromJd?: number;
   };
   readonly launchSite?: {
     readonly smokeFromJd: number;
@@ -359,13 +358,13 @@ export function createSolarSystem(
     }
   >();
   let site: { readonly made: LaunchSite; readonly fromJd: number } | null = null;
-  let walker: {
-    readonly figure: Group;
-    /** The craft it stepped out of. */
+  /** What is drawn on the ground where a craft lands, and the craft it is drawn for. */
+  let landing: {
+    readonly made: LandingSite;
     readonly ofId: string;
-    readonly fromJd: number;
-    readonly untilJd: number;
-    dispose(): void;
+    readonly walker: TrackedCraft['walker'];
+    /** How hard the craft's engine is blowing dust about, from 0 to 1. */
+    dust: number;
   } | null = null;
   let grounded: Body | null = null;
   const showLines = (): void => {
@@ -475,6 +474,13 @@ export function createSolarSystem(
       flown.top = add(here, scaleBy(nose, tall));
       flown.model.place(here, nose, flown.length, shed, 1);
       flown.model.setFlame(craft.model.flameAt(jd), jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND);
+      if (landing?.ofId === craft.id) {
+        // Dust flies while an engine burns within a few craft-heights of the ground.
+        const centre = catalogue.find((object) => object.id === craft.centreId);
+        const highKm = (length(place) - 1) * ((centre && bodyRadiusKm(centre)) ?? 0);
+        const near = 1 - highKm / DUST_BELOW_KM;
+        landing.dust = craft.model.flameAt(jd) !== null && near > 0 ? near : 0;
+      }
       const left = craft.model.leftStandingAt?.(jd) ?? null;
       flown.shedding = left !== null;
       if (left) {
@@ -499,9 +505,7 @@ export function createSolarSystem(
           const lit = light ? Math.sign(dot(across, subtract(light, here))) || 1 : 1;
           flown.side = scaleBy(across, lit / wide);
           // Whoever stepped out of it stands on that side too, where they can be seen.
-          if (walker?.ofId === craft.id) {
-            walker.figure.position.set(WALKER_AHEAD_KM, 0, WALKER_ASIDE_KM * lit);
-          }
+          if (landing?.ofId === craft.id) landing.made.setSide(lit > 0);
         }
       }
     }
@@ -528,7 +532,18 @@ export function createSolarSystem(
       const nose = far > 0 ? scaleBy(facing, 1 / far) : flown.nose;
       flown.model.place(mix(tail, here), nose, flown.length, 0, 1);
     }
-    if (walker) walker.figure.visible = jd >= walker.fromJd && jd < walker.untilJd;
+    if (landing) {
+      const { walker } = landing;
+      // The prints are all made by the time the flag is up, or the walk over; they stay.
+      const madeBy = walker?.flagFromJd ?? walker?.untilJd ?? 0;
+      landing.made.setState({
+        dust: landing.dust,
+        flicker: jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND,
+        walkerShown: walker !== undefined && jd >= walker.fromJd && jd < walker.untilJd,
+        footprints: walker ? (jd - walker.fromJd) / (madeBy - walker.fromJd) : 0,
+        flagShown: walker?.flagFromJd !== undefined && jd >= walker.flagFromJd,
+      });
+    }
     if (sky) {
       const from = positions.get(sky.fromId);
       if (from) sky.trail.group.position.set(from.x, from.y, from.z);
@@ -624,8 +639,8 @@ export function createSolarSystem(
       models.clear();
       site?.made.dispose();
       site = null;
-      walker?.dispose();
-      walker = null;
+      landing?.made.dispose();
+      landing = null;
       grounded?.setGroundPatch(null);
       grounded = null;
       for (const shadow of tracks?.shadows ?? []) bodies.get(shadow.onId)?.setEclipse(null);
@@ -686,20 +701,17 @@ export function createSolarSystem(
               ahead,
               unitKm: bodyRadiusKm(centre) ?? 1,
             });
-          } else if (craft.walker && craft.frame === 'body' && craft.model?.headingAt) {
-            const made = createFigure(craft.walker.url, craft.walker.tallKm);
-            walker = {
-              ...made,
-              ofId: craft.id,
-              fromJd: craft.walker.fromJd,
-              untilJd: craft.walker.untilJd,
-            };
+          } else if (craft.frame === 'body' && craft.model?.headingAt) {
+            const made = createLandingSite(
+              craft.walker ? { url: craft.walker.url, tallKm: craft.walker.tallKm } : null,
+            );
+            landing = { made, ofId: craft.id, walker: craft.walker, dust: 0 };
             const heading = craft.model.headingAt(craft.leavesGroundAtJd);
             inWorld
               .set(heading.x, heading.y, heading.z)
               .transformDirection(stoodOn.frame.matrixWorld);
             stoodOn.setGroundPatch(place, {
-              object: made.figure,
+              object: made.group,
               ahead: { x: inWorld.x, y: inWorld.y, z: inWorld.z },
               unitKm: bodyRadiusKm(centre) ?? 1,
             });
@@ -920,7 +932,7 @@ export function createSolarSystem(
         dropped.dispose();
       }
       site?.made.dispose();
-      walker?.dispose();
+      landing?.made.dispose();
       dust?.dispose();
       aurora?.dispose();
       sky?.trail.dispose();

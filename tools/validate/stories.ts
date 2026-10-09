@@ -192,6 +192,14 @@ function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<stri
       );
     }
   }
+  const flagAt = craft.walker?.flagFromJd?.value;
+  if (
+    craft.walker &&
+    flagAt !== undefined &&
+    !(flagAt > craft.walker.fromJd.value && flagAt < craft.walker.untilJd.value)
+  ) {
+    errors.push(`${at} has a flag planted when nobody is out to plant it`);
+  }
   if ((craft.burns || craft.uprightUntilJd) && craft.modelOfId === undefined) {
     errors.push(`${at} has engine burns or a lean but is not drawn as a 3D model`);
   }

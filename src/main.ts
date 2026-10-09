@@ -1493,6 +1493,7 @@ function start(): void {
                 tallKm: walker.tallKm.value,
                 fromJd: walker.fromJd.value,
                 untilJd: walker.untilJd.value,
+                ...(walker.flagFromJd ? { flagFromJd: walker.flagFromJd.value } : {}),
               },
             }
           : {}),

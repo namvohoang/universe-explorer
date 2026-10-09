@@ -839,7 +839,14 @@ recorded last.
       and that stretch is played slowly. The model's page does not say which suit it is,
       and it is not the 1969 one; its height is the model's own, taking its units to be
       inches (1.886 m). Only one astronaut is drawn, standing still, arms out.
-      Not drawn: dust, the flag, footprints, the second astronaut, the service module.
+      Done too (owner's note, 2026-10-09): dust, the flag and footprints
+      (`src/scene/landingSite.ts`). Dust is blown straight out, low and flat, while an
+      engine burns within 30 m of the ground, and is gone when it stops, as with no air.
+      A trail of prints grows from the lander to the astronaut and on to the flag, and
+      stays. The flag, with its pole, stands from NASA's time for "United States flag
+      deployed" (110:09:43). Their sizes and places are drawings from memory of photos,
+      and the flag is left standing at liftoff. The note names all three as drawings.
+      Not drawn: the second astronaut, the service module.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

@@ -3,6 +3,9 @@
 // ../paths/apollo11Moon.ts). Between two known places a craft may go right round the Moon,
 // and the app draws it going round at a steady rate, so the story is `staged` and says so.
 // The Moon here keeps one face to Earth exactly; its slight real rocking is not drawn.
+// Seen close up the lander is NASA's model at its true size. When its engines burn and when
+// it lands and lifts off are real; how it leans, its flame, and how it slows on the way down
+// are the app's drawing. Its lower part, with the legs, is left standing on the Moon.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
 import type { Story } from '../types';
 import { APOLLO_11_COLUMBIA, APOLLO_11_LANDER } from '../paths/apollo11Moon';
@@ -10,20 +13,86 @@ import { s } from './sourced';
 import {
   NASA_APOLLO_11_MISSION_REPORT,
   NASA_SP4029_APOLLO_11_SUMMARY,
+  NASA_LUNAR_MODULE_MODEL,
   NASA_SP4029_APOLLO_11_TIMELINE,
 } from './sources';
 
 const TIMELINE = 'nasa-sp4029-apollo11-timeline';
 const SUMMARY = 'nasa-sp4029-apollo11-summary';
+// Instants used more than once below, each from the timeline.
+const POWERED_DESCENT_JD = 2440423.336863542;
+const LANDED_JD = 2440423.345600694;
+const LIFTOFF_JD = 2440424.245842477;
+const ORBIT_AGAIN_JD = 2440424.25087581;
 
 export const apollo11Landing: Story = {
   id: 'apollo-11-landing',
   group: 'space-flights',
   path: 'staged',
   titleKey: 'storyApollo11LandingTitle',
+  noteKey: 'storyApollo11LandingNote',
   actorIds: ['moon', 'sun'],
   craft: [
-    { id: 'apollo-11-lander', nameKey: 'craftApollo11Lander', path: APOLLO_11_LANDER },
+    {
+      id: 'apollo-11-lander',
+      nameKey: 'craftApollo11Lander',
+      path: APOLLO_11_LANDER,
+      // Seen close up it is NASA's model of the lander at its true size.
+      modelOfId: 'lunar-module',
+      groundedAtJd: s(LANDED_JD, TIMELINE, 'LM lunar landing, 102:45:39.9.'),
+      burns: [
+        {
+          fromJd: s(2440423.297384259, TIMELINE, 'LM descent orbit insertion ignition, 101:36:14.'),
+          untilJd: s(
+            2440423.297731481,
+            TIMELINE,
+            'LM descent orbit insertion cutoff, 101:36:44.0.',
+          ),
+          flame: 'faint',
+        },
+        {
+          fromJd: s(
+            POWERED_DESCENT_JD,
+            TIMELINE,
+            'LM powered descent engine ignition, 102:33:05.01.',
+          ),
+          untilJd: s(LANDED_JD, TIMELINE, 'LM lunar landing, 102:45:39.9.'),
+          flame: 'faint',
+        },
+        {
+          fromJd: s(LIFTOFF_JD, TIMELINE, 'LM lunar liftoff ignition, 124:22:00.79.'),
+          untilJd: s(ORBIT_AGAIN_JD, TIMELINE, 'LM orbit insertion cutoff, 124:29:15.67.'),
+          flame: 'faint',
+        },
+      ],
+      leans: [
+        {
+          fromJd: s(
+            POWERED_DESCENT_JD,
+            TIMELINE,
+            'LM powered descent engine ignition, 102:33:05.01.',
+          ),
+          untilJd: s(LANDED_JD, TIMELINE, 'LM lunar landing, 102:45:39.9.'),
+          kind: 'braking',
+        },
+        {
+          fromJd: s(LIFTOFF_JD, TIMELINE, 'LM lunar liftoff ignition, 124:22:00.79.'),
+          untilJd: s(ORBIT_AGAIN_JD, TIMELINE, 'LM orbit insertion cutoff, 124:29:15.67.'),
+          kind: 'climbing',
+        },
+      ],
+      sheds: [
+        {
+          atJd: s(LIFTOFF_JD, TIMELINE, 'LM lunar liftoff ignition, 124:22:00.79.'),
+          belowShare: s(
+            0.463,
+            'nasa-lunar-module-3d-model',
+            "Measured on NASA's model on 2026-10-09: the share of its height at which the body of the descent stage ends and the ascent stage begins. The descent stage, with the legs, stays on the Moon.",
+          ),
+          stays: true,
+        },
+      ],
+    },
     { id: 'apollo-11-columbia', nameKey: 'craftApollo11Columbia', path: APOLLO_11_COLUMBIA },
   ],
   chapters: [
@@ -62,6 +131,8 @@ export const apollo11Landing: Story = {
     },
     {
       id: 'landed',
+      // The last of the way down is played slowly, to watch the lander touch the ground.
+      slowStart: { storySeconds: 40, overSeconds: 6 },
       atJd: s(2440423.345600694, TIMELINE, 'LM lunar landing, 102:45:39.9 (20:17:39 GMT).'),
       text: {
         key: 'storyApollo11LandingLanded',
@@ -89,6 +160,8 @@ export const apollo11Landing: Story = {
     },
     {
       id: 'lifting-off',
+      // So is the top part leaving.
+      slowStart: { storySeconds: 30, overSeconds: 8 },
       atJd: s(
         2440424.245842477,
         TIMELINE,
@@ -120,5 +193,6 @@ export const apollo11Landing: Story = {
     NASA_APOLLO_11_MISSION_REPORT,
     NASA_SP4029_APOLLO_11_TIMELINE,
     NASA_SP4029_APOLLO_11_SUMMARY,
+    NASA_LUNAR_MODULE_MODEL,
   ],
 };

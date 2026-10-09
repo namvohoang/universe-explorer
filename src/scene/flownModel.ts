@@ -18,11 +18,17 @@ export interface FlownModel {
   /** Add to the scene. */
   readonly group: Group;
   /**
-   * Stands the model's tail at `tail`, its nose towards `nose` (a unit vector), `length` long.
-   * Only the stretch between the shares `from` and `to` of its length, tail (0) to nose (1),
-   * is drawn: the rest is a stage let go, or the craft that let this stage go.
+   * Stands the model's tail at `tail`, its nose towards `nose` (a unit vector), with its
+   * longest side `size` long. Only the stretch between the shares `from` and `to` of its
+   * height, tail (0) to nose (1), is drawn: the rest is a stage let go, or the craft that
+   * let this stage go.
    */
-  place(tail: Vec3, nose: Vec3, length: number, from: number, to: number): void;
+  place(tail: Vec3, nose: Vec3, size: number, from: number, to: number): void;
+  /**
+   * How tall the model is, tail to nose, as a share of its longest side: 1 for a rocket,
+   * less for a craft wider than it is tall. 1 until the model has arrived.
+   */
+  tall(): number;
   /**
    * Draws a flame behind what is left of the model, or none. `flicker` is any number that
    * changes as time runs: the flame's length wavers with it.
@@ -95,8 +101,8 @@ function colourFlame(
 const MODEL_NOSE = new Vector3(0, 1, 0);
 
 /**
- * `url` is an agency's model that stands nose up along its own +y, as a rocket on its pad.
- * It is fetched at once; until it arrives nothing is drawn.
+ * `url` is an agency's model that stands nose up along its own +y, as a rocket on its pad or
+ * a lander on its legs. It is fetched at once; until it arrives nothing is drawn.
  */
 export function createFlownModel(url: string): FlownModel {
   const group = new Group();
@@ -120,6 +126,7 @@ export function createFlownModel(url: string): FlownModel {
   flames.visible = false;
   group.add(flames);
   let drawnFlame: Flame | null = null;
+  let tall = 1;
   let disposeModel: (() => void) | null = null;
   let disposed = false;
   loadGltf(url, (model) => {
@@ -145,10 +152,12 @@ export function createFlownModel(url: string): FlownModel {
       dispose();
       return;
     }
-    // One unit long, tail at the middle of the group and the long axis along +y.
+    // Its longest side one unit long, tail at the middle of the group and nose along +y.
     const middle = box.getCenter(new Vector3());
+    const longest = Math.max(size.x, size.y, size.z);
+    tall = size.y / longest;
     const holder = new Group();
-    holder.scale.setScalar(1 / size.y);
+    holder.scale.setScalar(1 / longest);
     model.position.sub(new Vector3(middle.x, box.min.y, middle.z));
     holder.add(model);
     group.add(holder);
@@ -156,17 +165,19 @@ export function createFlownModel(url: string): FlownModel {
   });
   return {
     group,
-    place(tail, nose, length, from, to) {
+    tall: () => tall,
+    place(tail, nose, size, from, to) {
+      const length = size * tall;
       group.position.set(tail.x, tail.y, tail.z);
       group.quaternion.setFromUnitVectors(MODEL_NOSE, towards.set(nose.x, nose.y, nose.z));
-      group.scale.setScalar(length);
+      group.scale.setScalar(size);
       // A plane for an end that is not cut lies well clear of the model.
       cutAt.copy(group.position).addScaledVector(towards, length * (from > 0 ? from : -1));
       cut.setFromNormalAndCoplanarPoint(towards, cutAt);
       cutAt.copy(group.position).addScaledVector(towards, length * (to < 1 ? to : 2));
       cutAhead.setFromNormalAndCoplanarPoint(back.copy(towards).negate(), cutAt);
       // The engines of what is left are where the last part came off.
-      flames.position.y = from;
+      flames.position.y = from * tall;
     },
     setFlame(flame, flicker) {
       flames.visible = flame !== null;

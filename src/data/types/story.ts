@@ -202,6 +202,11 @@ export interface StoryCraft {
   readonly sheds?: readonly {
     readonly atJd: Sourced<number>;
     readonly belowShare: Sourced<number>;
+    /**
+     * Set when the part is left standing on the ground where the craft stood (the legs of a
+     * lander that lifts off): it is drawn staying there, for a craft on a `GroundPath`.
+     */
+    readonly stays?: true;
   }[];
   /**
    * With `modelOfId`: when its engines burn, earliest first, with a flame drawn behind the
@@ -219,6 +224,22 @@ export interface StoryCraft {
    * standing straight up, as it climbs straight up from its pad.
    */
   readonly uprightUntilJd?: Sourced<number>;
+  /**
+   * With `modelOfId`, for a craft on a `GroundPath`: an instant at which it stands on the
+   * ground. The ground round that place is drawn finely enough to stand beside the craft.
+   */
+  readonly groundedAtJd?: Sourced<number>;
+  /**
+   * With `modelOfId`, for a craft on a `GroundPath` with one engine under it: the stretches
+   * in which it is drawn leaning, earliest first. `braking`, it flies engine first, lying
+   * back and coming upright as it lands; `climbing`, it rises and leans the way it goes.
+   * Outside them it is drawn upright. The instants are real; how far it leans is a drawing.
+   */
+  readonly leans?: readonly {
+    readonly fromJd: Sourced<number>;
+    readonly untilJd: Sourced<number>;
+    readonly kind: 'braking' | 'climbing';
+  }[];
   /**
    * With `fromGround`: draws a launch tower beside the craft where it stands, a little
    * taller than the craft. Its shape and size are a drawing from photos, not measurements;

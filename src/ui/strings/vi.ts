@@ -865,6 +865,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyApollo11LaunchInOrbit:
     'Động cơ tắt. Apollo 11 đã vào quỹ đạo. Giờ nó bay vòng quanh Trái Đất.',
   storyApollo11LandingTitle: 'Apollo 11: hạ cánh',
+  storyApollo11LandingNote:
+    'Thời điểm, vị trí: thật. Đường bay, độ nghiêng, ngọn lửa: hình vẽ. Hình nhìn gần được làm sáng lên.',
   craftApollo11Lander: 'Tàu đổ bộ',
   craftApollo11Columbia: 'Columbia',
   storyApollo11LandingLettingGo:

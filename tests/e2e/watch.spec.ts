@@ -485,6 +485,12 @@ test.describe('a space flight', () => {
   }) => {
     await page.goto('/#watch/apollo-11-landing');
     await expect(page.locator('.craft-tag')).toHaveText(['The lander', 'Columbia']);
+    // Close up the lander is seen as itself; Columbia is still a named point.
+    await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
+    await expect(page.locator('.craft-tag', { hasText: 'The lander' })).toBeHidden();
+    await expect(page.locator('.watch-path')).toContainText(
+      'The lander’s path, lean and flame: drawings.',
+    );
     for (let part = 0; part < 3; part += 1) {
       await page.getByRole('button', { name: 'Next part' }).click();
     }

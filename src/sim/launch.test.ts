@@ -4,11 +4,13 @@ import { catalogue } from '../data/catalogue';
 import {
   droppedPartAt,
   flameAt,
+  groundExposure,
   noseAlong,
   settlingShedShareAt,
   shedShareAt,
   skyShare,
   stagedSamples,
+  standingPartAt,
   turningOf,
   type Turning,
 } from './launch';
@@ -190,5 +192,33 @@ describe('settlingShedShareAt', () => {
     expect(settlingShedShareAt(sheds, 10 + 5 * second)).toBeCloseTo(0.15, 9);
     expect(settlingShedShareAt(sheds, 15)).toBeCloseTo(shedShareAt(sheds, 15), 12);
     expect(settlingShedShareAt(sheds, 25)).toBeCloseTo(0.6, 12);
+  });
+});
+
+describe('standingPartAt', () => {
+  const sheds = [{ atJd: { value: 10 }, belowShare: { value: 0.4 }, stays: true as const }];
+
+  it('is the part left on the ground from the instant it is left, for good', () => {
+    expect(standingPartAt(sheds, 9)).toBeNull();
+    expect(standingPartAt(sheds, 10)).toEqual({ fromShare: 0, toShare: 0.4, atJd: 10 });
+    expect(standingPartAt(sheds, 1000)).toEqual({ fromShare: 0, toShare: 0.4, atJd: 10 });
+  });
+
+  it('is not also drawn dropping behind, and a part that drops is not left standing', () => {
+    expect(droppedPartAt(sheds, 10)).toBeNull();
+    const falls = [{ atJd: { value: 10 }, belowShare: { value: 0.4 } }];
+    expect(standingPartAt(falls, 11)).toBeNull();
+  });
+});
+
+describe('groundExposure', () => {
+  it('leaves a look under a high star as it is, and brightens one under a low star', () => {
+    expect(groundExposure(1)).toBe(1);
+    expect(groundExposure(0.5)).toBeCloseTo(2, 12);
+  });
+
+  it('brightens no more than its limit, even at night', () => {
+    expect(groundExposure(0.01)).toBeCloseTo(3.5, 12);
+    expect(groundExposure(-0.5)).toBeCloseTo(3.5, 12);
   });
 });

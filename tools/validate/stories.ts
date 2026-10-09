@@ -150,6 +150,19 @@ function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<stri
   if (craft.sheds && craft.modelOfId === undefined) {
     errors.push(`${at} sheds parts but is not drawn as a 3D model`);
   }
+  const overGround = 'heading' in craft.path;
+  if ((craft.groundedAtJd || craft.leans) && !(overGround && craft.modelOfId !== undefined)) {
+    errors.push(`${at} lands or leans but is not a 3D model on a path over the ground`);
+  }
+  if ((craft.sheds ?? []).some((shed) => shed.stays === true) && !overGround) {
+    errors.push(`${at} leaves a part standing but has no path over the ground`);
+  }
+  for (const lean of craft.leans ?? []) {
+    if (!(lean.untilJd.value > lean.fromJd.value)) errors.push(`${at} leans over no time at all`);
+  }
+  if (craft.leans && story.noteKey === undefined) {
+    errors.push(`${at} is drawn leaning, but the story has no note to say it is a drawing`);
+  }
   if ((craft.burns || craft.uprightUntilJd) && craft.modelOfId === undefined) {
     errors.push(`${at} has engine burns or a lean but is not drawn as a 3D model`);
   }

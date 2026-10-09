@@ -40,7 +40,7 @@ describe('checkStories', () => {
       checkStories(
         stories,
         catalogue.map((object) => object.id),
-        new Set(['saturn-v']),
+        new Set(['saturn-v', 'lunar-module']),
       ),
     ).toEqual([]);
   });

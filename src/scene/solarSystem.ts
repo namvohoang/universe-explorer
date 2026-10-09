@@ -16,7 +16,7 @@ import {
   type TrackedOffsets,
 } from '../sim/layout';
 import { createScale, type Scale } from '../sim/scale';
-import { add, length, scale as scaleBy, subtract, type Vec3 } from '../sim/vec3';
+import { add, cross, dot, length, scale as scaleBy, subtract, type Vec3 } from '../sim/vec3';
 import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
@@ -51,14 +51,16 @@ export interface TrackedCraft {
   readonly instants: readonly number[];
   placeAt(jd: number): Vec3;
   /**
-   * The instant the craft leaves the ground of `centreId`, standing where its path starts:
-   * the ground round that place is then drawn finely enough to stand beside it.
+   * An instant at which the craft stands on the ground of `centreId` (a rocket about to
+   * leave it, a lander just down): the ground round that place is drawn finely enough to
+   * stand beside the craft.
    */
   readonly leavesGroundAtJd?: number;
   /**
    * The craft's 3D model, drawn at its true size with its tail on the path. `lengthKm` is
-   * how long the real craft is, and `noseAt` the unit vector, in the ecliptic frame, its
-   * nose points along at a date. Only a craft in the `space` frame wears one.
+   * how long the real craft's longest side is, and `noseAt` the unit vector its nose points
+   * along at a date: in the ecliptic frame for a craft in `space`, in the body's own frame
+   * for one in `body`.
    */
   readonly model?: {
     readonly url: string;
@@ -85,6 +87,20 @@ export interface TrackedCraft {
       readonly toShare: number;
       readonly behindKm: number;
     } | null;
+    /**
+     * A part it has left standing where it was let go (the legs of a lander that has lifted
+     * off): the stretch of the model it was, and the instant it was left. It stays there.
+     */
+    leftStandingAt?(jd: number): {
+      readonly fromShare: number;
+      readonly toShare: number;
+      readonly atJd: number;
+    } | null;
+    /**
+     * For a craft in `body`: the way it is heading at a date, level with the ground, as a
+     * unit vector in the body's own frame. A close look is taken from beside that way.
+     */
+    headingAt?(jd: number): Vec3;
   };
   /**
    * With `leavesGroundAtJd`: what is drawn at the place the craft leaves. Smoke billows
@@ -149,6 +165,13 @@ export interface SolarSystem {
   setTracks(tracks: Tracks | null): void;
   /** The middle of a craft's 3D model, in scene units; where the craft is when it has none. */
   craftMiddleOf(id: string): Vec3;
+  /**
+   * Makes the next picture this many times brighter, as a camera opened up for dim ground
+   * would; 1 puts the light back as it is.
+   */
+  setExposure(times: number): void;
+  /** For a craft that rides round with a body: the side a close look at its model is taken from. */
+  craftSideOf(id: string): Vec3 | null;
   /** How long a craft's 3D model is drawn when whole, in scene units; 0 when it has none. */
   craftLengthOf(id: string): number;
   /**
@@ -263,13 +286,18 @@ export function createSolarSystem(
     group.add(belt.points);
   }
 
+  const starLights: PointLight[] = [];
   // Light comes from the star, at full strength however far away: brightness is not what
   // the scale modes are about, and real falloff would leave the outer planets black.
   for (const object of catalogue) {
     const body = bodies.get(object.id);
-    if (object.kind === 'star' && body) body.group.add(new PointLight(0xffffff, SUNLIGHT, 0, 0));
+    if (object.kind !== 'star' || !body) continue;
+    const light = new PointLight(0xffffff, SUNLIGHT, 0, 0);
+    starLights.push(light);
+    body.group.add(light);
   }
-  group.add(new AmbientLight(0xffffff, NIGHT_SIDE_LIGHT));
+  const fillLight = new AmbientLight(0xffffff, NIGHT_SIDE_LIGHT);
+  group.add(fillLight);
 
   /** How many points of a path dust is strewn round, and how many specks round each. */
   const DUST_PATH_POINTS = 24_000;
@@ -297,6 +325,8 @@ export function createSolarSystem(
       shedding: boolean;
       length: number;
       middle: Vec3;
+      /** For a craft in `body`: the side a close look at it is taken from, in the scene. */
+      side: Vec3 | null;
     }
   >();
   let site: { readonly made: LaunchSite; readonly fromJd: number } | null = null;
@@ -348,7 +378,8 @@ export function createSolarSystem(
         flown.length = currentScale.sizeToScene(craft.model.lengthKm);
         // The middle of what is left of it.
         const seen = craft.model.lookShedAt(jd);
-        flown.middle = add(place, scaleBy(nose, (flown.length * (1 + seen)) / 2));
+        const tall = flown.length * flown.model.tall();
+        flown.middle = add(place, scaleBy(nose, (tall * (1 + seen)) / 2));
         flown.model.place(place, nose, flown.length, shed, 1);
         const part = craft.model.droppedAt(jd);
         flown.shedding = part !== null;
@@ -385,7 +416,51 @@ export function createSolarSystem(
       trail.setDate(jd, place);
       body.group.updateWorldMatrix(true, true);
       const world = body.frame.localToWorld(inWorld.set(place.x, place.y, place.z));
-      positions.set(craft.id, { x: world.x, y: world.y, z: world.z });
+      const here = { x: world.x, y: world.y, z: world.z };
+      positions.set(craft.id, here);
+      const flown = models.get(craft.id);
+      if (!flown || !craft.model) continue;
+      // Directions in the body's own frame are turned into the scene's as the body is turned.
+      const turned = (v: Vec3): Vec3 => {
+        inWorld.set(v.x, v.y, v.z).transformDirection(body.frame.matrixWorld);
+        return { x: inWorld.x, y: inWorld.y, z: inWorld.z };
+      };
+      const placed = (v: Vec3): Vec3 => {
+        body.frame.localToWorld(inWorld.set(v.x, v.y, v.z));
+        return { x: inWorld.x, y: inWorld.y, z: inWorld.z };
+      };
+      const nose = turned(craft.model.noseAt(jd));
+      const shed = craft.model.shedBelowAt(jd);
+      flown.length = currentScale.sizeToScene(craft.model.lengthKm);
+      const tall = flown.length * flown.model.tall();
+      flown.middle = add(here, scaleBy(nose, (tall * (1 + craft.model.lookShedAt(jd))) / 2));
+      flown.model.place(here, nose, flown.length, shed, 1);
+      flown.model.setFlame(craft.model.flameAt(jd), jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND);
+      const left = craft.model.leftStandingAt?.(jd) ?? null;
+      flown.shedding = left !== null;
+      if (left) {
+        const stood = craft.placeAt(left.atJd);
+        const far = length(stood) || 1;
+        flown.dropped.place(
+          placed(stood),
+          turned(scaleBy(stood, 1 / far)),
+          flown.length,
+          left.fromShare,
+          left.toShare,
+        );
+      }
+      if (craft.model.headingAt) {
+        // From beside its path, on the side the star lights.
+        const out = subtract(here, body.group.position);
+        const across = cross(turned(craft.model.headingAt(jd)), out);
+        const wide = length(across);
+        const star = catalogue.find((object) => object.kind === 'star');
+        const light = star ? positions.get(star.id) : undefined;
+        if (wide > 0) {
+          const lit = light ? Math.sign(dot(across, subtract(light, here))) || 1 : 1;
+          flown.side = scaleBy(across, lit / wide);
+        }
+      }
     }
     if (sky) {
       const from = positions.get(sky.fromId);
@@ -495,7 +570,7 @@ export function createSolarSystem(
         trails.set(craft.id, { craft, trail });
         const ground = craft.frame === 'body' ? bodies.get(craft.centreId) : undefined;
         (ground ? ground.frame : group).add(trail.group);
-        if (craft.model && craft.frame === 'space') {
+        if (craft.model) {
           const model = createFlownModel(craft.model.url);
           // The same model again, for the part just let go.
           const dropped = createFlownModel(craft.model.url);
@@ -506,6 +581,7 @@ export function createSolarSystem(
             shedding: false,
             length: 0,
             middle: { x: 0, y: 0, z: 0 },
+            side: null,
           });
           group.add(model.group, dropped.group);
         }
@@ -515,12 +591,17 @@ export function createSolarSystem(
           // The body is turned to where it was at that instant, and the place found on it.
           stoodOn.setDate(craft.leavesGroundAtJd);
           const from = stoodOn.group.position;
-          const offset = sceneOffsetFromKm(
-            craft.placeAt(craft.leavesGroundAtJd),
-            centre,
-            currentScale,
-          );
-          const place = { x: from.x + offset.x, y: from.y + offset.y, z: from.z + offset.z };
+          const stood = craft.placeAt(craft.leavesGroundAtJd);
+          let place: Vec3;
+          if (craft.frame === 'body') {
+            // Already a place on the body: it only has to be found in the scene.
+            stoodOn.group.updateWorldMatrix(true, true);
+            stoodOn.frame.localToWorld(inWorld.set(stood.x, stood.y, stood.z));
+            place = { x: inWorld.x, y: inWorld.y, z: inWorld.z };
+          } else {
+            const offset = sceneOffsetFromKm(stood, centre, currentScale);
+            place = { x: from.x + offset.x, y: from.y + offset.y, z: from.z + offset.z };
+          }
           if (craft.launchSite) {
             const made = createLaunchSite(craft.launchSite.towerKm, craft.launchSite.clouds);
             site = { made, fromJd: craft.launchSite.smokeFromJd };
@@ -542,6 +623,11 @@ export function createSolarSystem(
       showLines();
     },
     craftMiddleOf: (id) => models.get(id)?.middle ?? positions.get(id) ?? { x: 0, y: 0, z: 0 },
+    setExposure(times) {
+      for (const light of starLights) light.intensity = SUNLIGHT * times;
+      fillLight.intensity = NIGHT_SIDE_LIGHT * times;
+    },
+    craftSideOf: (id) => models.get(id)?.side ?? null,
     craftLengthOf: (id) => models.get(id)?.length ?? 0,
     drawCraftModels(drawn) {
       for (const [id, flown] of models) {

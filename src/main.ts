@@ -28,15 +28,25 @@ import { showerAt } from './sim/radiant';
 import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
-import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
+import {
+  bodyFramePoint,
+  groundHeading,
+  groundPlaceAt,
+  groundRoute,
+  groundUp,
+  leaningTop,
+  routeInstants,
+} from './sim/groundPath';
 import {
   droppedPartAt,
   flameAt,
+  groundExposure,
   noseAlong,
   settlingShedShareAt,
   shedShareAt,
   skyShare,
   stagedSamples,
+  standingPartAt,
   turningOf,
 } from './sim/launch';
 import { chasePositionKm, pathPositionKm, sampleInstants } from './sim/trajectory';
@@ -1057,6 +1067,19 @@ function start(): void {
       Math.round(SPACE_RGB[channel] + (DAY_SKY_RGB[channel] - SPACE_RGB[channel]) * share);
     return (mix(0) << 16) | (mix(1) << 8) | mix(2);
   };
+  /**
+   * How much a close look at a craft that lands is brightened: by as much as the low star
+   * dims the ground under it. A craft that only flies is seen as it is lit.
+   */
+  const exposureBeside = (story: Story, flown: StoryCraft): number => {
+    const star = starOf(story);
+    if (flown.groundedAtJd === undefined || star === undefined) return 1;
+    const here = system.positionOf(flown.id);
+    const out = subtract(here, system.positionOf(flown.path.centreId));
+    const light = subtract(system.positionOf(star), here);
+    const sine = dot(out, light) / ((length(out) || 1) * (length(light) || 1));
+    return groundExposure(sine);
+  };
   /** The look from over a craft, far enough off to see the ground curve under its path. */
   const overCraft = (flown: StoryCraft, squeeze: number): FlyTo => {
     const ground = flown.path.centreId;
@@ -1089,7 +1112,9 @@ function start(): void {
   const besideCraft = (flown: StoryCraft, squeeze: number): FlyTo => {
     const ground = flown.path.centreId;
     const long = system.craftLengthOf(flown.id);
-    const side = flightSides.get(flown.id) ?? { x: 0, y: 0, z: 1 };
+    // A craft that rides round with a body is seen from the side the system finds for it.
+    const fixedSide = system.craftSideOf(flown.id) ? undefined : flightSides.get(flown.id);
+    const sideNow = (): Vec3 => fixedSide ?? system.craftSideOf(flown.id) ?? { x: 0, y: 0, z: 1 };
     const up = (): Vec3 => {
       const out = subtract(system.craftMiddleOf(flown.id), system.positionOf(ground));
       const height = length(out) || 1;
@@ -1097,6 +1122,7 @@ function start(): void {
     };
     const bearing = (): Vec3 => {
       const lift = up();
+      const side = sideNow();
       return {
         x: side.x + lift.x * MODEL_VIEW_LIFT,
         y: side.y + lift.y * MODEL_VIEW_LIFT,
@@ -1408,7 +1434,18 @@ function start(): void {
   let cloudsOverId: string | null = null;
   /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
   const flightOf = (
-    { id, path, modelOfId, fromGround, sheds, burns, uprightUntilJd, tower }: StoryCraft,
+    {
+      id,
+      path,
+      modelOfId,
+      fromGround,
+      sheds,
+      burns,
+      uprightUntilJd,
+      tower,
+      groundedAtJd,
+      leans,
+    }: StoryCraft,
     _index: number,
     all: readonly StoryCraft[],
   ): TrackedCraft => {
@@ -1430,12 +1467,41 @@ function start(): void {
       const centre = catalogue.find((object) => object.id === centreId);
       const radiusKm = (centre && bodyRadiusKm(centre)) ?? 1;
       const route = groundRoute(path.points.value, path.heading.value, radiusKm);
+      const shown = catalogue.find((object) => object.id === modelOfId);
+      const model = shown?.media.find((media) => media.role === 'model');
+      const halfKm = shown ? bodyRadiusKm(shown) : null;
+      const turns = (leans ?? []).map((lean) => ({
+        fromJd: lean.fromJd.value,
+        untilJd: lean.untilJd.value,
+        kind: lean.kind,
+      }));
       return {
         id,
         centreId,
         frame: 'body',
         instants: routeInstants(route, ROUTE_STEP_DEG),
         placeAt: (jd) => bodyFramePoint(groundPlaceAt(route, jd), radiusKm),
+        ...(groundedAtJd && model ? { leavesGroundAtJd: groundedAtJd.value } : {}),
+        ...(model && halfKm !== null
+          ? {
+              model: {
+                url: mediaUrl(model.file),
+                lengthKm: 2 * halfKm,
+                noseAt: (jd: number) => {
+                  const place = groundPlaceAt(route, jd);
+                  const ahead = groundHeading(place, path.heading.value);
+                  return leaningTop(turns, jd, groundUp(place), ahead);
+                },
+                headingAt: (jd: number) =>
+                  groundHeading(groundPlaceAt(route, jd), path.heading.value),
+                shedBelowAt: (jd: number) => shedShareAt(sheds ?? [], jd),
+                lookShedAt: (jd: number) => settlingShedShareAt(sheds ?? [], jd),
+                flameAt: (jd: number) => flameAt(burns ?? [], jd),
+                droppedAt: () => null,
+                leftStandingAt: (jd: number) => standingPartAt(sheds ?? [], jd),
+              },
+            }
+          : {}),
       };
     }
     // A path known at a few places only has a curve drawn through them.
@@ -1992,6 +2058,7 @@ function start(): void {
       system.setAurora(null, null);
       system.setSkyTrack(null);
       stage.setSky(null);
+      system.setExposure(1);
       tagCraft([]);
       document.body.classList.remove('watching');
       system.setDate(clock.jd);
@@ -2262,6 +2329,7 @@ function start(): void {
       const modelled = paired ? modelledCraft(paired.story, paired.chapter) : null;
       system.drawCraftModels(modelled !== null);
       stage.setSky(modelled && paired ? skyBehind(paired.story, modelled) : null);
+      system.setExposure(modelled && paired ? exposureBeside(paired.story, modelled) : 1);
       for (const [id, tag] of craftTags) {
         const point = stage.toScreen(system.positionOf(id));
         // A craft seen as itself needs no ring to find it by.
@@ -2295,6 +2363,7 @@ function start(): void {
     system.drawOnly(null);
     // From far off a craft is a point of light, whatever the first look draws it as.
     system.drawCraftModels(false);
+    system.setExposure(1);
     meteors.group.visible = false;
     const shown = diagram?.system ?? system;
     const seen = sightOf?.() ?? null;

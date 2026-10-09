@@ -136,12 +136,13 @@ export function droppedPartAt(
   sheds: readonly {
     readonly atJd: { readonly value: number };
     readonly belowShare: { readonly value: number };
+    readonly stays?: true;
   }[],
   jd: number,
 ): { readonly fromShare: number; readonly toShare: number; readonly behindKm: number } | null {
   for (const [index, shed] of sheds.entries()) {
     const seconds = (jd - shed.atJd.value) * SECONDS_PER_DAY;
-    if (seconds < 0 || seconds > DROP_SHOWN_SECONDS) continue;
+    if (shed.stays === true || seconds < 0 || seconds > DROP_SHOWN_SECONDS) continue;
     return {
       fromShare: sheds[index - 1]?.belowShare.value ?? 0,
       toShare: shed.belowShare.value,
@@ -176,4 +177,40 @@ export function settlingShedShareAt(
     share += (shed.belowShare.value - share) * eased;
   }
   return share;
+}
+
+/**
+ * The part a craft has left standing on the ground, once it has: the stretch of the craft's
+ * height it was (shares from tail to nose) and the instant it was left there.
+ */
+export function standingPartAt(
+  sheds: readonly {
+    readonly atJd: { readonly value: number };
+    readonly belowShare: { readonly value: number };
+    readonly stays?: true;
+  }[],
+  jd: number,
+): { readonly fromShare: number; readonly toShare: number; readonly atJd: number } | null {
+  for (const [index, shed] of sheds.entries()) {
+    if (shed.stays !== true || jd < shed.atJd.value) continue;
+    return {
+      fromShare: sheds[index - 1]?.belowShare.value ?? 0,
+      toShare: shed.belowShare.value,
+      atJd: shed.atJd.value,
+    };
+  }
+  return null;
+}
+
+/** A look at dim ground is brightened at most this many times. */
+const MOST_EXPOSURE = 3.5;
+
+/**
+ * How many times brighter a look from beside a craft on a world with no air is drawn, so
+ * that ground lit by a low star can be made out, as a camera standing there would be opened
+ * up for it: ground is lit in proportion to the sine of the star's height over it, and the
+ * picture is brightened by as much back, up to a limit. `starHeightSine` is that sine.
+ */
+export function groundExposure(starHeightSine: number): number {
+  return 1 / Math.max(starHeightSine, 1 / MOST_EXPOSURE);
 }

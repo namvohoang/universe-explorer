@@ -122,6 +122,13 @@ export const NASA_SATURN_V_MODEL: Source = {
   retrieved: '2026-10-04',
 };
 
+export const NASA_LUNAR_MODULE_MODEL: Source = {
+  id: 'nasa-lunar-module-3d-model',
+  title: 'NASA Science — 3D Resources: Apollo Lunar Module (the 3D model the app draws)',
+  url: 'https://science.nasa.gov/3d-resources/apollo-lunar-module/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_APOLLO_11_MISSION_REPORT: Source = {
   id: 'nasa-apollo11-mission-report',
   title:

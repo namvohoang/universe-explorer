@@ -12,6 +12,8 @@ export interface GroundStop {
   readonly travelDeg: number;
   readonly latDeg: number;
   readonly altitudeKm: number;
+  /** The craft stands still on the ground here: no height and no speed. */
+  readonly atRest: boolean;
 }
 
 export interface GroundRoute {
@@ -48,7 +50,13 @@ export function groundRoute(
       const turns = Math.max(0, Math.round((expectedDeg - leastDeg) / TURN_DEG));
       travelDeg += leastDeg + turns * TURN_DEG;
     }
-    stops.push({ jd: point[0], travelDeg, latDeg: point[2], altitudeKm: point[3] });
+    stops.push({
+      jd: point[0],
+      travelDeg,
+      latDeg: point[2],
+      altitudeKm: point[3],
+      atRest: point[3] === 0 && point[4] === 0,
+    });
   }
   return { heading, startLonDegEast: points[0]?.[1] ?? 0, stops };
 }
@@ -63,6 +71,11 @@ export interface GroundPlace {
 /**
  * The place at a date: between two known places everything changes at a steady rate. Before
  * the first it stays at the first, and after the last at the last.
+ *
+ * A craft coming to rest on the ground is drawn slowing all the way down to it, and one
+ * leaving the ground speeding up from rest: its way along the ground slows (or grows) evenly,
+ * and its height a little less sharply, so it comes straight down at the last and goes
+ * straight up at the first. How it really slowed between the two places is not known here.
  */
 export function groundPlaceAt(route: GroundRoute, jd: number): GroundPlace {
   const { stops } = route;
@@ -77,12 +90,16 @@ export function groundPlaceAt(route: GroundRoute, jd: number): GroundPlace {
   }
   const span = to.jd - from.jd;
   const share = span > 0 ? Math.min(Math.max((jd - from.jd) / span, 0), 1) : 0;
-  const mix = (a: number, b: number): number => a + (b - a) * share;
+  const landing = to.atRest && !from.atRest;
+  const leaving = from.atRest && !to.atRest;
+  const along = landing ? 1 - (1 - share) ** 2 : leaving ? share ** 2 : share;
+  const up = landing ? 1 - (1 - share) ** 1.5 : leaving ? share ** 1.5 : share;
+  const mix = (a: number, b: number, by: number): number => a + (b - a) * by;
   const forwards = route.heading === 'east' ? 1 : -1;
   return {
-    lonDegEast: route.startLonDegEast + forwards * mix(from.travelDeg, to.travelDeg),
-    latDeg: mix(from.latDeg, to.latDeg),
-    altitudeKm: mix(from.altitudeKm, to.altitudeKm),
+    lonDegEast: route.startLonDegEast + forwards * mix(from.travelDeg, to.travelDeg, along),
+    latDeg: mix(from.latDeg, to.latDeg, along),
+    altitudeKm: mix(from.altitudeKm, to.altitudeKm, up),
   };
 }
 
@@ -116,4 +133,60 @@ export function routeInstants(route: GroundRoute, stepDeg: number): number[] {
     }
   }
   return instants;
+}
+
+/**
+ * Which way a craft on a route is heading over a place, level with the ground: a unit vector
+ * in the body's own frame (as `bodyFramePoint`), due east or due west. Routes here run close
+ * to the equator, so the little they drift north or south is left out.
+ */
+export function groundHeading(place: GroundPlace, heading: 'east' | 'west'): Vec3 {
+  const lon = place.lonDegEast * DEG;
+  const forwards = heading === 'east' ? 1 : -1;
+  return { x: -forwards * Math.sin(lon), y: 0, z: -forwards * Math.cos(lon) };
+}
+
+/** Straight up from a place, in the body's own frame: a unit vector. */
+export function groundUp(place: GroundPlace): Vec3 {
+  return bodyFramePoint({ ...place, altitudeKm: 0 }, 1);
+}
+
+/**
+ * A stretch of a flight in which a craft with one engine under it is drawn leaning:
+ * `braking`, it flies engine first to slow down, lying right back at the start and coming
+ * upright as it lands; `climbing`, it rises upright and then leans the way it is going.
+ */
+export interface Lean {
+  readonly fromJd: number;
+  readonly untilJd: number;
+  readonly kind: 'braking' | 'climbing';
+}
+
+/** A lean is come into, and a climbing one left, over this share of its stretch. */
+const LEAN_EASE_SHARE = 0.08;
+/** How far a climbing craft is drawn leaning the way it goes, in radians: half a right angle. */
+const CLIMB_LEAN_RAD = Math.PI / 4;
+
+const smoothStep = (through: number): number => {
+  const held = Math.min(1, Math.max(0, through));
+  return held * held * (3 - 2 * held);
+};
+
+/**
+ * Which way the top of such a craft points at a date: straight up (`up`) outside its leans,
+ * and within one tipped towards or away from the way it is heading (`ahead`). A unit vector
+ * in whatever frame the two are given in. How far it leans at each instant is a drawing.
+ */
+export function leaningTop(leans: readonly Lean[], jd: number, up: Vec3, ahead: Vec3): Vec3 {
+  const lean = leans.find((one) => jd >= one.fromJd && jd <= one.untilJd);
+  if (!lean) return up;
+  const through = (jd - lean.fromJd) / (lean.untilJd - lean.fromJd);
+  const easeIn = smoothStep(through / LEAN_EASE_SHARE);
+  // Braking: its top points back along its path, less and less. Climbing: forwards.
+  const angle =
+    lean.kind === 'braking'
+      ? -(Math.PI / 2) * easeIn * (1 - through * through)
+      : CLIMB_LEAN_RAD * easeIn * smoothStep((1 - through) / LEAN_EASE_SHARE);
+  const [c, s] = [Math.cos(angle), Math.sin(angle)];
+  return { x: c * up.x + s * ahead.x, y: c * up.y + s * ahead.y, z: c * up.z + s * ahead.z };
 }

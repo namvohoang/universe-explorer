@@ -1148,6 +1148,8 @@ export const en = {
   storyApollo11LaunchInOrbit:
     'The engine stops. Apollo 11 is in orbit. Now it goes round and round Earth.',
   storyApollo11LandingTitle: 'Apollo 11: the landing',
+  storyApollo11LandingNote:
+    'Times and places: real. The lander’s path, lean and flame: drawings. Close up, the picture is brightened.',
   craftApollo11Lander: 'The lander',
   craftApollo11Columbia: 'Columbia',
   storyApollo11LandingLettingGo:

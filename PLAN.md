@@ -813,6 +813,25 @@ recorded last.
       Not drawn: the platform the rocket stood on, the smoke trail in the sky, the real
       weather of the day, the ring between the first two stages that fell a little later,
       and the escape tower leaving.
+- [x] 12.26 Apollo 11's landing seen close up (owner's note, 2026-10-09: as for the launch).
+      The look from over the lander is now "The whole picture", and "Close up" is NASA's
+      model of the lunar module at its true size, from the sunlit side of its path. It
+      flies engine first while it brakes, comes upright and touches down, stands on the
+      Moon, and its top part lifts off and leans the way it goes, leaving the lower part
+      with the legs standing where it landed (cut from the same model where the two meet).
+      A pale flame is drawn while NASA's timeline has an engine burning. The ground round
+      the landing place is drawn finely with the Moon's own map.
+      The drawn path now slows all the way down to a landing and speeds up from rest at a
+      liftoff (`groundPlaceAt`), coming straight down at the last; before, the lander was
+      drawn sliding onto the ground at 640 m/s. The last of the descent and the liftoff
+      are played slowly. Close up the picture is brightened, as a camera's would be: the
+      Sun was low over the landing place and the ground is dim (`groundExposure`); the
+      note says so, with the lean and the flame.
+      Not done: Columbia close up (the only model is the museum's scan of the command
+      module alone, and in lunar orbit it flew joined to its service module, of which NASA
+      offers no 3D model), and an astronaut for the first step (NASA's one astronaut model
+      does not say which suit it shows). Columbia is still a named point, which sits on
+      the lander while the two fly together. Dust, the flag and footprints are not drawn.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

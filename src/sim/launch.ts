@@ -8,7 +8,8 @@ import {
   pathPositionKm,
   pathVelocityKmPerS,
 } from './trajectory';
-import type { Vec3 } from './vec3';
+import { SECONDS_PER_DAY } from './constants';
+import { add, normalize, scale, type Vec3 } from './vec3';
 
 /** How a body turns: the pole it turns anticlockwise about (ecliptic frame) and how long a turn takes. */
 export interface Turning {
@@ -53,17 +54,53 @@ export function stagedSamples(
 }
 
 /**
+ * Once a craft that stood upright starts to lean, it is drawn coming round to the way it
+ * moves over this many seconds, not snapping to it. A drawing choice.
+ */
+const LEAN_IN_SECONDS = 20;
+
+/**
  * Which way a craft's nose is drawn pointing at a date on its path round a turning body: the
- * way it moves over the ground, and straight up while it stands on it. A unit vector in the
- * ecliptic frame.
+ * way it moves over the ground, and straight up while it stands on it. A craft that climbs
+ * straight up at first is held upright until `uprightUntilJd`, then eased round. A unit
+ * vector in the ecliptic frame.
  */
 export function noseAlong(
   samples: readonly PathSample[],
   turning: Turning | null,
   jd: number,
+  uprightUntilJd?: number,
 ): Vec3 {
   const place = pathPositionKm(samples, jd);
-  return noseDirection(place, pathVelocityKmPerS(samples, jd), groundAt(place, turning));
+  const heading = noseDirection(place, pathVelocityKmPerS(samples, jd), groundAt(place, turning));
+  if (uprightUntilJd === undefined) return heading;
+  const up = normalize(place);
+  const through = ((jd - uprightUntilJd) * SECONDS_PER_DAY) / LEAN_IN_SECONDS;
+  if (through <= 0) return up;
+  if (through >= 1) return heading;
+  const eased = through * through * (3 - 2 * through);
+  return normalize(add(scale(up, 1 - eased), scale(heading, eased)));
+}
+
+/** Which flame, if any, a craft's engines make at a date. */
+export function flameAt<Flame>(
+  burns: readonly {
+    readonly fromJd: { readonly value: number };
+    readonly untilJd: { readonly value: number };
+    readonly flame: Flame;
+  }[],
+  jd: number,
+): Flame | null {
+  return burns.find((burn) => burn.fromJd.value <= jd && jd < burn.untilJd.value)?.flame ?? null;
+}
+
+/**
+ * How much of the day sky's blue is left at a height: all of it on the ground, and less by
+ * the same share for every `scaleHeightKm` climbed, as the air itself thins. Nothing at night.
+ */
+export function skyShare(altitudeKm: number, scaleHeightKm: number, sunIsUp: boolean): number {
+  if (!sunIsUp || !(scaleHeightKm > 0)) return 0;
+  return Math.exp(-Math.max(0, altitudeKm) / scaleHeightKm);
 }
 
 /**

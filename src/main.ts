@@ -29,7 +29,7 @@ import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
 import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
-import { noseAlong, shedShareAt, stagedSamples, turningOf } from './sim/launch';
+import { flameAt, noseAlong, shedShareAt, skyShare, stagedSamples, turningOf } from './sim/launch';
 import { chasePositionKm, pathPositionKm, sampleInstants } from './sim/trajectory';
 import {
   add,
@@ -157,6 +157,12 @@ const ROUTE_STEP_DEG = 3;
 const CRAFT_CLOSE_UP_RADII = 0.55;
 /** How far to the south of straight overhead that view is taken from, to show the climb side-on. */
 const CRAFT_VIEW_SOUTH = 1.1;
+/**
+ * The day sky seen from the ground, and the dark behind everything else (the stage's own),
+ * as red, green and blue out of 255. The blue is a drawing choice.
+ */
+const DAY_SKY_RGB = [92, 160, 224] as const;
+const SPACE_RGB = [5, 7, 15] as const;
 /** A craft drawn as its 3D model is seen from this many of its lengths away at first. */
 const MODEL_VIEW_LENGTHS = 2.2;
 /**
@@ -1015,6 +1021,28 @@ function start(): void {
    * The close look a chapter asks for: over a craft, or at a body from its sunlit side or
    * from over one of its poles. `null` when it asks for none.
    */
+  /**
+   * The colour of the sky behind a craft climbing through a world's air, seen from beside
+   * it: blue by day near the ground, the dark of space once the air has thinned away.
+   */
+  const skyBehind = (story: Story, flown: StoryCraft): number | null => {
+    const { air } = story;
+    const world = catalogue.find((object) => object.id === air?.ofId);
+    const groundKm = world ? bodyRadiusKm(world) : null;
+    const star = starOf(story);
+    if (!air || groundKm === null || air.ofId !== flown.path.centreId) return null;
+    const out = subtract(system.craftMiddleOf(flown.id), system.positionOf(air.ofId));
+    // Height over the place the craft left: Earth's ground is not everywhere as far from its middle.
+    const heightKm =
+      (length(out) / system.radiusOf(air.ofId) - 1) * groundKm - (padHeightKm.get(flown.id) ?? 0);
+    const sunIsUp =
+      star !== undefined &&
+      dot(out, subtract(system.positionOf(star), system.positionOf(air.ofId))) > 0;
+    const share = skyShare(heightKm, air.scaleHeightKm.value, sunIsUp);
+    const mix = (channel: 0 | 1 | 2): number =>
+      Math.round(SPACE_RGB[channel] + (DAY_SKY_RGB[channel] - SPACE_RGB[channel]) * share);
+    return (mix(0) << 16) | (mix(1) << 8) | mix(2);
+  };
   /** The look from over a craft, far enough off to see the ground curve under its path. */
   const overCraft = (flown: StoryCraft, squeeze: number): FlyTo => {
     const ground = flown.path.centreId;
@@ -1349,6 +1377,11 @@ function start(): void {
    * the plane it flies in, on the right of the way it goes. A unit vector in scene axes.
    */
   const flightSides = new Map<string, Vec3>();
+  /**
+   * For each craft that leaves the ground: how far the place it leaves is from its world's
+   * middle, in km over that world's longest radius (it is under it anywhere but the equator).
+   */
+  const padHeightKm = new Map<string, number>();
   const sideOfFlight = (flight: TrackedCraft): Vec3 | null => {
     const { instants } = flight;
     const first = instants[0];
@@ -1359,7 +1392,7 @@ function start(): void {
   };
   /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
   const flightOf = (
-    { id, path, modelOfId, fromGround, sheds }: StoryCraft,
+    { id, path, modelOfId, fromGround, sheds, burns, uprightUntilJd }: StoryCraft,
     _index: number,
     all: readonly StoryCraft[],
   ): TrackedCraft => {
@@ -1409,8 +1442,9 @@ function start(): void {
             model: {
               url: mediaUrl(model.file),
               lengthKm: 2 * halfKm,
-              noseAt: (jd: number) => noseAlong(samples, turning, jd),
+              noseAt: (jd: number) => noseAlong(samples, turning, jd, uprightUntilJd?.value),
               shedBelowAt: (jd: number) => shedShareAt(sheds ?? [], jd),
+              flameAt: (jd: number) => flameAt(burns ?? [], jd),
             },
           }
         : {}),
@@ -1819,7 +1853,16 @@ function start(): void {
                 craft: craft.map(flightOf),
               };
               flightSides.clear();
+              padHeightKm.clear();
               for (const flight of tracks.craft) {
+                const centre = catalogue.find((object) => object.id === flight.centreId);
+                const groundKm = centre ? bodyRadiusKm(centre) : null;
+                if (flight.leavesGroundAtJd !== undefined && groundKm !== null) {
+                  padHeightKm.set(
+                    flight.id,
+                    length(flight.placeAt(flight.leavesGroundAtJd)) - groundKm,
+                  );
+                }
                 const side = sideOfFlight(flight);
                 if (side) flightSides.set(flight.id, side);
               }
@@ -1920,6 +1963,7 @@ function start(): void {
       system.setDust(null, clock.jd);
       system.setAurora(null, null);
       system.setSkyTrack(null);
+      stage.setSky(null);
       tagCraft([]);
       document.body.classList.remove('watching');
       system.setDate(clock.jd);
@@ -2189,6 +2233,7 @@ function start(): void {
       });
       const modelled = paired ? modelledCraft(paired.story, paired.chapter) : null;
       system.drawCraftModels(modelled !== null);
+      stage.setSky(modelled && paired ? skyBehind(paired.story, modelled) : null);
       for (const [id, tag] of craftTags) {
         const point = stage.toScreen(system.positionOf(id));
         // A craft seen as itself needs no ring to find it by.

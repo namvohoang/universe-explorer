@@ -783,6 +783,17 @@ recorded last.
       (`DEPTH_GAIN` in `src/scene/projection.ts`), for every scene.
       A story's craft asks for this with `modelOfId`, `fromGround` and `sheds`; the other
       flights still show their craft as points.
+- [x] 12.24 The launch with a flame and a blue sky, and a climb like the real one (owner's
+      notes, 2026-10-09). The rocket stands straight up until NASA's time for the start of
+      its lean (13.2 s, from the timeline of SP-2000-4029), then comes round to the way it
+      moves over twenty seconds. A flame is drawn behind it while its engines burn, from
+      the ignitions and cutoffs of the same timeline: long and yellow for the first stage,
+      short and pale for the two that burn hydrogen. The sky behind it is blue on the
+      ground and fades to the dark of space as the air thins, by the scale height of
+      NASA's Earth fact sheet (8.5 km). The flame's size and colours and the blue itself
+      are drawings, and the story's note says so. Still not drawn: the tower, clouds, the
+      smoke, the escape tower leaving, and the tilt by which the real rocket leaned away
+      from its tower in the first ten seconds.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

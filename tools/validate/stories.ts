@@ -144,6 +144,20 @@ function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<stri
   if (craft.sheds && craft.modelOfId === undefined) {
     errors.push(`${at} sheds parts but is not drawn as a 3D model`);
   }
+  if ((craft.burns || craft.uprightUntilJd) && craft.modelOfId === undefined) {
+    errors.push(`${at} has engine burns or a lean but is not drawn as a 3D model`);
+  }
+  let burntUntilJd = -Infinity;
+  for (const burn of craft.burns ?? []) {
+    if (!(burn.fromJd.value >= burntUntilJd && burn.untilJd.value > burn.fromJd.value)) {
+      errors.push(`${at} has engine burns that overlap or run backwards`);
+    }
+    burntUntilJd = burn.untilJd.value;
+  }
+  // A flame is a drawing, and the screen must say so.
+  if (craft.burns && story.noteKey === undefined) {
+    errors.push(`${at} is drawn with a flame, but the story has no note to say it is a drawing`);
+  }
   let previousJd = story.chapters[0]?.atJd.value ?? -Infinity;
   let previousShare = 0;
   for (const shed of craft.sheds ?? []) {
@@ -244,6 +258,16 @@ export function checkStories(
       }
       errors.push(...pathErrors(story, one.id, one.path, known));
       errors.push(...modelErrors(story, one, modelIds));
+    }
+    if (story.air) {
+      if (!story.actorIds.includes(story.air.ofId)) {
+        errors.push(
+          `story ${story.id}: draws the air of "${story.air.ofId}", not one of its actors`,
+        );
+      }
+      if (story.noteKey === undefined) {
+        errors.push(`story ${story.id}: draws a blue sky but has no note to say it is a drawing`);
+      }
     }
     for (const [id, path] of Object.entries(story.tracked ?? {})) {
       if (!story.actorIds.includes(id)) {

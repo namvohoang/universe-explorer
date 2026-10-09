@@ -5,7 +5,7 @@ import { catalogue } from '../src/data/catalogue';
 import type { PathSample, Story } from '../src/data/types';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from '../src/sim/layout';
 import { groundPlaceAt, groundRoute } from '../src/sim/groundPath';
-import { noseAlong, shedShareAt, stagedSamples, turningOf } from '../src/sim/launch';
+import { flameAt, noseAlong, shedShareAt, stagedSamples, turningOf } from '../src/sim/launch';
 import { chasePositionKm, pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
@@ -221,6 +221,25 @@ describe('the launch of Apollo 11', () => {
     // Slowly at first: NASA's rocket took about twelve seconds to rise its own 111 metres.
     const after = pathPositionKm(samples, first[0] + 5 / 86_400);
     expect(Math.hypot(after.x, after.y, after.z) - padKm).toBeLessThan(0.111);
+  });
+
+  it("climbs straight up until NASA's time for the lean, and burns with a flame until orbit", () => {
+    const [first] = points;
+    if (!first || !flown) throw new Error('the path has places');
+    const rangeZero = first[0] - 0.63 / 86_400;
+    // NASA's timeline: "Pitch and roll maneuver started" at 13.2 s.
+    expect(((flown.uprightUntilJd?.value ?? 0) - rangeZero) * 86_400).toBeCloseTo(13.2, 3);
+    const at = first[0] + 10 / 86_400;
+    const nose = noseAlong(samples, turning, at, flown.uprightUntilJd?.value);
+    const place = pathPositionKm(samples, at);
+    const km = Math.hypot(place.x, place.y, place.z);
+    expect((nose.x * place.x + nose.y * place.y + nose.z * place.z) / km).toBeCloseTo(1, 12);
+    const burns = flown.burns ?? [];
+    expect(flameAt(burns, first[0])).toBe('bright');
+    // Between the first stage's cutoff (161.63 s) and the second's ignition (164.0 s): none.
+    expect(flameAt(burns, rangeZero + 163 / 86_400)).toBeNull();
+    expect(flameAt(burns, rangeZero + 300 / 86_400)).toBe('faint');
+    expect(flameAt(burns, apollo11Launch.endJd.value)).toBeNull();
   });
 
   it("drops its first two stages at the instants of NASA's table, lowest first", () => {

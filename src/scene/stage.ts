@@ -127,6 +127,11 @@ export interface Stage {
    * that fills it. With two, the lift is not used: each is drawn in the middle of its part.
    */
   setPanes(panes: Panes | null): void;
+  /**
+   * Draws the first look against a sky of this colour (0xRRGGBB) in place of the dark of
+   * space; `null` puts the dark back. A second look is always against the dark.
+   */
+  setSky(colour: number | null): void;
   /** Has the camera draw another scene in place of the stage's own; `null` puts that back. */
   setScene(scene: Scene | null): void;
   /** Width over height of the view, for choosing camera distances. */
@@ -176,7 +181,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   const watch = createFrameWatch();
 
   const scene = new Scene();
-  scene.background = new Color(BACKGROUND);
+  const dark = new Color(BACKGROUND);
+  const backdrop = new Color(BACKGROUND);
+  scene.background = backdrop;
   renderer.setClearColor(BACKGROUND);
 
   const camera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, FARTHEST);
@@ -199,6 +206,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   let sideOffset: Vec3 | null = null;
   let sideSwing: { readonly from: Vec3; elapsed: number } | null = null;
   let otherScene: Scene | null = null;
+  let sky: Color | null = null;
   let following: FlyTo | null = null;
   let flight: Flight | null = null;
   let previousTarget: Vec3 | null = null;
@@ -341,6 +349,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     }
     camera.updateMatrixWorld();
     for (const callback of cameraCallbacks) callback();
+    backdrop.copy(sky ?? dark);
     if (!panes) {
       renderer.render(otherScene ?? scene, camera);
       return;
@@ -354,6 +363,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     if (!panes.side) return;
     moveSideCamera(panes, dt);
     for (const callback of sideCallbacks) callback(toVec3(sideCamera.position));
+    backdrop.copy(dark);
     drawIn(panes.side, sideCamera, panes.scene ?? scene);
   };
 
@@ -397,6 +407,9 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
       if (!next?.side) sideOffset = null;
       panes = next;
       applyLift();
+    },
+    setSky(colour) {
+      sky = colour === null ? null : new Color(colour);
     },
     setScene(next) {
       otherScene = next;

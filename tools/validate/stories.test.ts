@@ -93,6 +93,23 @@ describe('checkStories', () => {
       const bare = checkStories([flying({ sheds: [shed(15, 0.3)] })], IDS, MODELS);
       expect(bare.join('\n')).toMatch(/not drawn as a 3D model/);
     });
+
+    it('is rejected when it has a flame or a blue sky and no note to say they are drawings', () => {
+      const burn = (fromJd: number, untilJd: number): NonNullable<StoryCraft['burns']>[number] => ({
+        fromJd: { value: fromJd, sourceId: 'test' },
+        untilJd: { value: untilJd, sourceId: 'test' },
+        flame: 'bright',
+      });
+      const burning = flying({ modelOfId: 'toy-rocket', burns: [burn(10, 20), burn(21, 25)] });
+      expect(checkStories([burning], IDS, MODELS).join('\n')).toMatch(
+        /flame, but the story has no note/,
+      );
+      expect(checkStories([{ ...burning, noteKey: 'storyTestNote' }], IDS, MODELS)).toEqual([]);
+      const tangled = flying({ modelOfId: 'toy-rocket', burns: [burn(10, 20), burn(15, 25)] });
+      expect(checkStories([tangled], IDS, MODELS).join('\n')).toMatch(/overlap or run backwards/);
+      const sky = story({ air: { ofId: 'earth', scaleHeightKm: { value: 8, sourceId: 'test' } } });
+      expect(checkStories([sky], IDS).join('\n')).toMatch(/blue sky but has no note/);
+    });
   });
 
   it('rejects chapters out of order', () => {

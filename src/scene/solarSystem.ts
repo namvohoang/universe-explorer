@@ -22,13 +22,15 @@ import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
 import { createDustTrail, type DustTrail } from './dustTrail';
-import { createFlownModel, type FlownModel } from './flownModel';
+import { createFlownModel, type Flame, type FlownModel } from './flownModel';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
 import { createSkyFigures } from './skyFigures';
 import { createSkyTrail, type SkyTrail } from './skyTrail';
 import { createTrail, type Trail } from './trail';
 
 const TRUE_SCALE = createScale('true');
+/** How fast a drawn flame wavers, in radians for each second of the story's own time. */
+const FLAME_WAVERS_PER_SECOND = 1.7;
 /** How far ahead to look to find which way a comet is heading, in days. */
 const HEADING_DAYS = 0.5;
 /** Enough fill light to make out a night side; the Sun does the rest. */
@@ -66,6 +68,8 @@ export interface TrackedCraft {
      * longer drawn: a share of its length, 0 while it is whole.
      */
     shedBelowAt(jd: number): number;
+    /** The flame its engines make at a date, if they are burning. */
+    flameAt(jd: number): Flame | null;
   };
 }
 
@@ -309,6 +313,10 @@ export function createSolarSystem(
         // The middle of what is left of it.
         flown.middle = add(place, scaleBy(nose, (flown.length * (1 + shed)) / 2));
         flown.model.place(place, nose, flown.length, shed);
+        flown.model.setFlame(
+          craft.model.flameAt(jd),
+          jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND,
+        );
       }
     }
     for (const [id, body] of bodies) {

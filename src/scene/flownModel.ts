@@ -1,4 +1,15 @@
-import { Box3, DoubleSide, Group, Mesh, Plane, Vector3, type Material } from 'three';
+import {
+  Box3,
+  BufferAttribute,
+  ConeGeometry,
+  DoubleSide,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  Plane,
+  Vector3,
+  type Material,
+} from 'three';
 import type { Vec3 } from '../sim/vec3';
 import { loadGltf } from './gltf';
 
@@ -11,7 +22,73 @@ export interface FlownModel {
    * `shedBelow` is the share of its length, from the tail, that is left out: a stage let go.
    */
   place(tail: Vec3, nose: Vec3, length: number, shedBelow: number): void;
+  /**
+   * Draws a flame behind what is left of the model, or none. `flicker` is any number that
+   * changes as time runs: the flame's length wavers with it.
+   */
+  setFlame(flame: Flame | null, flicker: number): void;
   dispose(): void;
+}
+
+/** `bright`: the long yellow flame of a kerosene engine. `faint`: the pale one of a hydrogen engine. */
+export type Flame = 'bright' | 'faint';
+
+/**
+ * How each flame is drawn, in lengths of the whole craft: a glowing cone, hot and pale at
+ * the engines and fading to nothing at its tip, with a shorter, whiter one inside it. Every
+ * number here is a drawing choice, made to look like photos of a launch, not a measurement.
+ */
+const FLAMES: Readonly<
+  Record<
+    Flame,
+    {
+      readonly long: number;
+      readonly wide: number;
+      /** How solid it is at the engines, from 0 (not there) to 1. */
+      readonly strength: number;
+      readonly hot: readonly [number, number, number];
+      readonly cool: readonly [number, number, number];
+    }
+  >
+> = {
+  bright: { long: 1, wide: 0.07, strength: 0.95, hot: [1, 0.8, 0.3], cool: [1, 0.35, 0.05] },
+  faint: { long: 0.35, wide: 0.03, strength: 0.4, hot: [0.75, 0.85, 1], cool: [0.4, 0.55, 1] },
+};
+/** The inner cone is this share of the outer one's length and width. */
+const CORE_SHARE = 0.55;
+/** The flame's length wavers by this share of itself. */
+const WAVER = 0.07;
+
+/** A cone one unit long and one in radius, its wide end at the origin and its tip at -y. */
+function flameCone(): ConeGeometry {
+  const geometry = new ConeGeometry(1, 1, 24, 8, true);
+  geometry.rotateX(Math.PI);
+  geometry.translate(0, -0.5, 0);
+  const count = geometry.getAttribute('position').count;
+  geometry.setAttribute('color', new BufferAttribute(new Float32Array(count * 4), 4));
+  return geometry;
+}
+
+/** Colours a cone from `hot` at its wide end to `cool`, thinning to nothing at its tip. */
+function colourFlame(
+  geometry: ConeGeometry,
+  hot: readonly [number, number, number],
+  cool: readonly [number, number, number],
+  strength: number,
+): void {
+  const position = geometry.getAttribute('position');
+  const colour = geometry.getAttribute('color');
+  for (let index = 0; index < position.count; index++) {
+    const along = -position.getY(index);
+    colour.setXYZW(
+      index,
+      hot[0] + (cool[0] - hot[0]) * along,
+      hot[1] + (cool[1] - hot[1]) * along,
+      hot[2] + (cool[2] - hot[2]) * along,
+      strength * (1 - along) ** 1.5,
+    );
+  }
+  colour.needsUpdate = true;
 }
 
 const MODEL_NOSE = new Vector3(0, 1, 0);
@@ -26,6 +103,19 @@ export function createFlownModel(url: string): FlownModel {
   // Everything behind this plane is left out. The renderer must have local clipping on.
   const cut = new Plane();
   const cutAt = new Vector3();
+  const flameMaterial = new MeshBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    depthWrite: false,
+    side: DoubleSide,
+  });
+  const outer = new Mesh(flameCone(), flameMaterial);
+  const core = new Mesh(flameCone(), flameMaterial);
+  const flames = new Group();
+  flames.add(outer, core);
+  flames.visible = false;
+  group.add(flames);
+  let drawnFlame: Flame | null = null;
   let disposeModel: (() => void) | null = null;
   let disposed = false;
   loadGltf(url, (model) => {
@@ -70,10 +160,28 @@ export function createFlownModel(url: string): FlownModel {
       const from = shedBelow > 0 ? shedBelow : -1;
       cutAt.copy(group.position).addScaledVector(towards, length * from);
       cut.setFromNormalAndCoplanarPoint(towards, cutAt);
+      // The engines of what is left are where the last part came off.
+      flames.position.y = shedBelow;
+    },
+    setFlame(flame, flicker) {
+      flames.visible = flame !== null;
+      if (flame === null) return;
+      const { long, wide, strength, hot, cool } = FLAMES[flame];
+      if (flame !== drawnFlame) {
+        drawnFlame = flame;
+        colourFlame(outer.geometry, hot, cool, strength);
+        colourFlame(core.geometry, [1, 1, 1], hot, strength);
+      }
+      const now = long * (1 + WAVER * Math.sin(flicker));
+      outer.scale.set(wide, now, wide);
+      core.scale.set(wide * CORE_SHARE, now * CORE_SHARE, wide * CORE_SHARE);
     },
     dispose() {
       disposed = true;
       group.removeFromParent();
+      outer.geometry.dispose();
+      core.geometry.dispose();
+      flameMaterial.dispose();
       disposeModel?.();
     },
   };

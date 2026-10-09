@@ -1138,7 +1138,7 @@ export const en = {
   storyApollo11LaunchTitle: 'Apollo 11: the launch',
   craftApollo11: 'Apollo 11',
   storyApollo11LaunchNote:
-    'The times and places are real. The line between them, and the way the rocket leans, are drawings.',
+    'The times and places are real. The line between them, the rocket’s lean, its flame and the sky are drawings.',
   storyApollo11LaunchLiftoff:
     'Liftoff! The first stage of the Saturn V has the strongest engines. It has to lift the whole rocket, full of fuel.',
   storyApollo11LaunchFirstStageAway:

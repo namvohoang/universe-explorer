@@ -4,9 +4,10 @@
 // Earth is turned so that Florida is where it really was at liftoff.
 // Seen close up the rocket is NASA's model of the Saturn V at its true size, standing on the
 // ground until liftoff; which way it points as it climbs is the app's drawing too. A stage
-// that has dropped away is cut off the model; it is not drawn falling.
+// that has dropped away is cut off the model; it is not drawn falling. The flame and the blue
+// of the sky are drawings as well: when the engines burn and how fast the air thins are real.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
-import type { Story } from '../types';
+import type { Sourced, Story } from '../types';
 import { APOLLO_11_ASCENT, APOLLO_11_ASCENT_TURN } from '../paths/apollo11Ascent';
 import { s } from './sourced';
 import {
@@ -15,9 +16,17 @@ import {
   NASA_SATURN_V_MODEL,
   NASA_SATURN_V_STUDENTS,
   NASA_SP4029_APOLLO_11_ASCENT,
+  NASA_SP4029_APOLLO_11_TIMELINE,
+  NSSDC_EARTH_AIR,
 } from './sources';
 
 const TABLE = 'nasa-sp4029-apollo11-ascent';
+const TIMELINE = 'nasa-sp4029-apollo11-timeline';
+/** Range zero, the instant NASA's tables count from: 13:32:00 UTC on 16 July 1969. */
+const RANGE_ZERO_JD = 2440419.063888889;
+/** An instant given in the tables as seconds after range zero. */
+const at = (seconds: number, sourceId: string, note: string): Sourced<number> =>
+  s(RANGE_ZERO_JD + seconds / 86_400, sourceId, note);
 const STUDENTS = 'nasa-saturn-v-students';
 
 export const apollo11Launch: Story = {
@@ -60,8 +69,32 @@ export const apollo11Launch: Story = {
           ),
         },
       ],
+      // The first stage burns kerosene, with a long bright flame; the other two burn
+      // hydrogen, whose flame is pale and hard to see.
+      burns: [
+        {
+          fromJd: at(-6.4, TIMELINE, 'S-IC engine ignition (#5), 6.4 s before range zero.'),
+          untilJd: at(161.63, TIMELINE, 'S-IC outboard engine cutoff, 2 min 41.63 s.'),
+          flame: 'bright',
+        },
+        {
+          fromJd: at(164.0, TIMELINE, 'S-II ignition, 2 min 44.0 s.'),
+          untilJd: at(548.22, TIMELINE, 'S-II outboard engine cutoff, 9 min 8.22 s.'),
+          flame: 'faint',
+        },
+        {
+          fromJd: at(552.2, TIMELINE, 'S-IVB 1st burn ignition, 9 min 12.20 s.'),
+          untilJd: at(699.33, TIMELINE, 'S-IVB 1st burn cutoff, 11 min 39.33 s.'),
+          flame: 'faint',
+        },
+      ],
+      uprightUntilJd: at(13.2, TIMELINE, 'Pitch and roll maneuver started, 13.2 s.'),
     },
   ],
+  air: {
+    ofId: 'earth',
+    scaleHeightKm: s(8.5, 'nssdc-earth-air', 'Terrestrial atmosphere: "Scale height: 8.5 km".'),
+  },
   turned: { earth: APOLLO_11_ASCENT_TURN },
   chapters: [
     {
@@ -119,5 +152,7 @@ export const apollo11Launch: Story = {
     NASA_SATURN_V_STUDENTS,
     NASA_SATURN_V_FIRST_STAGE,
     NASA_SATURN_V_MODEL,
+    NASA_SP4029_APOLLO_11_TIMELINE,
+    NSSDC_EARTH_AIR,
   ],
 };

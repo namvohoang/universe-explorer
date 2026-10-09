@@ -197,6 +197,22 @@ export interface StoryCraft {
     readonly atJd: Sourced<number>;
     readonly belowShare: Sourced<number>;
   }[];
+  /**
+   * With `modelOfId`: when its engines burn, earliest first, with a flame drawn behind the
+   * model for as long. The instants are real; the flame's size and colour are a drawing
+   * (`bright` for the long yellow flame of a kerosene engine, `faint` for the pale, nearly
+   * unseen one of a hydrogen engine), and the story must say so with `noteKey`.
+   */
+  readonly burns?: readonly {
+    readonly fromJd: Sourced<number>;
+    readonly untilJd: Sourced<number>;
+    readonly flame: 'bright' | 'faint';
+  }[];
+  /**
+   * With `fromGround`: the instant the craft starts to lean over. Until then it is drawn
+   * standing straight up, as it climbs straight up from its pad.
+   */
+  readonly uprightUntilJd?: Sourced<number>;
   readonly path: SampledPath | StagedPath | GroundPath | ChasePath;
 }
 
@@ -276,6 +292,13 @@ export interface Story {
    * years of a planet's path in one chapter, say. A choice of pace, not a measurement.
    */
   readonly chapterSeconds?: number;
+  /**
+   * The air of a world, for a close look at a craft climbing through it from the ground: by
+   * day the sky behind the craft is drawn blue, fading to the black of space as the air
+   * thins. `scaleHeightKm` is the height over which the air thins to about a third. How blue
+   * the sky is drawn is a drawing; the story must say so with `noteKey`.
+   */
+  readonly air?: { readonly ofId: string; readonly scaleHeightKm: Sourced<number> };
   /** Names the season in each half of this actor, worked out from how it leans to its star. */
   readonly seasonsOf?: string;
   readonly sources: readonly Source[];

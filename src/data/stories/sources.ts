@@ -101,6 +101,13 @@ export const NASA_SATURN_V_STUDENTS: Source = {
   retrieved: '2026-10-07',
 };
 
+export const NSSDC_EARTH_AIR: Source = {
+  id: 'nssdc-earth-air',
+  title: 'NASA NSSDCA — Earth Fact Sheet (last updated 15 November 2024), terrestrial atmosphere',
+  url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html',
+  retrieved: '2026-10-09',
+};
+
 export const NASA_SATURN_V_FIRST_STAGE: Source = {
   id: 'nasa-saturn-v-first-stage',
   title: 'NASA — In 1969… Saturn V First Stage For Apollo 11 Mission',

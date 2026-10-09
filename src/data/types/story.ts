@@ -225,6 +225,35 @@ export interface StoryCraft {
    */
   readonly uprightUntilJd?: Sourced<number>;
   /**
+   * With `modelOfId`: the direction the craft's nose points in the model's own file, when
+   * that is not along its +y (a museum's scan of a craft as it stands on show). Measured on
+   * the model.
+   */
+  readonly modelNose?: Sourced<readonly [x: number, y: number, z: number]>;
+  /**
+   * With `modelOfId`, for a craft on a `GroundPath` that flies joined to another of the
+   * story's craft, nose to its top: from `apartFromJd` until `togetherAtJd` the two are
+   * apart. While their paths are still at one place the model is drawn standing off from
+   * the other's top, nose towards it, by a gap that opens and closes steadily; the gap and
+   * the way the two face each other are a drawing.
+   */
+  readonly joins?: {
+    readonly craftId: string;
+    readonly apartFromJd: Sourced<number>;
+    readonly togetherAtJd: Sourced<number>;
+  };
+  /**
+   * With `groundedAtJd`: somebody who steps out onto the ground beside the craft, drawn as
+   * a 3D figure `tallKm` tall from `fromJd` until `untilJd`. Where the figure stands and
+   * how it is posed are a drawing; the story must say so with `noteKey`.
+   */
+  readonly walker?: {
+    readonly media: MediaRef;
+    readonly tallKm: Sourced<number>;
+    readonly fromJd: Sourced<number>;
+    readonly untilJd: Sourced<number>;
+  };
+  /**
    * With `modelOfId`, for a craft on a `GroundPath`: an instant at which it stands on the
    * ground. The ground round that place is drawn finely enough to stand beside the craft.
    */

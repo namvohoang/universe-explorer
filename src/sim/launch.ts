@@ -214,3 +214,21 @@ const MOST_EXPOSURE = 3.5;
 export function groundExposure(starHeightSine: number): number {
   return 1 / Math.max(starHeightSine, 1 / MOST_EXPOSURE);
 }
+
+/**
+ * Two craft that have just parted, or are about to join, are drawn drawing apart or closing
+ * at this many km a second, and never further apart than the second number while their paths
+ * are still at one place. Drawing choices: how far apart they really flew is not known here.
+ */
+const PARTING_KM_PER_S = 0.00005;
+const WIDEST_GAP_KM = 0.03;
+
+/**
+ * How wide a gap a craft is drawn standing off from the one it flies joined to, in km:
+ * nothing while they are joined, opening steadily after they part and closing steadily
+ * before they join again.
+ */
+export function joinedGapKm(apartFromJd: number, togetherAtJd: number, jd: number): number {
+  const seconds = Math.min(jd - apartFromJd, togetherAtJd - jd) * SECONDS_PER_DAY;
+  return Math.min(WIDEST_GAP_KM, Math.max(0, seconds) * PARTING_KM_PER_S);
+}

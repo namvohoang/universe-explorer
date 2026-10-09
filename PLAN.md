@@ -827,11 +827,19 @@ recorded last.
       are played slowly. Close up the picture is brightened, as a camera's would be: the
       Sun was low over the landing place and the ground is dim (`groundExposure`); the
       note says so, with the lean and the flame.
-      Not done: Columbia close up (the only model is the museum's scan of the command
-      module alone, and in lunar orbit it flew joined to its service module, of which NASA
-      offers no 3D model), and an astronaut for the first step (NASA's one astronaut model
-      does not say which suit it shows). Columbia is still a named point, which sits on
-      the lander while the two fly together. Dust, the flag and footprints are not drawn.
+      Done too, after the owner said the front part alone and an inexact suit would do
+      (2026-10-09). Columbia close up: the museum's scan of the real command module at its
+      true size, turned nose first (the scan lies tilted in its file). It is only the front
+      part of what flew in lunar orbit: NASA offers no 3D model of the service module, and
+      the note says "front part only". While the two craft fly together it is drawn nose
+      to the lander's top, standing off by a gap that opens after undocking and closes
+      before docking; the gap and how they face are a drawing. An astronaut: NASA's 3D
+      astronaut (credited to DigitalSpace Corporation, `CREDITS.md`) stands beside the
+      lander from the first step until the commander is back inside, by NASA's timeline,
+      and that stretch is played slowly. The model's page does not say which suit it is,
+      and it is not the 1969 one; its height is the model's own, taking its units to be
+      inches (1.886 m). Only one astronaut is drawn, standing still, arms out.
+      Not drawn: dust, the flag, footprints, the second astronaut, the service module.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

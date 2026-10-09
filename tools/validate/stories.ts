@@ -163,6 +163,35 @@ function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<stri
   if (craft.leans && story.noteKey === undefined) {
     errors.push(`${at} is drawn leaning, but the story has no note to say it is a drawing`);
   }
+  if (craft.modelNose && craft.modelOfId === undefined) {
+    errors.push(`${at} says which way a model points but is not drawn as one`);
+  }
+  if (craft.joins) {
+    const other = (story.craft ?? []).find((one) => one.id === craft.joins?.craftId);
+    if (!overGround || craft.modelOfId === undefined || other?.modelOfId === undefined) {
+      errors.push(
+        `${at} flies joined to "${craft.joins.craftId}", but the two are not both 3D models`,
+      );
+    }
+    if (!(craft.joins.togetherAtJd.value > craft.joins.apartFromJd.value)) {
+      errors.push(`${at} joins the other craft before it leaves it`);
+    }
+  }
+  if (craft.walker) {
+    if (craft.groundedAtJd === undefined) {
+      errors.push(`${at} lets somebody out but never stands on the ground`);
+    }
+    if (!(
+      craft.walker.untilJd.value > craft.walker.fromJd.value && craft.walker.tallKm.value > 0
+    )) {
+      errors.push(`${at} lets somebody out for no time at all, or of no height`);
+    }
+    if (story.noteKey === undefined) {
+      errors.push(
+        `${at} draws somebody on the ground, but the story has no note to say it is a drawing`,
+      );
+    }
+  }
   if ((craft.burns || craft.uprightUntilJd) && craft.modelOfId === undefined) {
     errors.push(`${at} has engine burns or a lean but is not drawn as a 3D model`);
   }

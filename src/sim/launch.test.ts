@@ -5,6 +5,7 @@ import {
   droppedPartAt,
   flameAt,
   groundExposure,
+  joinedGapKm,
   noseAlong,
   settlingShedShareAt,
   shedShareAt,
@@ -220,5 +221,27 @@ describe('groundExposure', () => {
   it('brightens no more than its limit, even at night', () => {
     expect(groundExposure(0.01)).toBeCloseTo(3.5, 12);
     expect(groundExposure(-0.5)).toBeCloseTo(3.5, 12);
+  });
+});
+
+describe('joinedGapKm', () => {
+  const second = 1 / 86_400;
+
+  it('is nothing while the two are joined, at either end', () => {
+    expect(joinedGapKm(10, 20, 9)).toBe(0);
+    expect(joinedGapKm(10, 20, 10)).toBe(0);
+    expect(joinedGapKm(10, 20, 20)).toBe(0);
+    expect(joinedGapKm(10, 20, 21)).toBe(0);
+  });
+
+  it('opens steadily after they part and closes the same way before they join', () => {
+    const after = joinedGapKm(10, 20, 10 + 100 * second);
+    expect(after).toBeGreaterThan(0);
+    expect(joinedGapKm(10, 20, 10 + 200 * second)).toBeCloseTo(2 * after, 9);
+    expect(joinedGapKm(10, 20, 20 - 100 * second)).toBeCloseTo(after, 9);
+  });
+
+  it('is never wider than its limit', () => {
+    expect(joinedGapKm(10, 20, 15)).toBeCloseTo(0.03, 12);
   });
 });

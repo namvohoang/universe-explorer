@@ -905,6 +905,7 @@ export const en = {
   cardColumbiaFact3: 'It is the only part of the spacecraft that came back to Earth.',
   modelAltColumbia:
     'A 3D scan of the real command module: a wide, blunt cone of scorched brown metal, with a hatch and small windows.',
+  modelAltAstronaut: '3D model of an astronaut in a white spacesuit with a backpack.',
   nameDiscovery: 'The Shuttle Discovery',
   cardDiscoveryHello:
     'Discovery is a real space shuttle. It flew into space more often than any other.',
@@ -1149,7 +1150,7 @@ export const en = {
     'The engine stops. Apollo 11 is in orbit. Now it goes round and round Earth.',
   storyApollo11LandingTitle: 'Apollo 11: the landing',
   storyApollo11LandingNote:
-    'Times and places: real. The lander’s path, lean and flame: drawings. Close up, the picture is brightened.',
+    'Real: times and places. Drawn: paths, leans, flames, the astronaut’s suit and place. Columbia: front part only. Brightened close up.',
   craftApollo11Lander: 'The lander',
   craftApollo11Columbia: 'Columbia',
   storyApollo11LandingLettingGo:

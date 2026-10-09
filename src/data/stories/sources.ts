@@ -129,6 +129,21 @@ export const NASA_LUNAR_MODULE_MODEL: Source = {
   retrieved: '2026-10-04',
 };
 
+export const SI_COLUMBIA_SCAN: Source = {
+  id: 'si-columbia-3d-scan',
+  title:
+    'Smithsonian National Air and Space Museum — 3D scan of the Apollo 11 command module Columbia (the 3D model the app draws)',
+  url: 'https://3d-api.si.edu/voyager/3d_package:d8c6457e-4ebc-11ea-b77f-2e728ce88125',
+  retrieved: '2026-10-05',
+};
+
+export const NASA_ASTRONAUT_MODEL: Source = {
+  id: 'nasa-astronaut-3d-model',
+  title: 'NASA Science — 3D Resources: Astronaut (the 3D figure the app draws)',
+  url: 'https://science.nasa.gov/3d-resources/astronaut/',
+  retrieved: '2026-10-09',
+};
+
 export const NASA_APOLLO_11_MISSION_REPORT: Source = {
   id: 'nasa-apollo11-mission-report',
   title:

@@ -7,6 +7,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { catalogue } from '../src/data/catalogue';
 import { stories } from '../src/data/stories';
+import type { MediaRef } from '../src/data/types';
 import { checkCatalogue } from './validate/catalogue';
 import { MEDIA_DIR, checkCredits, checkMediaUses } from './validate/credits';
 import { checkStories } from './validate/stories';
@@ -34,8 +35,13 @@ const mediaUses = catalogue.flatMap((object) =>
   })),
 );
 // A story's real photo is credited under the story's own id.
+const storyMedia = (story: (typeof stories)[number]): MediaRef[] => [
+  ...(story.fromEarth ?? []).map(({ media }) => media),
+  // So is the 3D figure of somebody who steps out of a craft.
+  ...(story.craft ?? []).flatMap((craft) => (craft.walker ? [craft.walker.media] : [])),
+];
 const storyMediaUses = stories.flatMap((story) =>
-  (story.fromEarth ?? []).map(({ media }) => ({
+  storyMedia(story).map((media) => ({
     objectId: story.id,
     file: media.file,
     kind: media.kind,

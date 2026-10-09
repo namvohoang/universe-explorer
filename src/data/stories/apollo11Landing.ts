@@ -13,13 +13,18 @@ import { s } from './sourced';
 import {
   NASA_APOLLO_11_MISSION_REPORT,
   NASA_SP4029_APOLLO_11_SUMMARY,
+  NASA_ASTRONAUT_MODEL,
   NASA_LUNAR_MODULE_MODEL,
   NASA_SP4029_APOLLO_11_TIMELINE,
+  SI_COLUMBIA_SCAN,
 } from './sources';
 
 const TIMELINE = 'nasa-sp4029-apollo11-timeline';
 const SUMMARY = 'nasa-sp4029-apollo11-summary';
 // Instants used more than once below, each from the timeline.
+const UNDOCKED_JD = 2440423.238888889;
+const DOCKED_JD = 2440424.399305556;
+const FIRST_STEP_JD = 2440423.622395833;
 const POWERED_DESCENT_JD = 2440423.336863542;
 const LANDED_JD = 2440423.345600694;
 const LIFTOFF_JD = 2440424.245842477;
@@ -92,8 +97,46 @@ export const apollo11Landing: Story = {
           stays: true,
         },
       ],
+      // One astronaut is drawn, from the first step until the commander is back inside.
+      walker: {
+        media: {
+          file: 'public/media/models/astronaut.glb',
+          kind: 'artist-concept',
+          role: 'model',
+          altKey: 'modelAltAstronaut',
+          credit: 'DigitalSpace Corporation',
+        },
+        tallKm: s(
+          0.001886,
+          'nasa-astronaut-3d-model',
+          "The model's own height, 74.26 of its units, taken to be inches as in NASA's other models of crewed craft: 1.886 m. The page gives no size and does not say which suit it shows; it is not the suit worn on the Moon in 1969.",
+        ),
+        fromJd: s(FIRST_STEP_JD, TIMELINE, '1st step taken lunar surface (CDR), 109:24:15.'),
+        untilJd: s(
+          2440423.714953704,
+          TIMELINE,
+          'CDR inside LM, assisted and monitored by LMP, 111:37:32.',
+        ),
+      },
     },
-    { id: 'apollo-11-columbia', nameKey: 'craftApollo11Columbia', path: APOLLO_11_COLUMBIA },
+    {
+      id: 'apollo-11-columbia',
+      nameKey: 'craftApollo11Columbia',
+      path: APOLLO_11_COLUMBIA,
+      // Seen close up it is the museum's scan of the real command module, which is only the
+      // front part of what flew here: the service module behind it is not drawn.
+      modelOfId: 'columbia',
+      modelNose: s(
+        [0.441, 0.831, 0.34],
+        'si-columbia-3d-scan',
+        "Measured on the museum's scan on 2026-10-09: the scan lies tilted, as the craft stands on show, and this is the way the narrow end of its cone points in the file.",
+      ),
+      joins: {
+        craftId: 'apollo-11-lander',
+        apartFromJd: s(UNDOCKED_JD, TIMELINE, 'CSM/LM undocked, 100:12:00.0.'),
+        togetherAtJd: s(DOCKED_JD, TIMELINE, 'CSM/LM docked, 128:03:00.'),
+      },
+    },
   ],
   chapters: [
     {
@@ -145,6 +188,8 @@ export const apollo11Landing: Story = {
     },
     {
       id: 'first-step',
+      // The two and a quarter hours of the walk are played slowly; the rest of the stay is not.
+      slowStart: { storySeconds: 8000, overSeconds: 9 },
       atJd: s(
         2440423.622395833,
         TIMELINE,
@@ -194,5 +239,7 @@ export const apollo11Landing: Story = {
     NASA_SP4029_APOLLO_11_TIMELINE,
     NASA_SP4029_APOLLO_11_SUMMARY,
     NASA_LUNAR_MODULE_MODEL,
+    SI_COLUMBIA_SCAN,
+    NASA_ASTRONAUT_MODEL,
   ],
 };

@@ -102,9 +102,11 @@ const MODEL_NOSE = new Vector3(0, 1, 0);
 
 /**
  * `url` is an agency's model that stands nose up along its own +y, as a rocket on its pad or
- * a lander on its legs. It is fetched at once; until it arrives nothing is drawn.
+ * a lander on its legs. A model that was made lying some other way (a museum's scan of a
+ * craft as it stands on show) is given the direction its nose points in its own file,
+ * `noseInModel`. It is fetched at once; until it arrives nothing is drawn.
  */
-export function createFlownModel(url: string): FlownModel {
+export function createFlownModel(url: string, noseInModel?: Vec3): FlownModel {
   const group = new Group();
   const towards = new Vector3();
   // Everything behind the first plane and ahead of the second is left out. The renderer must
@@ -146,7 +148,15 @@ export function createFlownModel(url: string): FlownModel {
         material.side = DoubleSide;
       }
     });
-    const box = new Box3().setFromObject(model);
+    // Turned nose up first, so that it is measured the way it will fly.
+    const upright = new Group();
+    if (noseInModel) {
+      const lies = new Vector3(noseInModel.x, noseInModel.y, noseInModel.z).normalize();
+      upright.quaternion.setFromUnitVectors(lies, MODEL_NOSE);
+    }
+    upright.add(model);
+    upright.updateMatrixWorld(true);
+    const box = new Box3().setFromObject(upright);
     const size = box.getSize(new Vector3());
     if (disposed || !(size.y > 0)) {
       dispose();
@@ -158,8 +168,8 @@ export function createFlownModel(url: string): FlownModel {
     tall = size.y / longest;
     const holder = new Group();
     holder.scale.setScalar(1 / longest);
-    model.position.sub(new Vector3(middle.x, box.min.y, middle.z));
-    holder.add(model);
+    upright.position.sub(new Vector3(middle.x, box.min.y, middle.z));
+    holder.add(upright);
     group.add(holder);
     disposeModel = dispose;
   });

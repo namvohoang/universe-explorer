@@ -41,6 +41,7 @@ import {
   droppedPartAt,
   flameAt,
   groundExposure,
+  joinedGapKm,
   noseAlong,
   settlingShedShareAt,
   shedShareAt,
@@ -1445,6 +1446,9 @@ function start(): void {
       tower,
       groundedAtJd,
       leans,
+      modelNose,
+      joins,
+      walker,
     }: StoryCraft,
     _index: number,
     all: readonly StoryCraft[],
@@ -1482,11 +1486,39 @@ function start(): void {
         instants: routeInstants(route, ROUTE_STEP_DEG),
         placeAt: (jd) => bodyFramePoint(groundPlaceAt(route, jd), radiusKm),
         ...(groundedAtJd && model ? { leavesGroundAtJd: groundedAtJd.value } : {}),
+        ...(groundedAtJd && model && walker
+          ? {
+              walker: {
+                url: mediaUrl(walker.media.file),
+                tallKm: walker.tallKm.value,
+                fromJd: walker.fromJd.value,
+                untilJd: walker.untilJd.value,
+              },
+            }
+          : {}),
         ...(model && halfKm !== null
           ? {
               model: {
                 url: mediaUrl(model.file),
                 lengthKm: 2 * halfKm,
+                ...(modelNose
+                  ? {
+                      noseInModel: {
+                        x: modelNose.value[0],
+                        y: modelNose.value[1],
+                        z: modelNose.value[2],
+                      },
+                    }
+                  : {}),
+                ...(joins
+                  ? {
+                      joined: {
+                        craftId: joins.craftId,
+                        gapKmAt: (jd: number) =>
+                          joinedGapKm(joins.apartFromJd.value, joins.togetherAtJd.value, jd),
+                      },
+                    }
+                  : {}),
                 noseAt: (jd: number) => {
                   const place = groundPlaceAt(route, jd);
                   const ahead = groundHeading(place, path.heading.value);

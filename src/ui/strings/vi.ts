@@ -866,7 +866,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Động cơ tắt. Apollo 11 đã vào quỹ đạo. Giờ nó bay vòng quanh Trái Đất.',
   storyApollo11LandingTitle: 'Apollo 11: hạ cánh',
   storyApollo11LandingNote:
-    'Thời điểm, vị trí: thật. Đường bay, độ nghiêng, ngọn lửa: hình vẽ. Hình nhìn gần được làm sáng lên.',
+    'Thật: thời điểm, vị trí. Vẽ: đường bay, độ nghiêng, lửa, bộ đồ và chỗ đứng của phi hành gia. Columbia: chỉ phần đầu. Nhìn gần được làm sáng.',
   craftApollo11Lander: 'Tàu đổ bộ',
   craftApollo11Columbia: 'Columbia',
   storyApollo11LandingLettingGo:
@@ -1126,6 +1126,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardColumbiaFact3: 'Nó là phần duy nhất của con tàu trở về Trái Đất.',
   modelAltColumbia:
     'Bản quét 3D của khoang chỉ huy thật: một hình nón rộng, tù, bằng kim loại nâu cháy sém, có cửa sập và các cửa sổ nhỏ.',
+  modelAltAstronaut: 'Mô hình 3D một phi hành gia mặc bộ đồ trắng, đeo ba lô.',
   nameDiscovery: 'Tàu con thoi Discovery',
   cardDiscoveryHello:
     'Discovery là một tàu con thoi thật. Nó đã bay vào vũ trụ nhiều lần hơn mọi tàu khác.',

@@ -855,7 +855,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyApollo11LaunchTitle: 'Apollo 11: phóng lên',
   craftApollo11: 'Apollo 11',
   storyApollo11LaunchNote:
-    'Thời điểm và vị trí là thật. Đường nối giữa chúng, độ nghiêng của tên lửa, ngọn lửa và bầu trời là hình vẽ.',
+    'Thời điểm và vị trí là thật. Đường bay giữa chúng, độ nghiêng của tên lửa, lửa và khói, tháp phóng, mây và bầu trời là hình vẽ.',
   storyApollo11LaunchLiftoff:
     'Rời bệ phóng! Tầng thứ nhất của Saturn V có những động cơ mạnh nhất. Nó phải nâng cả tên lửa đầy nhiên liệu.',
   storyApollo11LaunchFirstStageAway:

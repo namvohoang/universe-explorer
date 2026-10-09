@@ -6,6 +6,7 @@
 // ground until liftoff; which way it points as it climbs is the app's drawing too. A stage
 // that has dropped away is cut off the model; it is not drawn falling. The flame and the blue
 // of the sky are drawings as well: when the engines burn and how fast the air thins are real.
+// So are the tower, the smoke on the ground, the clouds, and the dropped stage falling behind.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
 import type { Sourced, Story } from '../types';
 import { APOLLO_11_ASCENT, APOLLO_11_ASCENT_TURN } from '../paths/apollo11Ascent';
@@ -89,16 +90,20 @@ export const apollo11Launch: Story = {
         },
       ],
       uprightUntilJd: at(13.2, TIMELINE, 'Pitch and roll maneuver started, 13.2 s.'),
+      tower: true,
     },
   ],
   air: {
     ofId: 'earth',
     scaleHeightKm: s(8.5, 'nssdc-earth-air', 'Terrestrial atmosphere: "Scale height: 8.5 km".'),
+    clouds: true,
   },
   turned: { earth: APOLLO_11_ASCENT_TURN },
   chapters: [
     {
       id: 'liftoff',
+      // The first seconds are played slowly, to watch the rocket leave the ground.
+      slowStart: { storySeconds: 24, overSeconds: 9 },
       atJd: s(2440419.063896181, TABLE, 'Liftoff, 0.63 s after 13:32:00 UTC on 1969-07-16.'),
       text: {
         key: 'storyApollo11LaunchLiftoff',
@@ -111,6 +116,8 @@ export const apollo11Launch: Story = {
     },
     {
       id: 'first-stage-away',
+      // So is each stage coming away.
+      slowStart: { storySeconds: 14, overSeconds: 6 },
       atJd: s(2440419.065767361, TABLE, 'S-IC/S-II separation, 2 min 42.30 s after range zero.'),
       text: {
         key: 'storyApollo11LaunchFirstStageAway',
@@ -123,6 +130,7 @@ export const apollo11Launch: Story = {
     },
     {
       id: 'second-stage-away',
+      slowStart: { storySeconds: 14, overSeconds: 6 },
       atJd: s(2440419.070243055, TABLE, 'S-II/S-IVB separation, 9 min 9.00 s after range zero.'),
       text: {
         key: 'storyApollo11LaunchSecondStageAway',

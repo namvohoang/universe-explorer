@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import type { CelestialObject, StagedPath } from '../data/types';
 import { catalogue } from '../data/catalogue';
 import {
+  droppedPartAt,
   flameAt,
   noseAlong,
+  settlingShedShareAt,
   shedShareAt,
   skyShare,
   stagedSamples,
@@ -148,5 +150,45 @@ describe('skyShare', () => {
 
   it('is nothing at night', () => {
     expect(skyShare(0, 8, false)).toBe(0);
+  });
+});
+
+describe('droppedPartAt', () => {
+  const sheds = [
+    { atJd: { value: 10 }, belowShare: { value: 0.3 } },
+    { atJd: { value: 20 }, belowShare: { value: 0.6 } },
+  ];
+  const second = 1 / 86_400;
+
+  it('is nothing before a part is let go, and nothing once it is far behind', () => {
+    expect(droppedPartAt(sheds, 10 - second)).toBeNull();
+    expect(droppedPartAt(sheds, 10 + 60 * second)).toBeNull();
+  });
+
+  it('is the stretch just let go, touching the craft at first and then dropping behind faster and faster', () => {
+    expect(droppedPartAt(sheds, 10)).toEqual({ fromShare: 0, toShare: 0.3, behindKm: 0 });
+    const early = droppedPartAt(sheds, 10 + 2 * second);
+    const later = droppedPartAt(sheds, 10 + 4 * second);
+    expect(later?.behindKm).toBeCloseTo(4 * (early?.behindKm ?? 0), 6);
+    // The second part is the stretch above the first.
+    expect(droppedPartAt(sheds, 20 + second)).toMatchObject({ fromShare: 0.3, toShare: 0.6 });
+  });
+});
+
+describe('settlingShedShareAt', () => {
+  const sheds = [
+    { atJd: { value: 10 }, belowShare: { value: 0.3 } },
+    { atJd: { value: 20 }, belowShare: { value: 0.6 } },
+  ];
+  const second = 1 / 86_400;
+
+  it('does not jump when a part is let go, and ends up where the plain share is', () => {
+    expect(settlingShedShareAt(sheds, 10)).toBe(0);
+    const soon = settlingShedShareAt(sheds, 10 + 0.1 * second);
+    expect(soon).toBeGreaterThan(0);
+    expect(soon).toBeLessThan(0.001);
+    expect(settlingShedShareAt(sheds, 10 + 5 * second)).toBeCloseTo(0.15, 9);
+    expect(settlingShedShareAt(sheds, 15)).toBeCloseTo(shedShareAt(sheds, 15), 12);
+    expect(settlingShedShareAt(sheds, 25)).toBeCloseTo(0.6, 12);
   });
 });

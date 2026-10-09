@@ -29,7 +29,16 @@ import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
 import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
-import { flameAt, noseAlong, shedShareAt, skyShare, stagedSamples, turningOf } from './sim/launch';
+import {
+  droppedPartAt,
+  flameAt,
+  noseAlong,
+  settlingShedShareAt,
+  shedShareAt,
+  skyShare,
+  stagedSamples,
+  turningOf,
+} from './sim/launch';
 import { chasePositionKm, pathPositionKm, sampleInstants } from './sim/trajectory';
 import {
   add,
@@ -163,6 +172,11 @@ const CRAFT_VIEW_SOUTH = 1.1;
  */
 const DAY_SKY_RGB = [92, 160, 224] as const;
 const SPACE_RGB = [5, 7, 15] as const;
+/**
+ * A launch tower is drawn this many times as tall as the rocket beside it: a little taller,
+ * as photos of the pad show it. A drawing choice, not a measurement.
+ */
+const TOWER_TALLER = 1.05;
 /** A craft drawn as its 3D model is seen from this many of its lengths away at first. */
 const MODEL_VIEW_LENGTHS = 2.2;
 /**
@@ -1390,9 +1404,11 @@ function start(): void {
     const across = cross(flight.placeAt(later), flight.placeAt(first));
     return length(across) > 0 ? eclipticToScene(normalize(across)) : null;
   };
+  /** The world whose sky the story on show draws clouds in, if it draws any. */
+  let cloudsOverId: string | null = null;
   /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
   const flightOf = (
-    { id, path, modelOfId, fromGround, sheds, burns, uprightUntilJd }: StoryCraft,
+    { id, path, modelOfId, fromGround, sheds, burns, uprightUntilJd, tower }: StoryCraft,
     _index: number,
     all: readonly StoryCraft[],
   ): TrackedCraft => {
@@ -1436,7 +1452,16 @@ function start(): void {
       frame: 'space',
       instants: sampleInstants(samples, STEPS_PER_SAMPLE),
       placeAt: (jd) => pathPositionKm(samples, jd),
-      ...(fromGround === true && first ? { leavesGroundAtJd: first[0] } : {}),
+      ...(fromGround === true && first
+        ? {
+            leavesGroundAtJd: first[0],
+            launchSite: {
+              smokeFromJd: burns?.[0]?.fromJd.value ?? first[0],
+              towerKm: tower === true && halfKm !== null ? 2 * halfKm * TOWER_TALLER : null,
+              clouds: cloudsOverId === centreId,
+            },
+          }
+        : {}),
       ...(model && halfKm !== null
         ? {
             model: {
@@ -1444,7 +1469,9 @@ function start(): void {
               lengthKm: 2 * halfKm,
               noseAt: (jd: number) => noseAlong(samples, turning, jd, uprightUntilJd?.value),
               shedBelowAt: (jd: number) => shedShareAt(sheds ?? [], jd),
+              lookShedAt: (jd: number) => settlingShedShareAt(sheds ?? [], jd),
               flameAt: (jd: number) => flameAt(burns ?? [], jd),
+              droppedAt: (jd: number) => droppedPartAt(sheds ?? [], jd),
             },
           }
         : {}),
@@ -1832,6 +1859,7 @@ function start(): void {
                   : null,
               );
               system.setDust(story.dustAlongId ?? null, story.chapters[0]?.atJd.value ?? clock.jd);
+              cloudsOverId = story.air?.clouds === true ? story.air.ofId : null;
               const tracks = {
                 shadows: (story.shadows ?? []).map((shadow) => ({
                   casterId: shadow.casterId,

@@ -19,9 +19,10 @@ export interface FlownModel {
   readonly group: Group;
   /**
    * Stands the model's tail at `tail`, its nose towards `nose` (a unit vector), `length` long.
-   * `shedBelow` is the share of its length, from the tail, that is left out: a stage let go.
+   * Only the stretch between the shares `from` and `to` of its length, tail (0) to nose (1),
+   * is drawn: the rest is a stage let go, or the craft that let this stage go.
    */
-  place(tail: Vec3, nose: Vec3, length: number, shedBelow: number): void;
+  place(tail: Vec3, nose: Vec3, length: number, from: number, to: number): void;
   /**
    * Draws a flame behind what is left of the model, or none. `flicker` is any number that
    * changes as time runs: the flame's length wavers with it.
@@ -100,9 +101,12 @@ const MODEL_NOSE = new Vector3(0, 1, 0);
 export function createFlownModel(url: string): FlownModel {
   const group = new Group();
   const towards = new Vector3();
-  // Everything behind this plane is left out. The renderer must have local clipping on.
+  // Everything behind the first plane and ahead of the second is left out. The renderer must
+  // have local clipping on.
   const cut = new Plane();
+  const cutAhead = new Plane();
   const cutAt = new Vector3();
+  const back = new Vector3();
   const flameMaterial = new MeshBasicMaterial({
     vertexColors: true,
     transparent: true,
@@ -130,7 +134,7 @@ export function createFlownModel(url: string): FlownModel {
     model.traverse((part) => {
       if (!(part instanceof Mesh)) return;
       for (const material of [part.material].flat() as Material[]) {
-        material.clippingPlanes = [cut];
+        material.clippingPlanes = [cut, cutAhead];
         // Cut open, a stage is seen into: its inside wall is drawn, not left as a hole.
         material.side = DoubleSide;
       }
@@ -152,16 +156,17 @@ export function createFlownModel(url: string): FlownModel {
   });
   return {
     group,
-    place(tail, nose, length, shedBelow) {
+    place(tail, nose, length, from, to) {
       group.position.set(tail.x, tail.y, tail.z);
       group.quaternion.setFromUnitVectors(MODEL_NOSE, towards.set(nose.x, nose.y, nose.z));
       group.scale.setScalar(length);
-      // Whole, the plane lies a little behind the tail and cuts nothing.
-      const from = shedBelow > 0 ? shedBelow : -1;
-      cutAt.copy(group.position).addScaledVector(towards, length * from);
+      // A plane for an end that is not cut lies well clear of the model.
+      cutAt.copy(group.position).addScaledVector(towards, length * (from > 0 ? from : -1));
       cut.setFromNormalAndCoplanarPoint(towards, cutAt);
+      cutAt.copy(group.position).addScaledVector(towards, length * (to < 1 ? to : 2));
+      cutAhead.setFromNormalAndCoplanarPoint(back.copy(towards).negate(), cutAt);
       // The engines of what is left are where the last part came off.
-      flames.position.y = shedBelow;
+      flames.position.y = from;
     },
     setFlame(flame, flicker) {
       flames.visible = flame !== null;

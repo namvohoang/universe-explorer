@@ -1,4 +1,5 @@
 import type { Story } from '../data/types';
+import { SECONDS_PER_DAY } from './constants';
 
 /**
  * Real seconds each chapter takes to play, however long it lasted: a launch of minutes and a
@@ -18,6 +19,17 @@ export interface StoryTimes {
   readonly endJd: number;
   /** Real seconds each chapter takes, for a story told slower or faster than the usual. */
   readonly chapterSeconds?: number;
+  /**
+   * Where a chapter opens slowly: its first `days` are played over `seconds` real seconds,
+   * before the rest of it takes the usual time. `null` for a chapter that does not.
+   */
+  readonly slowStarts?: readonly (SlowStart | null)[];
+}
+
+/** The opening of a chapter played slowly: so much of the story's time over so many real seconds. */
+export interface SlowStart {
+  readonly days: number;
+  readonly seconds: number;
 }
 
 export function storyTimes(story: Story): StoryTimes {
@@ -25,6 +37,14 @@ export function storyTimes(story: Story): StoryTimes {
     chapterJds: story.chapters.map((chapter) => chapter.atJd.value),
     chapterStopJds: story.chapters.map((chapter) => chapter.untilJd?.value ?? null),
     endJd: story.endJd.value,
+    slowStarts: story.chapters.map((chapter) =>
+      chapter.slowStart
+        ? {
+            days: chapter.slowStart.storySeconds / SECONDS_PER_DAY,
+            seconds: chapter.slowStart.overSeconds,
+          }
+        : null,
+    ),
     ...(story.chapterSeconds === undefined ? {} : { chapterSeconds: story.chapterSeconds }),
   };
 }
@@ -53,11 +73,21 @@ export function chapterEndJd(times: StoryTimes, index: number): number {
   return times.chapterStopJds?.[index] ?? times.chapterJds[index + 1] ?? times.endJd;
 }
 
-/** Simulated days per real second while a chapter plays. */
+/** The slow opening of a chapter, cut short if the chapter itself is shorter; `null` if it has none. */
+function slowStartOf(times: StoryTimes, index: number): SlowStart | null {
+  const slow = times.slowStarts?.[index];
+  const from = times.chapterJds[index];
+  if (!slow || from === undefined || !(slow.days > 0) || !(slow.seconds > 0)) return null;
+  const days = Math.min(slow.days, chapterEndJd(times, index) - from);
+  return days > 0 ? { days, seconds: (slow.seconds * days) / slow.days } : null;
+}
+
+/** Simulated days per real second while a chapter plays, once any slow opening is over. */
 export function chapterDaysPerSecond(times: StoryTimes, index: number): number {
   const from = times.chapterJds[index];
   if (from === undefined) throw new RangeError(`No chapter ${String(index)}`);
-  return (chapterEndJd(times, index) - from) / (times.chapterSeconds ?? CHAPTER_SECONDS);
+  const slowDays = slowStartOf(times, index)?.days ?? 0;
+  return (chapterEndJd(times, index) - from - slowDays) / (times.chapterSeconds ?? CHAPTER_SECONDS);
 }
 
 /**
@@ -82,6 +112,63 @@ export function jdAtProgress(times: StoryTimes, progress: number): number {
   const index = Math.min(Math.floor(along), count - 1);
   const from = times.chapterJds[index] ?? startJd(times);
   return from + (along - index) * (chapterEndJd(times, index) - from);
+}
+
+/** A change of pace is worked out in steps of this many real seconds. */
+const EASE_STEP_SECONDS = 1 / 240;
+
+/** The rate of a chapter's slow opening, in days a second, when it is slower than the chapter's own. */
+function slowRateOf(times: StoryTimes, index: number, fullRate: number): number | null {
+  const slow = slowStartOf(times, index);
+  if (!slow) return null;
+  const rate = slow.days / slow.seconds;
+  return rate < fullRate ? rate : null;
+}
+
+/** How much of a chapter is spent changing pace at one end: as long as the slow opening, but no more than a quarter of it. */
+function easeDays(times: StoryTimes, index: number, slowIndex: number): number {
+  const from = times.chapterJds[index] ?? 0;
+  const whole = chapterEndJd(times, index) - from - (slowStartOf(times, index)?.days ?? 0);
+  return Math.min(slowStartOf(times, slowIndex)?.days ?? 0, whole / 4);
+}
+
+/** Where a chapter starts to slow down into the slow opening of the next one; its end when it does not. */
+function slowingFromJd(times: StoryTimes, index: number, fullRate: number): number {
+  const end = chapterEndJd(times, index);
+  const runsOn = times.chapterJds[index + 1] === end;
+  if (!runsOn || slowRateOf(times, index + 1, fullRate) === null) return end;
+  return end - easeDays(times, index, index + 1);
+}
+
+const smooth = (through: number): number => through * through * (3 - 2 * through);
+
+/**
+ * The rate at a date where a chapter is changing pace, and the date that change lasts until:
+ * just after its own slow opening it speeds up to its full rate, and just before a next
+ * chapter that opens slowly it slows down to that. `null` where it plays at its full rate.
+ * The pace then never jumps: a slow opening is come into and left smoothly.
+ */
+function easedRate(
+  times: StoryTimes,
+  index: number,
+  at: number,
+  fullRate: number,
+): { readonly rate: number; readonly untilJd: number } | null {
+  const end = chapterEndJd(times, index);
+  const slowingFrom = slowingFromJd(times, index, fullRate);
+  if (at >= slowingFrom && slowingFrom < end) {
+    const into = slowRateOf(times, index + 1, fullRate) ?? fullRate;
+    const through = (end - at) / (end - slowingFrom);
+    return { rate: into + (fullRate - into) * smooth(through), untilJd: end };
+  }
+  const own = slowRateOf(times, index, fullRate);
+  const opened = (times.chapterJds[index] ?? at) + (slowStartOf(times, index)?.days ?? 0);
+  const days = easeDays(times, index, index);
+  if (own !== null && days > 0 && at < opened + days) {
+    const through = Math.max(0, (at - opened) / days);
+    return { rate: own + (fullRate - own) * smooth(through), untilJd: opened + days };
+  }
+  return null;
 }
 
 export interface StoryStep {
@@ -124,9 +211,38 @@ export function advanceStory(
       left -= toNext;
       continue;
     }
+    const slow = slowStartOf(times, index);
+    const slowUntil = (times.chapterJds[index] ?? at) + (slow?.days ?? 0);
+    if (slow && at < slowUntil) {
+      // The chapter's opening, played slowly.
+      const slowRate = slow.days / slow.seconds;
+      const toFull = (slowUntil - at) / slowRate;
+      if (left < toFull) return { jd: at + left * slowRate, ended: false };
+      at = slowUntil;
+      left -= toFull;
+      if (at < end) continue;
+    }
     const rate = chapterDaysPerSecond(times, index);
-    const toEnd = rate > 0 ? (end - at) / rate : 0;
+    const eased = easedRate(times, index, at, rate);
+    if (eased) {
+      // Speeding up out of a slow opening, or slowing into the next one: a little at a time.
+      const step = Math.min(left, EASE_STEP_SECONDS);
+      const to = at + eased.rate * step;
+      // The whole step is spent unless the change of pace ends within it. (Worked back from
+      // the dates, a step would come out a hair short for ever.)
+      left -= to < eased.untilJd ? step : Math.min(step, (eased.untilJd - at) / eased.rate);
+      at = Math.min(to, eased.untilJd);
+      if (at < end) continue;
+      left = Math.max(0, left);
+    }
+    const fullUntil = eased ? end : slowingFromJd(times, index, rate);
+    const toEnd = rate > 0 ? (fullUntil - at) / rate : 0;
     if (left < toEnd) return { jd: at + left * rate, ended: false };
+    if (fullUntil < end) {
+      at = fullUntil;
+      left -= toEnd;
+      continue;
+    }
     at = gap ? end : (next ?? times.endJd);
     left -= Math.max(0, toEnd);
     // A chapter that stops short ends there for this step; the skipped time starts on the next.

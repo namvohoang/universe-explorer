@@ -47,6 +47,12 @@ export interface Chapter {
    * drawn as the second picture, beside the look from the ground.
    */
   readonly lookUpAt?: Sourced<readonly [lonDegEast: number, latDeg: number, altitudeKm: number]>;
+  /**
+   * Plays the chapter's first `storySeconds` slowly, over `overSeconds` real seconds, before
+   * the rest takes the usual time: for something quick that is worth watching, such as a
+   * rocket leaving the ground or letting a stage go. A choice of pace, not a measurement.
+   */
+  readonly slowStart?: { readonly storySeconds: number; readonly overSeconds: number };
   /** Stands close to what is looked at, in place of showing the whole stage. */
   readonly closeUp?: boolean;
   /** With `closeUp`: stands over this pole of the body, on its night side, in place of its sunlit side. */
@@ -213,6 +219,12 @@ export interface StoryCraft {
    * standing straight up, as it climbs straight up from its pad.
    */
   readonly uprightUntilJd?: Sourced<number>;
+  /**
+   * With `fromGround`: draws a launch tower beside the craft where it stands, a little
+   * taller than the craft. Its shape and size are a drawing from photos, not measurements;
+   * the story must say so with `noteKey`.
+   */
+  readonly tower?: true;
   readonly path: SampledPath | StagedPath | GroundPath | ChasePath;
 }
 
@@ -298,7 +310,12 @@ export interface Story {
    * thins. `scaleHeightKm` is the height over which the air thins to about a third. How blue
    * the sky is drawn is a drawing; the story must say so with `noteKey`.
    */
-  readonly air?: { readonly ofId: string; readonly scaleHeightKm: Sourced<number> };
+  readonly air?: {
+    readonly ofId: string;
+    readonly scaleHeightKm: Sourced<number>;
+    /** Draws fair-weather clouds in that sky, low down. Where they are is a drawing. */
+    readonly clouds?: true;
+  };
   /** Names the season in each half of this actor, worked out from how it leans to its star. */
   readonly seasonsOf?: string;
   readonly sources: readonly Source[];

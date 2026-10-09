@@ -107,6 +107,10 @@ describe('checkStories', () => {
       expect(checkStories([{ ...burning, noteKey: 'storyTestNote' }], IDS, MODELS)).toEqual([]);
       const tangled = flying({ modelOfId: 'toy-rocket', burns: [burn(10, 20), burn(15, 25)] });
       expect(checkStories([tangled], IDS, MODELS).join('\n')).toMatch(/overlap or run backwards/);
+      const towered = flying({ modelOfId: 'toy-rocket', fromGround: true, tower: true });
+      expect(checkStories([towered], IDS, MODELS).join('\n')).toMatch(
+        /tower, but the story has no note/,
+      );
       const sky = story({ air: { ofId: 'earth', scaleHeightKm: { value: 8, sourceId: 'test' } } });
       expect(checkStories([sky], IDS).join('\n')).toMatch(/blue sky but has no note/);
     });

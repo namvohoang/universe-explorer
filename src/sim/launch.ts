@@ -119,3 +119,61 @@ export function shedShareAt(
     ...sheds.filter((shed) => shed.atJd.value <= jd).map((shed) => shed.belowShare.value),
   );
 }
+
+/**
+ * A part just let go is drawn dropping behind the craft faster and faster, as the craft pulls
+ * away under its next engines: this many km/s gained every second. A drawing choice.
+ */
+const DROP_BEHIND_KM_PER_S2 = 0.008;
+/** It is drawn for this many seconds after it is let go; by then it is far out of the close look. */
+const DROP_SHOWN_SECONDS = 25;
+
+/**
+ * The part a craft has just let go of, if it is still near: the stretch of the craft's
+ * length it was (shares from tail to nose), and how far behind the craft it has dropped.
+ */
+export function droppedPartAt(
+  sheds: readonly {
+    readonly atJd: { readonly value: number };
+    readonly belowShare: { readonly value: number };
+  }[],
+  jd: number,
+): { readonly fromShare: number; readonly toShare: number; readonly behindKm: number } | null {
+  for (const [index, shed] of sheds.entries()) {
+    const seconds = (jd - shed.atJd.value) * SECONDS_PER_DAY;
+    if (seconds < 0 || seconds > DROP_SHOWN_SECONDS) continue;
+    return {
+      fromShare: sheds[index - 1]?.belowShare.value ?? 0,
+      toShare: shed.belowShare.value,
+      behindKm: (DROP_BEHIND_KM_PER_S2 * seconds * seconds) / 2,
+    };
+  }
+  return null;
+}
+
+/**
+ * The eye takes this many seconds to come round to what is left of a craft once a part has
+ * been let go, so the look glides to it and does not jump. A drawing choice.
+ */
+const LOOK_SETTLES_SECONDS = 10;
+
+/**
+ * `shedShareAt`, but changing smoothly: for a few seconds after a part is let go it runs
+ * from the share before to the share after. The middle of the look is worked out from it.
+ */
+export function settlingShedShareAt(
+  sheds: readonly {
+    readonly atJd: { readonly value: number };
+    readonly belowShare: { readonly value: number };
+  }[],
+  jd: number,
+): number {
+  let share = 0;
+  for (const shed of sheds) {
+    const through = ((jd - shed.atJd.value) * SECONDS_PER_DAY) / LOOK_SETTLES_SECONDS;
+    if (through <= 0) break;
+    const eased = through >= 1 ? 1 : through * through * (3 - 2 * through);
+    share += (shed.belowShare.value - share) * eased;
+  }
+  return share;
+}

@@ -11,6 +11,7 @@ import {
   Vector3,
   type BufferGeometry,
   type Material,
+  type Object3D,
   type Texture,
 } from 'three';
 import type { CelestialObject, RingSystem, SpheroidShape, TriaxialShape } from '../data/types';
@@ -203,7 +204,15 @@ export interface Body {
    * (on the ground or a little above it: the fine ground is drawn at its height), for a look
    * from close beside something standing there. `null` takes it away.
    */
-  setGroundPatch(place: Vec3 | null): void;
+  setGroundPatch(
+    place: Vec3 | null,
+    /**
+     * Something to stand on the ground at that place and turn with it: built in km, with +y
+     * straight up and +x towards `ahead` (a direction in the scene, laid level with the
+     * ground). `unitKm` is the body's longest radius in km.
+     */
+    standing?: { readonly object: Object3D; readonly ahead: Vec3; readonly unitKm: number },
+  ): void;
   /**
    * Fetches only the surface map: cheap enough to do for a whole family of moons at once.
    * `onLoaded` is told once the map is on the body, or at once if there is none to wait for.
@@ -491,7 +500,7 @@ export function createBody(
       surface.loadMap(onLoaded);
     },
     setScale,
-    setGroundPatch(place) {
+    setGroundPatch(place, standing) {
       patch?.dispose();
       patch = null;
       if (!place) return;
@@ -500,6 +509,23 @@ export function createBody(
       // The patch turns with the sphere and wears its map.
       patch = createGroundPatch(inMesh, material);
       mesh.add(patch.mesh);
+      if (!standing) return;
+      // In the sphere's own space: up is straight out from its middle, and `ahead` is
+      // brought in from the scene and laid level.
+      const up = inMesh.clone().normalize();
+      const origin = mesh.worldToLocal(new Vector3(0, 0, 0).add(group.position));
+      const ahead = mesh
+        .worldToLocal(
+          new Vector3(standing.ahead.x, standing.ahead.y, standing.ahead.z).add(group.position),
+        )
+        .sub(origin);
+      ahead.addScaledVector(up, -ahead.dot(up)).normalize();
+      const aside = new Vector3().crossVectors(ahead, up);
+      const holder = new Group();
+      holder.matrixAutoUpdate = false;
+      holder.matrix.makeBasis(ahead, up, aside).scale(new Vector3().setScalar(1 / standing.unitKm));
+      holder.add(standing.object);
+      patch.mesh.add(holder);
     },
     setDate(jd) {
       if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd) + turnOffset;

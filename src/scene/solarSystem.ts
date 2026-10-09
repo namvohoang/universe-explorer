@@ -23,6 +23,7 @@ import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
 import { createDustTrail, type DustTrail } from './dustTrail';
 import { createFlownModel, type Flame, type FlownModel } from './flownModel';
+import { createLaunchSite, type LaunchSite } from './launchSite';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
 import { createSkyFigures } from './skyFigures';
 import { createSkyTrail, type SkyTrail } from './skyTrail';
@@ -68,8 +69,32 @@ export interface TrackedCraft {
      * longer drawn: a share of its length, 0 while it is whole.
      */
     shedBelowAt(jd: number): number;
+    /**
+     * The same share, but changing smoothly for a few seconds after a part is let go: the
+     * middle of the craft that a close look is aimed at is worked out from it.
+     */
+    lookShedAt(jd: number): number;
     /** The flame its engines make at a date, if they are burning. */
     flameAt(jd: number): Flame | null;
+    /**
+     * A part it has just let go of, drawn dropping behind it: the stretch of the model it
+     * was (shares of its length) and how far behind, in km. `null` when there is none near.
+     */
+    droppedAt(jd: number): {
+      readonly fromShare: number;
+      readonly toShare: number;
+      readonly behindKm: number;
+    } | null;
+  };
+  /**
+   * With `leavesGroundAtJd`: what is drawn at the place the craft leaves. Smoke billows
+   * there from `smokeFromJd`; a tower `towerKm` tall stands beside the craft when given;
+   * with `clouds`, clouds hang in the sky round about. All of it is a drawing.
+   */
+  readonly launchSite?: {
+    readonly smokeFromJd: number;
+    readonly towerKm: number | null;
+    readonly clouds: boolean;
   };
 }
 
@@ -263,7 +288,18 @@ export function createSolarSystem(
   const heldSpins = new Map<string, number>();
   let linesDrawn = true;
   const trails = new Map<string, { readonly craft: TrackedCraft; readonly trail: Trail }>();
-  const models = new Map<string, { readonly model: FlownModel; length: number; middle: Vec3 }>();
+  const models = new Map<
+    string,
+    {
+      readonly model: FlownModel;
+      readonly dropped: FlownModel;
+      /** Whether a part just let go is near enough to draw. */
+      shedding: boolean;
+      length: number;
+      middle: Vec3;
+    }
+  >();
+  let site: { readonly made: LaunchSite; readonly fromJd: number } | null = null;
   let grounded: Body | null = null;
   const showLines = (): void => {
     for (const orbit of orbitLines) {
@@ -311,8 +347,21 @@ export function createSolarSystem(
         const shed = craft.model.shedBelowAt(jd);
         flown.length = currentScale.sizeToScene(craft.model.lengthKm);
         // The middle of what is left of it.
-        flown.middle = add(place, scaleBy(nose, (flown.length * (1 + shed)) / 2));
-        flown.model.place(place, nose, flown.length, shed);
+        const seen = craft.model.lookShedAt(jd);
+        flown.middle = add(place, scaleBy(nose, (flown.length * (1 + seen)) / 2));
+        flown.model.place(place, nose, flown.length, shed, 1);
+        const part = craft.model.droppedAt(jd);
+        flown.shedding = part !== null;
+        if (part) {
+          flown.dropped.place(
+            add(place, scaleBy(nose, -currentScale.sizeToScene(part.behindKm))),
+            nose,
+            flown.length,
+            part.fromShare,
+            part.toShare,
+          );
+        }
+        site?.made.setSmoke((jd - site.fromJd) * SECONDS_PER_DAY);
         flown.model.setFlame(
           craft.model.flameAt(jd),
           jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND,
@@ -426,8 +475,13 @@ export function createSolarSystem(
         trail.dispose();
       }
       trails.clear();
-      for (const { model } of models.values()) model.dispose();
+      for (const { model, dropped } of models.values()) {
+        model.dispose();
+        dropped.dispose();
+      }
       models.clear();
+      site?.made.dispose();
+      site = null;
       grounded?.setGroundPatch(null);
       grounded = null;
       for (const shadow of tracks?.shadows ?? []) bodies.get(shadow.onId)?.setEclipse(null);
@@ -443,8 +497,17 @@ export function createSolarSystem(
         (ground ? ground.frame : group).add(trail.group);
         if (craft.model && craft.frame === 'space') {
           const model = createFlownModel(craft.model.url);
-          models.set(craft.id, { model, length: 0, middle: { x: 0, y: 0, z: 0 } });
-          group.add(model.group);
+          // The same model again, for the part just let go.
+          const dropped = createFlownModel(craft.model.url);
+          dropped.group.visible = false;
+          models.set(craft.id, {
+            model,
+            dropped,
+            shedding: false,
+            length: 0,
+            middle: { x: 0, y: 0, z: 0 },
+          });
+          group.add(model.group, dropped.group);
         }
         const stoodOn = bodies.get(craft.centreId);
         const centre = catalogue.find((object) => object.id === craft.centreId);
@@ -457,11 +520,21 @@ export function createSolarSystem(
             centre,
             currentScale,
           );
-          stoodOn.setGroundPatch({
-            x: from.x + offset.x,
-            y: from.y + offset.y,
-            z: from.z + offset.z,
-          });
+          const place = { x: from.x + offset.x, y: from.y + offset.y, z: from.z + offset.z };
+          if (craft.launchSite) {
+            const made = createLaunchSite(craft.launchSite.towerKm, craft.launchSite.clouds);
+            site = { made, fromJd: craft.launchSite.smokeFromJd };
+            // Which way the craft goes: to where it is a good way along its path.
+            const later = craft.instants[craft.instants.length >> 1] ?? craft.leavesGroundAtJd;
+            const ahead = eclipticToScene(
+              subtract(craft.placeAt(later), craft.placeAt(craft.leavesGroundAtJd)),
+            );
+            stoodOn.setGroundPatch(place, {
+              object: made.group,
+              ahead,
+              unitKm: bodyRadiusKm(centre) ?? 1,
+            });
+          } else stoodOn.setGroundPatch(place);
           grounded = stoodOn;
         }
       }
@@ -471,8 +544,9 @@ export function createSolarSystem(
     craftMiddleOf: (id) => models.get(id)?.middle ?? positions.get(id) ?? { x: 0, y: 0, z: 0 },
     craftLengthOf: (id) => models.get(id)?.length ?? 0,
     drawCraftModels(drawn) {
-      for (const [id, { model }] of models) {
-        model.group.visible = drawn;
+      for (const [id, flown] of models) {
+        flown.model.group.visible = drawn;
+        flown.dropped.group.visible = drawn && flown.shedding;
         // Beside the craft itself its path is no guide: the line is drawn in straight steps
         // many kilometres long, and would pass the model by.
         const trail = trails.get(id)?.trail;
@@ -667,7 +741,11 @@ export function createSolarSystem(
       for (const belt of belts) belt.dispose();
       for (const tail of tails.values()) tail.dispose();
       for (const { trail } of trails.values()) trail.dispose();
-      for (const { model } of models.values()) model.dispose();
+      for (const { model, dropped } of models.values()) {
+        model.dispose();
+        dropped.dispose();
+      }
+      site?.made.dispose();
       dust?.dispose();
       aurora?.dispose();
       sky?.trail.dispose();

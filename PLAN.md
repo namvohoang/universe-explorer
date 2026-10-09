@@ -794,6 +794,25 @@ recorded last.
       are drawings, and the story's note says so. Still not drawn: the tower, clouds, the
       smoke, the escape tower leaving, and the tilt by which the real rocket leaned away
       from its tower in the first ten seconds.
+- [x] 12.25 The launch with its tower, smoke and clouds, and each stage seen coming away
+      (owner's notes, 2026-10-09). A red steel tower stands beside the rocket and stays on
+      the ground; smoke rolls out over the ground from the instant NASA's timeline gives
+      for the engines lighting, and thins away; fair-weather clouds hang low on the far side
+      of the rocket, so they never hide it and are seen sliding down past it as it climbs
+      (`src/scene/launchSite.ts`). At each separation the stage let go is drawn dropping
+      behind for a few seconds, cut from the same model. The first seconds of the story and
+      of each separation are played slowly (`slowStart` on a chapter: 24 s of the flight
+      over 9 s at liftoff, 14 s over 6 s at each separation), so they can be watched.
+      The pace never jumps: the story slows into each separation and speeds up out of it
+      little by little, and the look glides to what is left of the rocket over ten seconds.
+      All of these are drawings, and the story's note says so. Not verified: the tower's
+      height. A search reported 116 m (381 ft) from NASA's Apollo 15 Flight Journal, but
+      the page could not be opened to read it, so no figure is stored: the tower is drawn
+      a little taller than the rocket (`TOWER_TALLER`), as photos show it. Its width, its
+      nine arms and its red are from memory of photos, and the arms do not swing away.
+      Not drawn: the platform the rocket stood on, the smoke trail in the sky, the real
+      weather of the day, the ring between the first two stages that fell a little later,
+      and the escape tower leaving.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

@@ -22,6 +22,12 @@ function chapterErrors(story: Story): string[] {
   if (story.chapters.length === 0) errors.push(`${at} has no chapters`);
   let previousJd = -Infinity;
   for (const chapter of story.chapters) {
+    if (
+      chapter.slowStart &&
+      !(chapter.slowStart.storySeconds > 0 && chapter.slowStart.overSeconds > 0)
+    ) {
+      errors.push(`${at} chapter "${chapter.id}" opens slowly over no time at all`);
+    }
     if (!ID.test(chapter.id)) errors.push(`${at} chapter id "${chapter.id}" is not kebab-case`);
     if (seen.has(chapter.id)) errors.push(`${at} chapter "${chapter.id}" is listed twice`);
     seen.add(chapter.id);
@@ -153,6 +159,12 @@ function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<stri
       errors.push(`${at} has engine burns that overlap or run backwards`);
     }
     burntUntilJd = burn.untilJd.value;
+  }
+  if (craft.tower === true && craft.fromGround !== true) {
+    errors.push(`${at} has a launch tower but does not start on the ground`);
+  }
+  if (craft.tower === true && story.noteKey === undefined) {
+    errors.push(`${at} is drawn with a tower, but the story has no note to say it is a drawing`);
   }
   // A flame is a drawing, and the screen must say so.
   if (craft.burns && story.noteKey === undefined) {

@@ -468,7 +468,7 @@ test.describe('a space flight', () => {
   }) => {
     await page.goto('/#watch/apollo-11-launch');
     await expect(page.locator('.watch-path')).toHaveText(
-      'The times and places are real. The line between them, the rocket’s lean, its flame and the sky are drawings.',
+      'The times and places are real. The path between them, the rocket’s lean, its flame and smoke, the tower, the clouds and the sky are drawings.',
     );
     await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:32:01');
     // Close up the rocket is seen as itself; far off it is a named point on its path.

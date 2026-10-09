@@ -156,3 +156,65 @@ describe('a story told slower', () => {
     expect(advanceStory(SLOW, 100, 56)).toEqual({ jd: 120, ended: true });
   });
 });
+
+describe('a chapter that opens slowly', () => {
+  // Placeholder story: three chapters of 100 days; the first and the last open with 10 days
+  // over 5 seconds.
+  const slow = { days: 10, seconds: 5 };
+  const times: StoryTimes = {
+    chapterJds: [0, 100, 200],
+    endJd: 300,
+    slowStarts: [slow, null, slow],
+  };
+  const full = 90 / CHAPTER_SECONDS;
+  /** Days gone through in one frame, starting from a date. */
+  const pace = (jd: number): number => (advanceStory(times, jd, 1 / 60).jd - jd) * 60;
+
+  it('plays its opening at the slow rate', () => {
+    expect(advanceStory(times, 0, 2.5).jd).toBeCloseTo(5, 9);
+    expect(advanceStory(times, 0, 5).jd).toBeCloseTo(10, 9);
+    expect(chapterDaysPerSecond(times, 0)).toBeCloseTo(full, 9);
+  });
+
+  it('speeds up out of the opening little by little, and then plays at its full rate', () => {
+    expect(pace(10)).toBeCloseTo(2, 1);
+    let last = pace(10);
+    for (let jd = 11; jd <= 20; jd += 1) {
+      expect(pace(jd)).toBeGreaterThan(last);
+      last = pace(jd);
+    }
+    expect(pace(21)).toBeCloseTo(full, 6);
+    expect(pace(60)).toBeCloseTo(full, 6);
+  });
+
+  it('slows down into the next chapter that opens slowly, and never jumps in pace', () => {
+    // The middle chapter has no slow opening of its own: full rate, then slowing at its end.
+    expect(pace(110)).toBeCloseTo(100 / CHAPTER_SECONDS, 6);
+    let jd = 150;
+    let last = pace(jd);
+    while (jd < 210) {
+      const now = pace(jd);
+      // From one frame to the next the pace changes by a small share of itself.
+      expect(Math.abs(now - last) / Math.max(now, last), String(jd)).toBeLessThan(0.2);
+      last = now;
+      jd = advanceStory(times, jd, 1 / 60).jd;
+    }
+    expect(pace(199.9)).toBeLessThan(2.3);
+    expect(pace(200)).toBeCloseTo(2, 6);
+  });
+
+  it('still gets to every chapter and to the end', () => {
+    expect(advanceStory(times, 0, 200)).toEqual({ jd: 300, ended: true });
+    const first = advanceStory(times, 0, 5 + CHAPTER_SECONDS).jd;
+    // The first chapter takes a little longer than its opening and the usual time.
+    expect(first).toBeGreaterThan(90);
+    expect(first).toBeLessThan(100);
+  });
+
+  it('is no longer than the chapter it opens', () => {
+    const short: StoryTimes = { chapterJds: [0, 4], endJd: 8, slowStarts: [slow, null] };
+    // Four of the ten days, in the same share of the five seconds.
+    expect(advanceStory(short, 0, 1).jd).toBeCloseTo(2, 9);
+    expect(advanceStory(short, 0, 2 + CHAPTER_SECONDS / 2).jd).toBeCloseTo(6, 9);
+  });
+});

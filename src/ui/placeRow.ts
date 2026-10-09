@@ -97,6 +97,25 @@ export function createPlaceRow(
     }
   };
 
+  // A long row scrolls sideways: keep the chip for where we are in sight.
+  const keepInSight = (): void => {
+    const button = chips.querySelector<HTMLElement>('button[aria-current="true"]');
+    if (button?.offsetParent == null) return;
+    // Measured in parts of a pixel and rounded down, so the start of the chip is never cut.
+    const box = button.getBoundingClientRect();
+    const left = Math.floor(box.left - chips.getBoundingClientRect().left + chips.scrollLeft);
+    // A chip wider than the room shows its start, where its name begins.
+    const wider = box.width > chips.clientWidth;
+    if (wider || left < chips.scrollLeft) chips.scrollLeft = left;
+    else if (left + box.width > chips.scrollLeft + chips.clientWidth) {
+      chips.scrollLeft = Math.ceil(left + box.width - chips.clientWidth);
+    }
+  };
+  // The room for the chips changes after they are laid out: a group gains its count, the screen
+  // is turned, the lettering arrives and every chip before this one changes width.
+  new ResizeObserver(keepInSight).observe(chips);
+  document.fonts.addEventListener('loadingdone', keepInSight);
+
   return {
     element,
     show(row, current) {
@@ -143,20 +162,10 @@ export function createPlaceRow(
         markSeen();
       }
       for (const button of chips.querySelectorAll('button')) {
-        const here = button.dataset.id === current;
-        if (here) button.setAttribute('aria-current', 'true');
+        if (button.dataset.id === current) button.setAttribute('aria-current', 'true');
         else button.removeAttribute('aria-current');
-        // A long row scrolls sideways: keep the chip for where we are in sight.
-        if (here && button.offsetParent !== null) {
-          const left = button.offsetLeft - chips.offsetLeft;
-          // A chip wider than the room shows its start, where its name begins.
-          const wider = button.offsetWidth > chips.clientWidth;
-          if (wider || left < chips.scrollLeft) chips.scrollLeft = left;
-          else if (left + button.offsetWidth > chips.scrollLeft + chips.clientWidth) {
-            chips.scrollLeft = left + button.offsetWidth - chips.clientWidth;
-          }
-        }
       }
+      keepInSight();
     },
     showVisited(visited, catalogue) {
       seen = visited;

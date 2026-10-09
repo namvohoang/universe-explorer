@@ -121,7 +121,7 @@ for (const screen of SCREENS) {
             const row = await page.locator('.chips:visible').first().boundingBox();
             if (!chip || !row) throw new Error('not on the page');
             const end = Math.min(row.x + row.width, screen.width);
-            expect(chip.x, scene).toBeGreaterThanOrEqual(row.x - 4);
+            expect(chip.x, scene).toBeGreaterThanOrEqual(row.x - 0.5);
             if (screen.height > 500)
               expect(chip.x + chip.width, scene).toBeLessThanOrEqual(end + 0.5);
             else expect(end - chip.x, scene).toBeGreaterThanOrEqual(Math.min(chip.width, 120));

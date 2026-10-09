@@ -1,4 +1,4 @@
-import { Color, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
+import { Color, PerspectiveCamera, Scene, ShaderChunk, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { Vec3 } from '../sim/vec3';
 import {
@@ -15,7 +15,7 @@ import {
   type Flight,
   type View,
 } from './flight';
-import { USUAL_NEAR, nearPlaneFor, pixelsFor } from './projection';
+import { DEPTH_CHUNKS, FARTHEST, USUAL_NEAR, nearPlaneFor, pixelsFor } from './projection';
 import { createFrameWatch, lowerPixelRatio } from './quality';
 
 const BACKGROUND = '#05070f';
@@ -164,8 +164,12 @@ const toVec3 = (v: { x: number; y: number; z: number }): Vec3 => ({ x: v.x, y: v
 /** The stage every scene is drawn on: renderer, camera, drag-to-look controls and fly-to. */
 export function createStage(canvas: HTMLCanvasElement, options: StageOptions): Stage {
   // Distances span a factor of millions between a planet's surface and the edge of the
-  // system, more than an ordinary depth buffer can order correctly.
+  // system, more than an ordinary depth buffer can order correctly. The logarithm is taken
+  // the app's own way (see DEPTH_GAIN), which has to be in place before any shader is built.
+  Object.assign(ShaderChunk, DEPTH_CHUNKS);
   const renderer = new WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
+  // A model may be drawn with a part cut away (a rocket's dropped stage).
+  renderer.localClippingEnabled = true;
   let pixelRatio = Math.min(options.pixelRatio, MAX_PIXEL_RATIO);
   renderer.setPixelRatio(pixelRatio);
   // On a device that cannot keep up, draw less sharply instead of stuttering.
@@ -175,7 +179,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   scene.background = new Color(BACKGROUND);
   renderer.setClearColor(BACKGROUND);
 
-  const camera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, 1e6);
+  const camera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, FARTHEST);
   camera.position.set(0, 30, 60);
 
   const controls = new OrbitControls(camera, canvas);
@@ -189,7 +193,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
   const frameCallbacks: ((dt: number) => void)[] = [];
   const cameraCallbacks: (() => void)[] = [];
   const sideCallbacks: ((viewer: Vec3) => void)[] = [];
-  const sideCamera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, 1e6);
+  const sideCamera = new PerspectiveCamera(FIELD_OF_VIEW_DEG, 1, USUAL_NEAR, FARTHEST);
   let panes: Panes | null = null;
   /** Where the second camera last stood from what it looks at, and a swing to a new look under way. */
   let sideOffset: Vec3 | null = null;

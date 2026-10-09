@@ -1,6 +1,6 @@
 import type { PathPoint, PathSample } from '../data/types';
 import { SECONDS_PER_DAY } from './constants';
-import { length, subtract, type Vec3 } from './vec3';
+import { add, cross, length, scale, subtract, type Vec3 } from './vec3';
 
 const positionOf = (sample: PathSample): Vec3 => ({ x: sample[1], y: sample[2], z: sample[3] });
 
@@ -50,12 +50,83 @@ export function pathPositionKm(samples: readonly PathSample[], jd: number): Vec3
 }
 
 /**
+ * How fast a path is moving at a date, in km/s: the slope of the curve `pathPositionKm` draws.
+ * Before the first sample it is the first one's speed, and after the last the last one's, so
+ * a craft held at an end of its path keeps the heading it had there.
+ */
+export function pathVelocityKmPerS(samples: readonly PathSample[], jd: number): Vec3 {
+  const first = samples[0];
+  const last = samples[samples.length - 1];
+  if (!first || !last) throw new RangeError('A path needs at least one sample');
+  const velocityOf = (sample: PathSample): Vec3 => ({ x: sample[4], y: sample[5], z: sample[6] });
+  if (jd <= first[0]) return velocityOf(first);
+  if (jd >= last[0]) return velocityOf(last);
+  let low = 0;
+  let high = samples.length - 1;
+  while (high - low > 1) {
+    const middle = (low + high) >> 1;
+    if ((samples[middle]?.[0] ?? Infinity) <= jd) low = middle;
+    else high = middle;
+  }
+  const from = samples[low];
+  const to = samples[high];
+  if (!from || !to) return velocityOf(first);
+  const spanSeconds = (to[0] - from[0]) * SECONDS_PER_DAY;
+  const t = (jd - from[0]) / (to[0] - from[0]);
+  const t2 = t * t;
+  // The slopes of the four Hermite weights of `positionBetweenKm`.
+  const p0 = (6 * t2 - 6 * t) / spanSeconds;
+  const v0 = 3 * t2 - 4 * t + 1;
+  const p1 = (-6 * t2 + 6 * t) / spanSeconds;
+  const v1 = 3 * t2 - 2 * t;
+  const [, x0, y0, z0, vx0, vy0, vz0] = from;
+  const [, x1, y1, z1, vx1, vy1, vz1] = to;
+  const axis = (a: number, va: number, b: number, vb: number): number =>
+    p0 * a + v0 * va + p1 * b + v1 * vb;
+  return { x: axis(x0, vx0, x1, vx1), y: axis(y0, vy0, y1, vy1), z: axis(z0, vz0, z1, vz1) };
+}
+
+/**
+ * How fast the ground of a turning body moves at a place, in km/s: `placeKm` is measured from
+ * the body's centre, `north` is the unit vector along its north pole in the same frame, and
+ * the body turns once against the stars in `turnHours`.
+ */
+export function groundVelocityKmPerS(placeKm: Vec3, north: Vec3, turnHours: number): Vec3 {
+  const radiansPerSecond = (2 * Math.PI) / (turnHours * 3600);
+  return scale(cross(north, placeKm), radiansPerSecond);
+}
+
+/**
+ * A craft climbing slower than this over the ground, in km/s, is drawn standing nearly
+ * upright: on the pad it has no heading at all. A drawing choice.
+ */
+const UPRIGHT_BELOW_KM_PER_S = 0.002;
+
+/**
+ * Which way a rocket's nose is drawn pointing: the way it is moving over the ground, and
+ * straight up while it stands still on it. `placeKm` is from the centre of the body it leaves.
+ * A unit vector. A real rocket steers a little off this line; that is not known here.
+ */
+export function noseDirection(placeKm: Vec3, velocityKmPerS: Vec3, groundKmPerS: Vec3): Vec3 {
+  const height = length(placeKm);
+  const up = height > 0 ? scale(placeKm, 1 / height) : { x: 0, y: 1, z: 0 };
+  const heading = add(subtract(velocityKmPerS, groundKmPerS), scale(up, UPRIGHT_BELOW_KM_PER_S));
+  const speed = length(heading);
+  return speed > 0 ? scale(heading, 1 / speed) : up;
+}
+
+/**
  * Samples to draw a smooth curve through a few known places: each place is given the speed
  * of a straight run from the place before it to the place after it (or to its one neighbour,
- * at an end). The speeds are a way of drawing, not measurements.
+ * at an end). The speeds are a way of drawing, not measurements. A craft that stands on the
+ * ground at the first place is given the ground's own speed there (`startKmPerS`), so it is
+ * drawn leaving the ground from rest.
  */
-export function drawnThrough(points: readonly PathPoint[]): PathSample[] {
+export function drawnThrough(points: readonly PathPoint[], startKmPerS?: Vec3): PathSample[] {
   return points.map((point, index) => {
+    if (index === 0 && startKmPerS) {
+      return [point[0], point[1], point[2], point[3], startKmPerS.x, startKmPerS.y, startKmPerS.z];
+    }
     const before = points[index - 1] ?? point;
     const after = points[index + 1] ?? point;
     const seconds = (after[0] - before[0]) * SECONDS_PER_DAY;

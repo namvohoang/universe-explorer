@@ -15,6 +15,7 @@ import {
 } from 'three';
 import type { CelestialObject, RingSystem, SpheroidShape, TriaxialShape } from '../data/types';
 import { loadGltf } from './gltf';
+import { createGroundPatch } from './groundPatch';
 import { createNucleusGeometry } from './nucleus';
 import { eclipticToScene, northPoleEcliptic, poleOf } from '../sim/frames';
 import { largestRadiusKm, sceneAxes } from '../sim/layout';
@@ -197,6 +198,12 @@ export interface Body {
   setScale(scale: Scale): void;
   /** Fetches the body's 3D model if it has one that was put off until needed. */
   loadDetail(): void;
+  /**
+   * Draws the ground finely round a place, given where that place is in the scene right now
+   * (on the ground or a little above it: the fine ground is drawn at its height), for a look
+   * from close beside something standing there. `null` takes it away.
+   */
+  setGroundPatch(place: Vec3 | null): void;
   /**
    * Fetches only the surface map: cheap enough to do for a whole family of moons at once.
    * `onLoaded` is told once the map is on the body, or at once if there is none to wait for.
@@ -457,6 +464,9 @@ export function createBody(
   /** Added to the spin so that the right side faces the right way; 0 when that is not known. */
   let turnOffset = 0;
 
+  let patch: { readonly mesh: Mesh; dispose(): void } | null = null;
+  const inMesh = new Vector3();
+
   let longest = 0;
   const setScale = (next: Scale): void => {
     const axes = sceneAxes(shape, next);
@@ -481,6 +491,16 @@ export function createBody(
       surface.loadMap(onLoaded);
     },
     setScale,
+    setGroundPatch(place) {
+      patch?.dispose();
+      patch = null;
+      if (!place) return;
+      group.updateWorldMatrix(true, true);
+      mesh.worldToLocal(inMesh.set(place.x, place.y, place.z));
+      // The patch turns with the sphere and wears its map.
+      patch = createGroundPatch(inMesh, material);
+      mesh.add(patch.mesh);
+    },
     setDate(jd) {
       if (!synchronous) mesh.rotation.y = spinAngleRad(shape.orientation, jd) + turnOffset;
       turnModel();
@@ -525,6 +545,7 @@ export function createBody(
       sunInMesh.copy(toSun).transformDirection(inverse);
     },
     dispose() {
+      patch?.dispose();
       geometry.dispose();
       material.dispose();
       surface.dispose();

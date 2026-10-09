@@ -5,7 +5,10 @@ import {
   CHASE_GAIN,
   chasePositionKm,
   drawnThrough,
+  groundVelocityKmPerS,
+  noseDirection,
   pathPositionKm,
+  pathVelocityKmPerS,
   pathReachKm,
   positionBetweenKm,
   thinPath,
@@ -115,6 +118,67 @@ describe('drawnThrough', () => {
 
   it('stands still when it is given one place only', () => {
     expect(drawnThrough([[5, 1, 2, 3]])).toEqual([[5, 1, 2, 3, 0, 0, 0]]);
+  });
+
+  it('leaves the first place at the speed it is told to, and the rest as before', () => {
+    const samples = drawnThrough(points, { x: 0.25, y: -0.5, z: 0.125 });
+    expect(samples[0]).toEqual([0, 0, 0, 0, 0.25, -0.5, 0.125]);
+    expect(samples.slice(1)).toEqual(drawnThrough(points).slice(1));
+  });
+});
+
+describe('pathVelocityKmPerS', () => {
+  it('is the slope of the curve that is drawn', () => {
+    const samples = [0, 0.25, 0.5, 0.75, 1].map(circleAt);
+    const step = 1e-6;
+    for (const jd of [0.03, 0.2, 0.31, 0.5, 0.64, 0.99]) {
+      const before = pathPositionKm(samples, jd - step);
+      const after = pathPositionKm(samples, jd + step);
+      const seconds = 2 * step * SECONDS_PER_DAY;
+      const velocity = pathVelocityKmPerS(samples, jd);
+      expect(velocity.x).toBeCloseTo((after.x - before.x) / seconds, 6);
+      expect(velocity.y).toBeCloseTo((after.y - before.y) / seconds, 6);
+      expect(velocity.z).toBeCloseTo((after.z - before.z) / seconds, 6);
+    }
+  });
+
+  it('keeps the speed of the nearest end outside the path', () => {
+    expect(pathVelocityKmPerS(STRAIGHT, -5)).toEqual({ x: 1, y: 0, z: 0 });
+    expect(pathVelocityKmPerS(STRAIGHT, 99)).toEqual({ x: 1, y: 0, z: 0 });
+  });
+});
+
+describe('groundVelocityKmPerS', () => {
+  const north = { x: 0, y: 0, z: 1 };
+
+  it('carries a place on the equator eastwards, once round in one turn', () => {
+    // Placeholder globe: 1000 km in radius, turning once in 10 hours.
+    const velocity = groundVelocityKmPerS({ x: 1000, y: 0, z: 0 }, north, 10);
+    expect(velocity.x).toBeCloseTo(0, 12);
+    expect(velocity.y).toBeCloseTo((2 * Math.PI * 1000) / 36_000, 12);
+    expect(velocity.z).toBeCloseTo(0, 12);
+  });
+
+  it('leaves a pole where it is', () => {
+    const velocity = groundVelocityKmPerS({ x: 0, y: 0, z: 1000 }, north, 10);
+    expect(Math.hypot(velocity.x, velocity.y, velocity.z)).toBeCloseTo(0, 12);
+  });
+});
+
+describe('noseDirection', () => {
+  const place = { x: 1000, y: 0, z: 0 };
+  const ground = { x: 0, y: 0.2, z: 0 };
+
+  it('points straight up while the craft moves with the ground', () => {
+    const nose = noseDirection(place, ground, ground);
+    expect(nose.x).toBeCloseTo(1, 12);
+    expect(nose.y).toBeCloseTo(0, 12);
+  });
+
+  it('points the way the craft moves over the ground once it is moving fast', () => {
+    const nose = noseDirection(place, { x: 0, y: 0.2, z: 5 }, ground);
+    expect(nose.z).toBeGreaterThan(0.9999);
+    expect(Math.hypot(nose.x, nose.y, nose.z)).toBeCloseTo(1, 12);
   });
 });
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../../src/data/catalogue';
 import { stories } from '../../src/data/stories';
-import type { Chapter, Source, Story } from '../../src/data/types';
+import type { Chapter, Source, Story, StoryCraft } from '../../src/data/types';
 import { checkStories } from './stories';
 
 // Placeholder values for testing the checks, not astronomy.
@@ -40,8 +40,59 @@ describe('checkStories', () => {
       checkStories(
         stories,
         catalogue.map((object) => object.id),
+        new Set(['saturn-v']),
       ),
     ).toEqual([]);
+  });
+
+  describe('a craft drawn as a 3D model', () => {
+    const flying = (craft: Partial<StoryCraft>): Story =>
+      story({
+        path: 'staged',
+        craft: [
+          {
+            id: 'rocket',
+            nameKey: 'craftRocket',
+            path: {
+              centreId: 'earth',
+              points: {
+                sourceId: 'test',
+                value: [
+                  [10, 1, 0, 0],
+                  [30, 2, 0, 0],
+                ],
+              },
+            },
+            ...craft,
+          },
+        ],
+      });
+    const shed = (atJd: number, share: number): NonNullable<StoryCraft['sheds']>[number] => ({
+      atJd: { value: atJd, sourceId: 'test' },
+      belowShare: { value: share, sourceId: 'test' },
+    });
+    const MODELS = new Set(['toy-rocket']);
+
+    it('is accepted when the model is there and its parts come off in order', () => {
+      const good = flying({
+        modelOfId: 'toy-rocket',
+        fromGround: true,
+        sheds: [shed(15, 0.3), shed(25, 0.6)],
+      });
+      expect(checkStories([good], IDS, MODELS)).toEqual([]);
+    });
+
+    it('is rejected when the catalogue has no such model', () => {
+      const errors = checkStories([flying({ modelOfId: 'teapot' })], IDS, MODELS);
+      expect(errors.join('\n')).toMatch(/"teapot", which has no 3D model/);
+    });
+
+    it('is rejected when its parts come off out of order, or it has no model to cut', () => {
+      const backwards = flying({ modelOfId: 'toy-rocket', sheds: [shed(25, 0.6), shed(15, 0.3)] });
+      expect(checkStories([backwards], IDS, MODELS).join('\n')).toMatch(/sheds a part/);
+      const bare = checkStories([flying({ sheds: [shed(15, 0.3)] })], IDS, MODELS);
+      expect(bare.join('\n')).toMatch(/not drawn as a 3D model/);
+    });
   });
 
   it('rejects chapters out of order', () => {

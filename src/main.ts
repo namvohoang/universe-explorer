@@ -29,7 +29,8 @@ import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
 import { bodyFramePoint, groundPlaceAt, groundRoute, routeInstants } from './sim/groundPath';
-import { chasePositionKm, drawnThrough, pathPositionKm, sampleInstants } from './sim/trajectory';
+import { noseAlong, shedShareAt, stagedSamples, turningOf } from './sim/launch';
+import { chasePositionKm, pathPositionKm, sampleInstants } from './sim/trajectory';
 import {
   add,
   cross,
@@ -156,6 +157,18 @@ const ROUTE_STEP_DEG = 3;
 const CRAFT_CLOSE_UP_RADII = 0.55;
 /** How far to the south of straight overhead that view is taken from, to show the climb side-on. */
 const CRAFT_VIEW_SOUTH = 1.1;
+/** A craft drawn as its 3D model is seen from this many of its lengths away at first. */
+const MODEL_VIEW_LENGTHS = 2.2;
+/**
+ * In a part of the screen taller than it is wide, from this many lengths for each time
+ * taller, so that the craft still fits across once it has leaned over.
+ */
+const MODEL_VIEW_NARROW_LENGTHS = 1.4;
+/** How near and how far, in its lengths, that view may be zoomed. */
+const MODEL_CLOSEST_LENGTHS = 1.2;
+const MODEL_FARTHEST_LENGTHS = 60;
+/** That view is from beside the craft's path, lifted this much towards straight overhead. */
+const MODEL_VIEW_LIFT = 0.12;
 /** Camera distance that frames a sphere of radius 1 with a little room around it. */
 const FRAMING = 1.5;
 /** A body fills a good part of the view from this many of its radii away (as in the prototype). */
@@ -418,7 +431,14 @@ function start(): void {
     const sideAspect = side.width / side.height;
     // Beside a look from a world: the close look, where the part asks for both, or the whole stage.
     const fromAWorld = chapter.standAtId !== undefined || chapter.viewFromId !== undefined;
-    const close = fromAWorld ? closeView(story, chapter, Math.max(1, 1 / sideAspect)) : null;
+    // Beside a craft drawn as its model: the look from far over it, where its whole path shows.
+    const modelled = modelledCraft(story, chapter);
+    const sideFit = Math.max(1, 1 / sideAspect);
+    const close = fromAWorld
+      ? closeView(story, chapter, sideFit)
+      : modelled
+        ? overCraft(modelled, sideFit)
+        : null;
     const whole = close ?? stageView(story, chapter, sideAspect, 1);
     const heldBearing = close?.direction ?? STAGE_DIRECTION;
     stage.setPanes({
@@ -450,11 +470,13 @@ function start(): void {
       },
       {
         box: side,
-        label: close
-          ? words.watchPaneClose
-          : diagram
-            ? words.watchPaneDrawing
-            : words.watchPaneWhole,
+        label: modelled
+          ? words.watchPaneWhole
+          : close
+            ? words.watchPaneClose
+            : diagram
+              ? words.watchPaneDrawing
+              : words.watchPaneWhole,
       },
     ]);
   };
@@ -993,26 +1015,68 @@ function start(): void {
    * The close look a chapter asks for: over a craft, or at a body from its sunlit side or
    * from over one of its poles. `null` when it asks for none.
    */
+  /** The look from over a craft, far enough off to see the ground curve under its path. */
+  const overCraft = (flown: StoryCraft, squeeze: number): FlyTo => {
+    const ground = flown.path.centreId;
+    // Held over the craft, a little to the south of straight overhead, however far round it goes.
+    const bearing = (): Vec3 => {
+      const up = subtract(system.positionOf(flown.id), system.positionOf(ground));
+      const height = length(up) || 1;
+      return { x: up.x / height, y: up.y / height - CRAFT_VIEW_SOUTH, z: up.z / height };
+    };
+    return {
+      target: () => system.positionOf(flown.id),
+      distance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII * squeeze,
+      direction: bearing(),
+      bearing,
+      minDistance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII * 0.1,
+      maxDistance: system.radiusOf(ground) * CLOSE_UP_RADII,
+      idleTurn: false,
+    };
+  };
+  /** The craft a part looks closely at, when it is one drawn as its 3D model. */
+  const modelledCraft = (story: Story, chapter: Chapter): StoryCraft | null => {
+    if (chapter.closeUp !== true) return null;
+    const flown = (story.craft ?? []).find((craft) => craft.id === chapter.lookAtId);
+    return flown?.modelOfId !== undefined && system.craftLengthOf(flown.id) > 0 ? flown : null;
+  };
+  /**
+   * The look from beside a craft drawn as its 3D model: from the side of its path, so that it
+   * is seen climbing and leaning over, a little above it, with the ground level below.
+   */
+  const besideCraft = (flown: StoryCraft, squeeze: number): FlyTo => {
+    const ground = flown.path.centreId;
+    const long = system.craftLengthOf(flown.id);
+    const side = flightSides.get(flown.id) ?? { x: 0, y: 0, z: 1 };
+    const up = (): Vec3 => {
+      const out = subtract(system.craftMiddleOf(flown.id), system.positionOf(ground));
+      const height = length(out) || 1;
+      return { x: out.x / height, y: out.y / height, z: out.z / height };
+    };
+    const bearing = (): Vec3 => {
+      const lift = up();
+      return {
+        x: side.x + lift.x * MODEL_VIEW_LIFT,
+        y: side.y + lift.y * MODEL_VIEW_LIFT,
+        z: side.z + lift.z * MODEL_VIEW_LIFT,
+      };
+    };
+    return {
+      target: () => system.craftMiddleOf(flown.id),
+      distance: long * Math.max(MODEL_VIEW_LENGTHS, MODEL_VIEW_NARROW_LENGTHS * squeeze),
+      direction: bearing(),
+      bearing,
+      up,
+      minDistance: long * MODEL_CLOSEST_LENGTHS,
+      maxDistance: long * MODEL_FARTHEST_LENGTHS,
+      idleTurn: false,
+    };
+  };
   const closeView = (story: Story, chapter: Chapter, squeeze: number): FlyTo | null => {
     const flown = (story.craft ?? []).find((craft) => craft.id === chapter.lookAtId);
-    if (chapter.closeUp === true && flown) {
-      const ground = flown.path.centreId;
-      // Held over the craft, a little to the south of straight overhead, however far round it goes.
-      const bearing = (): Vec3 => {
-        const up = subtract(system.positionOf(flown.id), system.positionOf(ground));
-        const height = length(up) || 1;
-        return { x: up.x / height, y: up.y / height - CRAFT_VIEW_SOUTH, z: up.z / height };
-      };
-      return {
-        target: () => system.positionOf(flown.id),
-        distance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII * squeeze,
-        direction: bearing(),
-        bearing,
-        minDistance: system.radiusOf(ground) * CRAFT_CLOSE_UP_RADII * 0.1,
-        maxDistance: system.radiusOf(ground) * CLOSE_UP_RADII,
-        idleTurn: false,
-      };
-    }
+    const modelled = modelledCraft(story, chapter);
+    if (modelled) return besideCraft(modelled, squeeze);
+    if (chapter.closeUp === true && flown) return overCraft(flown, squeeze);
     if (chapter.closeUp === true) {
       const seen = chapter.lookAtId;
       // Something with a glow that grows (a comet near the Sun) is stood back from as it grows.
@@ -1280,9 +1344,22 @@ function start(): void {
       return aspect < 1 ? { x: x * lean, y: 1, z: z * lean } : { x: -z * lean, y: 1, z: x * lean };
     };
   };
+  /**
+   * For each craft of the story on show, the side its path is seen from close by: square to
+   * the plane it flies in, on the right of the way it goes. A unit vector in scene axes.
+   */
+  const flightSides = new Map<string, Vec3>();
+  const sideOfFlight = (flight: TrackedCraft): Vec3 | null => {
+    const { instants } = flight;
+    const first = instants[0];
+    const later = instants[instants.length >> 1];
+    if (first === undefined || later === undefined) return null;
+    const across = cross(flight.placeAt(later), flight.placeAt(first));
+    return length(across) > 0 ? eclipticToScene(normalize(across)) : null;
+  };
   /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
   const flightOf = (
-    { id, path }: StoryCraft,
+    { id, path, modelOfId, fromGround, sheds }: StoryCraft,
     _index: number,
     all: readonly StoryCraft[],
   ): TrackedCraft => {
@@ -1313,13 +1390,30 @@ function start(): void {
       };
     }
     // A path known at a few places only has a curve drawn through them.
-    const samples = 'samples' in path ? path.samples.value : drawnThrough(path.points.value);
+    const turning = turningOf(catalogue.find((object) => object.id === centreId));
+    const samples =
+      'samples' in path ? path.samples.value : stagedSamples(path, fromGround === true, turning);
+    const shown = catalogue.find((object) => object.id === modelOfId);
+    const model = shown?.media.find((media) => media.role === 'model');
+    const halfKm = shown ? bodyRadiusKm(shown) : null;
+    const first = samples[0];
     return {
       id,
       centreId,
       frame: 'space',
       instants: sampleInstants(samples, STEPS_PER_SAMPLE),
       placeAt: (jd) => pathPositionKm(samples, jd),
+      ...(fromGround === true && first ? { leavesGroundAtJd: first[0] } : {}),
+      ...(model && halfKm !== null
+        ? {
+            model: {
+              url: mediaUrl(model.file),
+              lengthKm: 2 * halfKm,
+              noseAt: (jd: number) => noseAlong(samples, turning, jd),
+              shedBelowAt: (jd: number) => shedShareAt(sheds ?? [], jd),
+            },
+          }
+        : {}),
     };
   };
   // A spacecraft in a story gets a ring and its name, like a body too small to see.
@@ -1724,6 +1818,11 @@ function start(): void {
                 ),
                 craft: craft.map(flightOf),
               };
+              flightSides.clear();
+              for (const flight of tracks.craft) {
+                const side = sideOfFlight(flight);
+                if (side) flightSides.set(flight.id, side);
+              }
               system.setTracks(
                 craft.length === 0 && !story.tracked && !story.turned && !story.shadows
                   ? null
@@ -2088,9 +2187,12 @@ function start(): void {
         const point = stage.toScreen(shown.positionOf(id));
         return { point, radiusPixels: shown.radiusOf(id) * point.pixelsPerUnit };
       });
+      const modelled = paired ? modelledCraft(paired.story, paired.chapter) : null;
+      system.drawCraftModels(modelled !== null);
       for (const [id, tag] of craftTags) {
         const point = stage.toScreen(system.positionOf(id));
-        tag.hidden = !point.visible;
+        // A craft seen as itself needs no ring to find it by.
+        tag.hidden = !point.visible || id === modelled?.id;
         tag.style.transform = `translate(${point.x.toFixed(1)}px, ${point.y.toFixed(1)}px)`;
       }
       showSeasons(watchJd);
@@ -2118,6 +2220,8 @@ function start(): void {
     // The stars are a backdrop for the look from a world, not part of the whole picture.
     system.setSky(skyFromId, false);
     system.drawOnly(null);
+    // From far off a craft is a point of light, whatever the first look draws it as.
+    system.drawCraftModels(false);
     meteors.group.visible = false;
     const shown = diagram?.system ?? system;
     const seen = sightOf?.() ?? null;

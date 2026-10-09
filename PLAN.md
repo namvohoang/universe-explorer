@@ -766,6 +766,23 @@ recorded last.
       story says so): 4.8 times as far out as the two paths, since on a nearer one Earth's
       own move forward carries the end of the line on and it never goes back; and drawn 22%
       bigger by the end, so the way back lies beside the way out.
+- [x] 12.23 Apollo 11's launch seen close up (owner's note, 2026-10-09: the close-up is to
+      be the whole picture, and the close-up a 3D spaceship launching from land). The look
+      from over the rocket, where it is a named point on its path, is now "The whole
+      picture". "Close up" is NASA's model of the Saturn V at its true size (111 m), seen
+      from beside its path: it stands on the ground until liftoff, leaves it from rest (the
+      drawn curve starts at the ground's own speed), climbs and leans over. Its nose points
+      the way it moves over the ground, which is a drawing, and the screen says so. At the
+      two separations of NASA's table the stage let go is cut off the model: the first at
+      138/363 of its length (NASA's lengths of the stage and of the rocket), the second
+      where the model narrows to the third stage; a dropped stage is not drawn falling.
+      The ground round the pad is drawn finely (`src/scene/groundPatch.ts`): Earth's own
+      sphere has flat faces kilometres across. No flame, no tower and no sky are drawn.
+      Found on the way: at true scale the depth buffer could not tell a rocket's near side
+      from its far side, so the logarithm of depth is now taken the app's own way
+      (`DEPTH_GAIN` in `src/scene/projection.ts`), for every scene.
+      A story's craft asks for this with `modelOfId`, `fromGround` and `sheds`; the other
+      flights still show their craft as points.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

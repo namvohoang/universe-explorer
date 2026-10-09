@@ -16,12 +16,13 @@ import {
   type TrackedOffsets,
 } from '../sim/layout';
 import { createScale, type Scale } from '../sim/scale';
-import { add, length, subtract, type Vec3 } from '../sim/vec3';
+import { add, length, scale as scaleBy, subtract, type Vec3 } from '../sim/vec3';
 import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
 import { createDustTrail, type DustTrail } from './dustTrail';
+import { createFlownModel, type FlownModel } from './flownModel';
 import { createOrbitLine, type OrbitLine } from './orbitLine';
 import { createSkyFigures } from './skyFigures';
 import { createSkyTrail, type SkyTrail } from './skyTrail';
@@ -46,6 +47,26 @@ export interface TrackedCraft {
   /** The dates the path is drawn at, earliest first. */
   readonly instants: readonly number[];
   placeAt(jd: number): Vec3;
+  /**
+   * The instant the craft leaves the ground of `centreId`, standing where its path starts:
+   * the ground round that place is then drawn finely enough to stand beside it.
+   */
+  readonly leavesGroundAtJd?: number;
+  /**
+   * The craft's 3D model, drawn at its true size with its tail on the path. `lengthKm` is
+   * how long the real craft is, and `noseAt` the unit vector, in the ecliptic frame, its
+   * nose points along at a date. Only a craft in the `space` frame wears one.
+   */
+  readonly model?: {
+    readonly url: string;
+    readonly lengthKm: number;
+    noseAt(jd: number): Vec3;
+    /**
+     * How much of the model, from its tail, the craft has let go of by a date and is no
+     * longer drawn: a share of its length, 0 while it is whole.
+     */
+    shedBelowAt(jd: number): number;
+  };
 }
 
 export interface Tracks {
@@ -97,6 +118,15 @@ export interface SolarSystem {
    * puts everything back.
    */
   setTracks(tracks: Tracks | null): void;
+  /** The middle of a craft's 3D model, in scene units; where the craft is when it has none. */
+  craftMiddleOf(id: string): Vec3;
+  /** How long a craft's 3D model is drawn when whole, in scene units; 0 when it has none. */
+  craftLengthOf(id: string): number;
+  /**
+   * Draws each craft that has a 3D model as that model (`true`), for a look from close by, or
+   * as the point of light on its path that every craft is from far off (`false`).
+   */
+  drawCraftModels(drawn: boolean): void;
   /**
    * Draws the track one body makes across the sky of another between two dates, as a line far
    * off in each direction it is seen in; `null` takes it away.
@@ -229,6 +259,8 @@ export function createSolarSystem(
   const heldSpins = new Map<string, number>();
   let linesDrawn = true;
   const trails = new Map<string, { readonly craft: TrackedCraft; readonly trail: Trail }>();
+  const models = new Map<string, { readonly model: FlownModel; length: number; middle: Vec3 }>();
+  let grounded: Body | null = null;
   const showLines = (): void => {
     for (const orbit of orbitLines) {
       const shown = shownIds === null || shownIds.has(orbit.objectId);
@@ -267,7 +299,17 @@ export function createSolarSystem(
       const offset = sceneOffsetFromKm(craft.placeAt(jd), centre, currentScale);
       trail.group.position.set(origin.x, origin.y, origin.z);
       trail.setDate(jd, offset);
-      positions.set(craft.id, add(origin, offset));
+      const place = add(origin, offset);
+      positions.set(craft.id, place);
+      const flown = models.get(craft.id);
+      if (flown && craft.model) {
+        const nose = eclipticToScene(craft.model.noseAt(jd));
+        const shed = craft.model.shedBelowAt(jd);
+        flown.length = currentScale.sizeToScene(craft.model.lengthKm);
+        // The middle of what is left of it.
+        flown.middle = add(place, scaleBy(nose, (flown.length * (1 + shed)) / 2));
+        flown.model.place(place, nose, flown.length, shed);
+      }
     }
     for (const [id, body] of bodies) {
       const position = positions.get(id);
@@ -376,6 +418,10 @@ export function createSolarSystem(
         trail.dispose();
       }
       trails.clear();
+      for (const { model } of models.values()) model.dispose();
+      models.clear();
+      grounded?.setGroundPatch(null);
+      grounded = null;
       for (const shadow of tracks?.shadows ?? []) bodies.get(shadow.onId)?.setEclipse(null);
       tracks = next;
       for (const [id, body] of bodies) {
@@ -387,9 +433,43 @@ export function createSolarSystem(
         trails.set(craft.id, { craft, trail });
         const ground = craft.frame === 'body' ? bodies.get(craft.centreId) : undefined;
         (ground ? ground.frame : group).add(trail.group);
+        if (craft.model && craft.frame === 'space') {
+          const model = createFlownModel(craft.model.url);
+          models.set(craft.id, { model, length: 0, middle: { x: 0, y: 0, z: 0 } });
+          group.add(model.group);
+        }
+        const stoodOn = bodies.get(craft.centreId);
+        const centre = catalogue.find((object) => object.id === craft.centreId);
+        if (craft.leavesGroundAtJd !== undefined && stoodOn && centre && !grounded) {
+          // The body is turned to where it was at that instant, and the place found on it.
+          stoodOn.setDate(craft.leavesGroundAtJd);
+          const from = stoodOn.group.position;
+          const offset = sceneOffsetFromKm(
+            craft.placeAt(craft.leavesGroundAtJd),
+            centre,
+            currentScale,
+          );
+          stoodOn.setGroundPatch({
+            x: from.x + offset.x,
+            y: from.y + offset.y,
+            z: from.z + offset.z,
+          });
+          grounded = stoodOn;
+        }
       }
       drawTrails();
       showLines();
+    },
+    craftMiddleOf: (id) => models.get(id)?.middle ?? positions.get(id) ?? { x: 0, y: 0, z: 0 },
+    craftLengthOf: (id) => models.get(id)?.length ?? 0,
+    drawCraftModels(drawn) {
+      for (const [id, { model }] of models) {
+        model.group.visible = drawn;
+        // Beside the craft itself its path is no guide: the line is drawn in straight steps
+        // many kilometres long, and would pass the model by.
+        const trail = trails.get(id)?.trail;
+        if (trail) trail.group.visible = !drawn;
+      }
     },
     holdSpin(id, jd) {
       if (jd === null) heldSpins.delete(id);
@@ -579,6 +659,7 @@ export function createSolarSystem(
       for (const belt of belts) belt.dispose();
       for (const tail of tails.values()) tail.dispose();
       for (const { trail } of trails.values()) trail.dispose();
+      for (const { model } of models.values()) model.dispose();
       dust?.dispose();
       aurora?.dispose();
       sky?.trail.dispose();

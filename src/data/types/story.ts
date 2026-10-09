@@ -176,6 +176,27 @@ export interface StoryCraft {
   readonly id: string;
   /** Key of its name in the UI strings. */
   readonly nameKey: string;
+  /**
+   * Catalogue id of the craft whose 3D model is drawn, at its true size, in a close look at
+   * this one. Which way the model points is a drawing: nose first along the drawn path.
+   * A close look at such a craft is shown beside the look from far off, where it is a point.
+   */
+  readonly modelOfId?: string;
+  /**
+   * Set when the craft stands on the ground at the first place of its staged path until the
+   * path starts: the curve then leaves that place from rest, and the ground there is drawn
+   * finely enough to stand beside the craft.
+   */
+  readonly fromGround?: true;
+  /**
+   * With `modelOfId`: the parts the craft lets go of as it flies, earliest first. From `atJd`
+   * on, the model is drawn without everything below `belowShare` of its length, measured from
+   * its tail (0) to its nose (1). The part let go is not drawn falling away.
+   */
+  readonly sheds?: readonly {
+    readonly atJd: Sourced<number>;
+    readonly belowShare: Sourced<number>;
+  }[];
   readonly path: SampledPath | StagedPath | GroundPath | ChasePath;
 }
 

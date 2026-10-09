@@ -5,7 +5,8 @@ import { catalogue } from '../src/data/catalogue';
 import type { PathSample, Story } from '../src/data/types';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from '../src/sim/layout';
 import { groundPlaceAt, groundRoute } from '../src/sim/groundPath';
-import { chasePositionKm, drawnThrough, pathPositionKm } from '../src/sim/trajectory';
+import { noseAlong, shedShareAt, stagedSamples, turningOf } from '../src/sim/launch';
+import { chasePositionKm, pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
 import { TAIL_STARTS_AU, tailStrength } from '../src/sim/comet';
@@ -171,8 +172,14 @@ describe('Artemis II', () => {
 describe('the launch of Apollo 11', () => {
   const path = apollo11Launch.craft?.[0]?.path;
   const points = path && 'points' in path && !('heading' in path) ? path.points.value : [];
-  const samples = drawnThrough(points);
+  const flown = apollo11Launch.craft?.[0];
   const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+  const turning = turningOf(earth);
+  // The curve the app draws: it leaves the pad from rest.
+  const samples =
+    path && 'points' in path && !('heading' in path)
+      ? stagedSamples(path, flown?.fromGround === true, turning)
+      : [];
   const groundKm = bodyRadiusKm(earth) ?? 0;
   const heightKm = (jd: number): number => {
     const place = pathPositionKm(samples, jd);
@@ -194,6 +201,35 @@ describe('the launch of Apollo 11', () => {
     for (let jd = start; jd <= end; jd += 1 / 86_400) {
       expect(heightKm(jd), String(jd)).toBeGreaterThan(-21);
     }
+  });
+
+  it('stands upright and still on the ground at liftoff, and only ever climbs away from it', () => {
+    const [first] = points;
+    if (!first) throw new Error('the path has places');
+    const nose = noseAlong(samples, turning, first[0]);
+    const pad = { x: first[1], y: first[2], z: first[3] };
+    const padKm = Math.hypot(pad.x, pad.y, pad.z);
+    // Straight up from the pad, to within a tenth of a degree.
+    expect((nose.x * pad.x + nose.y * pad.y + nose.z * pad.z) / padKm).toBeGreaterThan(0.999998);
+    let lastKm = padKm;
+    for (let second = 1; second <= 160; second += 1) {
+      const place = pathPositionKm(samples, first[0] + second / 86_400);
+      const km = Math.hypot(place.x, place.y, place.z);
+      expect(km, String(second)).toBeGreaterThan(lastKm);
+      lastKm = km;
+    }
+    // Slowly at first: NASA's rocket took about twelve seconds to rise its own 111 metres.
+    const after = pathPositionKm(samples, first[0] + 5 / 86_400);
+    expect(Math.hypot(after.x, after.y, after.z) - padKm).toBeLessThan(0.111);
+  });
+
+  it("drops its first two stages at the instants of NASA's table, lowest first", () => {
+    const sheds = flown?.sheds ?? [];
+    const parts = apollo11Launch.chapters.map((chapter) => chapter.atJd.value);
+    expect(sheds.map((shed) => shed.atJd.value)).toEqual([parts[1], parts[2]]);
+    expect(shedShareAt(sheds, (parts[1] ?? 0) - 1e-7)).toBe(0);
+    expect(shedShareAt(sheds, parts[1] ?? 0)).toBeCloseTo(138 / 363, 12);
+    expect(shedShareAt(sheds, apollo11Launch.endJd.value)).toBe(sheds[1]?.belowShare.value);
   });
 
   it('starts each part at one of the known places, so nothing told happens on a drawn stretch', () => {

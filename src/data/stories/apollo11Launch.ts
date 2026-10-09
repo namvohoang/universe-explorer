@@ -2,12 +2,17 @@
 // times, are rows of NASA's own table of the flight (see ../paths/apollo11Ascent.ts); the
 // curve drawn between them is the app's, so the story is `staged` and says so on screen.
 // Earth is turned so that Florida is where it really was at liftoff.
+// Seen close up the rocket is NASA's model of the Saturn V at its true size, standing on the
+// ground until liftoff; which way it points as it climbs is the app's drawing too. A stage
+// that has dropped away is cut off the model; it is not drawn falling.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
 import type { Story } from '../types';
 import { APOLLO_11_ASCENT, APOLLO_11_ASCENT_TURN } from '../paths/apollo11Ascent';
 import { s } from './sourced';
 import {
   JPL_HORIZONS_EARTH_TURN_APOLLO_11_ASCENT,
+  NASA_SATURN_V_FIRST_STAGE,
+  NASA_SATURN_V_MODEL,
   NASA_SATURN_V_STUDENTS,
   NASA_SP4029_APOLLO_11_ASCENT,
 } from './sources';
@@ -20,8 +25,43 @@ export const apollo11Launch: Story = {
   group: 'space-flights',
   path: 'staged',
   titleKey: 'storyApollo11LaunchTitle',
+  noteKey: 'storyApollo11LaunchNote',
   actorIds: ['earth', 'sun'],
-  craft: [{ id: 'apollo-11', nameKey: 'craftApollo11', path: APOLLO_11_ASCENT }],
+  craft: [
+    {
+      id: 'apollo-11',
+      nameKey: 'craftApollo11',
+      path: APOLLO_11_ASCENT,
+      modelOfId: 'saturn-v',
+      fromGround: true,
+      sheds: [
+        {
+          atJd: s(
+            2440419.065767361,
+            TABLE,
+            'S-IC/S-II separation, 2 min 42.30 s after range zero.',
+          ),
+          belowShare: s(
+            138 / 363,
+            'nasa-saturn-v-first-stage',
+            'The first stage: "The 138-foot-long stage", out of the 363 feet the source nasa-saturn-v-students gives for the whole rocket. NASA\'s model has a joint ring at 0.38 of its length too.',
+          ),
+        },
+        {
+          atJd: s(
+            2440419.070243055,
+            TABLE,
+            'S-II/S-IVB separation, 9 min 9.00 s after range zero.',
+          ),
+          belowShare: s(
+            0.659,
+            'nasa-saturn-v-3d-model',
+            "Measured on NASA's model on 2026-10-09: the share of its length at which it has narrowed to the width of the third stage. The cone below that joined the two stages and left with the second.",
+          ),
+        },
+      ],
+    },
+  ],
   turned: { earth: APOLLO_11_ASCENT_TURN },
   chapters: [
     {
@@ -77,5 +117,7 @@ export const apollo11Launch: Story = {
     NASA_SP4029_APOLLO_11_ASCENT,
     JPL_HORIZONS_EARTH_TURN_APOLLO_11_ASCENT,
     NASA_SATURN_V_STUDENTS,
+    NASA_SATURN_V_FIRST_STAGE,
+    NASA_SATURN_V_MODEL,
   ],
 };

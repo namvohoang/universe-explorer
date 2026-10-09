@@ -468,10 +468,13 @@ test.describe('a space flight', () => {
   }) => {
     await page.goto('/#watch/apollo-11-launch');
     await expect(page.locator('.watch-path')).toHaveText(
-      'The line between real places is a drawing.',
+      'The times and places are real. The line between them, and the way the rocket leans, are drawings.',
     );
     await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:32:01');
-    await expect(page.locator('.craft-tag')).toHaveText('Apollo 11');
+    // Close up the rocket is seen as itself; far off it is a named point on its path.
+    await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
+    await expect(page.locator('.craft-tag')).toBeHidden();
+    await expect(page.locator('.side-tag', { hasText: 'Apollo 11' })).toBeVisible();
     await page.getByRole('slider').focus();
     await page.keyboard.press('End');
     await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:43:49');

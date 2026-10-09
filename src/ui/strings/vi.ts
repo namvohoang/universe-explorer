@@ -854,6 +854,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyArtemis2Landing: 'Orion thả phần mang động cơ của nó. Rồi nó hạ xuống biển bằng dù.',
   storyApollo11LaunchTitle: 'Apollo 11: phóng lên',
   craftApollo11: 'Apollo 11',
+  storyApollo11LaunchNote:
+    'Thời điểm và vị trí là thật. Đường nối giữa chúng và độ nghiêng của tên lửa là hình vẽ.',
   storyApollo11LaunchLiftoff:
     'Rời bệ phóng! Tầng thứ nhất của Saturn V có những động cơ mạnh nhất. Nó phải nâng cả tên lửa đầy nhiên liệu.',
   storyApollo11LaunchFirstStageAway:

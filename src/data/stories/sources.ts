@@ -101,6 +101,20 @@ export const NASA_SATURN_V_STUDENTS: Source = {
   retrieved: '2026-10-07',
 };
 
+export const NASA_SATURN_V_FIRST_STAGE: Source = {
+  id: 'nasa-saturn-v-first-stage',
+  title: 'NASA — In 1969… Saturn V First Stage For Apollo 11 Mission',
+  url: 'https://www.nasa.gov/image-article/1969-saturn-v-first-stage-apollo-11-mission/',
+  retrieved: '2026-10-09',
+};
+
+export const NASA_SATURN_V_MODEL: Source = {
+  id: 'nasa-saturn-v-3d-model',
+  title: 'NASA Science — 3D Resources: Saturn V (the 3D model the app draws)',
+  url: 'https://science.nasa.gov/3d-resources/saturn-v/',
+  retrieved: '2026-10-04',
+};
+
 export const NASA_APOLLO_11_MISSION_REPORT: Source = {
   id: 'nasa-apollo11-mission-report',
   title:

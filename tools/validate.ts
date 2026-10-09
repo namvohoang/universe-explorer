@@ -47,6 +47,11 @@ const errors = [
   ...checkStories(
     stories,
     catalogue.map((object) => object.id),
+    new Set(
+      catalogue
+        .filter((object) => object.media.some((media) => media.role === 'model'))
+        .map((object) => object.id),
+    ),
   ),
   ...checkCredits(mediaFiles, credits),
   ...checkMediaUses([...mediaUses, ...storyMediaUses], credits),

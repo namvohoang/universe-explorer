@@ -2,7 +2,14 @@
  * Checks the stories of the Watch screen beyond what the types can: sources resolve, chapters
  * run forwards in time, and everything a story draws is in the catalogue. Pure: takes the records.
  */
-import type { ChasePath, GroundPath, SampledPath, StagedPath, Story } from '../../src/data/types';
+import type {
+  ChasePath,
+  GroundPath,
+  SampledPath,
+  StagedPath,
+  Story,
+  StoryCraft,
+} from '../../src/data/types';
 import { sourceErrors } from './catalogue';
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -124,7 +131,40 @@ function chaseErrors(
   return errors;
 }
 
-export function checkStories(stories: readonly Story[], catalogueIds: readonly string[]): string[] {
+/** A craft drawn as a 3D model needs that model, and what it sheds must come off in order. */
+function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<string>): string[] {
+  const errors: string[] = [];
+  const at = `story ${story.id}: craft "${craft.id}"`;
+  if (craft.modelOfId !== undefined && !modelIds.has(craft.modelOfId)) {
+    errors.push(`${at} is drawn as "${craft.modelOfId}", which has no 3D model in the catalogue`);
+  }
+  if (craft.fromGround === true && !('points' in craft.path && !('heading' in craft.path))) {
+    errors.push(`${at} stands on the ground but has no staged path that starts there`);
+  }
+  if (craft.sheds && craft.modelOfId === undefined) {
+    errors.push(`${at} sheds parts but is not drawn as a 3D model`);
+  }
+  let previousJd = story.chapters[0]?.atJd.value ?? -Infinity;
+  let previousShare = 0;
+  for (const shed of craft.sheds ?? []) {
+    if (!(shed.atJd.value >= previousJd && shed.atJd.value <= story.endJd.value)) {
+      errors.push(`${at} sheds a part out of order or outside the story`);
+    }
+    if (!(shed.belowShare.value > previousShare && shed.belowShare.value < 1)) {
+      errors.push(`${at} sheds a part that is not further up it than the one before`);
+    }
+    previousJd = shed.atJd.value;
+    previousShare = shed.belowShare.value;
+  }
+  return errors;
+}
+
+export function checkStories(
+  stories: readonly Story[],
+  catalogueIds: readonly string[],
+  /** Ids of the catalogue objects that have a 3D model. */
+  modelIds: ReadonlySet<string> = new Set(),
+): string[] {
   const errors: string[] = [];
   const known = new Set(catalogueIds);
   const ids = new Set<string>();
@@ -203,6 +243,7 @@ export function checkStories(stories: readonly Story[], catalogueIds: readonly s
         errors.push(`story ${story.id}: craft "${one.id}" has the id of a catalogue object`);
       }
       errors.push(...pathErrors(story, one.id, one.path, known));
+      errors.push(...modelErrors(story, one, modelIds));
     }
     for (const [id, path] of Object.entries(story.tracked ?? {})) {
       if (!story.actorIds.includes(id)) {

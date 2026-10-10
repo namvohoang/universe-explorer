@@ -472,6 +472,31 @@ export const JPL_HORIZONS_TURN_STS_133_EARTH: Source = {
   retrieved: '2026-10-07',
 };
 
+export const NASA_ISS_MODEL: Source = {
+  id: 'nasa-iss-3d-model',
+  title: 'NASA Science — International Space Station 3D model (the model the app draws)',
+  url: 'https://science.nasa.gov/resource/international-space-station-3d-model/',
+  retrieved: '2026-10-10',
+};
+
+// The same record as the catalogue's `si-discovery`, written again here so that the stories
+// do not reach into the catalogue's sources.
+export const SI_DISCOVERY_SIZE: Source = {
+  id: 'si-discovery',
+  title:
+    'Smithsonian National Air and Space Museum — Orbiter, Space Shuttle, OV-103, Discovery: its length',
+  url: 'https://n2t.net/ark:/65665/nv90f447f4d-55c5-4511-90c3-86bd30bfdbfc',
+  retrieved: '2026-10-05',
+};
+
+export const SI_DISCOVERY_SCAN: Source = {
+  id: 'si-discovery-scan',
+  title:
+    'Smithsonian National Air and Space Museum — 3D scan of Space Shuttle Discovery (the model the app draws)',
+  url: 'https://3d-api.si.edu/voyager/3d_package:d8c636ce-4ebc-11ea-b77f-2e728ce88125',
+  retrieved: '2026-10-10',
+};
+
 export const NASA_STS_133: Source = {
   id: 'nasa-sts-133',
   title: 'NASA — STS-133',

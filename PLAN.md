@@ -901,6 +901,18 @@ recorded last.
       points are drawings.
       Not drawn: Orion turning round smoothly at the start and end of the slowing burn (it
       flips), the small trajectory-correction burns, and the solar wings turning to the Sun.
+- [x] 12.30 The shuttle meets the station, close up in 3D (owner's request, 2026-10-10: the close
+      look is the 3D craft, and what was the close look becomes the whole picture). The station
+      is NASA's 3D model and Discovery the Smithsonian's scan of the real orbiter, both at true
+      size, each looked at in turn, with the orbit round Earth beside them. The shuttle's gap
+      behind the station now closes softly in the last hour (the same rule far out, so the
+      chapters before stay over 100 km apart), and it stops one Discovery length behind the
+      station (38.03 m, the Smithsonian's measure; `standsOffKm`) since a model is drawn from
+      its tail, so the nose meets the station. A new part, the last two minutes, is played
+      slowly. The station flies Russian end first and the shuttle comes in from behind, nose
+      first: both drawings, and the story's note now says the docking is one.
+      Not drawn: the shuttle's real approach path and the docking port's exact place on the
+      station.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

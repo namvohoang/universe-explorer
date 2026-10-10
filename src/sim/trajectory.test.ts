@@ -3,6 +3,8 @@ import type { PathPoint, PathSample } from '../data/types';
 import { SECONDS_PER_DAY } from './constants';
 import {
   CHASE_GAIN,
+  CHASE_SOFTENS_SECONDS,
+  chaseHeading,
   chasePositionKm,
   drawnThrough,
   groundVelocityKmPerS,
@@ -195,20 +197,36 @@ describe('noseDirection', () => {
 });
 
 describe('chasePositionKm', () => {
-  it('is where the craft ahead was a little earlier, by a gap that closes steadily', () => {
-    // STRAIGHT runs along x at 1 km/s. A day before joining, the gap is a day times the gain.
-    const chaser = chasePositionKm(STRAIGHT, 2, 1);
-    const ahead = pathPositionKm(STRAIGHT, 1);
-    expect(ahead.x - chaser.x).toBeCloseTo(SECONDS_PER_DAY * CHASE_GAIN, 6);
-    const later = chasePositionKm(STRAIGHT, 2, 1.5);
-    expect(pathPositionKm(STRAIGHT, 1.5).x - later.x).toBeCloseTo(
-      (SECONDS_PER_DAY / 2) * CHASE_GAIN,
-      6,
-    );
+  // STRAIGHT runs along x at 1 km/s.
+  const gapKm = (jd: number, standsOffKm = 0): number =>
+    pathPositionKm(STRAIGHT, jd).x - chasePositionKm(STRAIGHT, 2, jd, standsOffKm).x;
+  const secondsLeft = (jd: number): number => (2 - jd) * SECONDS_PER_DAY;
+
+  it('is where the craft ahead was a little earlier, the gap closing ever more gently', () => {
+    for (const jd of [1, 1.5, 1.99]) {
+      const left = secondsLeft(jd);
+      expect(gapKm(jd)).toBeCloseTo((CHASE_GAIN * left * left) / (left + CHASE_SOFTENS_SECONDS), 6);
+    }
+    // Far apart it closes at nearly the full gain; near the end, much more slowly.
+    expect(gapKm(1)).toBeGreaterThan(0.95 * SECONDS_PER_DAY * CHASE_GAIN);
+    expect(gapKm(2 - 60 / SECONDS_PER_DAY)).toBeLessThan((60 * CHASE_GAIN) / 50);
+    expect(gapKm(1)).toBeGreaterThan(gapKm(1.5));
+    expect(gapKm(1.5)).toBeGreaterThan(gapKm(1.99));
   });
 
   it('is with the craft ahead when they join, and stays with it', () => {
     expect(chasePositionKm(STRAIGHT, 2, 2)).toEqual(pathPositionKm(STRAIGHT, 2));
     expect(chasePositionKm(STRAIGHT, 2, 2.5)).toEqual(pathPositionKm(STRAIGHT, 2.5));
+  });
+
+  it('stops short by the room the two need, when it is given', () => {
+    expect(gapKm(2, 0.05)).toBeCloseTo(0.05, 9);
+    expect(gapKm(2.5, 0.05)).toBeCloseTo(0.05, 9);
+    expect(gapKm(1.5, 0.05) - gapKm(1.5)).toBeCloseTo(0.05, 9);
+  });
+
+  it('heads the way the craft ahead moved', () => {
+    const heading = chaseHeading(STRAIGHT, 2, 1.5, 0.05);
+    expect(heading.x).toBeCloseTo(1, 9);
   });
 });

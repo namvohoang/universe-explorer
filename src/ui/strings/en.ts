@@ -1268,13 +1268,15 @@ export const en = {
   storyAuroraSouthToo:
     'There is a ring round the far south too. The green light comes from oxygen, about 100 km above the ground.',
   storyShuttleDockingTitle: 'A shuttle meets the station',
-  storyShuttleDockingNote: 'Station: real path. Shuttle: a drawing.',
+  storyShuttleDockingNote: 'Station: real path. Shuttle and docking: a drawing.',
   craftSpaceStation: 'The space station',
   craftDiscovery: 'Discovery',
   storyShuttleDockingChasing:
     'Space shuttle Discovery left Florida two days ago, with six astronauts. It has been chasing the space station ever since.',
   storyShuttleDockingClosingIn:
     'Discovery creeps closer and closer. Both are racing round Earth, so it has to be done very carefully.',
+  storyShuttleDockingLastMetres:
+    'The last few metres. Discovery lines up with the station and moves in, very gently, until the two touch.',
   storyShuttleDockingJoined:
     'They have joined up! This is called docking. Now the astronauts can open the hatches and float across.',
   storyMarsBackwardsNote:

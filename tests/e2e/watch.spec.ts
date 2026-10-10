@@ -518,10 +518,15 @@ test.describe('a space flight', () => {
 
   test('whose path is partly real and partly drawn says which is which', async ({ page }) => {
     await page.goto('/#watch/shuttle-docking');
-    await expect(page.locator('.watch-path')).toHaveText('Station: real path. Shuttle: a drawing.');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'Station: real path. Shuttle and docking: a drawing.',
+    );
     await expect(page.locator('.craft-tag')).toHaveText(['The space station', 'Discovery']);
-    await page.getByRole('button', { name: 'Next part' }).click();
-    await page.getByRole('button', { name: 'Next part' }).click();
+    // Close up both are 3D models; the whole picture is the orbit round Earth.
+    await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
+    for (let part = 0; part < 3; part += 1) {
+      await page.getByRole('button', { name: 'Next part' }).click();
+    }
     await expect(page.locator('.watch-text')).toContainText('docking');
     await expect(page.locator('.watch-date')).toHaveText('26 February 2011, 19:14:00');
   });

@@ -205,6 +205,22 @@ describe('Artemis I near the Moon', () => {
 });
 
 describe('Artemis II', () => {
+  it('fires its engine for the push to the Moon while watched close up, as long as JPL gives', () => {
+    const burns = artemis2.craft?.[0]?.burns ?? [];
+    expect(burns).toHaveLength(1);
+    const [tli] = burns;
+    if (!tli) throw new Error('one burn expected');
+    // Horizons' data sheet: "Start Translunar Injection burn (5m 55s)".
+    expect((tli.untilJd.value - tli.fromJd.value) * 86_400).toBeCloseTo(355, 3);
+    const [, toTheMoon, next] = artemis2.chapters;
+    if (!toTheMoon || !next) throw new Error('five chapters expected');
+    expect(toTheMoon.closeUp).toBe(true);
+    expect(tli.fromJd.value).toBeGreaterThanOrEqual(toTheMoon.atJd.value);
+    expect(tli.untilJd.value).toBeLessThan(next.atJd.value);
+    expect(flameAt(burns, (tli.fromJd.value + tli.untilJd.value) / 2)).toBe('faint');
+    expect(flameAt(burns, tli.untilJd.value)).toBeNull();
+  });
+
   it('goes round the Moon at the distance and the minute JPL gives', () => {
     const path = artemis2.craft?.[0]?.path;
     const orion = path && 'samples' in path ? path.samples.value : [];

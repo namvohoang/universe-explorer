@@ -1165,6 +1165,10 @@ export const en = {
   storyArtemis1Home:
     'Orion flies back to Earth. At the end it slows down and lands in the sea under parachutes.',
   storyArtemis2Title: 'Artemis II: with astronauts',
+  storyArtemis2Crew:
+    'The four Artemis II astronauts, in a photo from 2023, before the flight. At the back: Victor Glover, the pilot, and Jeremy Hansen. At the front: Reid Wiseman, the commander, and Christina Koch.',
+  storyArtemis2CrewAlt:
+    'Four smiling astronauts in orange spacesuits. One sits on a stool; the other three stand round him with their arms round each other.',
   storyArtemis2RoundEarth:
     'Four astronauts are on board Orion: Reid, Victor, Christina and Jeremy. First they fly one big loop round Earth.',
   storyArtemis2ToTheMoon:

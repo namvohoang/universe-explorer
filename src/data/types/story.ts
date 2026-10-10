@@ -407,6 +407,12 @@ export interface Story {
    */
   readonly fromEarth?: readonly { readonly media: MediaRef; readonly captionKey: string }[];
   /**
+   * Real photos of the people of the story (a crew, say), kept small in a corner of the close
+   * look like `fromEarth`'s, for a tap to make big. `captionKey` says who they are, and when and
+   * where the photo was taken.
+   */
+  readonly photos?: readonly { readonly media: MediaRef; readonly captionKey: string }[];
+  /**
    * Real seconds each chapter takes to play, where the usual pace is too quick to follow:
    * years of a planet's path in one chapter, say. A choice of pace, not a measurement.
    */

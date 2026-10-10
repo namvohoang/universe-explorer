@@ -4,6 +4,10 @@
 // with it: nearest the Moon's centre at 8,282 km, and farthest from Earth four minutes later.
 // The path's own times are TDB, about a minute ahead of UTC. It starts three and a half hours
 // after launch and stops 17 minutes before splashdown: Horizons holds no more.
+// Close up Orion is NASA's model of it at its true size, the same one drawn for Artemis I. Its
+// flame is the translunar injection burn, at the minute and for as long as the data sheet
+// gives (UTC, moved onto the path's TDB clock). Which way it points is a drawing: nose first the
+// way it moves. NASA's photo of the four astronauts stands beside it; they never left Orion.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
 import type { Story } from '../types';
 import { ARTEMIS_2_MOON } from '../paths/artemis2Moon';
@@ -18,14 +22,46 @@ import {
 
 const PATH = 'jpl-horizons-path-artemis2orion';
 const SHEET = 'jpl-horizons-artemis-2';
+/** How far Horizons' clock (TDB) runs ahead of clock time (UTC) in these days, in days. */
+const TDB_AHEAD_DAYS = 69.18 / 86_400;
+/** The translunar injection burn, on the story's clock (TDB). */
+const tliStart = s(
+  2461133.492361111 + TDB_AHEAD_DAYS,
+  SHEET,
+  '"Start Translunar Injection burn (5m 55s)" at 2026-04-02 23:49 UTC.',
+);
+const tliEnd = s(tliStart.value + 355 / 86_400, SHEET, 'Five minutes 55 seconds after it starts.');
 
 export const artemis2: Story = {
   id: 'artemis-2',
   group: 'space-flights',
   path: 'tracked',
   titleKey: 'storyArtemis2Title',
+  noteKey: 'storyArtemis1Note',
+  photos: [
+    {
+      media: {
+        file: 'public/media/stories/artemis-2-crew.webp',
+        kind: 'photo',
+        role: 'picture',
+        altKey: 'storyArtemis2CrewAlt',
+        credit: 'NASA/Robert Markowitz',
+      },
+      captionKey: 'storyArtemis2Crew',
+    },
+  ],
   actorIds: ['earth', 'moon', 'sun'],
-  craft: [{ id: 'orion-spacecraft', nameKey: 'craftOrion', path: ARTEMIS_2_ORION }],
+  craft: [
+    {
+      id: 'orion-spacecraft',
+      nameKey: 'craftOrion',
+      path: ARTEMIS_2_ORION,
+      modelOfId: 'orion-craft',
+      // Orion's main engine burns hypergolic propellants: in the vacuum of space its flame is
+      // pale and hard to see.
+      burns: [{ fromJd: tliStart, untilJd: tliEnd, flame: 'faint' }],
+    },
+  ],
   tracked: { moon: ARTEMIS_2_MOON },
   chapters: [
     {
@@ -38,9 +74,12 @@ export const artemis2: Story = {
           'NASA’s SLS (Space Launch System) rocket launched the Orion spacecraft carrying NASA astronauts Reid Wiseman, Victor Glover, and Christina Koch, along with CSA (Canadian Space Agency) astronaut Jeremy Hansen, on the Artemis II mission on April 1, 2026, from Operations and Support Building II at Kennedy Space Center in Florida.',
       },
       lookAtId: 'orion-spacecraft',
+      closeUp: true,
     },
     {
       id: 'to-the-moon',
+      // The burn is played slowly, to watch it.
+      slowStart: { storySeconds: 480, overSeconds: 16 },
       atJd: s(
         2461133.492361111,
         SHEET,
@@ -52,6 +91,7 @@ export const artemis2: Story = {
         quote: 'Start Translunar Injection burn (5m 55s)',
       },
       lookAtId: 'orion-spacecraft',
+      closeUp: true,
     },
     {
       id: 'round-the-moon',
@@ -65,7 +105,7 @@ export const artemis2: Story = {
         sourceId: 'jpl-horizons-artemis-2',
         quote: 'Maximum distance Earth center (413146.2 km)',
       },
-      lookAtId: 'moon',
+      lookAtId: 'orion-spacecraft',
       closeUp: true,
     },
     {
@@ -78,6 +118,7 @@ export const artemis2: Story = {
           'Meet the astronauts who ventured around the Moon on Artemis II, the first crewed flight aboard NASA’s human deep space capabilities, paving the way for future lunar surface missions.',
       },
       lookAtId: 'orion-spacecraft',
+      closeUp: true,
     },
     {
       id: 'landing',

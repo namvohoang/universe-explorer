@@ -864,6 +864,10 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Orion bay sát qua Mặt Trăng lần thứ hai. Nó nổ máy ba phút rưỡi, rồi quay về nhà.',
   storyArtemis1Home: 'Orion bay về Trái Đất. Cuối cùng nó chậm lại và hạ xuống biển bằng dù.',
   storyArtemis2Title: 'Artemis II: có phi hành gia',
+  storyArtemis2Crew:
+    'Bốn phi hành gia của Artemis II, trong một bức ảnh chụp năm 2023, trước chuyến bay. Phía sau: Victor Glover, phi công, và Jeremy Hansen. Phía trước: Reid Wiseman, chỉ huy, và Christina Koch.',
+  storyArtemis2CrewAlt:
+    'Bốn phi hành gia mặc đồ du hành màu cam đang mỉm cười. Một người ngồi trên ghế đẩu; ba người kia đứng quanh, khoác tay lên nhau.',
   storyArtemis2RoundEarth:
     'Trên tàu Orion có bốn phi hành gia: Reid, Victor, Christina và Jeremy. Trước hết họ bay một vòng lớn quanh Trái Đất.',
   storyArtemis2ToTheMoon: 'Orion nổ máy khoảng sáu phút. Cú đẩy đó đưa nó bay về phía Mặt Trăng.',

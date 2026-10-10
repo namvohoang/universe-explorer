@@ -846,13 +846,17 @@ recorded last.
       stays. The flag, with its pole, stands from NASA's time for "United States flag
       deployed" (110:09:43). Their sizes and places are drawings from memory of photos,
       and the flag is left standing at liftoff. The note names all three as drawings.
-      Not drawn: the second astronaut, the service module.
-- [ ] 12.27 Apollo 11's landing, the two things left (asked for by the owner on 2026-10-09,
-      for the next day): the second astronaut, and Columbia's service module. Known so far:
-      NASA's timeline has "LMP on lunar surface" at 109:43:16, and no row was read for when
-      he went back in; no NASA 3D model of the service module was found on 2026-10-09
-      (the app's Apollo–Soyuz model has an Apollo joined to a Soyuz), so its source and
-      how it is labelled have to be settled first.
+- [x] 12.27 Apollo 11's landing, the two things left (asked for by the owner on 2026-10-09).
+      The second astronaut: the same figure, by the flag, from "LMP on lunar surface"
+      (109:43:16) until "LMP inside LM" (111:29:39) in NASA's timeline. Columbia with its
+      service module: the Apollo half of NASA's 3D model of Apollo–Soyuz, the same kind of
+      craft flown in 1975, cut off at the tip of its command module and sized so that it
+      is as wide as the museum measures the real Columbia (391.2 cm). It takes the place
+      of the museum's scan of the command module alone, which is still what the Spaceships
+      screen shows. NASA's model is squatter than the real craft (about 7 m long at that
+      width, where the real one was nearer 11 m with its engine bell); it is drawn as NASA
+      made it. Checked on the way: every time the two Apollo 11 stories use was read again
+      from the timeline page itself, not through a summary, and all agree.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

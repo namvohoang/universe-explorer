@@ -129,11 +129,19 @@ export const NASA_LUNAR_MODULE_MODEL: Source = {
   retrieved: '2026-10-04',
 };
 
-export const SI_COLUMBIA_SCAN: Source = {
-  id: 'si-columbia-3d-scan',
-  title:
-    'Smithsonian National Air and Space Museum — 3D scan of the Apollo 11 command module Columbia (the 3D model the app draws)',
-  url: 'https://3d-api.si.edu/voyager/3d_package:d8c6457e-4ebc-11ea-b77f-2e728ce88125',
+export const NASA_APOLLO_SOYUZ_MODEL: Source = {
+  id: 'nasa-apollo-soyuz-3d-model',
+  title: 'NASA Science — 3D Resources: Apollo Soyuz (the 3D model whose Apollo the app draws)',
+  url: 'https://science.nasa.gov/3d-resources/apollo-soyuz/',
+  retrieved: '2026-10-06',
+};
+
+// The same record as the catalogue's `si-columbia`, written again here so that the stories
+// pull in none of the catalogue's code.
+export const SI_COLUMBIA_SIZE: Source = {
+  id: 'si-columbia',
+  title: 'Smithsonian National Air and Space Museum — Command Module, Apollo 11',
+  url: 'https://n2t.net/ark:/65665/nv9ce74610f-62de-46b6-904f-58abfecb555c',
   retrieved: '2026-10-05',
 };
 

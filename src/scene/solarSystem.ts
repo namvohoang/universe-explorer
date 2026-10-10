@@ -72,6 +72,8 @@ export interface TrackedCraft {
     readonly lengthKm: number;
     /** The direction its nose points in the model's own file, when that is not its +y. */
     readonly noseInModel?: Vec3;
+    /** The stretch of the file's length, tail to nose, that is the craft, when it holds more. */
+    readonly stretch?: readonly [from: number, to: number];
     /**
      * For a craft in `body` that flies joined to another, nose to its top: the other's id,
      * and how wide a gap it is drawn standing off by at a date, in km (0 when joined).
@@ -131,6 +133,8 @@ export interface TrackedCraft {
     readonly fromJd: number;
     readonly untilJd: number;
     readonly flagFromJd?: number;
+    /** Others who come out too, each from one date until another. */
+    readonly others?: readonly { readonly fromJd: number; readonly untilJd: number }[];
   };
   readonly launchSite?: {
     readonly smokeFromJd: number;
@@ -539,7 +543,9 @@ export function createSolarSystem(
       landing.made.setState({
         dust: landing.dust,
         flicker: jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND,
-        walkerShown: walker !== undefined && jd >= walker.fromJd && jd < walker.untilJd,
+        walkersShown: walker
+          ? [walker, ...(walker.others ?? [])].map((one) => jd >= one.fromJd && jd < one.untilJd)
+          : [],
         footprints: walker ? (jd - walker.fromJd) / (madeBy - walker.fromJd) : 0,
         flagShown: walker?.flagFromJd !== undefined && jd >= walker.flagFromJd,
       });
@@ -655,9 +661,10 @@ export function createSolarSystem(
         const ground = craft.frame === 'body' ? bodies.get(craft.centreId) : undefined;
         (ground ? ground.frame : group).add(trail.group);
         if (craft.model) {
-          const model = createFlownModel(craft.model.url, craft.model.noseInModel);
+          const { url, noseInModel, stretch } = craft.model;
+          const model = createFlownModel(url, noseInModel, stretch);
           // The same model again, for the part just let go.
-          const dropped = createFlownModel(craft.model.url, craft.model.noseInModel);
+          const dropped = createFlownModel(url, noseInModel, stretch);
           dropped.group.visible = false;
           models.set(craft.id, {
             model,
@@ -704,6 +711,7 @@ export function createSolarSystem(
           } else if (craft.frame === 'body' && craft.model?.headingAt) {
             const made = createLandingSite(
               craft.walker ? { url: craft.walker.url, tallKm: craft.walker.tallKm } : null,
+              1 + (craft.walker?.others?.length ?? 0),
             );
             landing = { made, ofId: craft.id, walker: craft.walker, dust: 0 };
             const heading = craft.model.headingAt(craft.leavesGroundAtJd);

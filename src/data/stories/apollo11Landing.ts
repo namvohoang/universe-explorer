@@ -16,7 +16,8 @@ import {
   NASA_ASTRONAUT_MODEL,
   NASA_LUNAR_MODULE_MODEL,
   NASA_SP4029_APOLLO_11_TIMELINE,
-  SI_COLUMBIA_SCAN,
+  NASA_APOLLO_SOYUZ_MODEL,
+  SI_COLUMBIA_SIZE,
 } from './sources';
 
 const TIMELINE = 'nasa-sp4029-apollo11-timeline';
@@ -97,7 +98,8 @@ export const apollo11Landing: Story = {
           stays: true,
         },
       ],
-      // One astronaut is drawn, from the first step until the commander is back inside.
+      // The commander is drawn from the first step until he is back inside, and the lunar
+      // module pilot for as long as he was out.
       walker: {
         media: {
           file: 'public/media/models/astronaut.glb',
@@ -122,19 +124,37 @@ export const apollo11Landing: Story = {
           TIMELINE,
           'United States flag deployed (CDR, LMP), 110:09:43.',
         ),
+        // The second astronaut, the lunar module pilot.
+        others: [
+          {
+            fromJd: s(2440423.635601852, TIMELINE, 'LMP on lunar surface, 109:43:16.'),
+            untilJd: s(2440423.709479167, TIMELINE, 'LMP inside LM, 111:29:39.'),
+          },
+        ],
       },
     },
     {
       id: 'apollo-11-columbia',
       nameKey: 'craftApollo11Columbia',
       path: APOLLO_11_COLUMBIA,
-      // Seen close up it is the museum's scan of the real command module, which is only the
-      // front part of what flew here: the service module behind it is not drawn.
-      modelOfId: 'columbia',
+      // Seen close up it is the Apollo half of NASA's model of Apollo–Soyuz: the same kind of
+      // craft, command module and service module, as flew here. (The museum's scan of the
+      // real Columbia is the command module alone.) It is sized by the real Columbia.
+      modelOfId: 'apollo-soyuz',
       modelNose: s(
-        [0.441, 0.831, 0.34],
-        'si-columbia-3d-scan',
-        "Measured on the museum's scan on 2026-10-09: the scan lies tilted, as the craft stands on show, and this is the way the narrow end of its cone points in the file.",
+        [1, 0, 0],
+        'nasa-apollo-soyuz-3d-model',
+        "Measured on NASA's model on 2026-10-10: the model lies along its x axis, the Apollo's engine at one end and the Soyuz at the other, so the Apollo's nose points along +x.",
+      ),
+      modelStretch: s(
+        [0, 0.53],
+        'nasa-apollo-soyuz-3d-model',
+        "Measured on NASA's model on 2026-10-10: from the Apollo's engine bell to the tip of its command module is the first 0.53 of the model's length. The docking module and the Soyuz beyond are not drawn.",
+      ),
+      modelLongKm: s(
+        0.01299,
+        'si-columbia',
+        "The museum measures the real Columbia 391.2 cm across. On NASA's model the Apollo is 6.52 units across and the whole model 21.645 long, so the whole model is drawn 21.645 × 3.912 m / 6.52 = 12.99 m long, which makes its Apollo as wide as the real one.",
       ),
       joins: {
         craftId: 'apollo-11-lander',
@@ -244,7 +264,8 @@ export const apollo11Landing: Story = {
     NASA_SP4029_APOLLO_11_TIMELINE,
     NASA_SP4029_APOLLO_11_SUMMARY,
     NASA_LUNAR_MODULE_MODEL,
-    SI_COLUMBIA_SCAN,
+    NASA_APOLLO_SOYUZ_MODEL,
+    SI_COLUMBIA_SIZE,
     NASA_ASTRONAUT_MODEL,
   ],
 };

@@ -489,7 +489,7 @@ test.describe('a space flight', () => {
     await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
     await expect(page.locator('.craft-tag', { hasText: 'The lander' })).toBeHidden();
     await expect(page.locator('.watch-path')).toContainText(
-      'Drawn: paths, leans, flames, dust, and the astronaut, flag and footprints.',
+      'Drawn: paths, leans, flames, dust, and the astronauts, flag and footprints.',
     );
     for (let part = 0; part < 3; part += 1) {
       await page.getByRole('button', { name: 'Next part' }).click();

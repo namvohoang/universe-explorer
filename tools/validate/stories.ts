@@ -163,6 +163,16 @@ function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<stri
   if (craft.leans && story.noteKey === undefined) {
     errors.push(`${at} is drawn leaning, but the story has no note to say it is a drawing`);
   }
+  if ((craft.modelStretch || craft.modelLongKm) && craft.modelOfId === undefined) {
+    errors.push(`${at} gives a size or a stretch for a model but is not drawn as one`);
+  }
+  const [stretchFrom, stretchTo] = craft.modelStretch?.value ?? [0, 1];
+  if (!(stretchFrom >= 0 && stretchTo <= 1 && stretchTo > stretchFrom)) {
+    errors.push(`${at} is drawn as a stretch of its model that is not within the model`);
+  }
+  if (craft.modelLongKm && !(craft.modelLongKm.value > 0)) {
+    errors.push(`${at} is drawn as a model of no size`);
+  }
   if (craft.modelNose && craft.modelOfId === undefined) {
     errors.push(`${at} says which way a model points but is not drawn as one`);
   }

@@ -2485,8 +2485,18 @@ body.watching .marker {
     display: none;
   }
 
+  /* A long date ("30 September 2026, 11:00") is wider than its half of the bar: it goes on
+     two lines there, and never under the pill beside it. */
+  .clock {
+    max-width: 100%;
+    min-width: 0;
+  }
+
   .clock-date {
+    min-width: 0;
     font-size: 14px;
+    line-height: 1.15;
+    white-space: normal;
   }
 
   /* In a story the two groups go by their words alone. */

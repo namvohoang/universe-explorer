@@ -249,3 +249,21 @@ for (const screen of TIGHT) {
     });
   }
 }
+
+// The date in the top bar is as long as the day it is: checked on its longest, whatever today is.
+for (const language of LANGUAGES) {
+  test(`a long date keeps clear of the pill beside it on a narrow phone, ${language.code}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await page.clock.setFixedTime(new Date('2026-09-30T11:00:00Z'));
+    // With the clock running, so the hour is shown too.
+    await page.goto(`/?lang=${language.code}&scale=true-sizes`);
+    await expect(page.locator('.top .clock-date')).toContainText('2026');
+    await page.evaluate(() => document.fonts.ready);
+    const clock = await page.locator('.top .clock').boundingBox();
+    const pill = await page.locator('.view-menu').boundingBox();
+    if (!clock || !pill) throw new Error('not on the page');
+    expect(clock.x + clock.width).toBeLessThanOrEqual(pill.x);
+  });
+}

@@ -883,6 +883,24 @@ recorded last.
       Not drawn: the panels round the service module (3:11), the cover the escape tower took
       off Orion's capsule (left on), Orion's solar wings, the real weather and the lean the
       real rocket took. The story stops when the core stage lets go: the drawn line ends there.
+- [x] 12.29 Artemis I round the Moon, close up (owner's request, 2026-10-10: a 3D spaceship and
+      its flame). Orion is now drawn at its true size: the model NASA's Eyes on the Solar
+      System draws for Artemis I and II (capsule, European service module and four solar
+      wings), taken with the owner's approval though eyes.nasa.gov is not on the trusted list,
+      and sized by ESA's 19 m span of its solar array. The NASA and ESA logo decals are taken
+      off (the small flag shared the insignia's decal); its Draco geometry and KTX2 textures
+      were turned into meshopt and WebP. It has its own card in Spaceships.
+      Its four main-engine burns near the Moon are NASA's (mission blog: start and length),
+      and each shows in Horizons' own path as a jump in Orion's speed in that very minute; one
+      post gives the orbit insertion in CST where it was EST, and Horizons settles it. Each
+      burn opens a part watched close up, played slowly: the burn and pass on the way out, into
+      the far orbit, out of it, and the burn and pass on the way home. The flame is pale, as
+      an engine's is in the vacuum of space. Orion points the way it moves as seen from the
+      Moon (`movesBy`), and tail first in the one burn that slowed it (`backwards`, from
+      Horizons' speeds). The story's note says the path is real and the flame and the way it
+      points are drawings.
+      Not drawn: Orion turning round smoothly at the start and end of the slowing burn (it
+      flips), the small trajectory-correction burns, and the solar wings turning to the Sun.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

@@ -8,13 +8,14 @@ import { groundPlaceAt, groundRoute } from '../src/sim/groundPath';
 import {
   flameAt,
   noseAlong,
+  noseAlongPath,
   partsGoneAt,
   shedShareAt,
   stagedSamples,
   topShareAt,
   turningOf,
 } from '../src/sim/launch';
-import { chasePositionKm, pathPositionKm } from '../src/sim/trajectory';
+import { chasePositionKm, pathPositionKm, pathVelocityKmPerS } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
 import { TAIL_STARTS_AU, tailStrength } from '../src/sim/comet';
@@ -140,7 +141,7 @@ describe('Artemis I and II', () => {
       const body = pathPositionKm(moon, jd);
       return Math.hypot(craft.x - body.x, craft.y - body.y, craft.z - body.z) - moonRadiusKm;
     };
-    const passes = artemis1.chapters.filter((chapter) => chapter.closeUp === true);
+    const passes = artemis1.chapters.filter((chapter) => chapter.id.endsWith('-pass'));
     expect(passes).toHaveLength(2);
     for (const [index, pass] of passes.entries()) {
       const next = artemis1.chapters[artemis1.chapters.indexOf(pass) + 1];
@@ -152,6 +153,53 @@ describe('Artemis I and II', () => {
       // NASA: "coming within 80 miles of the lunar surface" (about 130 km). Never below ground.
       expect(lowest, String(index)).toBeGreaterThan(100);
       expect(lowest, String(index)).toBeLessThan(140);
+    }
+  });
+});
+
+describe('Artemis I near the Moon', () => {
+  const craft = artemis1.craft?.[0];
+  const path = craft?.path;
+  const orion = path && 'samples' in path ? path.samples.value : [];
+  const moon = artemis1.tracked?.moon?.samples.value ?? [];
+  const minute = 1 / 1440;
+  /** Orion's speed as seen from the Moon on the drawn paths, in km/s. */
+  const speedFromMoon = (jd: number): number => {
+    const own = pathVelocityKmPerS(orion, jd);
+    const body = pathVelocityKmPerS(moon, jd);
+    return Math.hypot(own.x - body.x, own.y - body.y, own.z - body.z);
+  };
+
+  it('fires its engine four times, each one opening a part that is watched close up', () => {
+    const burns = craft?.burns ?? [];
+    expect(burns).toHaveLength(4);
+    for (const burn of burns) {
+      const opens = artemis1.chapters.find((chapter) => chapter.atJd.value === burn.fromJd.value);
+      expect(opens?.closeUp, String(burn.fromJd.value)).toBe(true);
+      expect(flameAt(burns, burn.fromJd.value)).toBe('faint');
+      expect(flameAt(burns, burn.untilJd.value)).toBeNull();
+    }
+  });
+
+  it('is drawn tail first in the one burn that slowed it, as the paths themselves show', () => {
+    for (const burn of craft?.burns ?? []) {
+      // A minute either side of the burn, so the change is the burn's and not the curve's.
+      const change =
+        speedFromMoon(burn.untilJd.value + minute) - speedFromMoon(burn.fromJd.value - minute);
+      if (burn.backwards?.value === true) expect(change).toBeLessThan(0);
+      const nose = noseAlongPath(
+        orion,
+        moon,
+        craft?.burns ?? [],
+        (burn.fromJd.value + burn.untilJd.value) / 2,
+      );
+      const own = pathVelocityKmPerS(orion, (burn.fromJd.value + burn.untilJd.value) / 2);
+      const body = pathVelocityKmPerS(moon, (burn.fromJd.value + burn.untilJd.value) / 2);
+      const along = dot(nose, normalize(subtract(own, body)));
+      expect(along, String(burn.fromJd.value)).toBeCloseTo(
+        burn.backwards?.value === true ? -1 : 1,
+        9,
+      );
     }
   });
 });

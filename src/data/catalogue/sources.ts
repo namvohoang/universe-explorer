@@ -579,6 +579,20 @@ export const NASA_SATURN_V_KIDS: Source = {
   retrieved: '2026-10-04',
 };
 
+export const NASA_ORION_KIDS: Source = {
+  id: 'nasa-orion-kids',
+  title: 'NASA — What Is Orion? (Grades K-4)',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-is-orion-grades-k-4/',
+  retrieved: '2026-10-10',
+};
+
+export const ESA_ORION_SERVICE_MODULE: Source = {
+  id: 'esa-orion-service-module',
+  title: "ESA — Orion's European Service Module: its solar array's span",
+  url: 'https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Orion/European_Service_Module',
+  retrieved: '2026-10-10',
+};
+
 export const NASA_SLS_KIDS: Source = {
   id: 'nasa-sls-kids',
   title: 'NASA — What Is the Space Launch System? (Grades 5-8)',

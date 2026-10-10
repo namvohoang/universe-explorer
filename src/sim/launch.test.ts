@@ -9,6 +9,7 @@ import {
   letGoPartAt,
   type LetGo,
   noseAlong,
+  noseAlongPath,
   partsGoneAt,
   settlingShedShareAt,
   shedShareAt,
@@ -104,6 +105,37 @@ describe('noseAlong', () => {
     const later = noseAlong(samples, TURNING, 0.0015);
     expect(later.x).toBeGreaterThan(0);
     expect(later.y).toBeGreaterThan(0.1);
+  });
+});
+
+describe('noseAlongPath', () => {
+  // A craft going +x at 2 km/s past a body going +y at 1 km/s.
+  const craft = drawnThrough([
+    [0, 0, 0, 0],
+    [1, 172_800, 0, 0],
+  ]);
+  const body = drawnThrough([
+    [0, 0, 0, 0],
+    [1, 0, 86_400, 0],
+  ]);
+  const burns = [
+    { fromJd: { value: 0.4 }, untilJd: { value: 0.6 }, backwards: { value: true as const } },
+  ];
+
+  it('points the way the craft moves, as seen from the middle or from the body it flies by', () => {
+    const plain = noseAlongPath(craft, null, [], 0.5);
+    expect(plain.x).toBeCloseTo(1, 12);
+    const seen = noseAlongPath(craft, body, [], 0.5);
+    expect(seen.x).toBeCloseTo(2 / Math.sqrt(5), 12);
+    expect(seen.y).toBeCloseTo(-1 / Math.sqrt(5), 12);
+  });
+
+  it('is drawn tail first only while a burn that slowed it fires', () => {
+    expect(noseAlongPath(craft, null, burns, 0.5).x).toBeCloseTo(-1, 12);
+    expect(noseAlongPath(craft, null, burns, 0.6).x).toBeCloseTo(1, 12);
+    expect(
+      noseAlongPath(craft, null, [{ fromJd: { value: 0.4 }, untilJd: { value: 0.6 } }], 0.5).x,
+    ).toBeCloseTo(1, 12);
   });
 });
 

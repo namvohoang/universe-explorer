@@ -239,6 +239,14 @@ function modelErrors(
   if ('points' in craft.path && 'drawn' in craft.path && story.noteKey === undefined) {
     errors.push(`${at} flies a path with drawn places, but the story has no note to say so`);
   }
+  if (craft.movesBy !== undefined) {
+    if (craft.modelOfId === undefined || !('samples' in craft.path)) {
+      errors.push(`${at} is drawn moving by a body but is not a 3D model on a sampled path`);
+    }
+    if (!story.tracked?.[craft.movesBy]) {
+      errors.push(`${at} is drawn moving by "${craft.movesBy}", which the story does not track`);
+    }
+  }
   if (craft.letsGo && craft.modelOfId === undefined) {
     errors.push(`${at} lets parts go but is not drawn as a 3D model`);
   }

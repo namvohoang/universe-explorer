@@ -173,6 +173,32 @@ export function noseAlong(
   return normalize(add(scale(up, 1 - eased), scale(heading, eased)));
 }
 
+/**
+ * Which way a craft on a sampled path is drawn pointing at a date: the way it moves as seen
+ * from a body it flies by (that body's own path is `bySamples`), or as seen from the middle of
+ * the stage when there is none; tail first while a burn that slowed it is firing. A unit
+ * vector in the ecliptic frame; straight along +z if the craft stands still.
+ */
+export function noseAlongPath(
+  samples: readonly PathSample[],
+  bySamples: readonly PathSample[] | null,
+  burns: readonly {
+    readonly fromJd: { readonly value: number };
+    readonly untilJd: { readonly value: number };
+    readonly backwards?: { readonly value: true };
+  }[],
+  jd: number,
+): Vec3 {
+  const own = pathVelocityKmPerS(samples, jd);
+  const moving = bySamples ? subtract(own, pathVelocityKmPerS(bySamples, jd)) : own;
+  if (!(length(moving) > 0)) return { x: 0, y: 0, z: 1 };
+  const ahead = normalize(moving);
+  const slowing = burns.some(
+    (burn) => burn.backwards?.value === true && burn.fromJd.value <= jd && jd < burn.untilJd.value,
+  );
+  return slowing ? scale(ahead, -1) : ahead;
+}
+
 /** Which flame, if any, a craft's engines make at a date. */
 export function flameAt<Flame>(
   burns: readonly {

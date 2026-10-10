@@ -444,6 +444,8 @@ test.describe('a space flight', () => {
     );
     await expect(page.locator('.craft-tag')).toHaveText('Orion');
     await expect(page.locator('.watch-date')).toContainText('16 November 2022');
+    // Every part shows Orion's 3D model close up beside the whole picture.
+    await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
     // Orion is looked at close up as it passes the Moon, with the Moon in the whole picture.
     await page.getByRole('button', { name: 'Next part' }).click();
     await expect(page.locator('.watch-text')).toContainText('flies past the Moon');

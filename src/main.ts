@@ -468,11 +468,13 @@ function start(): void {
     // Beside a look from a world: the close look, where the part asks for both, or the whole stage.
     const fromAWorld = chapter.standAtId !== undefined || chapter.viewFromId !== undefined;
     // Beside a craft drawn as its model: the look from far over it, where its whole path shows.
+    // A craft that flies far out (a tracked path, out to the Moon) has the whole stage instead:
+    // the worlds it flies between and its path among them.
     const modelled = modelledCraft(story, chapter);
     const sideFit = Math.max(1, 1 / sideAspect);
     const close = fromAWorld
       ? closeView(story, chapter, sideFit)
-      : modelled
+      : modelled && story.path !== 'tracked'
         ? overCraft(modelled, sideFit)
         : null;
     const whole = close ?? stageView(story, chapter, sideAspect, 1);

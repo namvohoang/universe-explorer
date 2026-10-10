@@ -170,6 +170,13 @@ describe('Artemis I near the Moon', () => {
     return Math.hypot(own.x - body.x, own.y - body.y, own.z - body.z);
   };
 
+  it('shows Orion close up in 3D in every part, beside the whole picture', () => {
+    for (const chapter of artemis1.chapters) {
+      expect(chapter.lookAtId, chapter.id).toBe('orion-spacecraft');
+      expect(chapter.closeUp, chapter.id).toBe(true);
+    }
+  });
+
   it('fires its engine four times, each one opening a part that is watched close up', () => {
     const burns = craft?.burns ?? [];
     expect(burns).toHaveLength(4);

@@ -432,6 +432,11 @@ export const NARRATION: Readonly<
     fingerprint: 'f51d41f9',
     starts: [0.0, 2.98, 10.38, 15.7, 20.98],
   },
+  'orion-craft': {
+    file: 'public/voice/orion-craft.mp3',
+    fingerprint: '204286fc',
+    starts: [0.0, 2.45, 8.75, 14.62, 22.5],
+  },
   columbia: {
     file: 'public/voice/columbia.mp3',
     fingerprint: '01aa2064',

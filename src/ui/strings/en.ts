@@ -822,6 +822,16 @@ export const en = {
   cardSlsFact3: 'It first flew on 16 November 2022, with no astronauts on board.',
   modelAltSls:
     'A 3D model of the Space Launch System standing nose up: a tall orange middle with a white rocket on each side and a thin white tower on its top.',
+  nameOrionCraft: 'The Orion Spaceship',
+  cardOrionCraftHello:
+    'Orion is a NASA spaceship built to take astronauts farther than they have ever gone.',
+  cardOrionCraftFact1:
+    'Up to four astronauts can sit and live in its crew module, the capsule in the middle.',
+  cardOrionCraftFact2:
+    'Once it is in space, its solar panels open out like the letter X. They turn sunlight into electricity.',
+  cardOrionCraftFact3: 'It is launched on top of the SLS rocket.',
+  modelAltOrionCraft:
+    'A 3D model of the Orion spaceship: a cone-shaped capsule on top of a round service module, with four long solar panels opened out in an X.',
   cardCassiniHello: 'Cassini was a spacecraft sent to Saturn.',
   cardCassiniFact1: 'It left Earth in October 1997 and reached Saturn in July 2004.',
   cardCassiniFact2: 'Its whole mission lasted 20 years.',

@@ -69,6 +69,7 @@ import {
   NASA_PARKER,
   NASA_SATURN_V_KIDS,
   NASA_SLS_KIDS,
+  NASA_ORION_KIDS,
   NASA_SHUTTLE_KIDS,
   NASA_SWIFT,
   NASA_HUBBLE_M31,
@@ -1488,6 +1489,35 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_SLS_KIDS],
+  },
+  {
+    id: 'orion-craft',
+    hello: {
+      key: 'cardOrionCraftHello',
+      sourceId: 'nasa-orion-kids',
+      quote: 'Orion will take astronauts farther than they have ever gone.',
+    },
+    facts: [
+      {
+        key: 'cardOrionCraftFact1',
+        sourceId: 'nasa-orion-kids',
+        quote:
+          'The crew module is in the middle. This is the part where up to four astronauts can sit and live while they travel through space.',
+      },
+      {
+        key: 'cardOrionCraftFact2',
+        sourceId: 'nasa-orion-kids',
+        quote:
+          'Orion has solar panels that open like the letter X outside of the service module after it is safely in space. These panels absorb sunlight and turn it into electricity.',
+      },
+      {
+        key: 'cardOrionCraftFact3',
+        sourceId: 'nasa-orion-kids',
+        quote: 'Orion will ride on top of the SLS.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_ORION_KIDS],
   },
   {
     id: 'lunar-module',

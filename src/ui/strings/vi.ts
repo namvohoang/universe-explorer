@@ -1058,6 +1058,16 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Nó mang theo một tàu thăm dò nhỏ hơn, Huygens, đã hạ xuống mặt trăng Titan năm 2005.',
   modelAltCassini:
     'Mô hình 3D của Cassini: một thân cao bọc lá vàng, có chảo trắng lớn ở trên và một cần dài mảnh.',
+  nameOrionCraft: 'Tàu vũ trụ Orion',
+  cardOrionCraftHello:
+    'Orion là tàu vũ trụ của NASA, được chế tạo để đưa phi hành gia đi xa hơn bao giờ hết.',
+  cardOrionCraftFact1:
+    'Tối đa bốn phi hành gia có thể ngồi và sống trong khoang phi hành đoàn, phần khoang ở giữa.',
+  cardOrionCraftFact2:
+    'Khi đã ở trong vũ trụ, các tấm pin mặt trời của nó mở ra như chữ X. Chúng biến ánh nắng thành điện.',
+  cardOrionCraftFact3: 'Nó được phóng trên đỉnh tên lửa SLS.',
+  modelAltOrionCraft:
+    'Mô hình 3D của tàu Orion: một khoang hình nón trên một mô-đun phục vụ tròn, với bốn tấm pin mặt trời dài mở ra hình chữ X.',
   nameVoyager: 'Tàu vũ trụ Voyager',
   cardVoyagerHello: 'Voyager là hai tàu vũ trụ sinh đôi rời Trái Đất năm 1977.',
   cardVoyagerFact1: 'Voyager 1 đã bay ngang qua Sao Mộc và Sao Thổ.',

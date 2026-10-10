@@ -913,6 +913,17 @@ recorded last.
       first: both drawings, and the story's note now says the docking is one.
       Not drawn: the shuttle's real approach path and the docking port's exact place on the
       station.
+- [x] 12.31 Artemis II close up in 3D, with its astronauts (owner's request, 2026-10-10). Orion
+      is NASA's model (the one Eyes on the Solar System draws for Artemis I and II), watched
+      close up in four of the five parts: round Earth, the push to the Moon, round the Moon and
+      the way home. The push is the translunar injection burn at the minute and for as long as
+      Horizons' data sheet gives (23:49 UTC, 5 min 55 s), played slowly, its flame pale. The
+      four astronauts never left Orion, so they are not drawn outside it: NASA's photo of the
+      crew (2023) sits small in a corner of the close look, a tap makes it big, and its caption
+      names each one and their job (new story field `photos`). The story's note says the path
+      is real and the flame and the way Orion points are drawings.
+      Not drawn: the landing close up (the service module is dropped there, and the model
+      cannot drop it yet), and the small trajectory-correction burns.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

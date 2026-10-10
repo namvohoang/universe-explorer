@@ -486,7 +486,7 @@ function start(): void {
       ...(diagram ? { scene: diagram.scene } : {}),
     });
     const strings: Readonly<Record<string, string>> = words;
-    const photos = story.fromEarth ?? [];
+    const photos = [...(story.fromEarth ?? []), ...(story.photos ?? [])];
     const from = catalogue.find((o) => o.id === (chapter.standAtId ?? chapter.viewFromId));
     sideTags.frame([
       {

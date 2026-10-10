@@ -1,20 +1,19 @@
-name: ci
+name: e2e
 
+# The layout checks in a real browser are slow, so they run only when started by hand
+# (Actions → e2e → Run workflow), on any branch.
 on:
-  push:
-    paths-ignore: ['docs/**', '**/*.md', '.claude/**']
-  pull_request:
-    paths-ignore: ['docs/**', '**/*.md', '.claude/**']
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: e2e-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  ci:
+  e2e:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -23,8 +22,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm test
-      - run: npm run validate
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

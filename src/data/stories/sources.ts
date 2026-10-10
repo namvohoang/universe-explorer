@@ -47,6 +47,38 @@ export const NASA_ARTEMIS_I_SPLASHDOWN: Source = {
   retrieved: '2026-10-07',
 };
 
+export const NASA_ARTEMIS_I_OUTBOUND_FLYBY: Source = {
+  id: 'nasa-artemis-i-outbound-flyby',
+  title:
+    'NASA — Orion Successfully Completes Lunar Flyby, Re-acquires Signal With Earth (mission blog, 21 November 2022): the outbound powered flyby burn',
+  url: 'https://www.nasa.gov/blogs/missions/2022/11/21/orion-successfully-completes-lunar-flyby-re-acquires-signal-with-earth/',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_ARTEMIS_I_DRO_INSERTION: Source = {
+  id: 'nasa-artemis-i-dro-insertion',
+  title:
+    'NASA — Artemis I Flight Day 10: Orion Enters Distant Retrograde Orbit (mission blog, 25 November 2022): the insertion burn',
+  url: 'https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_ARTEMIS_I_DRO_DEPARTURE: Source = {
+  id: 'nasa-artemis-i-dro-departure',
+  title:
+    'NASA — Artemis I Flight Day 16: Orion Successfully Completes Distant Retrograde Departure Burn (mission blog, 1 December 2022)',
+  url: 'https://www.nasa.gov/blogs/missions/2022/12/01/artemis-i-flight-day-16-orion-successfully-completes-distant-retrograde-departure-burn/',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_ARTEMIS_I_RETURN_FLYBY: Source = {
+  id: 'nasa-artemis-i-return-flyby',
+  title:
+    'NASA — Artemis I Flight Day 20: Orion Conducts Return Powered Flyby (mission blog, 5 December 2022)',
+  url: 'https://www.nasa.gov/blogs/missions/2022/12/05/artemis-i-flight-day-20-orion-conducts-return-powered-flyby/',
+  retrieved: '2026-10-10',
+};
+
 export const JPL_HORIZONS_PATH_ARTEMIS_2_ORION: Source = {
   id: 'jpl-horizons-path-artemis2orion',
   title:

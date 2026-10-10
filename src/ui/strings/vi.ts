@@ -846,15 +846,22 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyArtemis1LaunchCoreStageAway:
     'Các động cơ tắt. Tầng lõi màu cam không cần nữa và tách ra. Chỉ còn tầng trên để đẩy Orion đi tiếp.',
   storyArtemis1Title: 'Artemis I: vòng quanh Mặt Trăng',
+  storyArtemis1Note: 'Đây là đường bay thật của Orion. Ngọn lửa và hướng nó quay mũi là hình vẽ.',
   craftOrion: 'Orion',
   storyArtemis1OnItsWay:
     'Một tên lửa khổng lồ vừa đưa tàu Orion lên đường tới Mặt Trăng. Trên tàu không có ai. Đây là chuyến bay thử.',
-  storyArtemis1FirstPass: 'Orion bay ngang qua Mặt Trăng, rất gần mặt đất.',
+  storyArtemis1FirstPass:
+    'Orion nổ máy hai phút rưỡi. Rồi nó bay ngang qua Mặt Trăng, rất gần mặt đất.',
   storyArtemis1FarOrbit:
     'Giờ Orion văng ra xa phía bên kia Mặt Trăng. Vòng bay quanh Mặt Trăng của nó rất, rất lớn.',
+  storyArtemis1IntoOrbit:
+    'Ở rất xa phía sau Mặt Trăng, Orion nổ máy khoảng một phút rưỡi. Giờ nó bay quanh Mặt Trăng theo một vòng rất lớn.',
+  storyArtemis1OutOfOrbit:
+    'Orion nổ máy gần hai phút để rời vòng lớn ấy. Giờ nó bay trở lại phía Mặt Trăng.',
   storyArtemis1Farthest:
     'Đây là lúc Orion ở xa Trái Đất nhất. Chưa có con tàu nào làm để chở người từng đi xa đến thế.',
-  storyArtemis1SecondPass: 'Orion bay sát qua Mặt Trăng lần thứ hai, rồi quay về nhà.',
+  storyArtemis1SecondPass:
+    'Orion bay sát qua Mặt Trăng lần thứ hai. Nó nổ máy ba phút rưỡi, rồi quay về nhà.',
   storyArtemis1Home: 'Orion bay về Trái Đất. Cuối cùng nó chậm lại và hạ xuống biển bằng dù.',
   storyArtemis2Title: 'Artemis II: có phi hành gia',
   storyArtemis2RoundEarth:
@@ -1051,6 +1058,16 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardSlsFact3: 'Nó bay lần đầu ngày 16 tháng 11 năm 2022, không có phi hành gia.',
   modelAltSls:
     'Mô hình 3D của Hệ thống Phóng Không gian, đầu hướng lên: thân giữa cao màu cam, mỗi bên có một tên lửa trắng, trên đỉnh có một tháp trắng mảnh.',
+  nameOrionCraft: 'Tàu vũ trụ Orion',
+  cardOrionCraftHello:
+    'Orion là tàu vũ trụ của NASA, được chế tạo để đưa phi hành gia đi xa hơn bao giờ hết.',
+  cardOrionCraftFact1:
+    'Tối đa bốn phi hành gia có thể ngồi và sống trong khoang phi hành đoàn, phần khoang ở giữa.',
+  cardOrionCraftFact2:
+    'Khi đã ở trong vũ trụ, các tấm pin mặt trời của nó mở ra như chữ X. Chúng biến ánh nắng thành điện.',
+  cardOrionCraftFact3: 'Nó được phóng trên đỉnh tên lửa SLS.',
+  modelAltOrionCraft:
+    'Mô hình 3D của tàu Orion: một khoang hình nón trên một mô-đun phục vụ tròn, với bốn tấm pin mặt trời dài mở ra hình chữ X.',
   cardCassiniHello: 'Cassini là một tàu vũ trụ được gửi tới Sao Thổ.',
   cardCassiniFact1: 'Nó rời Trái Đất tháng 10 năm 1997 và tới Sao Thổ tháng 7 năm 2004.',
   cardCassiniFact2: 'Toàn bộ sứ mệnh của nó kéo dài 20 năm.',

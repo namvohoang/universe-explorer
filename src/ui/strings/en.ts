@@ -1145,15 +1145,23 @@ export const en = {
   storyArtemis1LaunchCoreStageAway:
     'The engines stop. The orange core stage is not needed any more, and it lets go. Only the upper stage is left to push Orion on.',
   storyArtemis1Title: 'Artemis I: round the Moon',
+  storyArtemis1Note:
+    'This is the real path Orion flew. Its flame, and which way it points, are drawings.',
   craftOrion: 'Orion',
   storyArtemis1OnItsWay:
     'A giant rocket has just sent the Orion spaceship on its way to the Moon. Nobody is on board. This is a test flight.',
-  storyArtemis1FirstPass: 'Orion flies past the Moon, very close to the ground.',
+  storyArtemis1FirstPass:
+    'Orion fires its engine for two and a half minutes. Then it flies past the Moon, very close to the ground.',
   storyArtemis1FarOrbit:
     'Now Orion swings far out beyond the Moon. Its loop round the Moon is very, very big.',
+  storyArtemis1IntoOrbit:
+    'Far out past the Moon, Orion fires its engine for about a minute and a half. Now it goes round the Moon in a very big loop.',
+  storyArtemis1OutOfOrbit:
+    'Orion fires its engine for almost two minutes to leave its big loop. Now it heads back towards the Moon.',
   storyArtemis1Farthest:
     'This is the farthest Orion got from Earth. No spaceship built to carry people had ever been so far.',
-  storyArtemis1SecondPass: 'Orion flies close past the Moon a second time, and turns for home.',
+  storyArtemis1SecondPass:
+    'Orion flies close past the Moon a second time. It fires its engine for three and a half minutes, and turns for home.',
   storyArtemis1Home:
     'Orion flies back to Earth. At the end it slows down and lands in the sea under parachutes.',
   storyArtemis2Title: 'Artemis II: with astronauts',

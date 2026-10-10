@@ -6,6 +6,7 @@ import {
   type CelestialObject,
   type Chapter,
   type Story,
+  type SampledPath,
   type StoryCraft,
 } from './data/types';
 import { createDiagram, type Diagram } from './scene/diagram';
@@ -45,6 +46,7 @@ import {
   groundExposure,
   joinedGapKm,
   noseAlong,
+  noseAlongPath,
   settlingShedShareAt,
   shedShareAt,
   skyShare,
@@ -1436,6 +1438,8 @@ function start(): void {
   };
   /** The world whose sky the story on show draws clouds in, if it draws any. */
   let cloudsOverId: string | null = null;
+  /** The bodies the story on show puts where JPL Horizons has them, by catalogue id. */
+  let trackedNow: Readonly<Record<string, SampledPath>> = {};
   /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
   const flightOf = (
     {
@@ -1455,6 +1459,7 @@ function start(): void {
       modelLongKm,
       joins,
       walker,
+      movesBy,
     }: StoryCraft,
     _index: number,
     all: readonly StoryCraft[],
@@ -1577,7 +1582,15 @@ function start(): void {
             model: {
               url: mediaUrl(model.file),
               lengthKm: 2 * halfKm,
-              noseAt: (jd: number) => noseAlong(samples, turning, jd, uprightUntilJd?.value),
+              noseAt: (jd: number) =>
+                'samples' in path
+                  ? noseAlongPath(
+                      samples,
+                      movesBy === undefined ? null : (trackedNow[movesBy]?.samples.value ?? null),
+                      burns ?? [],
+                      jd,
+                    )
+                  : noseAlong(samples, turning, jd, uprightUntilJd?.value),
               shedBelowAt: (jd: number) => shedShareAt(sheds ?? [], jd),
               lookShedAt: (jd: number) => settlingShedShareAt(sheds ?? [], jd),
               flameAt: (jd: number) => flameAt(burns ?? [], jd),
@@ -1973,6 +1986,7 @@ function start(): void {
               );
               system.setDust(story.dustAlongId ?? null, story.chapters[0]?.atJd.value ?? clock.jd);
               cloudsOverId = story.air?.clouds === true ? story.air.ofId : null;
+              trackedNow = story.tracked ?? {};
               const tracks = {
                 shadows: (story.shadows ?? []).map((shadow) => ({
                   casterId: shadow.casterId,

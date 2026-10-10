@@ -40,7 +40,7 @@ describe('checkStories', () => {
       checkStories(
         stories,
         catalogue.map((object) => object.id),
-        new Set(['saturn-v', 'lunar-module', 'columbia', 'apollo-soyuz', 'sls']),
+        new Set(['saturn-v', 'lunar-module', 'columbia', 'apollo-soyuz', 'sls', 'orion-craft']),
         new Map([['sls', new Set(['boosters', 'core', 'engines', 'upper'])]]),
       ),
     ).toEqual([]);
@@ -134,6 +134,37 @@ describe('checkStories', () => {
       const bare = flying({ letsGo: [{ atJd: at(12), part: 'boosters' }] });
       expect(checkStories([bare], IDS, MODELS, PARTS).join('\n')).toMatch(
         /not drawn as a 3D model/,
+      );
+    });
+
+    it('is drawn moving by a body only when the story tracks it and the craft is a model', () => {
+      const sampled = {
+        centreId: 'earth',
+        samples: {
+          sourceId: 'test',
+          value: [
+            [10, 1, 0, 0, 0, 0, 0],
+            [30, 2, 0, 0, 0, 0, 0],
+          ] as const,
+        },
+      };
+      const tracked = { moon: sampled };
+      const by = (craft: Partial<StoryCraft>, withMoon: boolean): Story =>
+        story({
+          path: 'tracked',
+          ...(withMoon ? { tracked } : {}),
+          craft: [{ id: 'ship', nameKey: 'craftShip', path: sampled, ...craft }],
+        });
+      expect(
+        checkStories([by({ modelOfId: 'toy-rocket', movesBy: 'moon' }, true)], IDS, MODELS),
+      ).toEqual([]);
+      expect(
+        checkStories([by({ modelOfId: 'toy-rocket', movesBy: 'moon' }, false)], IDS, MODELS).join(
+          '\n',
+        ),
+      ).toMatch(/which the story does not track/);
+      expect(checkStories([by({ movesBy: 'moon' }, true)], IDS, MODELS).join('\n')).toMatch(
+        /not a 3D model on a sampled path/,
       );
     });
 

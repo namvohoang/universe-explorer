@@ -440,14 +440,15 @@ test.describe('a space flight', () => {
   test('says its path is the real one and names the spaceship', async ({ page }) => {
     await page.goto('/#watch/artemis-1');
     await expect(page.locator('.watch-path')).toHaveText(
-      'This is the real path the spaceship flew.',
+      'This is the real path Orion flew. Its flame, and which way it points, are drawings.',
     );
     await expect(page.locator('.craft-tag')).toHaveText('Orion');
     await expect(page.locator('.watch-date')).toContainText('16 November 2022');
-    // The Moon is looked at close up as the spaceship passes it.
+    // Orion is looked at close up as it passes the Moon, with the Moon in the whole picture.
     await page.getByRole('button', { name: 'Next part' }).click();
     await expect(page.locator('.watch-text')).toContainText('flies past the Moon');
-    await expect(page.locator('.marker', { hasText: 'The Moon' })).toBeVisible();
+    await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
+    await expect(page.locator('.side-tag', { hasText: 'The Moon' })).toBeVisible();
   });
 
   test('is picked from its own group, and a sky event from the other', async ({ page }) => {

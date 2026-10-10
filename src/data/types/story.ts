@@ -229,14 +229,25 @@ export interface StoryCraft {
    * With `modelOfId`: when its engines burn, earliest first, with a flame drawn behind the
    * model for as long. The instants are real; the flame's size and colour are a drawing
    * (`bright` for the long yellow flame of a kerosene engine or the blaze of solid boosters,
-   * `faint` for the pale, nearly unseen one of a hydrogen engine), and the story must say so
-   * with `noteKey`.
+   * `faint` for the pale, nearly unseen one of a hydrogen engine or of any engine in the vacuum
+   * of space), and the story must say so with `noteKey`.
    */
   readonly burns?: readonly {
     readonly fromJd: Sourced<number>;
     readonly untilJd: Sourced<number>;
     readonly flame: 'bright' | 'faint';
+    /**
+     * Set when the burn slowed the craft along the way it was going, as the agency's
+     * numbers show: it is drawn tail first for as long, its engine pushing against its path.
+     */
+    readonly backwards?: Sourced<true>;
   }[];
+  /**
+   * With `modelOfId`, for a craft on a sampled path: one of the story's tracked bodies. The
+   * model is drawn nose first the way the craft moves as seen from that body (a moon it flies
+   * past), not as seen from the middle of the stage. Which way it points is a drawing.
+   */
+  readonly movesBy?: string;
   /**
    * With `fromGround`: the instant the craft starts to lean over. Until then it is drawn
    * standing straight up, as it climbs straight up from its pad.

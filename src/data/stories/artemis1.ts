@@ -118,6 +118,7 @@ export const artemis1: Story = {
           'In late 2022, the uncrewed Artemis I mission launched from Kennedy Space Center in Florida, orbited thousands of miles beyond the Moon, then returned to Earth.',
       },
       lookAtId: 'orion-spacecraft',
+      closeUp: true,
     },
     {
       id: 'first-pass',
@@ -143,6 +144,7 @@ export const artemis1: Story = {
           'Artemis I flew thousands of miles beyond and around the Moon and splashed down to Earth off the coast of San Diego at 12:40 p.m. EST on Dec. 11, 2022.',
       },
       lookAtId: 'orion-spacecraft',
+      closeUp: true,
     },
     {
       id: 'into-orbit',
@@ -171,6 +173,7 @@ export const artemis1: Story = {
           'While in a distant lunar orbit, Orion surpassed the record for distance traveled by a spacecraft designed to carry humans, previously set during Apollo 13.',
       },
       lookAtId: 'orion-spacecraft',
+      closeUp: true,
     },
     {
       id: 'out-of-orbit',
@@ -208,6 +211,7 @@ export const artemis1: Story = {
           'Within about 20 minutes, Orion slowed from nearly 25,000 mph to about 20 mph for its parachute-assisted splashdown.',
       },
       lookAtId: 'orion-spacecraft',
+      closeUp: true,
     },
   ],
   endJd: s(

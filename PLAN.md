@@ -924,6 +924,11 @@ recorded last.
       is real and the flame and the way Orion points are drawings.
       Not drawn: the landing close up (the service module is dropped there, and the model
       cannot drop it yet), and the small trajectory-correction burns.
+- [x] 12.32 Artemis I round the Moon close up in 3D in every part (owner's request,
+      2026-10-10): the four parts between the burns now show Orion's model too. Beside it, the
+      whole picture of a craft on a tracked path is the whole stage (Earth, the Moon and the
+      path), not the look from just over the craft, which suits a craft near the ground; this
+      holds for Artemis II as well.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

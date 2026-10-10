@@ -15,6 +15,17 @@ import { checkStories } from './validate/stories';
 const ROOT = join(import.meta.dirname, '..');
 const IGNORED_FILES = new Set(['.gitkeep', '.DS_Store']);
 
+/** The names of the meshes in a binary glTF file, read from its JSON chunk. */
+function glbPartNames(path: string): ReadonlySet<string> {
+  const file = readFileSync(path);
+  // A 12-byte header, then the first chunk: its length, its type, and the JSON itself.
+  const jsonLength = file.readUInt32LE(12);
+  const json = JSON.parse(file.subarray(20, 20 + jsonLength).toString('utf8')) as {
+    readonly meshes?: readonly { readonly name?: string }[];
+  };
+  return new Set((json.meshes ?? []).flatMap((mesh) => (mesh.name ? [mesh.name] : [])));
+}
+
 function filesUnder(dir: string): string[] {
   if (!existsSync(dir)) return [];
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -57,6 +68,13 @@ const errors = [
       catalogue
         .filter((object) => object.media.some((media) => media.role === 'model'))
         .map((object) => object.id),
+    ),
+    new Map(
+      catalogue.flatMap((object) =>
+        object.media
+          .filter((media) => media.role === 'model')
+          .map((media) => [object.id, glbPartNames(join(ROOT, media.file))] as const),
+      ),
     ),
   ),
   ...checkCredits(mediaFiles, credits),

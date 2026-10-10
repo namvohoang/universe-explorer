@@ -9,7 +9,17 @@ import {
   pathVelocityKmPerS,
 } from './trajectory';
 import { SECONDS_PER_DAY } from './constants';
-import { add, normalize, scale, type Vec3 } from './vec3';
+import {
+  add,
+  angleBetween,
+  cross,
+  dot,
+  length,
+  normalize,
+  scale,
+  subtract,
+  type Vec3,
+} from './vec3';
 
 /** How a body turns: the pole it turns anticlockwise about (ecliptic frame) and how long a turn takes. */
 export interface Turning {
@@ -38,9 +48,50 @@ function groundAt(placeKm: Vec3, turning: Turning | null): Vec3 {
   return turning ? groundVelocityKmPerS(placeKm, turning.north, turning.turnHours) : STILL;
 }
 
+/** `v` turned by `radians` anticlockwise about the unit vector `axis`. */
+function turnedAbout(v: Vec3, axis: Vec3, radians: number): Vec3 {
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+  return add(add(scale(v, cos), scale(cross(axis, v), sin)), scale(axis, dot(axis, v) * (1 - cos)));
+}
+
+/** How many places are drawn along the first stretch of a climb from the ground. A drawing choice. */
+const BEND_STEPS = 16;
+/**
+ * Over the first stretch of a climb from the ground the height is drawn growing as the square
+ * of the time and the way over the ground as this power of it, so the craft rises nearly
+ * straight up at first and bends over as it goes. A drawing choice: real rockets climb so, but
+ * these powers are not measured.
+ */
+const HEIGHT_POWER = 2;
+const ACROSS_POWER = 3;
+/** A small share of the first stretch's time, for working out how fast the drawn bend goes. */
+const BEND_STEP_SHARE = 1e-6;
+
+/**
+ * Where a climb from `pad` to `end` is drawn a share `s` of the way through its first stretch,
+ * in the body's frame as it stood at liftoff: higher as `s` squared, and further over the
+ * ground, along the great circle, as `s` cubed.
+ */
+function bentPlace(pad: Vec3, end: Vec3, s: number): Vec3 {
+  const padKm = length(pad);
+  const endKm = length(end);
+  const from = scale(pad, 1 / padKm);
+  const to = scale(end, 1 / endKm);
+  const angle = angleBetween(from, to);
+  const radiusKm = padKm + (endKm - padKm) * s ** HEIGHT_POWER;
+  if (!(angle > 0)) return scale(from, radiusKm);
+  const along = angle * s ** ACROSS_POWER;
+  const towards = normalize(subtract(to, scale(from, Math.cos(angle))));
+  return scale(add(scale(from, Math.cos(along)), scale(towards, Math.sin(along))), radiusKm);
+}
+
 /**
  * The curve drawn through the known places of a staged path. A craft that stands on the
- * ground at the first of them leaves it from rest: that place is given the ground's own speed.
+ * ground at the first of them leaves it from rest, and its first stretch is drawn as a climb
+ * that starts straight up and bends over (`bentPlace`), riding round with the turning ground,
+ * so it is not drawn setting off sideways; from the second place on the curve is drawn as
+ * for any staged path.
  */
 export function stagedSamples(
   path: StagedPath,
@@ -49,8 +100,48 @@ export function stagedSamples(
 ): PathSample[] {
   const points = path.points.value;
   const first = points[0];
+  const second = points[1];
   if (!fromGround || !first || !turning) return drawnThrough(points);
-  return drawnThrough(points, groundAt({ x: first[1], y: first[2], z: first[3] }, turning));
+  const drawn = drawnThrough(points, groundAt({ x: first[1], y: first[2], z: first[3] }, turning));
+  const spanSeconds = second ? (second[0] - first[0]) * SECONDS_PER_DAY : 0;
+  if (!second || !(spanSeconds > 0)) return drawn;
+  const radiansPerSecond = (2 * Math.PI) / (turning.turnHours * 3600);
+  const pad: Vec3 = { x: first[1], y: first[2], z: first[3] };
+  // The second place as it was on the turning ground at liftoff.
+  const end = turnedAbout(
+    { x: second[1], y: second[2], z: second[3] },
+    turning.north,
+    -radiansPerSecond * spanSeconds,
+  );
+  const placeAt = (s: number): Vec3 =>
+    turnedAbout(bentPlace(pad, end, s), turning.north, radiansPerSecond * spanSeconds * s);
+  const sampleAt = (s: number): PathSample => {
+    const place = placeAt(s);
+    const before = placeAt(Math.max(0, s - BEND_STEP_SHARE));
+    const after = placeAt(Math.min(1, s + BEND_STEP_SHARE));
+    const seconds =
+      (Math.min(1, s + BEND_STEP_SHARE) - Math.max(0, s - BEND_STEP_SHARE)) * spanSeconds;
+    const speed = scale(subtract(after, before), 1 / seconds);
+    return [
+      first[0] + (s * spanSeconds) / SECONDS_PER_DAY,
+      place.x,
+      place.y,
+      place.z,
+      speed.x,
+      speed.y,
+      speed.z,
+    ];
+  };
+  const bend: PathSample[] = [];
+  for (let step = 0; step <= BEND_STEPS; step++) bend.push(sampleAt(step / BEND_STEPS));
+  // The ends are the known places themselves, not the bend's own sums of them.
+  const [, , ...rest] = drawn;
+  const last = bend[BEND_STEPS];
+  const start = drawn[0];
+  if (!last || !start) return drawn;
+  bend[0] = start;
+  bend[BEND_STEPS] = [second[0], second[1], second[2], second[3], last[4], last[5], last[6]];
+  return [...bend, ...rest];
 }
 
 /**
@@ -148,6 +239,56 @@ export function droppedPartAt(
       toShare: shed.belowShare.value,
       behindKm: (DROP_BEHIND_KM_PER_S2 * seconds * seconds) / 2,
     };
+  }
+  return null;
+}
+
+/** A part a craft lets go of from its sides (named in its model's file) or from its nose. */
+export type LetGo =
+  | { readonly atJd: { readonly value: number }; readonly part: string }
+  | { readonly atJd: { readonly value: number }; readonly aboveShare: { readonly value: number } };
+
+/** The names of the parts of its model a craft has let go of by a date. */
+export function partsGoneAt(letsGo: readonly LetGo[], jd: number): string[] {
+  return letsGo.flatMap((one) => ('part' in one && one.atJd.value <= jd ? [one.part] : []));
+}
+
+/**
+ * How much of a craft, from its tail, is still drawn once it has let go of what was on its
+ * nose: the smallest share among the parts let go from the top by a date, and 1 while none is.
+ */
+export function topShareAt(letsGo: readonly LetGo[], jd: number): number {
+  return Math.min(
+    1,
+    ...letsGo.flatMap((one) =>
+      'aboveShare' in one && one.atJd.value <= jd ? [one.aboveShare.value] : [],
+    ),
+  );
+}
+
+/**
+ * The part a craft has just let go of from its sides or its nose, if it is still near: the
+ * part's name, or the stretch of the craft's length it was, and how far from the craft it is
+ * drawn, in km: behind it, or, for a part from the nose that pulls itself away, `ahead` of it.
+ * Both are drawn as for a stage let go.
+ */
+export function letGoPartAt(
+  letsGo: readonly LetGo[],
+  jd: number,
+): {
+  readonly part: string | null;
+  readonly fromShare: number;
+  readonly toShare: number;
+  readonly behindKm: number;
+  readonly ahead: boolean;
+} | null {
+  for (const one of letsGo) {
+    const seconds = (jd - one.atJd.value) * SECONDS_PER_DAY;
+    if (seconds < 0 || seconds > DROP_SHOWN_SECONDS) continue;
+    const away = (DROP_BEHIND_KM_PER_S2 * seconds * seconds) / 2;
+    return 'part' in one
+      ? { part: one.part, fromShare: 0, toShare: 1, behindKm: away, ahead: false }
+      : { part: null, fromShare: one.aboveShare.value, toShare: 1, behindKm: away, ahead: true };
   }
   return null;
 }

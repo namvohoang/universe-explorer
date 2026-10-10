@@ -857,6 +857,32 @@ recorded last.
       width, where the real one was nearer 11 m with its engine bell); it is drawn as NASA
       made it. Checked on the way: every time the two Apollo 11 stories use was read again
       from the timeline page itself, not through a summary, and all agree.
+      Not drawn: the second astronaut, the service module.
+- [x] 12.28 The launch of Artemis I, close up (owner's request, 2026-10-10: "3d spaceship,
+      flame, cloud"; the clouds are at the launch, since the Moon has no air). A new `staged`
+      story before "Artemis I: round the Moon", whose tracked path only starts two hours after
+      liftoff. Liftoff is JPL Horizons' 06:47:44 UTC; the boosters (2:12), the escape tower
+      (3:16), engine cutoff (8:03) and the core stage letting go (8:15) are NASA's mission
+      elapsed times from its launch-night blog; the core engines start at T-6.36 s (press kit).
+      Three heights are NASA's: 43.3 km at booster separation and 161.5 km when the core stage
+      lets go (SLS Reference Guide), 91 km at 3:40 (NASA's SLS page for students). NASA gives
+      no track over the ground, so the path is drawn due east of Pad 39B (where NASA's table of
+      Apollo 10, launched from the same pad, puts it), as far along at each second as Apollo
+      10 had gone (`tools/horizons/drawnPlace.ts`; the path says so in its `drawn` field).
+      Close up is NASA's 3D-printing model of the SLS, at its true 98.3 m, turned into glTF
+      and coloured orange and white as NASA's students' page describes it; the shades are a
+      drawing. The boosters are let go as their own part of the file (`letsGo` with `part`),
+      the escape tower by a cut at its foot (`aboveShare`), drawn pulling away ahead; the
+      core stage is shed as a stage. The launch was at night: the sky is dark and the clouds
+      are dimmed (they were lit as by day). The SLS has its own card in Spaceships.
+      Changed on the way: a craft leaving the ground now speeds up evenly over its first
+      stretch and is drawn rising before it bends over (height as t², way over the ground as
+      t³), since a long first stretch drew it drifting back west and leaving the pad at 45°;
+      Apollo 11's first minute is drawn the same way now. A part just let go is placed at no
+      distance without asking the scale for a size of nothing (the last frame threw).
+      Not drawn: the panels round the service module (3:11), the cover the escape tower took
+      off Orion's capsule (left on), Orion's solar wings, the real weather and the lean the
+      real rocket took. The story stops when the core stage lets go: the drawn line ends there.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

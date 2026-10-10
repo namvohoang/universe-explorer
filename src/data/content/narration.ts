@@ -427,6 +427,11 @@ export const NARRATION: Readonly<
     fingerprint: 'd7b3f603',
     starts: [0.0, 2.52, 7.2, 13.57, 17.62],
   },
+  sls: {
+    file: 'public/voice/sls.mp3',
+    fingerprint: 'f51d41f9',
+    starts: [0.0, 2.98, 10.38, 15.7, 20.98],
+  },
   columbia: {
     file: 'public/voice/columbia.mp3',
     fingerprint: '01aa2064',

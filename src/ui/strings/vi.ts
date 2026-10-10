@@ -833,6 +833,18 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   modelAltChandra:
     'Mô hình 3D của Chandra: một ống dài màu bạc với một tấm pin mặt trời ở mỗi bên.',
   sceneCraft: 'Tàu vũ trụ',
+  storyArtemis1LaunchTitle: 'Artemis I: lúc phóng',
+  craftArtemis1Sls: 'SLS và Orion',
+  storyArtemis1LaunchNote:
+    'Thời gian và độ cao là thật. Đường bay, độ nghiêng, ngọn lửa và khói, tháp phóng, mây và màu sắc là hình vẽ.',
+  storyArtemis1LaunchLiftoff:
+    'Cất cánh, giữa đêm khuya! Các tên lửa đẩy bùng cháy và tên lửa khổng lồ SLS bay lên, mang Orion trên đỉnh.',
+  storyArtemis1LaunchBoostersAway:
+    'Hai tên lửa đẩy màu trắng đã đốt hết nhiên liệu. Chúng tách ra và rơi trở về Trái Đất.',
+  storyArtemis1LaunchTowerAway:
+    'Giờ Orion đã ở rất cao trên Trái Đất. Nó không cần tháp thoát hiểm trên mũi nữa, nên tháp bay đi.',
+  storyArtemis1LaunchCoreStageAway:
+    'Các động cơ tắt. Tầng lõi màu cam không cần nữa và tách ra. Chỉ còn tầng trên để đẩy Orion đi tiếp.',
   storyArtemis1Title: 'Artemis I: vòng quanh Mặt Trăng',
   craftOrion: 'Orion',
   storyArtemis1OnItsWay:
@@ -1031,6 +1043,14 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardSaturnVFact2: 'Nó là tên lửa mạnh nhất từng bay tính đến lúc đó.',
   cardSaturnVFact3: 'Nó được phóng lần đầu năm 1967.',
   modelAltSaturnV: 'Mô hình 3D của Saturn V: một tên lửa trắng rất cao và thon, có các vạch đen.',
+  nameSls: 'Tên lửa Hệ thống Phóng Không gian',
+  cardSlsHello:
+    'Hệ thống Phóng Không gian, gọi tắt là SLS, là một tên lửa khổng lồ có thể đưa những thứ rất nặng lên vũ trụ.',
+  cardSlsFact1: 'Phần lớn của nó là một bồn lớn màu cam, chứa đầy nhiên liệu cho các động cơ.',
+  cardSlsFact2: 'Hai tên lửa màu trắng hai bên cho nó cú đẩy mạnh đầu tiên rời Trái Đất.',
+  cardSlsFact3: 'Nó bay lần đầu ngày 16 tháng 11 năm 2022, không có phi hành gia.',
+  modelAltSls:
+    'Mô hình 3D của Hệ thống Phóng Không gian, đầu hướng lên: thân giữa cao màu cam, mỗi bên có một tên lửa trắng, trên đỉnh có một tháp trắng mảnh.',
   cardCassiniHello: 'Cassini là một tàu vũ trụ được gửi tới Sao Thổ.',
   cardCassiniFact1: 'Nó rời Trái Đất tháng 10 năm 1997 và tới Sao Thổ tháng 7 năm 2004.',
   cardCassiniFact2: 'Toàn bộ sứ mệnh của nó kéo dài 20 năm.',

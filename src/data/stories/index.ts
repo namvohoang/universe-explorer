@@ -3,6 +3,7 @@ import { apollo11Landing } from './apollo11Landing';
 import { aurora } from './aurora';
 import { apollo11Launch } from './apollo11Launch';
 import { artemis1 } from './artemis1';
+import { artemis1Launch } from './artemis1Launch';
 import { artemis2 } from './artemis2';
 import { halleyTail } from './halleyTail';
 import { lunarEclipse } from './lunarEclipse';
@@ -29,6 +30,7 @@ export const stories: readonly Story[] = [
   marsBackwards,
   apollo11Launch,
   apollo11Landing,
+  artemis1Launch,
   artemis1,
   artemis2,
   shuttleDocking,

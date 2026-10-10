@@ -844,6 +844,10 @@ button.play-pause {
   border-color: transparent;
 }
 
+.clock-date .date-short {
+  display: none;
+}
+
 .clock-date {
   font-weight: 700;
   font-size: 17px;
@@ -2580,5 +2584,19 @@ body.watching .marker {
 
   .card:not(.open) .peek-read {
     top: 5px;
+  }
+}
+
+/*
+ * On a phone on its side the date shares one line with the title and the view menu, and
+ * "28 September 2026" pushes the menu onto the title: the month is cut short ("28 Sept 2026").
+ */
+@media (max-height: 500px) {
+  .clock-date .date-long {
+    display: none;
+  }
+
+  .clock-date .date-short {
+    display: inline;
   }
 }

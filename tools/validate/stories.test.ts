@@ -40,7 +40,8 @@ describe('checkStories', () => {
       checkStories(
         stories,
         catalogue.map((object) => object.id),
-        new Set(['saturn-v', 'lunar-module', 'apollo-soyuz']),
+        new Set(['saturn-v', 'lunar-module', 'columbia', 'apollo-soyuz', 'sls']),
+        new Map([['sls', new Set(['boosters', 'core', 'engines', 'upper'])]]),
       ),
     ).toEqual([]);
   });
@@ -92,6 +93,75 @@ describe('checkStories', () => {
       expect(checkStories([backwards], IDS, MODELS).join('\n')).toMatch(/sheds a part/);
       const bare = checkStories([flying({ sheds: [shed(15, 0.3)] })], IDS, MODELS);
       expect(bare.join('\n')).toMatch(/not drawn as a 3D model/);
+    });
+
+    it('lets go of parts of its file, and of its top, only in order and above what it shed', () => {
+      const PARTS = new Map([['toy-rocket', new Set(['boosters', 'core'])]]);
+      const at = (value: number): { value: number; sourceId: string } => ({
+        value,
+        sourceId: 'test',
+      });
+      const good = flying({
+        modelOfId: 'toy-rocket',
+        letsGo: [
+          { atJd: at(12), part: 'boosters' },
+          { atJd: at(14), aboveShare: at(0.9) },
+        ],
+        sheds: [shed(25, 0.6)],
+      });
+      expect(checkStories([good], IDS, MODELS, PARTS)).toEqual([]);
+      const unknownPart = flying({
+        modelOfId: 'toy-rocket',
+        letsGo: [{ atJd: at(12), part: 'fins' }],
+      });
+      expect(checkStories([unknownPart], IDS, MODELS, PARTS).join('\n')).toMatch(
+        /"fins", which is not a part of its model's file/,
+      );
+      const late = flying({
+        modelOfId: 'toy-rocket',
+        letsGo: [
+          { atJd: at(14), part: 'boosters' },
+          { atJd: at(12), part: 'core' },
+        ],
+      });
+      expect(checkStories([late], IDS, MODELS, PARTS).join('\n')).toMatch(/out of order/);
+      const low = flying({
+        modelOfId: 'toy-rocket',
+        letsGo: [{ atJd: at(14), aboveShare: at(0.5) }],
+        sheds: [shed(25, 0.6)],
+      });
+      expect(checkStories([low], IDS, MODELS, PARTS).join('\n')).toMatch(/top below a stage/);
+      const bare = flying({ letsGo: [{ atJd: at(12), part: 'boosters' }] });
+      expect(checkStories([bare], IDS, MODELS, PARTS).join('\n')).toMatch(
+        /not drawn as a 3D model/,
+      );
+    });
+
+    it('is rejected when part of its path is drawn and no note says so', () => {
+      const drawn = story({
+        path: 'staged',
+        craft: [
+          {
+            id: 'rocket',
+            nameKey: 'craftRocket',
+            path: {
+              centreId: 'earth',
+              points: {
+                sourceId: 'test',
+                value: [
+                  [10, 1, 0, 0],
+                  [30, 2, 0, 0],
+                ],
+              },
+              drawn: { value: 'Due east of the pad.', sourceId: 'test' },
+            },
+          },
+        ],
+      });
+      expect(checkStories([drawn], IDS).join('\n')).toMatch(
+        /drawn places, but the story has no note/,
+      );
+      expect(checkStories([{ ...drawn, noteKey: 'storyTestNote' }], IDS)).toEqual([]);
     });
 
     it('is rejected when it has a flame or a blue sky and no note to say they are drawings', () => {

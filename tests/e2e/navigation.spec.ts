@@ -267,3 +267,21 @@ for (const language of LANGUAGES) {
     expect(clock.x + clock.width).toBeLessThanOrEqual(pill.x);
   });
 }
+
+// On a phone on its side the date shares one line with the title and the pill, which sits
+// left of it: on the longest date the pill still keeps clear of the title.
+for (const language of LANGUAGES) {
+  test(`a long date leaves the pill clear of the title on a phone on its side, ${language.code}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 740, height: 360 });
+    await open(page, language.code, '&scale=true-sizes&date=2026-09-28');
+    await expect(page.locator('.top .clock-date')).toContainText('2026');
+    const title = await page.locator('.brand h1').boundingBox();
+    const pill = await page.locator('.view-menu').boundingBox();
+    const clock = await page.locator('.top .clock').boundingBox();
+    if (!title || !pill || !clock) throw new Error('not on the page');
+    expect(title.x + title.width).toBeLessThanOrEqual(pill.x);
+    expect(pill.x + pill.width).toBeLessThanOrEqual(clock.x);
+  });
+}

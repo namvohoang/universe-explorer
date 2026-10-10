@@ -1,0 +1,35 @@
+{
+  "name": "artemis1Ascent",
+  "centre": "399",
+  "centreId": "earth",
+  "rangeZeroUtc": "2022-11-16T06:47:44Z",
+  "tableUrl": "https://www.nasa.gov/wp-content/uploads/2022/03/sls_reference_guide_2022_web.pdf",
+  "sourceId": "nasa-sls-reference-guide-ascent",
+  "note": "Artemis I's climb, counted from liftoff at 06:47:44 UTC (JPL Horizons' data sheet for Artemis I, -1023). Each row: event, seconds after liftoff (NASA's Artemis I blog), height (km), latitude, longitude. The heights are NASA's: 0 on the pad; 43.3 km at booster separation (SLS Reference Guide: 'Booster separation occurs at about 2 minutes 12 seconds, 142,000 ft. (43.3 km)'); 91 km at 3 min 40 s (NASA's 'What Is the Space Launch System? (Grades 5-8)': 'SLS is 57 miles (91 km) above Earth'); 161.5 km when the core stage lets go (SLS Reference Guide: 'more than 530,000 ft. (161.5 km) in altitude before it separates'). The pad is Launch Complex 39, Pad B, where NASA's table of Apollo 10's climb (SP-2000-4029) puts that flight at liftoff. NASA gives no track over the ground for Artemis I, so the other places are a drawing: due east of the pad, as far as Apollo 10 had gone from the same pad at the same second (that table's range, read straight-line between its rows).",
+  "altitudeUnit": "km",
+  "drawn": {
+    "pad": [28.4658, -80.6209],
+    "azimuthDeg": 90,
+    "rangeTable": [
+      [0.58, 0],
+      [66.8, 1.037],
+      [82.6, 2.893],
+      [135.16, 25.009],
+      [161.63, 50.419],
+      [162.31, 51.223],
+      [460.61, 599.079],
+      [552.64, 883.67],
+      [553.5, 886.634],
+      [703.76, 1430.977],
+      [713.76, 1469.79]
+    ],
+    "sourceId": "nasa-sp4029-apollo10-ascent",
+    "how": "The pad is where NASA's table of Apollo 10's climb, from the same pad (Launch Complex 39, Pad B), puts it at liftoff. The other places are drawn due east of the pad, as far as Apollo 10 had gone at the same second (that table's range, read straight-line between its rows): NASA gives Artemis I's heights but not its track over the ground."
+  },
+  "rows": [
+    ["Liftoff", 0, 0, null, null],
+    ["Solid rocket booster separation", 132, 43.3, null, null],
+    ["SLS 57 miles (91 km) above Earth", 220, 91, null, null],
+    ["Core stage/ICPS separation", 495, 161.5, null, null]
+  ]
+}

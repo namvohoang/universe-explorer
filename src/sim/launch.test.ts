@@ -6,20 +6,25 @@ import {
   flameAt,
   groundExposure,
   joinedGapKm,
+  letGoPartAt,
+  type LetGo,
   noseAlong,
+  partsGoneAt,
   settlingShedShareAt,
   shedShareAt,
   skyShare,
   stagedSamples,
   standingPartAt,
+  topShareAt,
   turningOf,
   type Turning,
 } from './launch';
-import { drawnThrough, groundVelocityKmPerS } from './trajectory';
+import { drawnThrough, groundVelocityKmPerS, pathPositionKm } from './trajectory';
 
 // Placeholder values for testing the maths, not astronomy: a globe turning about +z once in
 // ten hours, and a path that starts on its equator.
 const TURNING: Turning = { north: { x: 0, y: 0, z: 1 }, turnHours: 10 };
+const TURNING_RADIANS_PER_DAY = (2 * Math.PI * 24) / 10;
 const PATH: StagedPath = {
   centreId: 'globe',
   points: {
@@ -65,6 +70,24 @@ describe('stagedSamples', () => {
     const [first] = stagedSamples(PATH, true, TURNING);
     const ground = groundVelocityKmPerS({ x: 1000, y: 0, z: 0 }, TURNING.north, 10);
     expect(first?.slice(4)).toEqual([ground.x, ground.y, ground.z]);
+  });
+
+  it('passes through the known places, and draws its first stretch rising before it goes over', () => {
+    const samples = stagedSamples(PATH, true, TURNING);
+    for (const point of PATH.points.value) {
+      const place = pathPositionKm(samples, point[0]);
+      expect(place.x).toBeCloseTo(point[1], 9);
+      expect(place.y).toBeCloseTo(point[2], 9);
+      expect(place.z).toBeCloseTo(point[3], 9);
+    }
+    // A tenth of the way through the first stretch: a hundredth of the climb, a thousandth of
+    // the way across (after the turning ground's own move is taken off).
+    const jd = 0.0001;
+    const place = pathPositionKm(samples, jd);
+    const turned = TURNING_RADIANS_PER_DAY * jd;
+    const groundY = 1000 * Math.sin(turned);
+    expect(Math.hypot(place.x, place.y) - 1000).toBeCloseTo((Math.hypot(1010, 20) - 1000) / 100, 2);
+    expect(Math.abs(place.y - groundY)).toBeLessThan(0.1);
   });
 
   it('is the plain curve for a craft that does not start on the ground', () => {
@@ -114,7 +137,7 @@ describe('noseAlong, held upright at first', () => {
     // Straight out from the globe's middle through where the craft is, which the free heading is not.
     expect(Math.hypot(nose.x, nose.y, nose.z)).toBeCloseTo(1, 12);
     expect(nose.y / nose.x).toBeCloseTo(20 / 1010, 3);
-    expect(free.y / free.x).toBeGreaterThan(0.5);
+    expect(free.y / free.x).toBeGreaterThan(0.3);
   });
 
   it('comes round to the way it moves little by little, and is there twenty seconds later', () => {
@@ -175,6 +198,36 @@ describe('droppedPartAt', () => {
     expect(later?.behindKm).toBeCloseTo(4 * (early?.behindKm ?? 0), 6);
     // The second part is the stretch above the first.
     expect(droppedPartAt(sheds, 20 + second)).toMatchObject({ fromShare: 0.3, toShare: 0.6 });
+  });
+});
+
+describe('parts let go from the sides and the nose', () => {
+  const second = 1 / 86_400;
+  const letsGo: LetGo[] = [
+    { atJd: { value: 10 }, part: 'boosters' },
+    { atJd: { value: 20 }, aboveShare: { value: 0.9 } },
+  ];
+
+  it('names the parts gone by a date', () => {
+    expect(partsGoneAt(letsGo, 10 - second)).toEqual([]);
+    expect(partsGoneAt(letsGo, 10)).toEqual(['boosters']);
+    expect(partsGoneAt(letsGo, 30)).toEqual(['boosters']);
+  });
+
+  it('draws all of the craft up to its nose until the top is let go', () => {
+    expect(topShareAt(letsGo, 15)).toBe(1);
+    expect(topShareAt(letsGo, 20)).toBe(0.9);
+  });
+
+  it('draws a part from the sides falling behind, and one from the nose pulling ahead', () => {
+    expect(letGoPartAt(letsGo, 10 - second)).toBeNull();
+    const side = letGoPartAt(letsGo, 10 + 4 * second);
+    expect(side).toMatchObject({ part: 'boosters', fromShare: 0, toShare: 1, ahead: false });
+    expect(side?.behindKm).toBeGreaterThan(0);
+    const top = letGoPartAt(letsGo, 20 + 4 * second);
+    expect(top).toMatchObject({ part: null, fromShare: 0.9, toShare: 1, ahead: true });
+    expect(top?.behindKm).toBeCloseTo(side?.behindKm ?? 0, 12);
+    expect(letGoPartAt(letsGo, 20 + 60 * second)).toBeNull();
   });
 });
 

@@ -9,9 +9,14 @@
  * Earth to match.
  *
  *   npx tsx tools/horizons/fetchAscent.ts tools/horizons/apollo11Ascent.json
+ *
+ * Where an agency gives a climb's heights but not its track over the ground, a row's latitude
+ * and longitude may be left `null` and `drawn` given: the place is then drawn on a straight
+ * line from the pad, as far along it as another flight's table had gone at that second.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { placeAlong, rangeAtKm } from './drawnPlace';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 /** The international nautical mile, by definition. */
@@ -27,7 +32,22 @@ interface Input {
   readonly tableUrl: string;
   readonly sourceId: string;
   readonly note: string;
-  readonly rows: readonly (readonly [string, number, number, number, number])[];
+  /** The unit of the rows' heights: nautical miles, as NASA's Apollo tables give them, or km. */
+  readonly altitudeUnit?: 'nmi' | 'km';
+  /** For rows whose place is `null`: how it is drawn. */
+  readonly drawn?: {
+    /** Geocentric latitude (deg N) and longitude (deg E) of the pad. */
+    readonly pad: readonly [number, number];
+    /** Which way the line leaves the pad, in degrees east of north. */
+    readonly azimuthDeg: number;
+    /** Another flight's table: [seconds, range (nautical miles)], earliest first. */
+    readonly rangeTable: readonly (readonly [number, number])[];
+    /** The source of the pad and of `rangeTable`. */
+    readonly sourceId: string;
+    /** How the places were drawn, in a sentence, written into the path as `drawn`. */
+    readonly how: string;
+  };
+  readonly rows: readonly (readonly [string, number, number, number | null, number | null])[];
 }
 
 const inputPath = process.argv[2];
@@ -98,14 +118,22 @@ async function placeOf(
   return [Number(x.toFixed(3)), Number(y.toFixed(3)), Number(z.toFixed(3))];
 }
 
+const kmPerHeightUnit = input.altitudeUnit === 'km' ? 1 : KM_PER_NAUTICAL_MILE;
 const points: (readonly [number, number, number, number])[] = [];
-for (const [, seconds, altitudeNauticalMiles, latDeg, lonDeg] of input.rows) {
+for (const [, seconds, altitude, givenLat, givenLon] of input.rows) {
+  let latDeg = givenLat;
+  let lonDeg = givenLon;
+  if (latDeg === null || lonDeg === null) {
+    if (!input.drawn) throw new Error('A row with no place needs `drawn`');
+    const { pad, azimuthDeg, rangeTable } = input.drawn;
+    [latDeg, lonDeg] = placeAlong(pad, azimuthDeg, rangeAtKm(rangeTable, seconds), equatorKm);
+  }
   const lat = (latDeg * Math.PI) / 180;
   // The table's latitude is measured from Earth's centre. The ground there is this far out
   // (the spheroid's radius along that line), and the height is added along the same line.
   const groundKm =
     (equatorKm * poleKm) / Math.hypot(poleKm * Math.cos(lat), equatorKm * Math.sin(lat));
-  const radiusKm = groundKm + altitudeNauticalMiles * KM_PER_NAUTICAL_MILE;
+  const radiusKm = groundKm + altitude * kmPerHeightUnit;
   const utJd = rangeZeroJd + seconds / SECONDS_PER_DAY;
   const place = await placeOf(lonDeg, radiusKm * Math.cos(lat), radiusKm * Math.sin(lat), utJd);
   points.push([Number(utJd.toFixed(9)), ...place]);
@@ -125,7 +153,7 @@ const file = `// Written by tools/horizons/fetchAscent.ts on ${today}. Do not ed
 // The table's page is the source '${input.sourceId}' in src/data/stories/sources.ts.
 // Each row's place on Earth was given to JPL Horizons as a point fixed to Earth, and Horizons
 // said where that point was at that instant: km from Earth's centre, ecliptic of J2000.
-// Heights in nautical miles are turned to km at ${String(KM_PER_NAUTICAL_MILE)} km each. Times are clock time (UTC) as
+// ${input.altitudeUnit === 'km' ? 'Heights are in km.' : `Heights in nautical miles are turned to km at ${String(KM_PER_NAUTICAL_MILE)} km each.`} Times are clock time (UTC) as
 // Julian dates; Horizons' own clock was ${String(tdbMinusUtSeconds)} s ahead and was asked accordingly.
 import type { BodyTurn, StagedPath } from '../types';
 
@@ -136,7 +164,15 @@ export const ${constant}: StagedPath = {
     value: [
 ${points.map((point) => `      [${point.join(', ')}],`).join('\n')}
     ],
-  },
+  },${
+    input.drawn
+      ? `
+  drawn: {
+    value: ${JSON.stringify(input.drawn.how)},
+    sourceId: '${input.drawn.sourceId}',
+  },`
+      : ''
+  }
 };
 
 /** Which way latitude 0, longitude 0 on Earth pointed at the first instant above. */

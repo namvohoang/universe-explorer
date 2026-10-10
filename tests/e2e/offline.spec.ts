@@ -43,7 +43,9 @@ test('after a look at each scene the app works with no network', async ({ page, 
   await page.getByRole('tab', { name: 'Spaceships' }).click();
   await expect(page.locator('.card h2')).not.toHaveText('Proxima Centauri');
   await page.getByRole('tab', { name: 'Compare' }).click();
-  await expect(page.locator('.compare')).toBeVisible();
+  // Compare's code is fetched and its planets drawn the first time it is opened: about 4 s on
+  // a slow processor, as long as the usual 5 s wait, so it is given the time it takes.
+  await expect(page.locator('.compare')).toBeVisible({ timeout: 20_000 });
   // The rest is fetched quietly once the page has settled.
   await expect(page.locator('html')).toHaveAttribute('data-offline', 'ready', { timeout: 90_000 });
 
@@ -63,6 +65,7 @@ test('after a look at each scene the app works with no network', async ({ page, 
     return response.ok;
   });
   expect(heard).toBe(true);
+  // Opened for the first time on this page, now from the device's own store.
   await page.getByRole('tab', { name: 'Compare' }).click();
-  await expect(page.locator('.compare')).toBeVisible();
+  await expect(page.locator('.compare')).toBeVisible({ timeout: 20_000 });
 });

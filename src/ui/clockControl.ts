@@ -8,7 +8,14 @@ import {
   type Speed,
 } from '../sim/time';
 import { create } from './dom';
-import { fill, formatDate, formatDateAndHour, yearOf } from './format';
+import {
+  fill,
+  formatDate,
+  formatDateAndHour,
+  formatShortDate,
+  formatShortDateAndHour,
+  yearOf,
+} from './format';
 import { icon } from './icons';
 import { createSegmented } from './segmented';
 import { words } from './strings';
@@ -41,6 +48,11 @@ export function createClockControl(
 ): ClockControl {
   const element = create('div', 'clock');
   const date = create('p', 'clock-date');
+  // The date in full, and with its month cut short for the narrowest phones; the page's
+  // style shows one of them.
+  const longDate = create('span', 'date-long');
+  const shortDate = create('span', 'date-short');
+  date.append(longDate, shortDate);
   const rate = create('p', 'clock-rate');
   const limit = create('p', 'clock-limit');
   limit.setAttribute('role', 'status');
@@ -107,7 +119,10 @@ export function createClockControl(
     show(clock) {
       const text = showsHours(clock.speed) ? formatDateAndHour(clock.jd) : formatDate(clock.jd);
       if (text !== shownDate) {
-        date.textContent = text;
+        longDate.textContent = text;
+        shortDate.textContent = showsHours(clock.speed)
+          ? formatShortDateAndHour(clock.jd)
+          : formatShortDate(clock.jd);
         shownDate = text;
       }
       if (clock.speed !== shownSpeed) {

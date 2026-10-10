@@ -11,6 +11,7 @@ import { hubble } from './hubble';
 import { parkerSolarProbe } from './parkerSolarProbe';
 import { spaceShuttle } from './spaceShuttle';
 import { saturnV } from './saturnV';
+import { sls } from './sls';
 import { cassini } from './cassini';
 import { columbia } from './columbia';
 import { discovery } from './discovery';
@@ -239,6 +240,7 @@ export const catalogue: readonly CelestialObject[] = [
   cygnus,
   gemini,
   saturnV,
+  sls,
   columbia,
   lunarModule,
   pioneer10,

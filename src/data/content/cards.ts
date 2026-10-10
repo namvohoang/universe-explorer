@@ -68,6 +68,7 @@ import {
   NASA_MRO,
   NASA_PARKER,
   NASA_SATURN_V_KIDS,
+  NASA_SLS_KIDS,
   NASA_SHUTTLE_KIDS,
   NASA_SWIFT,
   NASA_HUBBLE_M31,
@@ -1456,6 +1457,37 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_VOYAGER_1],
+  },
+  {
+    id: 'sls',
+    hello: {
+      key: 'cardSlsHello',
+      sourceId: 'nasa-sls-kids',
+      quote:
+        'SLS is a super heavy-lift rocket. That means it has the power to carry heavy loads into space.',
+    },
+    facts: [
+      {
+        key: 'cardSlsFact1',
+        sourceId: 'nasa-sls-kids',
+        quote:
+          'The core stage: This is the large orange tank that makes up most of the rocket. It contains liquid propellants that power the engines.',
+      },
+      {
+        key: 'cardSlsFact2',
+        sourceId: 'nasa-sls-kids',
+        quote:
+          'Solid rocket boosters: Along with the engines on the core stage, the two white solid rocket boosters provide the initial thrust to push SLS away from Earth’s gravity.',
+      },
+      {
+        key: 'cardSlsFact3',
+        sourceId: 'nasa-sls-kids',
+        quote:
+          'The first SLS mission was called Artemis I. It launched Nov. 16, 2022. Artemis I was a lunar flight test that did not carry astronauts.',
+      },
+    ],
+    moons: null,
+    sources: [NASA_SLS_KIDS],
   },
   {
     id: 'lunar-module',

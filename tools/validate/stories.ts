@@ -138,7 +138,12 @@ function chaseErrors(
 }
 
 /** A craft drawn as a 3D model needs that model, and what it sheds must come off in order. */
-function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<string>): string[] {
+function modelErrors(
+  story: Story,
+  craft: StoryCraft,
+  modelIds: ReadonlySet<string>,
+  modelParts: ReadonlyMap<string, ReadonlySet<string>>,
+): string[] {
   const errors: string[] = [];
   const at = `story ${story.id}: craft "${craft.id}"`;
   if (craft.modelOfId !== undefined && !modelIds.has(craft.modelOfId)) {
@@ -230,6 +235,29 @@ function modelErrors(story: Story, craft: StoryCraft, modelIds: ReadonlySet<stri
   if (craft.burns && story.noteKey === undefined) {
     errors.push(`${at} is drawn with a flame, but the story has no note to say it is a drawing`);
   }
+  // Places drawn where the table gives none make the path a drawing, and the screen must say so.
+  if ('points' in craft.path && 'drawn' in craft.path && story.noteKey === undefined) {
+    errors.push(`${at} flies a path with drawn places, but the story has no note to say so`);
+  }
+  if (craft.letsGo && craft.modelOfId === undefined) {
+    errors.push(`${at} lets parts go but is not drawn as a 3D model`);
+  }
+  let letGoJd = story.chapters[0]?.atJd.value ?? -Infinity;
+  const tallestShed = Math.max(0, ...(craft.sheds ?? []).map((shed) => shed.belowShare.value));
+  for (const one of craft.letsGo ?? []) {
+    if (!(one.atJd.value >= letGoJd && one.atJd.value <= story.endJd.value)) {
+      errors.push(`${at} lets a part go out of order or outside the story`);
+    }
+    letGoJd = one.atJd.value;
+    if ('part' in one) {
+      const parts = craft.modelOfId === undefined ? undefined : modelParts.get(craft.modelOfId);
+      if (!parts?.has(one.part)) {
+        errors.push(`${at} lets go of "${one.part}", which is not a part of its model's file`);
+      }
+    } else if (!(one.aboveShare.value > tallestShed && one.aboveShare.value < 1)) {
+      errors.push(`${at} lets go of its top below a stage it has already shed`);
+    }
+  }
   let previousJd = story.chapters[0]?.atJd.value ?? -Infinity;
   let previousShare = 0;
   for (const shed of craft.sheds ?? []) {
@@ -250,6 +278,8 @@ export function checkStories(
   catalogueIds: readonly string[],
   /** Ids of the catalogue objects that have a 3D model. */
   modelIds: ReadonlySet<string> = new Set(),
+  /** The names of the parts in each of those models' files, by catalogue id. */
+  modelParts: ReadonlyMap<string, ReadonlySet<string>> = new Map(),
 ): string[] {
   const errors: string[] = [];
   const known = new Set(catalogueIds);
@@ -329,7 +359,7 @@ export function checkStories(
         errors.push(`story ${story.id}: craft "${one.id}" has the id of a catalogue object`);
       }
       errors.push(...pathErrors(story, one.id, one.path, known));
-      errors.push(...modelErrors(story, one, modelIds));
+      errors.push(...modelErrors(story, one, modelIds, modelParts));
     }
     if (story.air) {
       if (!story.actorIds.includes(story.air.ofId)) {

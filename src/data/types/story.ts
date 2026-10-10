@@ -97,6 +97,12 @@ export interface StagedPath {
   readonly centreId: string;
   /** Earliest first. */
   readonly points: Sourced<readonly PathPoint[]>;
+  /**
+   * Set when the table gives some places only in part (heights, but no track over the
+   * ground): how the rest was drawn, citing what the drawing leans on. The story must say
+   * the path is a drawing with `noteKey`.
+   */
+  readonly drawn?: Sourced<string>;
 }
 
 /**
@@ -209,10 +215,22 @@ export interface StoryCraft {
     readonly stays?: true;
   }[];
   /**
+   * With `modelOfId`: parts it lets go of that are not a stage under the rest, earliest
+   * first. `part` names a part of the model's own file (boosters strapped to its sides);
+   * `aboveShare` lets go of everything above that share of its length (a tower on its nose
+   * that pulls itself off). From `atJd` on the part is not drawn; for a few seconds it is
+   * drawn falling behind, or, from the nose, pulling away ahead, which is a drawing.
+   */
+  readonly letsGo?: readonly (
+    | { readonly atJd: Sourced<number>; readonly part: string }
+    | { readonly atJd: Sourced<number>; readonly aboveShare: Sourced<number> }
+  )[];
+  /**
    * With `modelOfId`: when its engines burn, earliest first, with a flame drawn behind the
    * model for as long. The instants are real; the flame's size and colour are a drawing
-   * (`bright` for the long yellow flame of a kerosene engine, `faint` for the pale, nearly
-   * unseen one of a hydrogen engine), and the story must say so with `noteKey`.
+   * (`bright` for the long yellow flame of a kerosene engine or the blaze of solid boosters,
+   * `faint` for the pale, nearly unseen one of a hydrogen engine), and the story must say so
+   * with `noteKey`.
    */
   readonly burns?: readonly {
     readonly fromJd: Sourced<number>;

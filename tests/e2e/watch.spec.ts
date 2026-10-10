@@ -33,6 +33,7 @@ const STORIES = [
   ['artemis-1', 'Artemis I: round the Moon'],
   ['artemis-2', 'Artemis II: with astronauts'],
   ['apollo-11-launch', 'Apollo 11: the launch'],
+  ['artemis-1-launch', 'Artemis I: the launch'],
   ['apollo-11-landing', 'Apollo 11: the landing'],
   ['shuttle-docking', 'A shuttle meets the station'],
 ] as const;
@@ -478,6 +479,20 @@ test.describe('a space flight', () => {
     await page.getByRole('slider').focus();
     await page.keyboard.press('End');
     await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:43:49');
+  });
+
+  test('of Artemis I lifts off at night and stops as the core stage lets go', async ({ page }) => {
+    await page.goto('/#watch/artemis-1-launch');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'The times and heights are real. The path, the lean, the flame and smoke, the tower, the clouds and the colours are drawings.',
+    );
+    await expect(page.locator('.watch-date')).toHaveText('16 November 2022, 06:47:44');
+    await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
+    await expect(page.locator('.side-tag', { hasText: 'SLS and Orion' })).toBeVisible();
+    await page.getByRole('slider').focus();
+    await page.keyboard.press('End');
+    await expect(page.locator('.watch-date')).toHaveText('16 November 2022, 06:55:59');
+    await expect(page.locator('.watch-text')).toContainText('orange core stage');
   });
 
   test('with two spaceships names them both, and tells the landing to the minute', async ({

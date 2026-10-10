@@ -195,8 +195,9 @@ for (const screen of TIGHT) {
       page,
     }) => {
       await page.setViewportSize({ width: screen.width, height: screen.height });
-      // The longest sentence about scale, and the hint of a first visit, are both on show.
-      await open(page, language.code, '&scale=true-sizes');
+      // The longest sentence about scale, and the hint of a first visit, are both on show, on
+      // the widest date there is ("28 September"), not on whatever day the test is run.
+      await open(page, language.code, '&scale=true-sizes&date=2026-09-28');
       await expect(page.locator('#first-hint')).toBeVisible();
       await expect(page.locator('#scale-label')).toBeVisible();
       expect(await hiddenWords(page, '.tabs [role="tab"]')).toEqual([]);

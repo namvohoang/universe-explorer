@@ -7,6 +7,8 @@ import {
   formatDateAndHour,
   formatDateAndMinute,
   formatDateAndSecond,
+  formatShortDate,
+  formatShortDateAndHour,
   yearOf,
 } from './format';
 
@@ -16,6 +18,16 @@ describe('formatDateAndHour', () => {
     expect(formatDateAndHour(J2000_JD)).toBe('1 January 2000, 12:00');
     expect(formatDateAndHour(J2000_JD + 2.4 / 24)).toBe('1 January 2000, 14:00');
     expect(formatDateAndHour(J2000_JD + 0.5)).toBe('2 January 2000, 00:00');
+  });
+});
+
+describe('formatShortDate', () => {
+  it('cuts the month short, for the narrowest phones', () => {
+    expect(formatShortDate(J2000_JD)).toBe('1 Jan 2000');
+    expect(formatShortDateAndHour(J2000_JD + 2.4 / 24)).toBe('1 Jan 2000, 14:00');
+    // The widest month in full is September; short, it is as narrow as the rest.
+    expect(formatShortDate(J2000_JD + 270)).toBe('27 Sept 2000');
+    expect(formatDate(J2000_JD + 270)).toBe('27 September 2000');
   });
 });
 

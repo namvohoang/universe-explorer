@@ -13,6 +13,28 @@ export function formatDate(jd: number): string {
   return DATE_FORMAT.format(new Date(unixMsFromJulianDate(jd)));
 }
 
+const SHORT_DATE_FORMAT = new Intl.DateTimeFormat(locale, {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+/**
+ * A Julian date as a calendar day with the month cut short, e.g. "4 Oct 2026": for the
+ * narrowest phones, where "28 September 2026" does not fit beside the other controls.
+ */
+export function formatShortDate(jd: number): string {
+  return SHORT_DATE_FORMAT.format(new Date(unixMsFromJulianDate(jd)));
+}
+
+/** `formatDateAndHour`, with the month cut short, e.g. "4 Oct 2026, 14:00". */
+export function formatShortDateAndHour(jd: number): string {
+  const HOUR_MS = 3_600_000;
+  const hour = Math.floor(unixMsFromJulianDate(jd) / HOUR_MS) * HOUR_MS;
+  return `${SHORT_DATE_FORMAT.format(new Date(hour))}, ${HOUR_FORMAT.format(new Date(hour))}`;
+}
+
 const HOUR_FORMAT = new Intl.DateTimeFormat(locale, {
   hour: '2-digit',
   minute: '2-digit',

@@ -195,9 +195,8 @@ for (const screen of TIGHT) {
       page,
     }) => {
       await page.setViewportSize({ width: screen.width, height: screen.height });
-      // The longest sentence about scale, and the hint of a first visit, are both on show, on
-      // the widest date there is ("28 September"), not on whatever day the test is run.
-      await open(page, language.code, '&scale=true-sizes&date=2026-09-28');
+      // The longest sentence about scale, and the hint of a first visit, are both on show.
+      await open(page, language.code, '&scale=true-sizes');
       await expect(page.locator('#first-hint')).toBeVisible();
       await expect(page.locator('#scale-label')).toBeVisible();
       expect(await hiddenWords(page, '.tabs [role="tab"]')).toEqual([]);
@@ -249,4 +248,40 @@ for (const screen of TIGHT) {
       expect(free).toBeGreaterThanOrEqual(0.25);
     });
   }
+}
+
+// The date in the top bar is as long as the day it is: checked on its longest, whatever today is.
+for (const language of LANGUAGES) {
+  test(`a long date keeps clear of the pill beside it on a narrow phone, ${language.code}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await page.clock.setFixedTime(new Date('2026-09-30T11:00:00Z'));
+    // With the clock running, so the hour is shown too.
+    await page.goto(`/?lang=${language.code}&scale=true-sizes`);
+    await expect(page.locator('.top .clock-date')).toContainText('2026');
+    await page.evaluate(() => document.fonts.ready);
+    const clock = await page.locator('.top .clock').boundingBox();
+    const pill = await page.locator('.view-menu').boundingBox();
+    if (!clock || !pill) throw new Error('not on the page');
+    expect(clock.x + clock.width).toBeLessThanOrEqual(pill.x);
+  });
+}
+
+// On a phone on its side the date shares one line with the title and the pill, which sits
+// left of it: on the longest date the pill still keeps clear of the title.
+for (const language of LANGUAGES) {
+  test(`a long date leaves the pill clear of the title on a phone on its side, ${language.code}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 740, height: 360 });
+    await open(page, language.code, '&scale=true-sizes&date=2026-09-28');
+    await expect(page.locator('.top .clock-date')).toContainText('2026');
+    const title = await page.locator('.brand h1').boundingBox();
+    const pill = await page.locator('.view-menu').boundingBox();
+    const clock = await page.locator('.top .clock').boundingBox();
+    if (!title || !pill || !clock) throw new Error('not on the page');
+    expect(title.x + title.width).toBeLessThanOrEqual(pill.x);
+    expect(pill.x + pill.width).toBeLessThanOrEqual(clock.x);
+  });
 }

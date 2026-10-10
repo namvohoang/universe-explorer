@@ -29,7 +29,8 @@ export interface LandingSite {
     /** How hard the engine is blowing dust about, from 0 (none) to 1; `flicker` makes it waver. */
     readonly dust: number;
     readonly flicker: number;
-    readonly walkerShown: boolean;
+    /** Which of the walkers are out, in the order they were given. */
+    readonly walkersShown: readonly boolean[];
     /** How much of the trail of footprints has been made, from 0 to 1. */
     readonly footprints: number;
     readonly flagShown: boolean;
@@ -95,6 +96,11 @@ function flagTexture(): CanvasTexture {
 
 // Where things stand, in km from the lander's middle. All drawing choices.
 const WALKER_AT = { x: 0.0022, z: 0.0042 };
+/** Where each walker stands and how far they are turned: the first, then one by the flag. */
+const WALKERS_AT = [
+  { ...WALKER_AT, turnRad: 0 },
+  { x: -0.0034, z: 0.0047, turnRad: 0.5 },
+] as const;
 const FLAG_AT = { x: -0.0016, z: 0.0056 };
 /** The trail of prints starts at the foot of the lander on the watched side. */
 const LADDER_FOOT = { x: 0.0002, z: 0.0031 };
@@ -109,19 +115,27 @@ const DUST_STREAKS = 22;
 const DUST_REACH_KM = 0.024;
 const DUST_COLOUR = 0xb9b4aa;
 
-export function createLandingSite(walker: { url: string; tallKm: number } | null): LandingSite {
+export function createLandingSite(
+  walker: { url: string; tallKm: number } | null,
+  /** How many people walk: each is the same figure, stood in a place of their own. */
+  walkers: number,
+): LandingSite {
   const group = new Group();
   const random = steadyRandom(1969);
   const disposers: (() => void)[] = [];
 
-  const figure = walker ? createFigure(walker.url, walker.tallKm) : null;
-  if (figure) {
-    figure.figure.position.set(WALKER_AT.x, 0, WALKER_AT.z);
-    group.add(figure.figure);
-    disposers.push(() => {
-      figure.dispose();
-    });
-  }
+  const figures = walker
+    ? WALKERS_AT.slice(0, walkers).map((at) => {
+        const figure = createFigure(walker.url, walker.tallKm);
+        figure.figure.position.set(at.x, 0, at.z);
+        figure.figure.rotation.y = at.turnRad;
+        group.add(figure.figure);
+        disposers.push(() => {
+          figure.dispose();
+        });
+        return figure;
+      })
+    : [];
 
   // The flag: a thin pole with the flag held out from its top, as it was by a rod on the Moon.
   const flag = new Group();
@@ -222,8 +236,10 @@ export function createLandingSite(walker: { url: string; tallKm: number } | null
     setSide(towardsPlusZ) {
       group.rotation.y = towardsPlusZ ? 0 : Math.PI;
     },
-    setState({ dust: blowing, flicker, walkerShown, footprints, flagShown }) {
-      if (figure) figure.figure.visible = walkerShown;
+    setState({ dust: blowing, flicker, walkersShown, footprints, flagShown }) {
+      for (const [index, figure] of figures.entries()) {
+        figure.figure.visible = walkersShown[index] === true;
+      }
       flag.visible = flagShown;
       const made = Math.round(Math.min(1, Math.max(0, footprints)) * prints.length);
       for (const [index, print] of prints.entries()) print.visible = index < made;

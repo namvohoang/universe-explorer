@@ -22,7 +22,7 @@ describe('formatDateAndHour', () => {
 });
 
 describe('formatShortDate', () => {
-  it('cuts the month short, for the narrowest phones', () => {
+  it('cuts the month short, for a phone on its side', () => {
     expect(formatShortDate(J2000_JD)).toBe('1 Jan 2000');
     expect(formatShortDateAndHour(J2000_JD + 2.4 / 24)).toBe('1 Jan 2000, 14:00');
     // The widest month in full is September; short, it is as narrow as the rest.

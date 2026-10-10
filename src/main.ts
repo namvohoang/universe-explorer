@@ -1451,6 +1451,8 @@ function start(): void {
       groundedAtJd,
       leans,
       modelNose,
+      modelStretch,
+      modelLongKm,
       joins,
       walker,
     }: StoryCraft,
@@ -1477,7 +1479,7 @@ function start(): void {
       const route = groundRoute(path.points.value, path.heading.value, radiusKm);
       const shown = catalogue.find((object) => object.id === modelOfId);
       const model = shown?.media.find((media) => media.role === 'model');
-      const halfKm = shown ? bodyRadiusKm(shown) : null;
+      const longKm = modelLongKm?.value ?? (shown ? 2 * (bodyRadiusKm(shown) ?? 0) : 0);
       const turns = (leans ?? []).map((lean) => ({
         fromJd: lean.fromJd.value,
         untilJd: lean.untilJd.value,
@@ -1498,14 +1500,19 @@ function start(): void {
                 fromJd: walker.fromJd.value,
                 untilJd: walker.untilJd.value,
                 ...(walker.flagFromJd ? { flagFromJd: walker.flagFromJd.value } : {}),
+                others: (walker.others ?? []).map((other) => ({
+                  fromJd: other.fromJd.value,
+                  untilJd: other.untilJd.value,
+                })),
               },
             }
           : {}),
-        ...(model && halfKm !== null
+        ...(model && longKm > 0
           ? {
               model: {
                 url: mediaUrl(model.file),
-                lengthKm: 2 * halfKm,
+                lengthKm: longKm,
+                ...(modelStretch ? { stretch: modelStretch.value } : {}),
                 ...(modelNose
                   ? {
                       noseInModel: {

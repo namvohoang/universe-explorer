@@ -846,8 +846,19 @@ recorded last.
       stays. The flag, with its pole, stands from NASA's time for "United States flag
       deployed" (110:09:43). Their sizes and places are drawings from memory of photos,
       and the flag is left standing at liftoff. The note names all three as drawings.
+- [x] 12.27 Apollo 11's landing, the two things left (asked for by the owner on 2026-10-09).
+      The second astronaut: the same figure, by the flag, from "LMP on lunar surface"
+      (109:43:16) until "LMP inside LM" (111:29:39) in NASA's timeline. Columbia with its
+      service module: the Apollo half of NASA's 3D model of Apollo–Soyuz, the same kind of
+      craft flown in 1975, cut off at the tip of its command module and sized so that it
+      is as wide as the museum measures the real Columbia (391.2 cm). It takes the place
+      of the museum's scan of the command module alone, which is still what the Spaceships
+      screen shows. NASA's model is squatter than the real craft (about 7 m long at that
+      width, where the real one was nearer 11 m with its engine bell); it is drawn as NASA
+      made it. Checked on the way: every time the two Apollo 11 stories use was read again
+      from the timeline page itself, not through a summary, and all agree.
       Not drawn: the second astronaut, the service module.
-- [x] 12.27 The launch of Artemis I, close up (owner's request, 2026-10-10: "3d spaceship,
+- [x] 12.28 The launch of Artemis I, close up (owner's request, 2026-10-10: "3d spaceship,
       flame, cloud"; the clouds are at the launch, since the Moon has no air). A new `staged`
       story before "Artemis I: round the Moon", whose tracked path only starts two hours after
       liftoff. Liftoff is JPL Horizons' 06:47:44 UTC; the boosters (2:12), the escape tower

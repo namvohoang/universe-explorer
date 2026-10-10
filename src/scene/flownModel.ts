@@ -110,9 +110,16 @@ const MODEL_NOSE = new Vector3(0, 1, 0);
  * `url` is an agency's model that stands nose up along its own +y, as a rocket on its pad or
  * a lander on its legs. A model that was made lying some other way (a museum's scan of a
  * craft as it stands on show) is given the direction its nose points in its own file,
- * `noseInModel`. It is fetched at once; until it arrives nothing is drawn.
+ * `noseInModel`. A model that holds more than the craft (two craft joined) is given the
+ * `stretch` of its length, tail to nose, that is the craft: only that is ever drawn, and the
+ * shares given to `place` are shares of it. The size given to `place` is still the longest
+ * side of the whole file. It is fetched at once; until it arrives nothing is drawn.
  */
-export function createFlownModel(url: string, noseInModel?: Vec3): FlownModel {
+export function createFlownModel(
+  url: string,
+  noseInModel?: Vec3,
+  stretch?: readonly [from: number, to: number],
+): FlownModel {
   const group = new Group();
   const towards = new Vector3();
   // Everything behind the first plane and ahead of the second is left out. The renderer must
@@ -178,10 +185,11 @@ export function createFlownModel(url: string, noseInModel?: Vec3): FlownModel {
     // Its longest side one unit long, tail at the middle of the group and nose along +y.
     const middle = box.getCenter(new Vector3());
     const longest = Math.max(size.x, size.y, size.z);
-    tall = size.y / longest;
+    const [from, to] = stretch ?? [0, 1];
+    tall = ((to - from) * size.y) / longest;
     const holder = new Group();
     holder.scale.setScalar(1 / longest);
-    upright.position.sub(new Vector3(middle.x, box.min.y, middle.z));
+    upright.position.sub(new Vector3(middle.x, box.min.y + from * size.y, middle.z));
     holder.add(upright);
     group.add(holder);
     showParts();
@@ -195,10 +203,14 @@ export function createFlownModel(url: string, noseInModel?: Vec3): FlownModel {
       group.position.set(tail.x, tail.y, tail.z);
       group.quaternion.setFromUnitVectors(MODEL_NOSE, towards.set(nose.x, nose.y, nose.z));
       group.scale.setScalar(size);
-      // A plane for an end that is not cut lies well clear of the model.
-      cutAt.copy(group.position).addScaledVector(towards, length * (from > 0 ? from : -1));
+      // A plane for an end that is not cut lies well clear of the model; the ends of a
+      // stretch of a larger file are always cut.
+      const cutsEnds = stretch !== undefined;
+      cutAt
+        .copy(group.position)
+        .addScaledVector(towards, length * (from > 0 || cutsEnds ? from : -1));
       cut.setFromNormalAndCoplanarPoint(towards, cutAt);
-      cutAt.copy(group.position).addScaledVector(towards, length * (to < 1 ? to : 2));
+      cutAt.copy(group.position).addScaledVector(towards, length * (to < 1 || cutsEnds ? to : 2));
       cutAhead.setFromNormalAndCoplanarPoint(back.copy(towards).negate(), cutAt);
       // The engines of what is left are where the last part came off.
       flames.position.y = from * tall;

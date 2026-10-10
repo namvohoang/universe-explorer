@@ -21,8 +21,8 @@ const SHORT_DATE_FORMAT = new Intl.DateTimeFormat(locale, {
 });
 
 /**
- * A Julian date as a calendar day with the month cut short, e.g. "4 Oct 2026": for the
- * narrowest phones, where "28 September 2026" does not fit beside the other controls.
+ * A Julian date as a calendar day with the month cut short, e.g. "4 Oct 2026": for a phone on
+ * its side, where "28 September 2026" does not fit in one line with the other controls.
  */
 export function formatShortDate(jd: number): string {
   return SHORT_DATE_FORMAT.format(new Date(unixMsFromJulianDate(jd)));

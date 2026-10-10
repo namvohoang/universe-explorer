@@ -249,6 +249,17 @@ export interface StoryCraft {
    */
   readonly modelNose?: Sourced<readonly [x: number, y: number, z: number]>;
   /**
+   * With `modelOfId`, when the model holds more than this craft (two craft joined): the
+   * stretch of the model's length, tail to nose, that is this craft, as shares from 0 to 1.
+   * Only that stretch is drawn. Measured on the model.
+   */
+  readonly modelStretch?: Sourced<readonly [from: number, to: number]>;
+  /**
+   * With `modelOfId`: how long the longest side of the whole model is drawn, in km, when
+   * the catalogue has no size for it. It must rest on a real measurement of the craft.
+   */
+  readonly modelLongKm?: Sourced<number>;
+  /**
    * With `modelOfId`, for a craft on a `GroundPath` that flies joined to another of the
    * story's craft, nose to its top: from `apartFromJd` until `togetherAtJd` the two are
    * apart. While their paths are still at one place the model is drawn standing off from
@@ -275,6 +286,11 @@ export interface StoryCraft {
      * to it. The instant is real; what the flag and the prints look like is a drawing.
      */
     readonly flagFromJd?: Sourced<number>;
+    /** Others who step out too, each drawn as the same figure in a place of their own. */
+    readonly others?: readonly {
+      readonly fromJd: Sourced<number>;
+      readonly untilJd: Sourced<number>;
+    }[];
   };
   /**
    * With `modelOfId`, for a craft on a `GroundPath`: an instant at which it stands on the

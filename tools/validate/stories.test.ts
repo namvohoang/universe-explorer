@@ -40,7 +40,7 @@ describe('checkStories', () => {
       checkStories(
         stories,
         catalogue.map((object) => object.id),
-        new Set(['saturn-v', 'lunar-module', 'columbia', 'sls']),
+        new Set(['saturn-v', 'lunar-module', 'columbia', 'apollo-soyuz', 'sls']),
         new Map([['sls', new Set(['boosters', 'core', 'engines', 'upper'])]]),
       ),
     ).toEqual([]);

@@ -55,7 +55,7 @@ import {
   topShareAt,
   turningOf,
 } from './sim/launch';
-import { chasePositionKm, pathPositionKm, sampleInstants } from './sim/trajectory';
+import { chaseHeading, chasePositionKm, pathPositionKm, sampleInstants } from './sim/trajectory';
 import {
   add,
   cross,
@@ -1440,6 +1440,7 @@ function start(): void {
   let cloudsOverId: string | null = null;
   /** The bodies the story on show puts where JPL Horizons has them, by catalogue id. */
   let trackedNow: Readonly<Record<string, SampledPath>> = {};
+  const vecOf = ([x, y, z]: readonly [number, number, number]): Vec3 => ({ x, y, z });
   /** A story's spacecraft as something the scene can fly: where it is at a date, and when to draw it. */
   const flightOf = (
     {
@@ -1469,12 +1470,30 @@ function start(): void {
       // Catching another craft up: drawn on that craft's own path, a closing gap behind it.
       const aheadPath = all.find((craft) => craft.id === path.followsId)?.path;
       const ahead = aheadPath && 'samples' in aheadPath ? aheadPath.samples.value : [];
+      const standsOffKm = path.standsOffKm?.value ?? 0;
+      const shown = catalogue.find((object) => object.id === modelOfId);
+      const model = shown?.media.find((media) => media.role === 'model');
+      const halfKm = shown ? bodyRadiusKm(shown) : null;
       return {
         id,
         centreId,
         frame: 'space',
         instants: sampleInstants(ahead, STEPS_PER_SAMPLE),
-        placeAt: (jd) => chasePositionKm(ahead, path.joinsAtJd.value, jd),
+        placeAt: (jd) => chasePositionKm(ahead, path.joinsAtJd.value, jd, standsOffKm),
+        ...(model && halfKm !== null
+          ? {
+              model: {
+                url: mediaUrl(model.file),
+                lengthKm: 2 * halfKm,
+                ...(modelNose ? { noseInModel: vecOf(modelNose.value) } : {}),
+                noseAt: (jd: number) => chaseHeading(ahead, path.joinsAtJd.value, jd, standsOffKm),
+                shedBelowAt: () => 0,
+                lookShedAt: () => 0,
+                flameAt: () => null,
+                droppedAt: () => null,
+              },
+            }
+          : {}),
       };
     }
     if ('heading' in path) {
@@ -1582,6 +1601,7 @@ function start(): void {
             model: {
               url: mediaUrl(model.file),
               lengthKm: 2 * halfKm,
+              ...(modelNose ? { noseInModel: vecOf(modelNose.value) } : {}),
               noseAt: (jd: number) =>
                 'samples' in path
                   ? noseAlongPath(

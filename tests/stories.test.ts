@@ -1113,16 +1113,32 @@ describe('the shuttle joining the space station', () => {
   });
 
   it('brings the shuttle steadily nearer, and has the two together from the instant NASA gives', () => {
-    const [chasing, closingIn, joinedChapter] = shuttleDocking.chapters;
-    if (!chasing || !closingIn || !joinedChapter) throw new Error('three chapters expected');
+    const [chasing, closingIn, lastMetres, joinedChapter] = shuttleDocking.chapters;
+    if (!chasing || !closingIn || !lastMetres || !joinedChapter) {
+      throw new Error('four chapters expected');
+    }
     // NASA: "Docking occurred at 2:14 p.m. (EST) on Feb. 26, 2011", which is 19:14 UTC.
     const docking = Date.parse('2011-02-26T19:14:00Z') / 1000 / 86_400 + 2_440_587.5;
     expect(joinedChapter.atJd.value).toBeCloseTo(docking, 8);
     expect(joined).toBe(joinedChapter.atJd.value);
     expect(apartKm(chasing.atJd.value)).toBeGreaterThan(apartKm(closingIn.atJd.value));
     expect(apartKm(closingIn.atJd.value)).toBeGreaterThan(100);
+    expect(apartKm(closingIn.atJd.value)).toBeGreaterThan(apartKm(lastMetres.atJd.value));
+    // Two minutes out the shuttle is close enough to see beside the station.
+    expect(apartKm(lastMetres.atJd.value)).toBeLessThan(0.5);
     expect(apartKm(joined)).toBe(0);
     expect(apartKm(shuttleDocking.endJd.value)).toBe(0);
+  });
+
+  it('stops the shuttle one shuttle length behind the station, so its nose meets the station', () => {
+    const standsOffKm = shuttle.standsOffKm?.value ?? 0;
+    // The Smithsonian measures Discovery 38.03 m long.
+    expect(standsOffKm).toBeGreaterThan(0.03);
+    expect(standsOffKm).toBeLessThan(0.04);
+    const ahead = pathPositionKm(samples, joined);
+    const behind = chasePositionKm(samples, joined, joined, standsOffKm);
+    const gapKm = Math.hypot(ahead.x - behind.x, ahead.y - behind.y, ahead.z - behind.z);
+    expect(gapKm).toBeCloseTo(standsOffKm, 3);
   });
 
   it('says on screen which path is real and which is a drawing', () => {

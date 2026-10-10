@@ -141,6 +141,12 @@ export interface ChasePath {
   readonly followsId: string;
   /** The instant the two join, as a Julian date. */
   readonly joinsAtJd: Sourced<number>;
+  /**
+   * When both are drawn as models: how far behind the other the chaser stays once they have
+   * joined, in km, so that the two touch and do not run into each other. Measured on the
+   * models; where they meet is a drawing.
+   */
+  readonly standsOffKm?: Sourced<number>;
 }
 
 /**

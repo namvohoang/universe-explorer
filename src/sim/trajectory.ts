@@ -167,18 +167,55 @@ export function sampleInstants(samples: readonly PathSample[], stepsPerSample: n
 
 /**
  * How fast one craft is drawn catching another up: for every second until they join, it is
- * this many seconds behind along the same path. A drawing choice: three hours before joining
- * the chaser is drawn a minute and a half behind, some 700 km for a craft in low orbit.
+ * this many seconds behind along the same path, while they are still far apart. A drawing
+ * choice: three hours before joining the chaser is drawn about a minute behind, some 500 km
+ * for a craft in low orbit.
  */
 export const CHASE_GAIN = 1 / 120;
+/**
+ * In the last stretch the gap closes ever more gently, so the two are drawn coming together
+ * slowly: an hour before joining it is half what `CHASE_GAIN` alone would give, a minute
+ * before a sixtieth. A drawing choice.
+ */
+export const CHASE_SOFTENS_SECONDS = 3600;
 
 /**
  * Where a craft catching another up is drawn at a date: where the one ahead was a little
- * earlier, by a gap that closes to nothing when they join. From then on they are together.
+ * earlier, by a gap that closes when they join to `standsOffKm` behind it (zero, or the room
+ * the two need side by side when they are drawn as models). From then on they stay so.
  */
-export function chasePositionKm(ahead: readonly PathSample[], joinsAtJd: number, jd: number): Vec3 {
-  const behindDays = Math.max(0, joinsAtJd - jd) * CHASE_GAIN;
-  return pathPositionKm(ahead, jd - behindDays);
+export function chasePositionKm(
+  ahead: readonly PathSample[],
+  joinsAtJd: number,
+  jd: number,
+  standsOffKm = 0,
+): Vec3 {
+  const left = Math.max(0, joinsAtJd - jd) * SECONDS_PER_DAY;
+  const behindSeconds = (CHASE_GAIN * left * left) / (left + CHASE_SOFTENS_SECONDS);
+  const speed = length(pathVelocityKmPerS(ahead, jd));
+  const standsOffSeconds = standsOffKm > 0 && speed > 0 ? standsOffKm / speed : 0;
+  return pathPositionKm(ahead, jd - (behindSeconds + standsOffSeconds) / SECONDS_PER_DAY);
+}
+
+/**
+ * Which way a craft catching another up is moving at a date: the way the one ahead moved
+ * where the chaser is drawn. A unit vector.
+ */
+export function chaseHeading(
+  ahead: readonly PathSample[],
+  joinsAtJd: number,
+  jd: number,
+  standsOffKm = 0,
+): Vec3 {
+  const here = chasePositionKm(ahead, joinsAtJd, jd, standsOffKm);
+  const step = 1 / SECONDS_PER_DAY;
+  const next = chasePositionKm(ahead, joinsAtJd, jd + step, standsOffKm);
+  const moved = subtract(next, here);
+  const size = length(moved);
+  if (size > 0) return scale(moved, 1 / size);
+  const velocity = pathVelocityKmPerS(ahead, jd);
+  const speed = length(velocity);
+  return speed > 0 ? scale(velocity, 1 / speed) : { x: 0, y: 0, z: 1 };
 }
 
 /** The farthest a path gets from its centre, in km. */

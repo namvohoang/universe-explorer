@@ -5,7 +5,15 @@ import { catalogue } from '../src/data/catalogue';
 import type { PathSample, Story } from '../src/data/types';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from '../src/sim/layout';
 import { groundPlaceAt, groundRoute } from '../src/sim/groundPath';
-import { flameAt, noseAlong, shedShareAt, stagedSamples, turningOf } from '../src/sim/launch';
+import {
+  flameAt,
+  noseAlong,
+  partsGoneAt,
+  shedShareAt,
+  stagedSamples,
+  topShareAt,
+  turningOf,
+} from '../src/sim/launch';
 import { chasePositionKm, pathPositionKm } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
 import { createScale } from '../src/sim/scale';
@@ -28,6 +36,7 @@ import { add, dot, normalize, scale, subtract } from '../src/sim/vec3';
 import { apollo11Landing } from '../src/data/stories/apollo11Landing';
 import { apollo11Launch } from '../src/data/stories/apollo11Launch';
 import { artemis1 } from '../src/data/stories/artemis1';
+import { artemis1Launch } from '../src/data/stories/artemis1Launch';
 import { artemis2 } from '../src/data/stories/artemis2';
 import { aurora } from '../src/data/stories/aurora';
 import { halleyTail } from '../src/data/stories/halleyTail';
@@ -166,6 +175,88 @@ describe('Artemis II', () => {
     expect(Math.abs(nearestKm - 8282)).toBeLessThan(5);
     const threeHours = 3 / 24;
     expect(Math.abs(nearestJd - (pass.atJd.value + threeHours)) * 1440).toBeLessThan(3);
+  });
+});
+
+describe('the launch of Artemis I', () => {
+  const flown = artemis1Launch.craft?.[0];
+  const path = flown?.path;
+  const points = path && 'points' in path && !('heading' in path) ? path.points.value : [];
+  const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+  const turning = turningOf(earth);
+  const samples =
+    path && 'points' in path && !('heading' in path) ? stagedSamples(path, true, turning) : [];
+  const [first] = points;
+  const liftoffJd = first?.[0] ?? 0;
+  const padKm = first ? Math.hypot(first[1], first[2], first[3]) : 0;
+  /** Height over the pad, km: Earth's ground is a few hundred metres further out under the drawn line, no more. */
+  const heightKm = (jd: number): number => {
+    const place = pathPositionKm(samples, jd);
+    return Math.hypot(place.x, place.y, place.z) - padKm;
+  };
+  /**
+   * The drawn line runs due east from 28.5° N, so it drifts south and the ground under it
+   * rises by up to about 0.2 km over 1,300 km; heights are held to NASA's within this.
+   */
+  const HEIGHT_TOLERANCE_KM = 0.5;
+  const second = 1 / 86_400;
+
+  it("lifts off at JPL's time and passes NASA's three heights at NASA's times", () => {
+    // JPL Horizons: "Launched November 16 @ 06:47:44 UTC".
+    expect(liftoffJd).toBeCloseTo(2459899.5 + (6 * 3600 + 47 * 60 + 44) / 86_400, 9);
+    for (const [seconds, km] of [
+      [0, 0],
+      [132, 43.3],
+      [220, 91],
+      [495, 161.5],
+    ] as const) {
+      expect(Math.abs(heightKm(liftoffJd + seconds * second) - km), String(seconds)).toBeLessThan(
+        HEIGHT_TOLERANCE_KM,
+      );
+    }
+  });
+
+  it('stands upright on the pad, rises nearly straight up, and only ever climbs while the boosters burn', () => {
+    const pad = pathPositionKm(samples, liftoffJd);
+    const up = (jd: number): number => {
+      const place = pathPositionKm(samples, jd);
+      const nose = noseAlong(samples, turning, jd);
+      return dot(nose, normalize(place));
+    };
+    expect(up(liftoffJd)).toBeGreaterThan(0.999998);
+    // Within ten degrees of straight up for its first ten seconds.
+    expect(up(liftoffJd + 10 * second)).toBeGreaterThan(Math.cos((10 * Math.PI) / 180));
+    let lastKm = Math.hypot(pad.x, pad.y, pad.z);
+    for (let seconds = 1; seconds <= 132; seconds += 1) {
+      const place = pathPositionKm(samples, liftoffJd + seconds * second);
+      const km = Math.hypot(place.x, place.y, place.z);
+      expect(km, String(seconds)).toBeGreaterThan(lastKm);
+      lastKm = km;
+    }
+  });
+
+  it('burns with the boosters’ bright flame until they go, then the core engines’ pale one until they stop', () => {
+    const burns = flown?.burns ?? [];
+    // NASA's countdown: the core engines start 6.36 s before liftoff.
+    expect(flameAt(burns, liftoffJd - 7 * second)).toBeNull();
+    expect(flameAt(burns, liftoffJd - 3 * second)).toBe('faint');
+    expect(flameAt(burns, liftoffJd)).toBe('bright');
+    expect(flameAt(burns, liftoffJd + 131 * second)).toBe('bright');
+    expect(flameAt(burns, liftoffJd + 133 * second)).toBe('faint');
+    // "Core stage main engine cutoff commanded (MET 00:08:03)".
+    expect(flameAt(burns, liftoffJd + 484 * second)).toBeNull();
+  });
+
+  it("lets go of the boosters, the escape tower and the core stage at NASA's times", () => {
+    const letsGo = flown?.letsGo ?? [];
+    const sheds = flown?.sheds ?? [];
+    expect(partsGoneAt(letsGo, liftoffJd + 131 * second)).toEqual([]);
+    expect(partsGoneAt(letsGo, liftoffJd + 132 * second)).toEqual(['boosters']);
+    expect(topShareAt(letsGo, liftoffJd + 195 * second)).toBe(1);
+    expect(topShareAt(letsGo, liftoffJd + 196 * second)).toBeLessThan(1);
+    expect(shedShareAt(sheds, liftoffJd + 494 * second)).toBe(0);
+    expect(shedShareAt(sheds, artemis1Launch.endJd.value)).toBeGreaterThan(0);
+    expect(artemis1Launch.endJd.value).toBeCloseTo(liftoffJd + 495 * second, 9);
   });
 });
 

@@ -1122,6 +1122,18 @@ export const en = {
     'A full Moon! The Moon is on the other side of Earth from the Sun, so we see all of its sunny side.',
   storyMoonPhasesLastQuarter:
     'We see half again, but the other half. The Sun always lights half of the Moon. What changes is how much of that half we can see.',
+  storyArtemis1LaunchTitle: 'Artemis I: the launch',
+  craftArtemis1Sls: 'SLS and Orion',
+  storyArtemis1LaunchNote:
+    'The times and heights are real. The path, the lean, the flame and smoke, the tower, the clouds and the colours are drawings.',
+  storyArtemis1LaunchLiftoff:
+    'Liftoff, in the middle of the night! The boosters fire and the giant SLS rocket rises, with Orion on top.',
+  storyArtemis1LaunchBoostersAway:
+    'The two white boosters have burned all their fuel. They fall away and drop back to Earth.',
+  storyArtemis1LaunchTowerAway:
+    'Orion is high above Earth now. It does not need the escape tower on its nose any more, so the tower flies off.',
+  storyArtemis1LaunchCoreStageAway:
+    'The engines stop. The orange core stage is not needed any more, and it lets go. Only the upper stage is left to push Orion on.',
   storyArtemis1Title: 'Artemis I: round the Moon',
   craftOrion: 'Orion',
   storyArtemis1OnItsWay:

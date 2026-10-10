@@ -123,7 +123,19 @@ describe('drawnThrough', () => {
   it('leaves the first place at the speed it is told to, and the rest as before', () => {
     const samples = drawnThrough(points, { x: 0.25, y: -0.5, z: 0.125 });
     expect(samples[0]).toEqual([0, 0, 0, 0, 0.25, -0.5, 0.125]);
-    expect(samples.slice(1)).toEqual(drawnThrough(points).slice(1));
+    expect(samples.slice(2)).toEqual(drawnThrough(points).slice(2));
+  });
+
+  it('speeds up evenly over the first stretch from the speed it is told to', () => {
+    const start = { x: 0.25, y: -0.5, z: 0.125 };
+    const [first, second] = drawnThrough(points, start);
+    if (!first || !second) throw new Error('two samples');
+    const seconds = (second[0] - first[0]) * SECONDS_PER_DAY;
+    // Evenly faster: the mean of the two speeds carries it from one place to the next.
+    for (const i of [1, 2, 3] as const) {
+      const mean = ((first[i + 3] ?? 0) + (second[i + 3] ?? 0)) / 2;
+      expect(first[i] + mean * seconds).toBeCloseTo(second[i], 9);
+    }
   });
 });
 

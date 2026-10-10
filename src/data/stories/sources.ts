@@ -94,6 +94,67 @@ export const JPL_HORIZONS_EARTH_TURN_APOLLO_11_ASCENT: Source = {
   retrieved: '2026-10-07',
 };
 
+export const JPL_HORIZONS_ARTEMIS_1: Source = {
+  id: 'jpl-horizons-artemis-1',
+  title:
+    'JPL Horizons — data sheet for Artemis I (-1023): background, major events and the liftoff time',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27-1023%27&OBJ_DATA=%27YES%27&MAKE_EPHEM=%27NO%27',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_ARTEMIS_I_LIFTOFF: Source = {
+  id: 'nasa-artemis-i-liftoff',
+  title:
+    'NASA — Artemis I Liftoff (mission blog, 16 November 2022): the ascent milestones in mission elapsed time',
+  url: 'https://www.nasa.gov/blogs/missions/2022/11/16/artemis-i-liftoff/',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_ARTEMIS_I_PRESS_KIT: Source = {
+  id: 'nasa-artemis-i-press-kit',
+  title: 'NASA — Artemis I Press Kit: the launch countdown and where the boosters fall',
+  url: 'https://www.nasa.gov/artemis-i-press-kit/',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_SLS_REFERENCE_GUIDE_ASCENT: Source = {
+  id: 'nasa-sls-reference-guide-ascent',
+  title:
+    'NASA — Space Launch System Reference Guide (2022): heights at booster separation and when the core stage separates',
+  url: 'https://www.nasa.gov/wp-content/uploads/2022/03/sls_reference_guide_2022_web.pdf',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_SLS_STUDENTS: Source = {
+  id: 'nasa-sls-students',
+  title: 'NASA — What Is the Space Launch System? (Grades 5-8): how SLS launches, minute by minute',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-is-the-space-launch-system-grades-5-8/',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_SP4029_APOLLO_10_ASCENT: Source = {
+  id: 'nasa-sp4029-apollo10-ascent',
+  title:
+    'NASA SP-2000-4029, Apollo by the Numbers — Apollo 10 ascent phase, from Launch Complex 39 Pad B: the pad, and how far down range at each event',
+  url: 'https://www.nasa.gov/wp-content/uploads/static/history/SP-4029/Apollo_10d_Ascent_Phase.htm',
+  retrieved: '2026-10-10',
+};
+
+export const JPL_HORIZONS_EARTH_TURN_ARTEMIS_1_ASCENT: Source = {
+  id: 'jpl-horizons-earth-turn-artemis1ascent',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at Artemis I’s liftoff (2022-11-16 06:47:44 UTC), ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272459899.783948874%27',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_SLS_MODEL: Source = {
+  id: 'nasa-sls-3d-model',
+  title: 'NASA Science — 3D Resources: Space Launch System (SLS) (the 3D model the app draws)',
+  url: 'https://science.nasa.gov/3d-resources/space-launch-system-sls/',
+  retrieved: '2026-10-10',
+};
+
 export const NASA_SATURN_V_STUDENTS: Source = {
   id: 'nasa-saturn-v-students',
   title: 'NASA — What Was the Saturn V? (Grades 5-8)',

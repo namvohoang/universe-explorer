@@ -98,7 +98,18 @@ export interface TrackedCraft {
       readonly fromShare: number;
       readonly toShare: number;
       readonly behindKm: number;
+      /** When set, only this part of the model's file is what was let go. */
+      readonly part?: string | null;
+      /** Drawn `behindKm` ahead of the craft, not behind it: a part that pulls itself away. */
+      readonly ahead?: boolean;
     } | null;
+    /**
+     * How much of the model, from its tail, is still drawn once it has let go of what was on
+     * its nose: a share of its length, 1 while nothing has gone from the top.
+     */
+    topAt?(jd: number): number;
+    /** The parts of the model's file it has let go of from its sides by a date, not drawn. */
+    partsGoneAt?(jd: number): readonly string[];
     /**
      * A part it has left standing where it was let go (the legs of a lander that has lifted
      * off): the stretch of the model it was, and the instant it was left. It stays there.
@@ -416,12 +427,32 @@ export function createSolarSystem(
         const seen = craft.model.lookShedAt(jd);
         const tall = flown.length * flown.model.tall();
         flown.middle = add(place, scaleBy(nose, (tall * (1 + seen)) / 2));
-        flown.model.place(place, nose, flown.length, shed, 1);
+        flown.model.place(place, nose, flown.length, shed, craft.model.topAt?.(jd) ?? 1);
+        const gone = craft.model.partsGoneAt?.(jd) ?? [];
+        flown.model.showParts(gone.length === 0 ? null : (name) => !gone.includes(name));
         const part = craft.model.droppedAt(jd);
         flown.shedding = part !== null;
         if (part) {
+          const only = part.part ?? null;
+          // A stage let go is drawn without what had already gone from it.
+          flown.dropped.showParts(
+            only !== null
+              ? (name) => name === only
+              : gone.length === 0
+                ? null
+                : (name) => !gone.includes(name),
+          );
           flown.dropped.place(
-            add(place, scaleBy(nose, -currentScale.sizeToScene(part.behindKm))),
+            add(
+              place,
+              // Just let go it is still touching: no distance at all, which has no size to scale.
+              scaleBy(
+                nose,
+                part.behindKm > 0
+                  ? (part.ahead === true ? 1 : -1) * currentScale.sizeToScene(part.behindKm)
+                  : 0,
+              ),
+            ),
             nose,
             flown.length,
             part.fromShare,
@@ -429,6 +460,12 @@ export function createSolarSystem(
           );
         }
         site?.made.setSmoke((jd - site.fromJd) * SECONDS_PER_DAY);
+        if (site) {
+          // Day or night where the craft is: is the star above its ground?
+          const star = catalogue.find((object) => object.kind === 'star');
+          const light = star ? positions.get(star.id) : undefined;
+          site.made.setDaylight(!light || dot(offset, subtract(light, place)) > 0);
+        }
         flown.model.setFlame(
           craft.model.flameAt(jd),
           jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND,

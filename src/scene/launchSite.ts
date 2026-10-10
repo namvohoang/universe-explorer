@@ -20,6 +20,11 @@ export interface LaunchSite {
   readonly group: Group;
   /** Draws the smoke as it is this many seconds after the engines lit (none before). */
   setSmoke(seconds: number): void;
+  /**
+   * Lights the clouds as by day, or dims them when the Sun is down: at night they are seen
+   * only faintly. The smoke is left bright, lit by the engines' own flame.
+   */
+  setDaylight(day: boolean): void;
   dispose(): void;
 }
 
@@ -128,6 +133,9 @@ const CLOUD_NEAREST_KM = 1.5;
 const CLOUD_FARTHEST_KM = 14;
 const CLOUD_ACROSS_KM = 16;
 const CLOUD_OPACITY = 0.9;
+/** Clouds by day are white; by night a dim grey-blue, barely seen against the dark. */
+const CLOUD_DAY = 0xffffff;
+const CLOUD_NIGHT = 0x2b3140;
 
 export function createLaunchSite(towerKm: number | null, clouds: boolean): LaunchSite {
   const group = new Group();
@@ -159,7 +167,7 @@ export function createLaunchSite(towerKm: number | null, clouds: boolean): Launc
 
   const cloudMaterial = new SpriteMaterial({
     map: texture,
-    color: 0xffffff,
+    color: CLOUD_DAY,
     transparent: true,
     depthWrite: false,
     opacity: CLOUD_OPACITY,
@@ -187,6 +195,9 @@ export function createLaunchSite(towerKm: number | null, clouds: boolean): Launc
 
   return {
     group,
+    setDaylight(day) {
+      cloudMaterial.color.setHex(day ? CLOUD_DAY : CLOUD_NIGHT);
+    },
     setSmoke(seconds) {
       const shown = seconds > 0 && seconds < SMOKE_LASTS_SECONDS;
       for (const puff of smoke) puff.sprite.visible = shown;

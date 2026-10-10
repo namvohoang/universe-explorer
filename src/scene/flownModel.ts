@@ -6,6 +6,7 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
+  type Object3D,
   Plane,
   Vector3,
   type Material,
@@ -34,6 +35,11 @@ export interface FlownModel {
    * changes as time runs: the flame's length wavers with it.
    */
   setFlame(flame: Flame | null, flicker: number): void;
+  /**
+   * Draws only the parts of the model, named as in its file, that `shown` says yes to: a
+   * part let go is hidden, or a part let go is all that is drawn. `null` draws every part.
+   */
+  showParts(shown: ((name: string) => boolean) | null): void;
   dispose(): void;
 }
 
@@ -129,6 +135,12 @@ export function createFlownModel(url: string, noseInModel?: Vec3): FlownModel {
   group.add(flames);
   let drawnFlame: Flame | null = null;
   let tall = 1;
+  /** Each mesh of the model, with the name of the part of the file it belongs to. */
+  const parts: { readonly mesh: Object3D; readonly name: string }[] = [];
+  let partShown: ((name: string) => boolean) | null = null;
+  const showParts = (): void => {
+    for (const { mesh, name } of parts) mesh.visible = partShown === null || partShown(name);
+  };
   let disposeModel: (() => void) | null = null;
   let disposed = false;
   loadGltf(url, (model) => {
@@ -142,6 +154,7 @@ export function createFlownModel(url: string, noseInModel?: Vec3): FlownModel {
     };
     model.traverse((part) => {
       if (!(part instanceof Mesh)) return;
+      parts.push({ mesh: part as Object3D, name: part.name });
       for (const material of [part.material].flat() as Material[]) {
         material.clippingPlanes = [cut, cutAhead];
         // Cut open, a stage is seen into: its inside wall is drawn, not left as a hole.
@@ -171,6 +184,7 @@ export function createFlownModel(url: string, noseInModel?: Vec3): FlownModel {
     upright.position.sub(new Vector3(middle.x, box.min.y, middle.z));
     holder.add(upright);
     group.add(holder);
+    showParts();
     disposeModel = dispose;
   });
   return {
@@ -201,6 +215,11 @@ export function createFlownModel(url: string, noseInModel?: Vec3): FlownModel {
       const now = long * (1 + WAVER * Math.sin(flicker));
       outer.scale.set(wide, now, wide);
       core.scale.set(wide * CORE_SHARE, now * CORE_SHARE, wide * CORE_SHARE);
+    },
+    showParts(shown) {
+      if (shown === partShown) return;
+      partShown = shown;
+      showParts();
     },
     dispose() {
       disposed = true;

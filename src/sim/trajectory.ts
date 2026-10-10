@@ -120,12 +120,23 @@ export function noseDirection(placeKm: Vec3, velocityKmPerS: Vec3, groundKmPerS:
  * of a straight run from the place before it to the place after it (or to its one neighbour,
  * at an end). The speeds are a way of drawing, not measurements. A craft that stands on the
  * ground at the first place is given the ground's own speed there (`startKmPerS`), so it is
- * drawn leaving the ground from rest.
+ * drawn leaving the ground from rest; it then speeds up evenly over its first stretch, so the
+ * second place is given the speed that brings it there (with a straight run's speed, a long
+ * first stretch drew the craft drifting back the way it came before setting off).
  */
 export function drawnThrough(points: readonly PathPoint[], startKmPerS?: Vec3): PathSample[] {
   return points.map((point, index) => {
     if (index === 0 && startKmPerS) {
       return [point[0], point[1], point[2], point[3], startKmPerS.x, startKmPerS.y, startKmPerS.z];
+    }
+    const first = points[0];
+    if (index === 1 && startKmPerS && first) {
+      // From the ground's speed, evenly faster: it arrives at twice its mean speed less the start.
+      const seconds = (point[0] - first[0]) * SECONDS_PER_DAY;
+      const start = { 1: startKmPerS.x, 2: startKmPerS.y, 3: startKmPerS.z } as const;
+      const speed = (i: 1 | 2 | 3): number =>
+        seconds > 0 ? (2 * (point[i] - first[i])) / seconds - start[i] : 0;
+      return [point[0], point[1], point[2], point[3], speed(1), speed(2), speed(3)];
     }
     const before = points[index - 1] ?? point;
     const after = points[index + 1] ?? point;

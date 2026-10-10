@@ -40,6 +40,8 @@ import {
 import {
   droppedPartAt,
   flameAt,
+  letGoPartAt,
+  partsGoneAt,
   groundExposure,
   joinedGapKm,
   noseAlong,
@@ -48,6 +50,7 @@ import {
   skyShare,
   stagedSamples,
   standingPartAt,
+  topShareAt,
   turningOf,
 } from './sim/launch';
 import { chasePositionKm, pathPositionKm, sampleInstants } from './sim/trajectory';
@@ -1441,6 +1444,7 @@ function start(): void {
       modelOfId,
       fromGround,
       sheds,
+      letsGo,
       burns,
       uprightUntilJd,
       tower,
@@ -1570,7 +1574,10 @@ function start(): void {
               shedBelowAt: (jd: number) => shedShareAt(sheds ?? [], jd),
               lookShedAt: (jd: number) => settlingShedShareAt(sheds ?? [], jd),
               flameAt: (jd: number) => flameAt(burns ?? [], jd),
-              droppedAt: (jd: number) => droppedPartAt(sheds ?? [], jd),
+              droppedAt: (jd: number) =>
+                droppedPartAt(sheds ?? [], jd) ?? letGoPartAt(letsGo ?? [], jd),
+              topAt: (jd: number) => topShareAt(letsGo ?? [], jd),
+              partsGoneAt: (jd: number) => partsGoneAt(letsGo ?? [], jd),
             },
           }
         : {}),

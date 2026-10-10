@@ -814,6 +814,14 @@ export const en = {
   cardSaturnVFact3: 'It first launched in 1967.',
   modelAltSaturnV:
     'A 3D model of the Saturn V: a very tall, thin white rocket with black markings.',
+  nameSls: 'The Space Launch System Rocket',
+  cardSlsHello:
+    'The Space Launch System, or SLS, is a giant rocket that can lift very heavy loads into space.',
+  cardSlsFact1: 'Most of it is a big orange tank, full of the fuel its engines burn.',
+  cardSlsFact2: 'Two white rockets on its sides give it its first big push away from Earth.',
+  cardSlsFact3: 'It first flew on 16 November 2022, with no astronauts on board.',
+  modelAltSls:
+    'A 3D model of the Space Launch System standing nose up: a tall orange middle with a white rocket on each side and a thin white tower on its top.',
   cardCassiniHello: 'Cassini was a spacecraft sent to Saturn.',
   cardCassiniFact1: 'It left Earth in October 1997 and reached Saturn in July 2004.',
   cardCassiniFact2: 'Its whole mission lasted 20 years.',

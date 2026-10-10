@@ -1043,6 +1043,14 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   cardVoyagerFact1: 'Voyager 1 đã bay ngang qua Sao Mộc và Sao Thổ.',
   cardVoyagerFact2:
     'Voyager 1 là vật đầu tiên do con người làm ra đi tới khoảng không giữa các ngôi sao.',
+  nameSls: 'Tên lửa Hệ thống Phóng Không gian',
+  cardSlsHello:
+    'Hệ thống Phóng Không gian, gọi tắt là SLS, là một tên lửa khổng lồ có thể đưa những thứ rất nặng lên vũ trụ.',
+  cardSlsFact1: 'Phần lớn của nó là một bồn lớn màu cam, chứa đầy nhiên liệu cho các động cơ.',
+  cardSlsFact2: 'Hai tên lửa màu trắng hai bên cho nó cú đẩy mạnh đầu tiên rời Trái Đất.',
+  cardSlsFact3: 'Nó bay lần đầu ngày 16 tháng 11 năm 2022, không có phi hành gia.',
+  modelAltSls:
+    'Mô hình 3D của Hệ thống Phóng Không gian, đầu hướng lên: thân giữa cao màu cam, mỗi bên có một tên lửa trắng, trên đỉnh có một tháp trắng mảnh.',
   cardVoyagerFact3: 'Mỗi tàu mang một đĩa vàng có lời nhắn cho bất kỳ ai tìm thấy nó.',
   modelAltVoyager:
     'Mô hình 3D của Voyager: một chảo trắng lớn trên một thân nhỏ, có các cần dài mảnh chìa ra.',

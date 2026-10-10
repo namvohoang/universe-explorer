@@ -579,6 +579,20 @@ export const NASA_SATURN_V_KIDS: Source = {
   retrieved: '2026-10-04',
 };
 
+export const NASA_SLS_KIDS: Source = {
+  id: 'nasa-sls-kids',
+  title: 'NASA — What Is the Space Launch System? (Grades 5-8)',
+  url: 'https://www.nasa.gov/learning-resources/for-kids-and-students/what-is-the-space-launch-system-grades-5-8/',
+  retrieved: '2026-10-10',
+};
+
+export const NASA_SLS_REFERENCE_GUIDE: Source = {
+  id: 'nasa-sls-reference-guide',
+  title: "NASA — Space Launch System Reference Guide (2022): the Block 1 rocket's height",
+  url: 'https://www.nasa.gov/wp-content/uploads/2022/03/sls_reference_guide_2022_web.pdf',
+  retrieved: '2026-10-10',
+};
+
 export const NASA_CASSINI_FACTS: Source = {
   id: 'nasa-cassini-facts',
   title: 'NASA Science — Cassini Quick Facts',

@@ -1086,8 +1086,10 @@ anything is built on it:
       in a slice, order and ratios of heights kept) and a scene piece that draws a cut through
       ground, sea or air with its label. Earth's layers for the slice through the whole
       planet, their depths from the source.
-- [ ] 14.5 A picture in a story part (left over from 12.7): a chapter can show one credited
-      photo with its kind and alt text, so a real picture from space sits beside the drawing.
+- [ ] 14.5 Real pictures in Earth's stories. A story can already show real photos small in a
+      corner (`photos` in `story.ts`), taken from the ground. Check that it serves a picture
+      taken from space as well (its kind said where it is not a plain photo), and add only
+      what is missing, so a real picture sits beside each drawing.
 - [ ] 14.6 **Earthquake.** `tracked`: the place, depth and time, and the map of how hard the
       ground shook. `worked-out`: the waves spreading through and round Earth
       (`src/sim/seismic.ts`, from the table of travel times), the fast wave and the slow one,

@@ -475,7 +475,8 @@ test.describe('a space flight', () => {
     await expect(page.locator('.watch-path')).toHaveText(
       'The times and places are real. The path between them, the rocket’s lean, its flame and smoke, the tower, the clouds and the sky are drawings.',
     );
-    await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:32:01');
+    // It opens five seconds before liftoff (13:32:00.63), counting down on the pad.
+    await expect(page.locator('.watch-date')).toHaveText('16 July 1969, 13:31:56');
     // Close up the rocket is seen as itself; far off it is a named point on its path.
     await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
     await expect(page.locator('.craft-tag')).toBeHidden();
@@ -490,7 +491,8 @@ test.describe('a space flight', () => {
     await expect(page.locator('.watch-path')).toHaveText(
       'The times and heights are real. The path, the lean, the flame and smoke, the tower, the clouds and the colours are drawings.',
     );
-    await expect(page.locator('.watch-date')).toHaveText('16 November 2022, 06:47:44');
+    // It opens five seconds before liftoff (06:47:44), counting down on the pad.
+    await expect(page.locator('.watch-date')).toHaveText('16 November 2022, 06:47:39');
     await expect(page.locator('.pane-label')).toHaveText(['Close up', 'The whole picture']);
     await expect(page.locator('.side-tag', { hasText: 'SLS and Orion' })).toBeVisible();
     await page.getByRole('slider').focus();

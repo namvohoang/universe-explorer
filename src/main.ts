@@ -40,7 +40,8 @@ import {
 } from './sim/groundPath';
 import {
   droppedPartAt,
-  flameAt,
+  flamesAt,
+  bellyTowards,
   letGoPartAt,
   partsGoneAt,
   groundExposure,
@@ -1455,6 +1456,7 @@ function start(): void {
       letsGo,
       burns,
       uprightUntilJd,
+      belly,
       tower,
       groundedAtJd,
       leans,
@@ -1492,7 +1494,7 @@ function start(): void {
                 noseAt: (jd: number) => chaseHeading(ahead, path.joinsAtJd.value, jd, standsOffKm),
                 shedBelowAt: () => 0,
                 lookShedAt: () => 0,
-                flameAt: () => null,
+                flamesAt: () => [],
                 droppedAt: () => null,
               },
             }
@@ -1567,7 +1569,7 @@ function start(): void {
                   groundHeading(groundPlaceAt(route, jd), path.heading.value),
                 shedBelowAt: (jd: number) => shedShareAt(sheds ?? [], jd),
                 lookShedAt: (jd: number) => settlingShedShareAt(sheds ?? [], jd),
-                flameAt: (jd: number) => flameAt(burns ?? [], jd),
+                flamesAt: (jd: number) => flamesAt(burns ?? [], jd),
                 droppedAt: () => null,
                 leftStandingAt: (jd: number) => standingPartAt(sheds ?? [], jd),
               },
@@ -1582,7 +1584,14 @@ function start(): void {
     const shown = catalogue.find((object) => object.id === modelOfId);
     const model = shown?.media.find((media) => media.role === 'model');
     const halfKm = shown ? bodyRadiusKm(shown) : null;
-    const first = samples[0];
+    // A path drawn from the ground has places on the pad before liftoff: it leaves at its first known place.
+    const first = 'points' in path ? path.points.value[0] : samples[0];
+    // Which way it heads at first: from the pad towards its next known place.
+    const second = 'points' in path ? path.points.value[1] : undefined;
+    const downrange =
+      first && second
+        ? { x: second[1] - first[1], y: second[2] - first[2], z: second[3] - first[3] }
+        : { x: 0, y: 0, z: 0 };
     return {
       id,
       centreId,
@@ -1616,11 +1625,25 @@ function start(): void {
                   : noseAlong(samples, turning, jd, uprightUntilJd?.value),
               shedBelowAt: (jd: number) => shedShareAt(sheds ?? [], jd),
               lookShedAt: (jd: number) => settlingShedShareAt(sheds ?? [], jd),
-              flameAt: (jd: number) => flameAt(burns ?? [], jd),
+              flamesAt: (jd: number) => flamesAt(burns ?? [], jd),
               droppedAt: (jd: number) =>
                 droppedPartAt(sheds ?? [], jd) ?? letGoPartAt(letsGo ?? [], jd),
               topAt: (jd: number) => topShareAt(letsGo ?? [], jd),
               partsGoneAt: (jd: number) => partsGoneAt(letsGo ?? [], jd),
+              ...(belly
+                ? {
+                    bellyAt: (jd: number) => ({
+                      inModel: vecOf(belly.inModel.value),
+                      towards: bellyTowards(
+                        pathPositionKm(samples, jd),
+                        noseAlong(samples, turning, jd, uprightUntilJd?.value),
+                        downrange,
+                        belly.turnsOverAtJd.value,
+                        jd,
+                      ),
+                    }),
+                  }
+                : {}),
             },
           }
         : {}),

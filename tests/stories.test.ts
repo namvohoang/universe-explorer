@@ -14,6 +14,7 @@ import {
   stagedSamples,
   topShareAt,
   turningOf,
+  flamesAt,
 } from '../src/sim/launch';
 import { chasePositionKm, pathPositionKm, pathVelocityKmPerS } from '../src/sim/trajectory';
 import { illuminatedFraction } from '../src/sim/phase';
@@ -375,13 +376,21 @@ describe('the launch of the Space Shuttle', () => {
     }
   });
 
-  it('blazes with the boosters until they go, then burns pale until the tank is let go', () => {
+  it('blazes under each booster until they go, and burns pale under the orbiter until the tank goes', () => {
     const burns = flown?.burns ?? [];
-    expect(flameAt(burns, liftoffJd - second)).toBeNull();
-    expect(flameAt(burns, liftoffJd)).toBe('bright');
-    expect(flameAt(burns, liftoffJd + 123 * second)).toBe('bright');
-    expect(flameAt(burns, liftoffJd + 125 * second)).toBe('faint');
-    expect(flameAt(burns, liftoffJd + 511 * second)).toBeNull();
+    expect(flamesAt(burns, liftoffJd - second)).toEqual([]);
+    expect(flamesAt(burns, liftoffJd)).toEqual([
+      { flame: 'bright', under: 'boosters' },
+      { flame: 'faint', under: 'orbiter' },
+    ]);
+    expect(flamesAt(burns, liftoffJd + 125 * second)).toEqual([
+      { flame: 'faint', under: 'orbiter' },
+    ]);
+    expect(flamesAt(burns, liftoffJd + 511 * second)).toEqual([]);
+  });
+
+  it('rolls over to face the ground as the tank goes', () => {
+    expect(flown?.belly?.turnsOverAtJd.value).toBeCloseTo(liftoffJd + 510 * second, 9);
   });
 
   it('lets go of the two boosters, then the tank, and is seen for a while after', () => {
@@ -485,8 +494,24 @@ describe('the launch of Apollo 11', () => {
 
   it('starts each part at one of the known places, so nothing told happens on a drawn stretch', () => {
     const known = new Set(points.map((point) => point[0]));
-    for (const chapter of apollo11Launch.chapters) expect(known.has(chapter.atJd.value)).toBe(true);
+    const [countdown, ...rest] = apollo11Launch.chapters;
+    // The first opens on the pad, five seconds before liftoff, the first known place.
+    // To the millisecond: a date as a day number holds no finer.
+    expect(((points[0]?.[0] ?? 0) - (countdown?.atJd.value ?? 0)) * 86_400).toBeCloseTo(5, 3);
+    for (const chapter of rest) expect(known.has(chapter.atJd.value)).toBe(true);
     expect(known.has(apollo11Launch.endJd.value)).toBe(true);
+  });
+
+  it('counts down the last five seconds on the pad as a clock does, in every launch', () => {
+    for (const story of [apollo11Launch, artemis1Launch, shuttleLaunch]) {
+      const [countdown] = story.chapters;
+      const path = story.craft?.[0]?.path;
+      const liftoff = path && 'points' in path ? (path.points.value[0]?.[0] ?? 0) : 0;
+      expect((liftoff - (countdown?.atJd.value ?? 0)) * 86_400, story.id).toBeCloseTo(5, 3);
+      // One story second a real second, for longer than the countdown.
+      expect(countdown?.slowStart?.storySeconds, story.id).toBe(countdown?.slowStart?.overSeconds);
+      expect(countdown?.slowStart?.storySeconds ?? 0, story.id).toBeGreaterThan(5);
+    }
   });
 
   it('turns Earth by a direction of length one', () => {

@@ -970,7 +970,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Quanh vùng cực nam cũng có một vòng như thế. Ánh sáng xanh là của khí ô-xy, ở cao khoảng 100 km trên mặt đất.',
   storyShuttleLaunchTitle: 'Tàu con thoi: lúc phóng',
   storyShuttleLaunchNote:
-    'Thời điểm và độ cao là thật. Đường bay, độ nghiêng, ngọn lửa và khói, tháp phóng, mây và màu sắc là hình vẽ.',
+    'Thời điểm và độ cao là thật. Đường bay, độ nghiêng và lúc lật mình, ngọn lửa và khói, tháp phóng, mây và màu sắc là hình vẽ.',
   storyShuttleLaunchLiftoff:
     'Cất cánh! Discovery bay lên từ Florida, chở sáu phi hành gia tới trạm vũ trụ.',
   storyShuttleLaunchBoostersAway:

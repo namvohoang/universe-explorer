@@ -10,6 +10,10 @@ import {
   type LetGo,
   noseAlong,
   noseAlongPath,
+  bellyTowards,
+  flamesAt,
+  TURN_OVER_SECONDS,
+  ON_PAD_SECONDS,
   partsGoneAt,
   settlingShedShareAt,
   shedShareAt,
@@ -68,9 +72,25 @@ describe('turningOf', () => {
 
 describe('stagedSamples', () => {
   it("leaves the ground at the ground's own speed", () => {
-    const [first] = stagedSamples(PATH, true, TURNING);
+    const atLiftoff = stagedSamples(PATH, true, TURNING).find((sample) => sample[0] === 0);
     const ground = groundVelocityKmPerS({ x: 1000, y: 0, z: 0 }, TURNING.north, 10);
-    expect(first?.slice(4)).toEqual([ground.x, ground.y, ground.z]);
+    expect(atLiftoff?.slice(4)).toEqual([ground.x, ground.y, ground.z]);
+  });
+
+  it('waits on its pad before liftoff, riding round with the ground and standing upright', () => {
+    const samples = stagedSamples(PATH, true, TURNING);
+    expect(samples[0]?.[0]).toBeCloseTo(-ON_PAD_SECONDS / 86_400, 12);
+    for (const seconds of [ON_PAD_SECONDS, 33, 5, 1]) {
+      const jd = -seconds / 86_400;
+      const place = pathPositionKm(samples, jd);
+      // The pad, turned back by as much as the ground turned in those seconds.
+      const angle = -TURNING_RADIANS_PER_DAY * jd;
+      expect(place.x).toBeCloseTo(1000 * Math.cos(angle), 6);
+      expect(place.y).toBeCloseTo(-1000 * Math.sin(angle), 6);
+      expect(place.z).toBeCloseTo(0, 9);
+      const nose = noseAlong(samples, TURNING, jd);
+      expect(nose.x * place.x + nose.y * place.y).toBeCloseTo(Math.hypot(place.x, place.y), 6);
+    }
   });
 
   it('passes through the known places, and draws its first stretch rising before it goes over', () => {
@@ -195,6 +215,55 @@ describe('flameAt', () => {
     expect(flameAt(burns, 21)).toBeNull();
     expect(flameAt(burns, 25)).toBe('faint');
     expect(flameAt(burns, 30)).toBeNull();
+  });
+});
+
+describe('flamesAt', () => {
+  it('is every burn under way, each under its own part, so two kinds of engine burn at once', () => {
+    const burns = [
+      {
+        fromJd: { value: 10 },
+        untilJd: { value: 20 },
+        flame: 'bright' as const,
+        under: 'boosters',
+      },
+      { fromJd: { value: 10 }, untilJd: { value: 30 }, flame: 'faint' as const, under: 'orbiter' },
+    ];
+    expect(flamesAt(burns, 9)).toEqual([]);
+    expect(flamesAt(burns, 15)).toEqual([
+      { flame: 'bright', under: 'boosters' },
+      { flame: 'faint', under: 'orbiter' },
+    ]);
+    expect(flamesAt(burns, 25)).toEqual([{ flame: 'faint', under: 'orbiter' }]);
+    const unnamed = { fromJd: { value: 10 }, untilJd: { value: 20 }, flame: 'bright' as const };
+    expect(flamesAt([unnamed], 15)).toEqual([{ flame: 'bright' }]);
+  });
+});
+
+describe('bellyTowards', () => {
+  const at = (seconds: number): number => 1 + seconds / 86_400;
+  const place = { x: 0, y: 0, z: 1000 };
+  const downrange = { x: 1, y: 0, z: 0 };
+
+  it('faces up, away from the ground, while it climbs, across the nose', () => {
+    const nose = { x: Math.SQRT1_2, y: 0, z: Math.SQRT1_2 };
+    const belly = bellyTowards(place, nose, downrange, at(10), at(0));
+    expect(belly.x).toBeCloseTo(-Math.SQRT1_2, 9);
+    expect(belly.z).toBeCloseTo(Math.SQRT1_2, 9);
+    expect(belly.x * nose.x + belly.z * nose.z).toBeCloseTo(0, 9);
+  });
+
+  it('faces back the way it will go while the nose points straight up', () => {
+    const belly = bellyTowards(place, { x: 0, y: 0, z: 1 }, downrange, at(10), at(0));
+    expect(belly).toEqual({ x: -1, y: 0, z: 0 });
+  });
+
+  it('rolls over to face the ground once it turns over, halfway round halfway through', () => {
+    const nose = { x: 1, y: 0, z: 0 };
+    const half = bellyTowards(place, nose, downrange, at(10), at(10 + TURN_OVER_SECONDS / 2));
+    expect(Math.abs(half.y)).toBeCloseTo(1, 9);
+    const after = bellyTowards(place, nose, downrange, at(10), at(10 + TURN_OVER_SECONDS + 1));
+    expect(after.z).toBeCloseTo(-1, 9);
   });
 });
 

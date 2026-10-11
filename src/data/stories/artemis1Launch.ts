@@ -116,9 +116,10 @@ export const artemis1Launch: Story = {
   chapters: [
     {
       id: 'liftoff',
-      // The first seconds are played slowly, to watch the rocket leave the ground.
-      slowStart: { storySeconds: 24, overSeconds: 9 },
-      atJd: liftoff,
+      // It opens with the last five seconds before liftoff, counted down as a clock does,
+      // and the first seconds of the climb are played at that pace too.
+      slowStart: { storySeconds: 15, overSeconds: 15 },
+      atJd: at(-5, 'jpl-horizons-artemis-1', 'Five seconds before liftoff.'),
       text: {
         key: 'storyArtemis1LaunchLiftoff',
         sourceId: STUDENTS,

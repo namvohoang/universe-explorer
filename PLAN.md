@@ -942,6 +942,16 @@ recorded last.
       falling away. Close up it is NASA's Shuttle model at true size: the boosters blaze, then
       the main engines' pale flame. A model's parts are now its named nodes, so the Shuttle's
       two boosters and its tank are let go as parts of the file.
+- [x] 12.34 Launches count down, the Shuttle's boosters blaze, and it rolls over (owner's
+      request, 2026-10-11). Every launch story (Apollo 11, Artemis I, the Shuttle) opens five
+      seconds before liftoff, the rocket waiting on its pad as the ground turns, counted down
+      one second a second (and the first ten seconds of the climb too); an engine that
+      really starts before liftoff (Apollo 11's at -6.4 s, Artemis I's core at -6.36 s) is
+      already burning. A burn may be drawn under a named part of the model's file, one flame
+      under each piece: the Shuttle's two boosters each blaze under their own nozzle, and its
+      main engines burn pale under the orbiter's tail at the same time. The Shuttle climbs
+      heads down under its tank and, once the tank is let go, is drawn rolling over in 8
+      seconds, belly to the ground (`belly`); the roll is a drawing and the note says so.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

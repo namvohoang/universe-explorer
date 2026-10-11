@@ -90,8 +90,8 @@ export interface TrackedCraft {
      * middle of the craft that a close look is aimed at is worked out from it.
      */
     lookShedAt(jd: number): number;
-    /** The flame its engines make at a date, if they are burning. */
-    flameAt(jd: number): Flame | null;
+    /** The flames its engines make at a date, each under the part it belongs to, if any. */
+    flamesAt(jd: number): readonly { readonly flame: Flame; readonly under?: string }[];
     /**
      * A part it has just let go of, drawn dropping behind it: the stretch of the model it
      * was (shares of its length) and how far behind, in km. `null` when there is none near.
@@ -112,6 +112,11 @@ export interface TrackedCraft {
     topAt?(jd: number): number;
     /** The parts of the model's file it has let go of from its sides by a date, not drawn. */
     partsGoneAt?(jd: number): readonly string[];
+    /**
+     * Which way its belly faces in the model's file, and which way (ecliptic) it is drawn
+     * facing at a date: the model is turned about its length to match.
+     */
+    bellyAt?(jd: number): { readonly inModel: Vec3; readonly towards: Vec3 } | null;
     /**
      * A part it has left standing where it was let go (the legs of a lander that has lifted
      * off): the stretch of the model it was, and the instant it was left. It stays there.
@@ -431,7 +436,11 @@ export function createSolarSystem(
         const seen = craft.model.lookShedAt(jd);
         const tall = flown.length * flown.model.tall();
         flown.middle = add(place, scaleBy(nose, (tall * (1 + seen)) / 2));
-        flown.model.place(place, nose, flown.length, shed, craft.model.topAt?.(jd) ?? 1);
+        const facing = craft.model.bellyAt?.(jd) ?? null;
+        const belly = facing
+          ? { inModel: facing.inModel, towards: eclipticToScene(facing.towards) }
+          : undefined;
+        flown.model.place(place, nose, flown.length, shed, craft.model.topAt?.(jd) ?? 1, belly);
         const gone = craft.model.partsGoneAt?.(jd) ?? [];
         flown.model.showParts(gone.length === 0 ? null : (name) => !gone.includes(name));
         const part = craft.model.droppedAt(jd);
@@ -461,6 +470,7 @@ export function createSolarSystem(
             flown.length,
             part.fromShare,
             part.toShare,
+            belly,
           );
         }
         site?.made.setSmoke((jd - site.fromJd) * SECONDS_PER_DAY);
@@ -470,8 +480,8 @@ export function createSolarSystem(
           const light = star ? positions.get(star.id) : undefined;
           site.made.setDaylight(!light || dot(offset, subtract(light, place)) > 0);
         }
-        flown.model.setFlame(
-          craft.model.flameAt(jd),
+        flown.model.setFlames(
+          craft.model.flamesAt(jd),
           jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND,
         );
       }
@@ -514,13 +524,16 @@ export function createSolarSystem(
       flown.nose = nose;
       flown.top = add(here, scaleBy(nose, tall));
       flown.model.place(here, nose, flown.length, shed, 1);
-      flown.model.setFlame(craft.model.flameAt(jd), jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND);
+      flown.model.setFlames(
+        craft.model.flamesAt(jd),
+        jd * SECONDS_PER_DAY * FLAME_WAVERS_PER_SECOND,
+      );
       if (landing?.ofId === craft.id) {
         // Dust flies while an engine burns within a few craft-heights of the ground.
         const centre = catalogue.find((object) => object.id === craft.centreId);
         const highKm = (length(place) - 1) * ((centre && bodyRadiusKm(centre)) ?? 0);
         const near = 1 - highKm / DUST_BELOW_KM;
-        landing.dust = craft.model.flameAt(jd) !== null && near > 0 ? near : 0;
+        landing.dust = craft.model.flamesAt(jd).length > 0 && near > 0 ? near : 0;
       }
       const left = craft.model.leftStandingAt?.(jd) ?? null;
       flown.shedding = left !== null;

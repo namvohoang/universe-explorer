@@ -261,14 +261,21 @@ export function flamesAt<Flame>(
     readonly untilJd: { readonly value: number };
     readonly flame: Flame;
     readonly under?: string;
+    readonly nozzlesAt?: { readonly value: readonly [number, number, number] };
   }[],
   jd: number,
-): { readonly flame: Flame; readonly under?: string }[] {
+): {
+  readonly flame: Flame;
+  readonly under?: string;
+  readonly nozzlesAt?: readonly [number, number, number];
+}[] {
   return burns
     .filter((burn) => burn.fromJd.value <= jd && jd < burn.untilJd.value)
-    .map((burn) =>
-      burn.under === undefined ? { flame: burn.flame } : { flame: burn.flame, under: burn.under },
-    );
+    .map((burn) => ({
+      flame: burn.flame,
+      ...(burn.under === undefined ? {} : { under: burn.under }),
+      ...(burn.nozzlesAt === undefined ? {} : { nozzlesAt: burn.nozzlesAt.value }),
+    }));
 }
 
 /** Which flame, if any, a craft's engines make at a date. */

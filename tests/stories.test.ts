@@ -379,13 +379,10 @@ describe('the launch of the Space Shuttle', () => {
   it('blazes under each booster until they go, and burns pale under the orbiter until the tank goes', () => {
     const burns = flown?.burns ?? [];
     expect(flamesAt(burns, liftoffJd - second)).toEqual([]);
-    expect(flamesAt(burns, liftoffJd)).toEqual([
-      { flame: 'bright', under: 'boosters' },
-      { flame: 'faint', under: 'orbiter' },
-    ]);
-    expect(flamesAt(burns, liftoffJd + 125 * second)).toEqual([
-      { flame: 'faint', under: 'orbiter' },
-    ]);
+    // The orbiter's flame starts at its engines' bells, not at its tail fin, which reaches lower.
+    const engines = { flame: 'faint', under: 'orbiter', nozzlesAt: [0, -27.07, 3.1] };
+    expect(flamesAt(burns, liftoffJd)).toEqual([{ flame: 'bright', under: 'boosters' }, engines]);
+    expect(flamesAt(burns, liftoffJd + 125 * second)).toEqual([engines]);
     expect(flamesAt(burns, liftoffJd + 511 * second)).toEqual([]);
   });
 

@@ -237,6 +237,8 @@ describe('flamesAt', () => {
     expect(flamesAt(burns, 25)).toEqual([{ flame: 'faint', under: 'orbiter' }]);
     const unnamed = { fromJd: { value: 10 }, untilJd: { value: 20 }, flame: 'bright' as const };
     expect(flamesAt([unnamed], 15)).toEqual([{ flame: 'bright' }]);
+    const placed = { ...unnamed, nozzlesAt: { value: [0, -2, 1] as const } };
+    expect(flamesAt([placed], 15)).toEqual([{ flame: 'bright', nozzlesAt: [0, -2, 1] }]);
   });
 });
 

@@ -249,6 +249,12 @@ export interface StoryCraft {
      */
     readonly under?: string;
     /**
+     * Where in the model's file (its own units and axes) the engines' nozzles end: the flame
+     * is drawn from there, for a part whose lowest point is not its engines (the tail fin of
+     * a Shuttle orbiter reaches further back than its engines).
+     */
+    readonly nozzlesAt?: Sourced<readonly [number, number, number]>;
+    /**
      * Set when the burn slowed the craft along the way it was going, as the agency's
      * numbers show: it is drawn tail first for as long, its engine pushing against its path.
      */

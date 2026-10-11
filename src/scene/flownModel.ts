@@ -5,6 +5,7 @@ import {
   ConeGeometry,
   DoubleSide,
   Group,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
   Plane,
@@ -40,12 +41,17 @@ export interface FlownModel {
    */
   tall(): number;
   /**
-   * Draws the flames its engines make, or none: each under the part of the model's file it
-   * names (one under each piece of that part), or else behind what is left of the model.
+   * Draws the flames its engines make, or none: each from the place in the model's file it
+   * gives, or else under the part of the file it names (one under each piece of that part),
+   * or else behind what is left of the model.
    * `flicker` is any number that changes as time runs: the flames' length wavers with it.
    */
   setFlames(
-    flames: readonly { readonly flame: Flame; readonly under?: string }[],
+    flames: readonly {
+      readonly flame: Flame;
+      readonly under?: string;
+      readonly nozzlesAt?: readonly [number, number, number];
+    }[],
     flicker: number,
   ): void;
   /**
@@ -181,6 +187,8 @@ export function createFlownModel(
   let tailY = 0;
   /** Under each piece of a named part of the file: the middle of its bottom, in the group's units. */
   const partBottoms = new Map<string, Vector3[]>();
+  /** From the model file's own units and axes to the group's. */
+  const fileToGroup = new Matrix4();
   let tall = 1;
   /** Each mesh of the model, with the name of the part of the file it belongs to. */
   const parts: { readonly mesh: Object3D; readonly name: string }[] = [];
@@ -251,6 +259,7 @@ export function createFlownModel(
     // centred on what is at the very bottom, its nozzles.
     group.updateMatrixWorld(true);
     const toGroup = group.matrixWorld.clone().invert();
+    fileToGroup.copy(toGroup).multiply(model.matrixWorld);
     for (const [piece, name] of pieces) {
       const corners: Vector3[] = [];
       piece.traverse((part) => {
@@ -310,10 +319,14 @@ export function createFlownModel(
     },
     setFlames(burning, flicker) {
       let used = 0;
-      for (const { flame, under } of burning) {
+      for (const { flame, under, nozzlesAt } of burning) {
         const { long, wide, strength, hot, cool } = FLAMES[flame];
         const now = long * (1 + WAVER * Math.sin(flicker));
-        const at = under === undefined ? [null] : (partBottoms.get(under) ?? []);
+        const at = nozzlesAt
+          ? [new Vector3(...nozzlesAt).applyMatrix4(fileToGroup)]
+          : under === undefined
+            ? [null]
+            : (partBottoms.get(under) ?? []);
         for (const bottom of at) {
           const drawn = flameNumber(used++);
           if (drawn.kind !== flame) {

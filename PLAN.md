@@ -961,7 +961,10 @@ recorded last.
       gives a size: Polaris, Arcturus, Deneb, Spica, Eta Carinae, and Stephenson 2-18, whose
       oft-quoted 2,150 Suns no paper states (it is worked out by encyclopedia editors, at a
       distance astronomers doubt). TRAPPIST-1 was already here as a planet system.
-- [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
+- [x] 12.12 Recorded on 2026-10-11: Kokoro was set up in a throwaway environment outside the
+      repo, three names were added to the tool's pronouncing list (Halley’s with the curly
+      apostrophe, Jeremy, Reid), and all eighteen stories were recorded, the hurricane among
+      them. Before that: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording
       tool now writes out the stories' lines as well (`tools/narrate/lines.ts`, under
@@ -1132,7 +1135,17 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       its story, the sea floor from the depth data, and the plate edges as lines, each with
       its `CREDITS.md` row. Great-circle distance and bearing in `src/sim/` (some is in
       `groundPatch.ts` already), tested.
-- [ ] 14.4 The slice. The stretched-height scale mode (pure, tested: one factor for everything
+- [~] 14.4 Done for a storm, as a drawing and not as a stretched scale: a part of a story can
+      show the storm cut in half beside the close look (`src/scene/stormSlice.ts`), a 3D
+      half of it with dots of air going in over the sea, up the wall and out over the top,
+      and down the eye. The widths of the eye and of the wall keep their true ratio to how
+      far the gales reached (`sliceShares`, tested): the eye from the hurricane centre's
+      report, the wall as far out as winds of hurricane force, from the record. How tall it
+      is drawn is a drawing, and the screen says "far taller than a real storm": no source
+      gives the height of Sam's cloud, so there is no true height to stretch by a named
+      factor. NASA gives 18 km for the cloud of another hurricane (Bonnie, 1998), which is
+      not Sam's. Left: the named stretched scale, for a slice whose heights are known (the
+      sea, the ground, the whole Earth). As planned: The slice. The stretched-height scale mode (pure, tested: one factor for everything
       in a slice, order and ratios of heights kept) and a scene piece that draws a cut through
       ground, sea or air with its label. Earth's layers for the slice through the whole
       planet, their depths from the source.
@@ -1177,8 +1190,8 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       eye drawn big enough to see. Each part shows 15:00 to 18:00 UTC of one day, and the
       days between are run through. The sea close up is blurred: the map of Earth is made
       for looking at from space (14.3). Left: the slice through the storm (14.4), real
-      the wind as a number that changes while the story plays, a typhoon that reached Vietnam,
-      and the recording. Done since: real pictures (14.5), so in each part the storm is what
+      a typhoon that reached Vietnam. Done since: the storm cut in half (14.4), in a tenth
+      part; the wind beside the date, from the record, to the nearest 10 km/h; the recording; real pictures (14.5), so in each part the storm is what
       a satellite saw that afternoon, at its true place and size, and the sea round it is
       sharp; the drawn cloud is left for the days between. As planned: **Hurricane or typhoon.** `tracked`: the storm's place, wind and pressure every few
       hours from the agency's best track, fetched by a tool into `src/data/paths/` like a

@@ -159,13 +159,13 @@ The belt orbits are rounded for drawing; the exact queries are in the records' s
 
 ## Narration
 
-The recordings in `public/voice/`, one per card, played by "Read it to me". They are synthetic
+The recordings in `public/voice/`, one per card and one per story, played by "Read it to me". They are synthetic
 speech, made on the developer's machine by `tools/narrate/kokoro_narrate.py`; the model does not
 ship with the app.
 
 | What | Made with | Licence | Source |
 |---|---|---|---|
-| 128 recordings of the cards being read | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
+| 136 recordings of the cards being read, and 18 of the stories (`story-<id>.mp3`) | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
 
 ## App icon
 

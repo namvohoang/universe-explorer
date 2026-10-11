@@ -582,4 +582,94 @@ export const NARRATION: Readonly<
     fingerprint: 'ecb5a302',
     starts: [0.0, 2.6, 8.65, 14.15, 20.23],
   },
+  'story-moon-phases': {
+    file: 'public/voice/story-moon-phases.mp3',
+    fingerprint: '45482477',
+    starts: [0.0, 2.45, 10.28, 16.18, 23.05],
+  },
+  'story-supermoon': {
+    file: 'public/voice/story-supermoon.mp3',
+    fingerprint: '23a58931',
+    starts: [0.0, 2.17, 12.05],
+  },
+  'story-seasons': {
+    file: 'public/voice/story-seasons.mp3',
+    fingerprint: '91531afa',
+    starts: [0.0, 2.17, 11.05, 19.45, 28.1],
+  },
+  'story-solar-eclipse': {
+    file: 'public/voice/story-solar-eclipse.mp3',
+    fingerprint: 'a5b9c5a1',
+    starts: [0.0, 2.35, 9.0, 16.3, 25.1],
+  },
+  'story-lunar-eclipse': {
+    file: 'public/voice/story-lunar-eclipse.mp3',
+    fingerprint: 'cf406cb9',
+    starts: [0.0, 2.33, 9.45, 13.93, 21.6],
+  },
+  'story-halley-tail': {
+    file: 'public/voice/story-halley-tail.mp3',
+    fingerprint: '3043b5d3',
+    starts: [0.0, 2.7, 10.2, 17.35, 24.6],
+  },
+  'story-meteor-shower': {
+    file: 'public/voice/story-meteor-shower.mp3',
+    fingerprint: 'd6c7262f',
+    starts: [0.0, 2.33, 10.97, 19.27, 24.88],
+  },
+  'story-aurora': {
+    file: 'public/voice/story-aurora.mp3',
+    fingerprint: '8a1278e5',
+    starts: [0.0, 2.17, 10.95, 19.6],
+  },
+  'story-saturn-rings': {
+    file: 'public/voice/story-saturn-rings.mp3',
+    fingerprint: 'a5757793',
+    starts: [0.0, 2.83, 11.97, 18.73],
+  },
+  'story-mars-backwards': {
+    file: 'public/voice/story-mars-backwards.mp3',
+    fingerprint: 'b2d825ff',
+    starts: [0.0, 2.62, 11.45, 20.57],
+  },
+  'story-apollo-11-launch': {
+    file: 'public/voice/story-apollo-11-launch.mp3',
+    fingerprint: '53c76999',
+    starts: [0.0, 2.9, 11.45, 20.07, 25.5],
+  },
+  'story-apollo-11-landing': {
+    file: 'public/voice/story-apollo-11-landing.mp3',
+    fingerprint: '68b354c6',
+    starts: [0.0, 2.98, 9.38, 16.18, 21.73, 28.77, 33.38, 37.83],
+  },
+  'story-artemis-1-launch': {
+    file: 'public/voice/story-artemis-1-launch.mp3',
+    fingerprint: '3e54bc03',
+    starts: [0.0, 2.83, 11.12, 17.2, 25.25],
+  },
+  'story-artemis-1': {
+    file: 'public/voice/story-artemis-1.mp3',
+    fingerprint: 'a76f4394',
+    starts: [0.0, 2.95, 11.22, 18.9, 25.45, 34.25, 41.75, 49.12, 57.52],
+  },
+  'story-artemis-2': {
+    file: 'public/voice/story-artemis-2.mp3',
+    fingerprint: '9c2e2a5d',
+    starts: [0.0, 3.17, 12.3, 18.68, 24.82, 28.43],
+  },
+  'story-shuttle-launch': {
+    file: 'public/voice/story-shuttle-launch.mp3',
+    fingerprint: 'f224cbca',
+    starts: [0.0, 2.55, 9.5, 16.57, 25.23],
+  },
+  'story-shuttle-docking': {
+    file: 'public/voice/story-shuttle-docking.mp3',
+    fingerprint: '44387884',
+    starts: [0.0, 2.67, 11.53, 19.23, 27.05],
+  },
+  'story-hurricane-sam': {
+    file: 'public/voice/story-hurricane-sam.mp3',
+    fingerprint: '7c6dcbe5',
+    starts: [0.0, 2.17, 9.97, 19.9, 30.7, 38.5, 50.88, 57.48, 66.75, 76.55, 82.12],
+  },
 };

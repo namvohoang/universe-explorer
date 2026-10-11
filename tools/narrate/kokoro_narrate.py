@@ -41,6 +41,9 @@ UNKNOWN = "❓"
 # How to say names the dictionary lacks, in the model's phonemes (misaki's markup).
 SAY: dict[str, str] = {
     "Halley's": "hˈæliz",  # HAL-eez
+    "Halley’s": "hˈæliz",  # the same, with the curly apostrophe the stories use
+    "Jeremy": "ʤˈɛɹəmi",  # JERR-uh-mee
+    "Reid": "ɹˈid",  # REED
     "Makemake": "mˌɑkimˈɑki",  # MAH-kee-MAH-kee
     "Proxima": "pɹˈɑksəmə",  # PROK-sih-muh
     "Centauri": "sɛntˈɔɹi",  # sen-TOR-ee

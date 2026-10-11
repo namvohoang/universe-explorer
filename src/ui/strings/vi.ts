@@ -349,6 +349,41 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Năm 1995, người ta tìm thấy một hành tinh quay quanh nó: hành tinh đầu tiên quanh một sao giống Mặt Trời.',
   card51PegasiFact2: 'Hành tinh ấy quay một vòng quanh ngôi sao chỉ trong bốn ngày.',
   card51PegasiFact3: 'Nó ở cách Trái Đất 51 năm ánh sáng.',
+  cardAlphaCentauriAHello:
+    'Alpha Centauri A là một ngôi sao gần như giống hệt Mặt Trời của chúng ta, kể cả về tuổi.',
+  cardAlphaCentauriAFact1:
+    'Nó là ngôi sao sáng thứ ba trên bầu trời đêm, và là ngôi sao giống Mặt Trời ở gần chúng ta nhất.',
+  cardAlphaCentauriAFact2:
+    'Nó cách chúng ta hơn 4 năm ánh sáng một chút, trong một gia đình ba ngôi sao.',
+  cardAlphaCentauriAFact3: 'Alpha Centauri A và B quay quanh nhau thành một cặp.',
+  cardAlphaCentauriBHello:
+    'Alpha Centauri B nhỏ hơn và mờ hơn Mặt Trời của chúng ta một chút, nhưng rất giống Mặt Trời.',
+  cardAlphaCentauriBFact1: 'Nó quay quanh Alpha Centauri A, và hai ngôi sao luôn ở gần nhau.',
+  cardAlphaCentauriBFact2:
+    'Ngôi sao thứ ba, Proxima Centauri, quay quanh cặp sao này từ xa hơn rất nhiều.',
+  cardAlphaCentauriBFact3: 'Nó cách chúng ta hơn 4 năm ánh sáng một chút.',
+  cardBarnardsStarHello:
+    'Sao Barnard là một ngôi sao đỏ nhỏ. Nó là ngôi sao đứng một mình ở gần chúng ta nhất, không nằm trong nhóm nào.',
+  cardBarnardsStarFact1: 'Nó cách chúng ta khoảng 6 năm ánh sáng.',
+  cardBarnardsStarFact2: 'Nó di chuyển trên bầu trời đêm nhanh hơn mọi ngôi sao khác.',
+  cardBarnardsStarFact3: 'Bốn hành tinh đá, nhỏ hơn Trái Đất rất nhiều, quay quanh nó.',
+  cardCanopusHello: 'Canopus là ngôi sao sáng thứ hai trên bầu trời đêm.',
+  cardCanopusFact1:
+    'Nó rộng gấp 65 lần Mặt Trời. Nếu đặt vào chỗ Mặt Trời, nó sẽ trải dài ba phần tư quãng đường ngang qua quỹ đạo Sao Thủy.',
+  cardCanopusFact2: 'Nó cách chúng ta khoảng 300 năm ánh sáng, ở bầu trời phía nam.',
+  cardCanopusFact3: 'Một phi hành gia đã chụp ảnh nó từ Trạm Vũ trụ Quốc tế.',
+  cardUyScutiHello:
+    'UY Scuti là một sao siêu khổng lồ đỏ: một ngôi sao khổng lồ, mát và có màu đỏ.',
+  cardUyScutiFact1: 'Nó rộng gấp khoảng 1.700 lần Mặt Trời, có thể hơn hoặc kém khoảng 200.',
+  cardUyScutiFact2:
+    'Các nhà khoa học tính kích thước của nó từ độ rộng nó hiện ra và khoảng cách tới nó. Nếu nó gần hơn họ nghĩ, nó sẽ nhỏ hơn.',
+  cardUyScutiFact3: 'Bề mặt của nó mát hơn bề mặt Mặt Trời của chúng ta rất nhiều.',
+  cardR136a1Hello: 'R136a1 là ngôi sao nặng nhất mà con người từng tìm thấy.',
+  cardR136a1Fact1: 'Nó có màu xanh lam, và rộng gấp khoảng 35 lần Mặt Trời.',
+  cardR136a1Fact2:
+    'Nó ở trong một thiên hà khác, Đám mây Magellan Lớn, cách chúng ta 165.000 năm ánh sáng.',
+  cardR136a1Fact3:
+    'Nếu đặt vào chỗ Mặt Trời, nó sẽ sáng hơn Mặt Trời nhiều như Mặt Trời sáng hơn Trăng tròn.',
   cardAldebaranHello:
     'Aldebaran là một ngôi sao màu cam. Người ta coi nó là con mắt của chòm Kim Ngưu, con Bò.',
   cardAldebaranFact1: 'Nó là ngôi sao sáng nhất của chòm Kim Ngưu và sáng thứ 15 trên bầu trời.',

@@ -63,6 +63,8 @@ SAY: dict[str, str] = {
     "Canadarm": "kˈænədˌɑɹm",  # CAN-uh-darm
     "Kleopatra": "klˌiəpˈætɹə",  # klee-uh-PAT-ruh
     "Osiris": "OsˈIɹɪs",  # oh-SIGH-riss
+    "Scuti": "skˈuti",  # SKOO-tee
+    "Magellanic": "mˌæʤəlˈænɪk",  # maj-uh-LAN-ik
 }
 
 

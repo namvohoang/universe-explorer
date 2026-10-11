@@ -329,6 +329,37 @@ export const en = {
     'In 1995 a planet was found going round it: the first found round a star like the Sun.',
   card51PegasiFact2: 'That planet goes round the star in only four days.',
   card51PegasiFact3: 'It is 51 light-years from Earth.',
+  cardAlphaCentauriAHello: 'Alpha Centauri A is a star almost exactly like our Sun, even in age.',
+  cardAlphaCentauriAFact1:
+    'It is the third brightest star in the night sky, and the nearest star like the Sun.',
+  cardAlphaCentauriAFact2: 'It is just over 4 light-years away, in a family of three stars.',
+  cardAlphaCentauriAFact3: 'Alpha Centauri A and B go round each other as a pair.',
+  cardAlphaCentauriBHello:
+    'Alpha Centauri B is a little smaller and dimmer than our Sun, but a lot like it.',
+  cardAlphaCentauriBFact1: 'It goes round Alpha Centauri A, and the two stay close together.',
+  cardAlphaCentauriBFact2:
+    'A third star, Proxima Centauri, goes round the pair from much farther away.',
+  cardAlphaCentauriBFact3: 'It is just over 4 light-years away.',
+  cardBarnardsStarHello:
+    "Barnard's Star is a small red star. It is the nearest star that is on its own, not in a group.",
+  cardBarnardsStarFact1: 'It is about 6 light-years away.',
+  cardBarnardsStarFact2: 'It moves across our night sky faster than any other star.',
+  cardBarnardsStarFact3: 'Four rocky planets, much smaller than Earth, go round it.',
+  cardCanopusHello: 'Canopus is the second brightest star in the night sky.',
+  cardCanopusFact1:
+    'It is 65 times wider than the Sun. In the Sun’s place it would stretch three quarters of the way across Mercury’s path.',
+  cardCanopusFact2: 'It is about 300 light-years away, in the southern sky.',
+  cardCanopusFact3: 'An astronaut took a photo of it from the International Space Station.',
+  cardUyScutiHello: 'UY Scuti is a red supergiant: a huge, cool, red star.',
+  cardUyScutiFact1: 'It is about 1,700 times wider than the Sun, give or take about 200.',
+  cardUyScutiFact2:
+    'Scientists worked out its size from how wide it looks and how far away it is. If it is nearer than they think, it is smaller.',
+  cardUyScutiFact3: 'Its surface is much cooler than our Sun’s.',
+  cardR136a1Hello: 'R136a1 is the heaviest star anyone has found.',
+  cardR136a1Fact1: 'It is blue, and about 35 times wider than the Sun.',
+  cardR136a1Fact2: 'It is in another galaxy, the Large Magellanic Cloud, 165,000 light-years away.',
+  cardR136a1Fact3:
+    'In the Sun’s place, it would outshine the Sun as much as the Sun outshines the full Moon.',
   cardAldebaranHello: 'Aldebaran is an orange star. People see it as the eye of the Bull, Taurus.',
   cardAldebaranFact1: 'It is the brightest star in Taurus and the 15th brightest star in the sky.',
   cardAldebaranFact2: 'It is 65 light-years away.',

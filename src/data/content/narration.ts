@@ -157,6 +157,21 @@ export const NARRATION: Readonly<
     fingerprint: '3423fd5c',
     starts: [0.0, 2.42, 7.5, 15.95, 19.3],
   },
+  'alpha-centauri-a': {
+    file: 'public/voice/alpha-centauri-a.mp3',
+    fingerprint: '026b89ba',
+    starts: [0.0, 2.58, 8.6, 14.28, 19.48],
+  },
+  'alpha-centauri-b': {
+    file: 'public/voice/alpha-centauri-b.mp3',
+    fingerprint: '0f2f0af8',
+    starts: [0.0, 2.55, 8.45, 13.5, 19.3],
+  },
+  'barnards-star': {
+    file: 'public/voice/barnards-star.mp3',
+    fingerprint: 'fd76fb5c',
+    starts: [0.0, 2.3, 9.47, 12.45, 16.98],
+  },
   sirius: {
     file: 'public/voice/sirius.mp3',
     fingerprint: 'be85947c',
@@ -191,6 +206,11 @@ export const NARRATION: Readonly<
     file: 'public/voice/aldebaran.mp3',
     fingerprint: 'bb62e895',
     starts: [0.0, 2.1, 7.72, 13.15, 16.23],
+  },
+  canopus: {
+    file: 'public/voice/canopus.mp3',
+    fingerprint: '1daadecd',
+    starts: [0.0, 2.1, 6.2, 15.12, 19.77],
   },
   mira: {
     file: 'public/voice/mira.mp3',
@@ -272,6 +292,11 @@ export const NARRATION: Readonly<
     fingerprint: 'a3fc8bdd',
     starts: [0.0, 2.38, 8.03, 13.7, 20.3],
   },
+  'uy-scuti': {
+    file: 'public/voice/uy-scuti.mp3',
+    fingerprint: '47e66637',
+    starts: [0.0, 2.3, 7.75, 14.5, 22.8],
+  },
   'omega-centauri': {
     file: 'public/voice/omega-centauri.mp3',
     fingerprint: '4488a3bd',
@@ -291,6 +316,11 @@ export const NARRATION: Readonly<
     file: 'public/voice/milky-way.mp3',
     fingerprint: 'f98f0971',
     starts: [0.0, 2.2, 7.42, 13.07, 19.93],
+  },
+  r136a1: {
+    file: 'public/voice/r136a1.mp3',
+    fingerprint: 'e87defe9',
+    starts: [0.0, 2.85, 8.07, 12.78, 20.45],
   },
   andromeda: {
     file: 'public/voice/andromeda.mp3',

@@ -3,11 +3,14 @@ import { catalogue } from './data/catalogue';
 import {
   isSatellite,
   isShowpiece,
+  screenOfGroup,
   type CelestialObject,
   type Chapter,
   type Story,
   type SampledPath,
+  type StormPoint,
   type StoryCraft,
+  type StoryScreen,
 } from './data/types';
 import { createDiagram, type Diagram } from './scene/diagram';
 import { createMeteorStreaks } from './scene/meteorStreaks';
@@ -26,6 +29,7 @@ import { FIELD_OF_VIEW_DEG, createStage, type FlyTo, type PaneBox } from './scen
 import { eclipticToScene, northPoleEcliptic, poleOf } from './sim/frames';
 import { DUST_TRAIL_RADIUS_KM } from './sim/dust';
 import { showerAt } from './sim/radiant';
+import { stormAt, stormPlace, stormTurnRad, turnsAnticlockwise } from './sim/storm';
 import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
@@ -213,6 +217,15 @@ const BODY_VIEW_RADII = 6;
 /** How many times the reach of its rings, over the screen's width-to-height, a ringed world is seen from. */
 const RINGS_FIT = 2.4;
 const BODY_CLOSEST_RADII = 1.8;
+/**
+ * How far from a world's middle the two looks from over a storm stand, in radii: the close
+ * look near enough to see the storm's shape, the whole picture far enough to see the world it
+ * is on and the ocean it crosses. Choices of framing.
+ */
+const STORM_CLOSE_RADII = 1.35;
+const STORM_WIDE_RADII = 3;
+/** The nearest the look from over a storm may be brought, in radii of its world. */
+const STORM_CLOSEST_RADII = 1.2;
 /** A pointer that has moved less than this between two turns of the wheel has not moved. */
 const SAME_SPOT_PIXELS = 6;
 /** How much of the distance is left after one zoom step in. */
@@ -478,14 +491,19 @@ function start(): void {
       : modelled && story.path !== 'tracked'
         ? overCraft(modelled, sideFit)
         : null;
-    const whole = close ?? stageView(story, chapter, sideAspect, 1);
+    // Beside the close look at a storm: the same look from further off, where the whole world
+    // shows, with the sea the storm crosses and the line of where it has been.
+    const overStorm = stormView(story, chapter, STORM_WIDE_RADII * sideFit);
+    const whole = overStorm ?? close ?? stageView(story, chapter, sideAspect, 1);
     const heldBearing = close?.direction ?? STAGE_DIRECTION;
     stage.setPanes({
       main,
       side,
       target: whole.target,
       distance: whole.distanceNow ?? (() => whole.distance),
-      direction: close ? (close.bearing ?? (() => heldBearing)) : stageBearing(story, sideAspect),
+      direction:
+        overStorm?.bearing ??
+        (close ? (close.bearing ?? (() => heldBearing)) : stageBearing(story, sideAspect)),
       ...(diagram ? { scene: diagram.scene } : {}),
     });
     const strings: Readonly<Record<string, string>> = words;
@@ -822,13 +840,14 @@ function start(): void {
     }
   };
 
-  const mainTabs = createTabs<Scene | 'compare' | 'watch'>(
+  const mainTabs = createTabs<Scene | 'compare' | StoryScreen>(
     words.sceneControl,
     [
       { value: 'solar', label: words.sceneSolar, icon: 'sun' },
       { value: 'deep', label: words.sceneDeep, icon: 'sparkle' },
       { value: 'craft', label: words.sceneCraft, icon: 'rocket' },
       { value: 'watch', label: words.sceneWatch, icon: 'watch' },
+      { value: 'earth', label: words.sceneEarth, icon: 'globe' },
       { value: 'compare', label: words.compare, icon: 'compare' },
     ],
     'solar',
@@ -839,8 +858,8 @@ function start(): void {
         return;
       }
       compare.close();
-      if (tab === 'watch') {
-        watch.open(null);
+      if (tab === 'watch' || tab === 'earth') {
+        watch.open(null, tab);
         return;
       }
       watch.close();
@@ -1013,6 +1032,8 @@ function start(): void {
   // It is built the first time it is opened; its code is not part of the first download.
   let watchPanel: Watch | null = null;
   let watchWanted = false;
+  /** Which of the two screens that play stories is wanted. */
+  let watchScreen: StoryScreen = 'watch';
   /** The date the story last drew. */
   let watchJd = NaN;
   /** The narrow field of a telescope view, while a story asks for one. */
@@ -1038,7 +1059,7 @@ function start(): void {
   /** The diagram is drawn on its own, in place of the stage. */
   let diagramAlone = false;
   const watchAddress = (story: Story): string =>
-    `${window.location.pathname}${window.location.search}#watch/${story.id}`;
+    `${window.location.pathname}${window.location.search}#${screenOfGroup(story.group)}/${story.id}`;
   /** A bearing from over one pole of a body, leaning to its night side, where an aurora shows. */
   const overPole = (id: string, pole: 'north' | 'south'): Vec3 => {
     const north = system.northOf(id);
@@ -1049,6 +1070,32 @@ function start(): void {
       x: sign * north.x + (NIGHT_LEAN * night.x) / far,
       y: sign * north.y + (NIGHT_LEAN * night.y) / far,
       z: sign * north.z + (NIGHT_LEAN * night.z) / far,
+    };
+  };
+  /**
+   * The look from straight over a story's storm, riding round with the ground under it, from
+   * so many radii of its world away. `null` when the chapter asks for none.
+   */
+  const stormView = (story: Story, chapter: Chapter, radii: number): FlyTo | null => {
+    if (chapter.closeUp !== true || chapter.overStorm !== true || !story.storm) return null;
+    const { onId, track } = story.storm;
+    const points = track.points.value;
+    const first = points[0];
+    const bearing = (): Vec3 => {
+      const now =
+        stormAt(points, Number.isFinite(watchJd) ? watchJd : chapter.atJd.value) ??
+        stormAt(points, chapter.atJd.value);
+      const spot = now?.place ?? (first ? stormPlace(first) : { x: 1, y: 0, z: 0 });
+      return subtract(system.groundPointOf(onId, spot), system.positionOf(onId));
+    };
+    return {
+      target: () => system.positionOf(onId),
+      distance: system.radiusOf(onId) * radii,
+      direction: bearing(),
+      bearing,
+      minDistance: system.radiusOf(onId) * STORM_CLOSEST_RADII,
+      maxDistance: Infinity,
+      idleTurn: false,
     };
   };
   /**
@@ -1155,6 +1202,8 @@ function start(): void {
     const modelled = modelledCraft(story, chapter);
     if (modelled) return besideCraft(modelled, squeeze);
     if (chapter.closeUp === true && flown) return overCraft(flown, squeeze);
+    const overStorm = stormView(story, chapter, STORM_CLOSE_RADII);
+    if (overStorm) return overStorm;
     if (chapter.closeUp === true) {
       const seen = chapter.lookAtId;
       // Something with a glow that grows (a comet near the Sun) is stood back from as it grows.
@@ -1681,6 +1730,40 @@ function start(): void {
       radius: (radiusKm + (lowest + highest) / 2) / radiusKm,
     });
   };
+  /** The storm of the story on show, and how big the world it is on is. */
+  let watchStorm: { readonly points: readonly StormPoint[]; readonly groundKm: number } | null =
+    null;
+  /** Draws a story's storm, from the record of where it went. */
+  const showStorm = (story: Story): void => {
+    const { storm } = story;
+    const world = catalogue.find((object) => object.id === storm?.onId);
+    const groundKm = world ? bodyRadiusKm(world) : null;
+    if (!storm || groundKm === null) {
+      watchStorm = null;
+      system.setStorm(null, null);
+      return;
+    }
+    const points = storm.track.points.value;
+    watchStorm = { points, groundKm };
+    system.setStorm(storm.onId, points.map(stormPlace));
+  };
+  /** Puts the storm where its record has it at a date. */
+  const moveStorm = (jd: number): void => {
+    if (!watchStorm) return;
+    const { points, groundKm } = watchStorm;
+    const now = stormAt(points, jd);
+    system.showStorm(
+      now
+        ? {
+            place: now.place,
+            reachRad: now.reachKm / groundKm,
+            turnRad: stormTurnRad(points, jd),
+            anticlockwise: turnsAnticlockwise(now.latDegNorth),
+            passed: points.filter((point) => point[0] <= jd).length,
+          }
+        : null,
+    );
+  };
   onRoomChanged = () => {
     if (watchWanted) watchPanel?.reframe();
   };
@@ -1880,19 +1963,20 @@ function start(): void {
   const tailed = new Set(catalogue.filter((object) => object.kind === 'comet').map((o) => o.id));
   const watch = {
     isOpen: (): boolean => watchWanted,
-    open(storyId: string | null): void {
+    open(storyId: string | null, screen: StoryScreen): void {
+      watchScreen = screen;
       // A story is played among the planets, so a deep-space model steps aside first.
       if (isDeep(focus)) goTo(null);
       compare.close();
       watchWanted = true;
       document.body.classList.add('watching');
-      mainTabs.show('watch');
+      mainTabs.show(screen);
       if (scaleBeforeWatch === null) {
         scaleBeforeWatch = scale.mode;
         setScale('true');
       }
       if (watchPanel) {
-        watchPanel.open(storyId);
+        watchPanel.open(storyId, screen);
         liftView();
         return;
       }
@@ -1913,6 +1997,7 @@ function start(): void {
                 chapter.viewFromId,
                 chapter.closeUp,
                 chapter.over,
+                chapter.overStorm,
                 chapter.standOn?.value,
                 chapter.lookUpAt?.value,
                 // Shooting stars come from another spot in the sky at each meeting with the dust.
@@ -2010,6 +2095,9 @@ function start(): void {
                 : hours / 24;
             },
             onStory(story) {
+              // A story asked for by its address may belong to the other screen.
+              watchScreen = screenOfGroup(story.group);
+              mainTabs.show(watchScreen);
               aimedLook = '';
               aimedGround = false;
               window.clearTimeout(dipTimer);
@@ -2021,6 +2109,7 @@ function start(): void {
               system.showOnly(watchActors);
               const craft = story.craft ?? [];
               showAurora(story);
+              showStorm(story);
               system.setSkyTrack(
                 story.skyTrack
                   ? {
@@ -2131,7 +2220,7 @@ function start(): void {
           });
           mustFind('#tray').prepend(watchPanel.element);
         }
-        if (watchWanted) watchPanel.open(storyId);
+        if (watchWanted) watchPanel.open(storyId, watchScreen);
         liftView();
       });
     },
@@ -2163,6 +2252,8 @@ function start(): void {
       system.setTracks(null);
       system.setDust(null, clock.jd);
       system.setAurora(null, null);
+      watchStorm = null;
+      system.setStorm(null, null);
       system.setSkyTrack(null);
       stage.setSky(null);
       system.setExposure(1);
@@ -2319,7 +2410,9 @@ function start(): void {
     drawn.some((object) => object.id === id) || isBelt(id) || isDeep(id);
   const link = parseLink(window.location.search, window.location.hash);
   // A link can open straight onto a story of the Watch screen: #watch/moon-phases
-  const linkedStory = /^#watch\/([a-z0-9-]+)$/.exec(window.location.hash)?.[1];
+  // and onto one of the Earth screen: #earth/hurricane-sam
+  const [, linkedScreen, linkedStory] =
+    /^#(watch|earth)\/([a-z0-9-]+)$/.exec(window.location.hash) ?? [];
   // An id nobody knows opens the whole view.
   if (isPlace(link.place)) focus = link.place;
   const linkedScale = SCALE_MODES.find((mode) => mode === link.scale);
@@ -2361,7 +2454,8 @@ function start(): void {
   showFocus();
   // Aimed again now that the card is on show, for the room it leaves.
   if (!isDeep(focus)) stage.lookAt(currentView());
-  if (linkedStory !== undefined) watch.open(linkedStory);
+  if (linkedStory !== undefined)
+    watch.open(linkedStory, linkedScreen === 'earth' ? 'earth' : 'watch');
 
   // On the very first visit, point at Earth and say what a tap does. Any touch or key ends it.
   if (recall(HINT_SEEN) === null && focus === null && !watch.isOpen()) {
@@ -2395,6 +2489,7 @@ function start(): void {
       const moved = jd !== watchJd;
       watchJd = jd;
       system.setDate(jd);
+      moveStorm(jd);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
       if (moved && !reducedMotion) system.flowTails(dt);
@@ -2426,8 +2521,10 @@ function start(): void {
       const actors = watchActors;
       const shown = diagramAlone && diagram ? diagram.system : system;
       const named = eyeOnly ?? actors;
+      // Close over a storm the world fills the look: its name would only lie on the other picture.
+      const overStorm = paired?.chapter.overStorm === true;
       markers.update((id) => {
-        if (!named?.has(id)) {
+        if (!named?.has(id) || overStorm) {
           return { point: { ...stage.toScreen(ORIGIN), visible: false }, radiusPixels: 0 };
         }
         const point = stage.toScreen(shown.positionOf(id));

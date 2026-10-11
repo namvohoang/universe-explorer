@@ -1116,9 +1116,11 @@ export const en = {
   grownUpsHint: 'Privacy · sources',
   languageQuestion: 'Language',
   sceneWatch: 'Watch',
+  sceneEarth: 'Earth',
   watchStories: 'Things to watch',
   watchGroupSkyEvents: 'Sky events',
   watchGroupSpaceFlights: 'Space flights',
+  watchGroupEarthAtWork: 'Earth at work',
   watchPlay: 'Play',
   watchPause: 'Pause',
   watchAgain: 'Play again',
@@ -1302,6 +1304,25 @@ export const en = {
     'High up, the particles hit the air and make it glow. That glow is an aurora. It is seen most in a ring round the far north.',
   storyAuroraSouthToo:
     'There is a ring round the far south too. The green light comes from oxygen, about 100 km above the ground.',
+  storyHurricaneTitle: 'A hurricane',
+  storyHurricaneNote: 'The line is where the storm really went. The cloud is a drawing.',
+  storyHurricaneBorn:
+    'This storm is called Sam. It began over the warm sea west of Africa, in September 2021.',
+  storyHurricaneWarmSea:
+    'Warm, wet air rises from the sea and makes clouds. More air rushes in to take its place. The storm feeds on the warm sea and grows.',
+  storyHurricaneSpins:
+    'The storm turns as it grows. North of the equator, storms turn this way. South of it they turn the other way. That is because Earth itself is turning.',
+  storyHurricaneEye:
+    'In the middle is a hole called the eye. There the air is calm and clear. Round the eye blow the strongest winds.',
+  storyHurricaneStrongest: 'Now Sam is at its strongest. Its winds blow at 250 km an hour.',
+  storyHurricaneNames:
+    'Storms like Sam have different names in different places: hurricane, typhoon or cyclone. They are all the same kind of storm.',
+  storyHurricaneFlyingIn:
+    'People want to know what goes on inside. Planes flew into the storm to measure it, and a small sailing drone went right through its wall of wind.',
+  storyHurricaneOutAtSea:
+    'Sam stayed far out at sea, away from where people live. Nobody was hurt.',
+  storyHurricaneFades:
+    'Far to the north, Sam slowly grew weaker and lost its round shape. The next day it had changed into another kind of storm.',
   storyShuttleLaunchTitle: 'The Shuttle: the launch',
   storyShuttleLaunchNote:
     'The time and the heights are real. The path, the lean and roll, the flame and smoke, the tower, the clouds and the colours are drawings.',

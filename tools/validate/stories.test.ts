@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { catalogue } from '../../src/data/catalogue';
 import { stories } from '../../src/data/stories';
-import type { Chapter, Source, Story, StoryCraft } from '../../src/data/types';
+import type { Chapter, Source, StormPoint, Story, StoryCraft } from '../../src/data/types';
 import { checkStories } from './stories';
 
 // Placeholder values for testing the checks, not astronomy.
@@ -57,6 +57,65 @@ describe('checkStories', () => {
         ]),
       ),
     ).toEqual([]);
+  });
+
+  describe('a storm on its record', () => {
+    const record = (jd: number, wind = 100): StormPoint => [
+      jd,
+      -40,
+      12,
+      wind,
+      990,
+      80,
+      60,
+      40,
+      20,
+      'HU',
+    ];
+    const stormy = (points: readonly StormPoint[], changes: Partial<Story> = {}): Story =>
+      story({
+        path: 'tracked',
+        noteKey: 'storyTestNote',
+        storm: { onId: 'earth', track: { points: { sourceId: 'test', value: points } } },
+        ...changes,
+      });
+    const WHOLE = [record(10), record(20), record(30)];
+
+    it('is accepted when every part of the story is on the record', () => {
+      expect(checkStories([stormy(WHOLE)], IDS)).toEqual([]);
+    });
+
+    it('is rejected when the story shows a time the record says nothing of', () => {
+      const errors = checkStories([stormy([record(10), record(20)])], IDS);
+      expect(errors.join('\n')).toMatch(/record says nothing of/);
+    });
+
+    it('is rejected without a note to say the cloud is a drawing', () => {
+      const silent = Object.fromEntries(
+        Object.entries(stormy(WHOLE)).filter(([key]) => key !== 'noteKey'),
+      ) as unknown as Story;
+      const errors = checkStories([silent], IDS);
+      expect(errors.join('\n')).toMatch(/cloud is a drawing/);
+    });
+
+    it('is rejected when its records are out of order or on no world of the story', () => {
+      const backwards = checkStories([stormy([record(10), record(30), record(20)])], IDS);
+      expect(backwards.join('\n')).toMatch(/not in order/);
+      const elsewhere = stormy(WHOLE, {
+        storm: { onId: 'mars', track: { points: { sourceId: 'test', value: WHOLE } } },
+      });
+      expect(checkStories([elsewhere], IDS).join('\n')).toMatch(/not one of its actors/);
+    });
+
+    it('is rejected when a story with no storm looks from over one, or calls its path tracked', () => {
+      const looking = story({
+        chapters: [{ ...chapter('one', 10), closeUp: true, overStorm: true }, chapter('two', 20)],
+      });
+      expect(checkStories([looking], IDS).join('\n')).toMatch(/over a storm but has none/);
+      expect(checkStories([story({ path: 'tracked' })], IDS).join('\n')).toMatch(
+        /no tracked craft and no storm/,
+      );
+    });
   });
 
   describe('a craft drawn as a 3D model', () => {

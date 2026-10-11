@@ -3,8 +3,23 @@ import type { MediaRef } from './media';
 import type { Source, Sourced } from './source';
 
 /** The rows the Watch screen sorts its stories into, in the order shown. */
-export const STORY_GROUPS = ['sky-events', 'space-flights'] as const;
+export const STORY_GROUPS = ['sky-events', 'space-flights', 'earth-at-work'] as const;
 export type StoryGroup = (typeof STORY_GROUPS)[number];
+
+/** The screens that play stories: Watch for the sky and for space flights, Earth for what happens on Earth itself. */
+export const STORY_SCREENS = ['watch', 'earth'] as const;
+export type StoryScreen = (typeof STORY_SCREENS)[number];
+
+/** The groups each screen shows, in the order shown. */
+export const SCREEN_GROUPS: Readonly<Record<StoryScreen, readonly StoryGroup[]>> = {
+  watch: ['sky-events', 'space-flights'],
+  earth: ['earth-at-work'],
+};
+
+/** The screen a story is played on. */
+export function screenOfGroup(group: StoryGroup): StoryScreen {
+  return STORY_SCREENS.find((screen) => SCREEN_GROUPS[screen].includes(group)) ?? 'watch';
+}
 
 /**
  * Where a story's movement comes from, which the screen always says:
@@ -55,6 +70,12 @@ export interface Chapter {
   readonly slowStart?: { readonly storySeconds: number; readonly overSeconds: number };
   /** Stands close to what is looked at, in place of showing the whole stage. */
   readonly closeUp?: boolean;
+  /**
+   * With `closeUp`, in a story with a `storm`: stands straight over the storm and rides round
+   * with the ground under it, so the storm stays in the middle of the look as the world turns.
+   * Beside it the whole picture is the same look from further off, where the whole world shows.
+   */
+  readonly overStorm?: true;
   /** With `closeUp`: stands over this pole of the body, on its night side, in place of its sunlit side. */
   readonly over?: 'north' | 'south';
   /**
@@ -187,6 +208,44 @@ export interface StoryAurora {
   readonly fromPoleDeg: Sourced<readonly [nearest: number, farthest: number]>;
   /** How high the glow is: [lowest, highest], in km above the ground. */
   readonly heightKm: Sourced<readonly [lowest: number, highest: number]>;
+}
+
+/**
+ * Where a storm was at one instant, from an agency's record of it: [Julian date (UTC),
+ * longitude (degrees east), latitude (degrees north), strongest steady wind (km/h), pressure at
+ * its middle (hPa), how far out gales reached to the north-east, south-east, south-west and
+ * north-west (km), and what the agency called the storm then]. `null` where the record gives
+ * no value.
+ */
+export type StormPoint = readonly [
+  jd: number,
+  lonDegEast: number,
+  latDegNorth: number,
+  windKmPerH: number,
+  pressureHpa: number | null,
+  galesNorthEastKm: number | null,
+  galesSouthEastKm: number | null,
+  galesSouthWestKm: number | null,
+  galesNorthWestKm: number | null,
+  stage: string,
+];
+
+/** The path a storm's middle took, as an agency worked it out afterwards from every measurement. */
+export interface StormTrack {
+  /** Earliest first. */
+  readonly points: Sourced<readonly StormPoint[]>;
+}
+
+/**
+ * A storm drawn over a world's ground, riding round with it. Where its middle is, and the line
+ * of where it has been, are the record's. The cloud is a drawing: a turning spiral as wide as
+ * the record says gales reached, with a clear eye that is not to scale. The story must say so
+ * with `noteKey`.
+ */
+export interface StoryStorm {
+  /** Catalogue id of the world. */
+  readonly onId: string;
+  readonly track: StormTrack;
 }
 
 /** A spacecraft that flies in a story. It is drawn as a named point: at true scale it is too small to see. */
@@ -394,6 +453,8 @@ export interface Story {
   readonly skyTrack?: { readonly ofId: string; readonly fromId: string };
   /** Auroral rings drawn round a world's magnetic poles. */
   readonly aurora?: StoryAurora;
+  /** A storm drawn on its recorded track over a world's ground. */
+  readonly storm?: StoryStorm;
   /** Shadows drawn from one body onto another. */
   readonly shadows?: readonly StoryShadow[];
   /** Bodies turned, for this story, to face the way they really did, keyed by catalogue id. */

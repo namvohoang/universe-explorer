@@ -456,6 +456,37 @@ export const JPL_HORIZONS_TURN_AURORA_2027_EARTH: Source = {
   retrieved: '2026-10-07',
 };
 
+export const JPL_HORIZONS_TURN_SAM_2021_EARTH: Source = {
+  id: 'jpl-horizons-turn-sam2021earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2021-09-23 12:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272459481.000800722%27',
+  retrieved: '2026-10-11',
+};
+
+export const NHC_HURDAT2_SAM: Source = {
+  id: 'nhc-hurdat2-al182021',
+  title:
+    'NOAA National Hurricane Center — HURDAT2, the Atlantic hurricane database (best tracks, 1851 to 2025): Hurricane Sam, AL182021, every six hours',
+  url: 'https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-092326.txt',
+  retrieved: '2026-10-11',
+};
+
+export const NHC_REPORT_SAM: Source = {
+  id: 'nhc-tcr-al182021',
+  title:
+    'NOAA National Hurricane Center — Tropical Cyclone Report: Hurricane Sam (AL182021), 22 September–5 October 2021, by Richard J. Pasch and David P. Roberts, 18 March 2022',
+  url: 'https://www.nhc.noaa.gov/data/tcr/AL182021_Sam.pdf',
+  retrieved: '2026-10-11',
+};
+
+export const NASA_SPACE_PLACE_HURRICANES: Source = {
+  id: 'nasa-space-place-hurricanes',
+  title: 'NASA Space Place — How Do Hurricanes Form?',
+  url: 'https://spaceplace.nasa.gov/hurricanes/en/',
+  retrieved: '2026-10-11',
+};
+
 export const JPL_HORIZONS_PATH_STS_133_STATION: Source = {
   id: 'jpl-horizons-path-sts133station',
   title:

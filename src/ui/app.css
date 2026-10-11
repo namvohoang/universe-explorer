@@ -240,6 +240,18 @@ button:focus-visible {
   background: var(--sun);
 }
 
+/* Between a phone and a wide screen the six main tabs are a little short of room in one line:
+   they sit closer, and a name of two words may go one word over the other. No word is cut. */
+@media (min-width: 701px) and (max-width: 1239px) and (min-height: 501px) {
+  #main-tabs .tabs button {
+    flex: 0 1 auto;
+    padding: 0 11px;
+    line-height: 1.1;
+    white-space: normal;
+    text-align: left;
+  }
+}
+
 .tab-note:empty {
   display: none;
 }
@@ -2183,7 +2195,7 @@ body.watching .marker {
   }
 }
 
-/* A phone, upright or on its side: the five main tabs do not fit beside the title with their
+/* A phone, upright or on its side: the six main tabs do not fit beside the title with their
    words, so they are a bar of their own, each an icon over its name. Upright it runs along the
    bottom; on its side it is turned into a rail down the left, further below. */
 @media (max-width: 700px), (max-height: 500px) {
@@ -2221,6 +2233,10 @@ body.watching .marker {
     padding: 0 2px;
     border-radius: 14px;
     font-size: 12px;
+    /* Six tabs across a phone: a name of two words goes one word over the other. */
+    line-height: 1.1;
+    white-space: normal;
+    text-align: center;
     color: var(--ink-dim);
   }
 

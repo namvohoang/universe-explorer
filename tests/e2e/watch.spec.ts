@@ -18,8 +18,11 @@ function overlap(a: Box, b: Box): boolean {
   return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
 }
 
-/** A story with a short caption, and one with a long caption and a note about its path. */
-const STORIES = [
+/**
+ * A story with a short caption, and one with a long caption and a note about its path. Each
+ * with its name and the screen it is played on.
+ */
+const STORIES: readonly (readonly [id: string, title: string, screen?: 'earth'])[] = [
   ['moon-phases', 'The Moon’s phases'],
   ['supermoon', 'A supermoon'],
   ['seasons', 'The seasons'],
@@ -37,15 +40,16 @@ const STORIES = [
   ['artemis-1-launch', 'Artemis I: the launch'],
   ['apollo-11-landing', 'Apollo 11: the landing'],
   ['shuttle-docking', 'A shuttle meets the station'],
-] as const;
+  ['hurricane-sam', 'A hurricane', 'earth'],
+];
 
 for (const screen of SCREENS) {
   test.describe(`${screen.name} (${String(screen.width)}×${String(screen.height)})`, () => {
     test.use({ viewport: { width: screen.width, height: screen.height } });
 
-    for (const [story, title] of STORIES) {
+    for (const [story, title, on = 'watch'] of STORIES) {
       test(`${story} fits the screen and leaves room for the 3D view`, async ({ page }) => {
-        await page.goto(`/#watch/${story}`);
+        await page.goto(`/#${on}/${story}`);
         const caption = page.locator('.watch-caption');
         await expect(caption.locator('h2')).toHaveText(title);
         await expect(page.locator('.card')).toBeHidden();

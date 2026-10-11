@@ -305,6 +305,61 @@ function modelErrors(
   return errors;
 }
 
+/** A storm must lie on its record at every instant the story shows, and say its cloud is drawn. */
+function stormErrors(story: Story): string[] {
+  const errors: string[] = [];
+  const at = `story ${story.id}:`;
+  const { storm } = story;
+  if (!storm) {
+    if (story.chapters.some((chapter) => chapter.overStorm !== undefined)) {
+      errors.push(`${at} looks from over a storm but has none`);
+    }
+    return errors;
+  }
+  if (!story.actorIds.includes(storm.onId)) {
+    errors.push(`${at} draws a storm on "${storm.onId}", not one of its actors`);
+  }
+  // The cloud is a drawing, and the screen must say so.
+  if (story.noteKey === undefined) {
+    errors.push(`${at} draws a storm but has no note to say its cloud is a drawing`);
+  }
+  const points = storm.track.points.value;
+  if (points.length < 2) errors.push(`${at} the storm's track has fewer than two records`);
+  for (const [index, point] of points.entries()) {
+    const [jd, lon, lat, wind, pressure, ...rest] = point;
+    const before = points[index - 1];
+    if (before && !(jd > before[0])) errors.push(`${at} the storm's records are not in order`);
+    if (!(lon >= -180 && lon <= 180 && lat >= -90 && lat <= 90)) {
+      errors.push(`${at} a record of the storm is at no place on a globe`);
+    }
+    if (!(wind >= 0)) errors.push(`${at} a record of the storm has a wind below nothing`);
+    if (pressure !== null && !(pressure > 0)) {
+      errors.push(`${at} a record of the storm has no pressure at its middle`);
+    }
+    if (rest.slice(0, 4).some((reach) => typeof reach === 'number' && reach < 0)) {
+      errors.push(`${at} a record of the storm has gales that reach less than nothing`);
+    }
+  }
+  // Outside its record the storm is not drawn: a part of the story there would show nothing.
+  const first = points[0]?.[0] ?? Infinity;
+  const last = points[points.length - 1]?.[0] ?? -Infinity;
+  const shown = [
+    ...story.chapters.flatMap((chapter) => [chapter.atJd.value, chapter.untilJd?.value ?? first]),
+    story.endJd.value,
+  ];
+  if (shown.some((jd) => jd < first || jd > last)) {
+    errors.push(`${at} shows a time the storm's record says nothing of`);
+  }
+  for (const chapter of story.chapters) {
+    if (chapter.overStorm !== undefined && chapter.closeUp !== true) {
+      errors.push(
+        `${at} chapter "${chapter.id}" looks from over the storm but is not a close look`,
+      );
+    }
+  }
+  return errors;
+}
+
 export function checkStories(
   stories: readonly Story[],
   catalogueIds: readonly string[],
@@ -326,9 +381,12 @@ export function checkStories(
         errors.push(`story ${story.id}: actor "${actor}" is not in the catalogue`);
     }
     const craft = story.craft ?? [];
-    if (story.path === 'tracked' && craft.length === 0) {
-      errors.push(`story ${story.id}: says its path is tracked but flies no tracked craft`);
+    if (story.path === 'tracked' && craft.length === 0 && !story.storm) {
+      errors.push(
+        `story ${story.id}: says its path is tracked but has no tracked craft and no storm on record`,
+      );
     }
+    errors.push(...stormErrors(story));
     // A path drawn between a few known places must never be passed off as the path flown.
     if (
       story.path !== 'staged' &&

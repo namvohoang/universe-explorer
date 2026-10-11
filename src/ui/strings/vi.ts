@@ -995,6 +995,24 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Trái Đất đi tiếp quanh Mặt Trời. Nửa vòng nữa, nó sẽ lại gặp vệt bụi.',
   storyMeteorShowerOctober:
     'Tháng Mười, Trái Đất lại gặp bụi của sao chổi Halley. Rất nhiều sao băng trong một đêm được gọi là mưa sao băng.',
+  storyHurricaneTitle: 'Một cơn bão',
+  storyHurricaneNote: 'Đường vàng là đường đi thật của cơn bão. Đám mây là hình vẽ.',
+  storyHurricaneBorn:
+    'Cơn bão này tên là Sam. Nó sinh ra trên vùng biển ấm phía tây châu Phi, vào tháng 9 năm 2021.',
+  storyHurricaneWarmSea:
+    'Không khí ấm và ẩm bốc lên từ mặt biển rồi tạo thành mây. Không khí xung quanh ùa vào thế chỗ. Cơn bão lấy sức từ biển ấm và lớn dần.',
+  storyHurricaneSpins:
+    'Cơn bão vừa lớn vừa xoay. Ở phía bắc xích đạo, bão xoay theo chiều này. Ở phía nam, bão xoay theo chiều ngược lại. Đó là vì chính Trái Đất đang quay.',
+  storyHurricaneEye:
+    'Ở giữa có một cái lỗ gọi là mắt bão. Trong mắt bão, trời lặng gió và quang mây. Gió mạnh nhất thổi vòng quanh mắt bão.',
+  storyHurricaneStrongest: 'Lúc này Sam mạnh nhất. Gió của nó thổi 250 km mỗi giờ.',
+  storyHurricaneNames:
+    'Những cơn bão như Sam có tên gọi khác nhau ở mỗi nơi. Tiếng Anh gọi là hurricane, typhoon hay cyclone. Tất cả đều là cùng một loại bão.',
+  storyHurricaneFlyingIn:
+    'Người ta muốn biết bên trong cơn bão có gì. Máy bay đã bay vào trong bão để đo, và một chiếc thuyền buồm nhỏ tự lái đã đi xuyên qua bức tường gió của nó.',
+  storyHurricaneOutAtSea: 'Sam ở rất xa ngoài biển, cách xa nơi có người ở. Không ai bị thương.',
+  storyHurricaneFades:
+    'Lên xa về phía bắc, Sam yếu dần và không còn tròn trịa nữa. Hôm sau nó đã biến thành một loại bão khác.',
   storyAuroraTitle: 'Cực quang',
   storyAuroraNote: 'Các vòng xanh là hình vẽ.',
   storyAuroraWind:
@@ -1036,9 +1054,11 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyMarsBackwardsForwardsAgain:
     'Trái Đất đã vượt qua, và Sao Hỏa trông như lại đi tới. Nó đã vẽ một vòng trên bầu trời.',
   sceneWatch: 'Xem',
+  sceneEarth: 'Trái Đất',
   watchStories: 'Những điều để xem',
   watchGroupSkyEvents: 'Chuyện trên trời',
   watchGroupSpaceFlights: 'Chuyến bay vũ trụ',
+  watchGroupEarthAtWork: 'Trái Đất chuyển động',
   watchPlay: 'Chạy',
   watchPause: 'Tạm dừng',
   watchAgain: 'Xem lại',

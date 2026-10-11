@@ -26,7 +26,7 @@ const TIGHT = [
 
 async function open(page: Page, language: string, place: string): Promise<void> {
   await page.goto(`/?speed=pause&lang=${language}${place}`);
-  await expect(page.locator('#main-tabs [role="tab"]')).toHaveCount(5);
+  await expect(page.locator('#main-tabs [role="tab"]')).toHaveCount(6);
   await page.evaluate(() => document.fonts.ready);
 }
 

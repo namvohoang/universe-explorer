@@ -1109,13 +1109,20 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       buoys; the Hunga Tonga eruption of 2022, seen from space, for the volcano; an Atlantic
       hurricane with a full track; a typhoon that reached Vietnam; a tornado with a surveyed
       path. Add the approved sources to `data.md` and `media.md`.
-- [ ] 14.2 Types and checks. `src/data/types/earthEvent.ts`: a discriminated union on `kind`
+- [~] 14.2 Done: the `earth-at-work` story group, the two screens that play stories
+      (`STORY_SCREENS`), a storm on its record (`StormTrack`, `StoryStorm`, with units in
+      every field's name and `null` where the record gives nothing) and its `validate` checks
+      (on a world of the story, records in order, every part of the story inside the record,
+      a note to say the cloud is a drawing). Left: the other kinds of event, each added with
+      its story, and the `worked-out` path. As first planned: `src/data/types/earthEvent.ts`: a discriminated union on `kind`
       (`earthquake`, `tsunami`, `tropical-cyclone`, `tornado`, `eruption`), units in every
       field name (`depthKm`, `lonDegEast`, `latDegNorth`, `windKmPerH`, `pressureHpa`), each
       value `Sourced`, unknowns `null` with a reason. The two Earth story groups and the
       `worked-out` path in `story.ts`, with its sentence. `validate`: every event value
       sourced; a staged or worked-out story says so; a slice carries the stretched-scale label.
-- [ ] 14.2b The Earth screen: a main tab beside Watch that opens the same story player on
+- [x] 14.2b Done on 2026-10-11 with its first story (14.8). Six main tabs: on a phone a
+      name of two words goes one word over the other; between a phone and a wide screen the
+      tabs sit closer and may do the same. As planned: The Earth screen: a main tab beside Watch that opens the same story player on
       Earth's two groups only, while Watch keeps its own two; the address follows the story
       (`#earth/<id>`); watched stories ticked and counted as on Watch; the tab's word shown
       at every width, in English and Vietnamese; layout tests at the five screen sizes and
@@ -1150,7 +1157,19 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       Parts: the sea floor moves; the wave sets off; across the ocean as fast as a jet (the
       comparison worked out from the data, not typed); the buoys that feel it pass; reaching
       the shore; the warning that goes ahead of it.
-- [ ] 14.8 **Hurricane or typhoon.** `tracked`: the storm's place, wind and pressure every few
+- [~] 14.8 Done: Hurricane Sam on the Earth screen, in nine parts, in English and
+      Vietnamese. `tools/storms/fetchTrack.ts` writes the hurricane centre's six-hourly
+      record into `src/data/paths/`; `src/sim/storm.ts` moves the storm's middle along the
+      ground between two records (tested); Earth is turned as it faced (JPL Horizons). The
+      close look rides over the storm, with the whole world beside it as on Watch, and the
+      line of where the storm has been is the record's. The cloud is a drawing and the screen
+      says so: a spiral as wide as the record says gales reached, so it is far smaller than
+      the cloud of the real storm, turning as fast as a gale goes round at its edge, with an
+      eye drawn big enough to see. Each part shows 15:00 to 18:00 UTC of one day, and the
+      days between are run through. The sea close up is blurred: the map of Earth is made
+      for looking at from space (14.3). Left: the slice through the storm (14.4), real
+      pictures from space (14.5), the wind as a number that changes while the story plays, a
+      typhoon that reached Vietnam, and the recording. As planned: **Hurricane or typhoon.** `tracked`: the storm's place, wind and pressure every few
       hours from the agency's best track, fetched by a tool into `src/data/paths/` like a
       flight's; its width from the record where given. `staged`: the turning cloud, which
       turns the right way for its half of the world, and the slice with the eye, the wall and

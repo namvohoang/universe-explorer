@@ -1,5 +1,13 @@
 import { stories } from '../data/stories';
-import { STORY_GROUPS, type Chapter, type Story, type StoryGroup } from '../data/types';
+import {
+  SCREEN_GROUPS,
+  STORY_GROUPS,
+  screenOfGroup,
+  type Chapter,
+  type Story,
+  type StoryGroup,
+  type StoryScreen,
+} from '../data/types';
 import {
   SWEEP_SECONDS,
   advanceStory,
@@ -31,6 +39,7 @@ export const WATCHED_KEY = 'watched';
 const GROUP_DOTS: Readonly<Record<StoryGroup, string>> = {
   'sky-events': '#6fd3ff',
   'space-flights': '#ffc53d',
+  'earth-at-work': '#7ee0a1',
 };
 /** A story shorter than this many days shows the minute as well as the hour. */
 const MINUTES_SHOWN_UNDER_DAYS = 3;
@@ -38,10 +47,12 @@ const MINUTES_SHOWN_UNDER_DAYS = 3;
 const GROUP_LABELS: Readonly<Record<StoryGroup, string>> = {
   'sky-events': words.watchGroupSkyEvents,
   'space-flights': words.watchGroupSpaceFlights,
+  'earth-at-work': words.watchGroupEarthAtWork,
 };
 const GROUP_ICONS: Readonly<Record<StoryGroup, IconName>> = {
   'sky-events': 'moon',
   'space-flights': 'rocket',
+  'earth-at-work': 'globe',
 };
 
 const text = (key: string): string => (words as Readonly<Record<string, string>>)[key] ?? '';
@@ -67,8 +78,11 @@ export interface WatchHost {
 
 export interface Watch {
   readonly element: HTMLElement;
-  /** Shows a story from its start: the one asked for, else the one last shown, else the first. */
-  open(storyId: string | null): void;
+  /**
+   * Shows a story from its start: the one asked for, whichever screen it belongs to, else the
+   * one last shown on this screen, else the screen's first.
+   */
+  open(storyId: string | null, screen: StoryScreen): void;
   close(): void;
   /** Moves the story on by so many real seconds and returns the date to draw. */
   tick(realSeconds: number): number;
@@ -156,9 +170,20 @@ export function createWatch(host: WatchHost): Watch {
   );
   const divider = create('span', 'row-divider');
   row.append(groupTabs.element, divider, chips);
-  // With one group there is nothing to choose between.
-  groupTabs.element.hidden = groups.length < 2;
-  divider.hidden = groups.length < 2;
+  /** The screen on show, and the story last shown on each. */
+  let screen: StoryScreen = 'watch';
+  const lastShown = new Map<StoryScreen, Story>();
+  /** Leaves the groups of one screen to choose between. */
+  const showScreen = (wanted: StoryScreen): void => {
+    screen = wanted;
+    element.setAttribute('aria-label', wanted === 'earth' ? words.sceneEarth : words.sceneWatch);
+    const shown = groups.filter((one) => SCREEN_GROUPS[wanted].includes(one));
+    groupTabs.only(shown);
+    // With one group there is nothing to choose between.
+    groupTabs.element.hidden = shown.length < 2;
+    divider.hidden = shown.length < 2;
+  };
+  showScreen(screen);
 
   element.append(caption, controls, row);
 
@@ -329,6 +354,8 @@ export function createWatch(host: WatchHost): Watch {
 
   function start(picked: Story): void {
     story = picked;
+    showScreen(screenOfGroup(picked.group));
+    lastShown.set(screen, picked);
     times = storyTimes(picked);
     if (!watched.has(picked.id)) {
       watched.add(picked.id);
@@ -398,10 +425,13 @@ export function createWatch(host: WatchHost): Watch {
 
   return {
     element,
-    open(storyId) {
+    open(storyId, wanted) {
       element.hidden = false;
       const asked = stories.find((candidate) => candidate.id === storyId);
-      const picked = asked ?? story ?? stories[0];
+      const picked =
+        asked ??
+        lastShown.get(wanted) ??
+        stories.find((candidate) => screenOfGroup(candidate.group) === wanted);
       if (picked) start(picked);
     },
     close() {

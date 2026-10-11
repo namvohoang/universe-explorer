@@ -7,6 +7,7 @@ import { artemis1Launch } from './artemis1Launch';
 import { shuttleLaunch } from './shuttleLaunch';
 import { artemis2 } from './artemis2';
 import { halleyTail } from './halleyTail';
+import { hurricaneSam } from './hurricaneSam';
 import { lunarEclipse } from './lunarEclipse';
 import { marsBackwards } from './marsBackwards';
 import { meteorShower } from './meteorShower';
@@ -36,4 +37,5 @@ export const stories: readonly Story[] = [
   artemis2,
   shuttleLaunch,
   shuttleDocking,
+  hurricaneSam,
 ];

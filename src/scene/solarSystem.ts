@@ -18,6 +18,7 @@ import {
 import { createScale, type Scale } from '../sim/scale';
 import { add, cross, dot, length, scale as scaleBy, subtract, type Vec3 } from '../sim/vec3';
 import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
+import { createStormCloud, type StormCloud } from './stormCloud';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
@@ -243,6 +244,25 @@ export interface SolarSystem {
   /** Draws the two auroral bands of a body, riding round with its ground; `null` takes them away. */
   setAurora(onId: string | null, shape: AuroraShape | null): void;
   /**
+   * Draws a storm over a body's ground, riding round with it: `track` is every place on its
+   * record, earliest first, as unit vectors in the body's frame. `null` takes it away.
+   */
+  setStorm(onId: string | null, track: readonly Vec3[] | null): void;
+  /**
+   * Puts the storm's cloud over a place, so wide (an angle at the body's centre) and turned so
+   * far, with the line of where it has been drawn through the first `passed` places of its
+   * track; `null` for a date its record says nothing of.
+   */
+  showStorm(
+    now: {
+      readonly place: Vec3;
+      readonly reachRad: number;
+      readonly turnRad: number;
+      readonly anticlockwise: boolean;
+      readonly passed: number;
+    } | null,
+  ): void;
+  /**
    * Where a point of a body's own turning frame is now, in scene units: a place on its ground,
    * say, given in units of the body's radius (see `bodyFramePoint`).
    */
@@ -353,6 +373,7 @@ export function createSolarSystem(
   const DUST_SPECKS_PER_POINT = 5;
   let dust: DustTrail | null = null;
   let aurora: AuroraRings | null = null;
+  let storm: StormCloud | null = null;
   /** How many sights a sky track is drawn through, and how far off it is drawn, in scene units. */
   const SKY_TRACK_STEPS = 400;
   const SKY_TRACK_FAR = 200_000;
@@ -914,6 +935,22 @@ export function createSolarSystem(
       aurora = createAuroraRings(shape);
       body.frame.add(aurora.group);
     },
+    setStorm(onId, track) {
+      if (storm) {
+        storm.group.removeFromParent();
+        storm.dispose();
+        storm = null;
+      }
+      const body = onId === null ? undefined : bodies.get(onId);
+      if (!body || !track) return;
+      storm = createStormCloud(track);
+      body.frame.add(storm.group);
+    },
+    showStorm(now) {
+      if (!storm) return;
+      if (now) storm.set(now.place, now.reachRad, now.turnRad, now.anticlockwise, now.passed);
+      else storm.hide();
+    },
     northOf(id) {
       const { frame } = bodyOf(id);
       frame.updateWorldMatrix(true, false);
@@ -997,6 +1034,7 @@ export function createSolarSystem(
       landing?.made.dispose();
       dust?.dispose();
       aurora?.dispose();
+      storm?.dispose();
       sky?.trail.dispose();
       stars?.dispose();
     },

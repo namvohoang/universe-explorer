@@ -11,6 +11,8 @@ export interface Tabs<T extends string> {
   readonly element: HTMLElement;
   /** Shows a tab as chosen without calling `onChange`. */
   show(value: T): void;
+  /** Leaves only these tabs to be seen and stepped to; the others are put away. */
+  only(values: readonly T[]): void;
   /** Puts a short note after a tab's label, such as how many of its places were seen. */
   setNote(value: T, note: string): void;
 }
@@ -67,8 +69,9 @@ export function createTabs<T extends string>(
           ? -1
           : 0;
     if (step === 0) return;
-    const at = tabs.findIndex(({ button }) => button === document.activeElement);
-    const next = tabs[(at + step + tabs.length) % tabs.length];
+    const inRow = tabs.filter(({ button }) => !button.hidden);
+    const at = inRow.findIndex(({ button }) => button === document.activeElement);
+    const next = inRow[(at + step + inRow.length) % inRow.length];
     if (at < 0 || !next) return;
     event.preventDefault();
     next.button.focus();
@@ -78,6 +81,9 @@ export function createTabs<T extends string>(
   return {
     element,
     show,
+    only(values) {
+      for (const { value, button } of tabs) button.hidden = !values.includes(value);
+    },
     setNote(value, note) {
       const tab = tabs.find((candidate) => candidate.value === value);
       if (tab) tab.note.textContent = note;

@@ -56,6 +56,16 @@ Every record carries `sources`: URL, what was taken from it, date retrieved. Pre
 | Names, classes | IAU — https://www.iau.org/ |
 | Spacecraft sizes and facts | The agency or mission operator's own pages (NASA, ESA, JAXA, Roscosmos, JHU APL, JPL), or the Smithsonian for craft in its collection |
 
+For what happens on Earth itself (`PLAN.md` Phase 14 only, approved by the owner on 2026-10-11):
+
+| Data | Source |
+|---|---|
+| Hurricane tracks, wind, pressure, size | NOAA National Hurricane Center, HURDAT2 and its storm reports — https://www.nhc.noaa.gov/data/ |
+| Typhoon tracks | NOAA IBTrACS — https://www.ncei.noaa.gov/products/international-best-track-archive ; Japan Meteorological Agency — https://www.jma.go.jp/ (name the source) |
+| Earthquakes | USGS Earthquake Hazards Program — https://earthquake.usgs.gov/ |
+| Tsunamis, the depth of the sea | NOAA National Centers for Environmental Information — https://www.ncei.noaa.gov/ (cite the DOI its page gives) |
+| Tornado paths | NOAA National Weather Service surveys and Storm Data |
+
 Wikipedia is fine for finding a source, never as the source.
 
 ## Orbits

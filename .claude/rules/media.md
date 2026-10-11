@@ -21,6 +21,7 @@ Rules for every picture, texture map and video frame the app shows.
 | Smithsonian 3D (museum scans of real craft) | 3d.si.edu |
 | Mission operators' own sites | jhuapl.edu (New Horizons, Parker Solar Probe), jpl.nasa.gov mission pages |
 | Other space agencies | jaxa.jp, roscosmos.ru |
+| Pictures of Earth's weather, sea and ground (`PLAN.md` Phase 14 only) | noaa.gov and weather.gov (public domain unless the page says otherwise), usgs.gov (its own work only: check the credit for a third party), earthobservatory.nasa.gov |
 
 Anything else needs the user's approval first. Never use stock sites, wallpaper sites, social
 media, search-engine thumbnails or AI-generated images.

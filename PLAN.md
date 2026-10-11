@@ -1066,7 +1066,42 @@ anything is built on it:
 | Pictures from space, maps of Earth's surface | NASA (Earth Observatory, Worldview, Scientific Visualization Studio), NOAA's weather satellites |
 | How to stay safe | The same agencies' own pages for families |
 
-- [ ] 14.1 Research, no code. For each candidate source: what it really holds, in what form,
+Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise):
+
+- **NOAA weather and hurricane pages** (weather.gov/disclaimer): "in the public domain, unless
+  specifically noted otherwise"; not to be passed off as the app's own or as endorsed.
+- **Hurricane tracks**: the National Hurricane Center's HURDAT2 file
+  (nhc.noaa.gov/data/hurdat/, Atlantic 1851 to 2025) is plain text, one line every six hours:
+  place, strongest wind, pressure at the middle and, from 2004, how far out the wind reaches
+  in four directions. Each storm also has a written report (nhc.noaa.gov/data/tcr/).
+- **Typhoons**: NOAA's IBTrACS (ncei.noaa.gov) joins every agency's tracks, the Japan
+  Meteorological Agency's among them, as CSV; "full and open access". JMA's own pages may be
+  used with the source named (its Public Data License, usable as CC BY 4.0).
+- **Earthquakes**: the USGS catalogue answers by event id (earthquake.usgs.gov/fdsnws/event/1/)
+  with place, depth, time, size, and for a big one the map of shaking, the fault that slipped
+  and the times its waves were picked at each station. USGS's own work is in the public
+  domain with credit asked for (its policy page sat behind a robot check; read through a
+  search result only, to be opened by hand before the first USGS picture is added).
+  No USGS service was found that gives the travel time of a wave for a given distance, and
+  the one the universities ran is retired: 14.6 needs the published table itself.
+- **Tsunamis**: NOAA's database answers as JSON (ngdc.noaa.gov/hazel/hazard-service/api/v1/
+  tsunamis/events and /runups): the source, and for each place the wave reached, how high and,
+  for many, how long it took. The DART buoys' sensors lie on the sea floor and their records
+  are kept by the same centre. No licence is stated beyond the citation asked for
+  (doi:10.7289/V5PN93H7).
+- **Depth of the sea**: NOAA's ETOPO 2022, at 15, 30 and 60 arc-seconds, GeoTIFF or NetCDF,
+  with a citation asked for (doi:10.25921/fd45-gt74) and no licence stated on its page.
+- **Tornado surveys**: the National Weather Service's Damage Assessment Toolkit serves the
+  surveyed paths, and calls them preliminary; the official figures are in NOAA's Storm Data.
+- **Volcanoes**: the Smithsonian's terms page would not load (errors on two tries). Not a
+  source until it has been read.
+- **Chosen for the hurricane story: Hurricane Sam, 22 September to 5 October 2021.** The
+  hurricane centre's report says it stayed "well out to sea", was a major hurricane for over
+  a week, was measured by aircraft, buoys and a sail drone that went through its wall, and
+  that "There were no casualties associated with Sam."
+
+- [~] 14.1 Research, no code. Left: the Smithsonian's terms; USGS's policy page opened by
+      hand; the events for the other stories, each chosen in its own task. For each candidate source: what it really holds, in what form,
       under what licence, written here as "Found on" notes. Choose one event per story
       (decision 10), preferring one that was measured well, seen from space, and that the
       agency itself tells calmly. Candidates to weigh, none chosen: an earthquake whose ground

@@ -1399,3 +1399,92 @@ export const CSA_CANADARM: Source = {
   url: 'https://www.asc-csa.gc.ca/eng/canadarm/about.asp',
   retrieved: '2026-10-07',
 };
+
+export const NASA_EXOPLANET_ARCHIVE_ALF_CEN: Source = {
+  id: 'nasa-exoplanet-archive-alf-cen',
+  title:
+    'NASA Exoplanet Archive — Stellar Hosts: one row per published study of alf Cen A and alf Cen B (radius st_rad, temperature st_teff), with the study each comes from',
+  url: "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+hostname,st_rad,st_raderr1,st_mass,st_teff,sy_dist,st_refname+from+stellarhosts+where+hostname+in+('alf+Cen+A','alf+Cen+B')&format=csv",
+  retrieved: '2026-10-11',
+};
+
+export const NASA_EXOPLANET_ARCHIVE_BARNARD: Source = {
+  id: 'nasa-exoplanet-archive-barnard',
+  title:
+    "NASA Exoplanet Archive — Planetary Systems Composite Parameters: radius (st_rad) and temperature (st_teff) of Barnard's star, from González Hernández et al. 2024",
+  url: "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+hostname,st_rad,st_teff,st_mass,sy_dist,st_rad_reflink+from+pscomppars+where+hostname='Barnard''s+star'&format=csv",
+  retrieved: '2026-10-11',
+};
+
+export const NASA_WEBB_ALF_CEN: Source = {
+  id: 'nasa-webb-alf-cen',
+  title: "NASA — NASA's Webb Finds New Evidence for Planet Around Closest Solar Twin",
+  url: 'https://science.nasa.gov/missions/webb/nasas-webb-finds-new-evidence-for-planet-around-closest-solar-twin/',
+  retrieved: '2026-10-11',
+};
+
+export const NASA_CHANDRA_ALF_CEN: Source = {
+  id: 'nasa-chandra-alf-cen',
+  title: 'NASA — Alpha Centauri: A Triple Star System about 4 Light Years from Earth (Chandra)',
+  url: 'https://www.nasa.gov/mission_pages/chandra/images/alpha-centauri-a-triple-star-system-about-4-light-years-from-earth.html',
+  retrieved: '2026-10-11',
+};
+
+export const ESO_BARNARD_PLANET_2024: Source = {
+  id: 'eso-barnard-2024',
+  title: 'ESO — Planet found orbiting our closest single star (eso2414)',
+  url: 'https://www.eso.org/public/news/eso2414/',
+  retrieved: '2026-10-11',
+};
+
+export const ESO_BARNARD_MOTION: Source = {
+  id: 'eso-barnard-motion',
+  title: "ESO — Super-Earth Orbiting Barnard's Star (eso1837): its motion across the sky",
+  url: 'https://www.eso.org/public/news/eso1837/',
+  retrieved: '2026-10-11',
+};
+
+export const NASA_BARNARD_PLANETS: Source = {
+  id: 'nasa-barnard-planets',
+  title: 'NASA — Discovery Alert: Four Little Planets, One Big Step',
+  url: 'https://science.nasa.gov/universe/exoplanets/discovery-alert-four-little-planets-one-big-step/',
+  retrieved: '2026-10-11',
+};
+
+export const NASA_JSC_CANOPUS: Source = {
+  id: 'nasa-jsc-canopus',
+  title:
+    'NASA Johnson Space Center — Gateway to Astronaut Photography of Earth: ISS006-E-28068, Canopus',
+  url: 'https://eol.jsc.nasa.gov/SearchPhotos/photo.pl?mission=ISS006&roll=E&frame=28068',
+  retrieved: '2026-10-11',
+};
+
+export const ARROYO_TORRES_2013: Source = {
+  id: 'arroyo-torres-2013',
+  title:
+    'Arroyo-Torres, Wittkowski, Marcaide & Hauschildt 2013, A&A 554, A76 — The atmospheric structure and fundamental parameters of the red supergiants AH Sco, UY Sct and KW Sgr (ESO VLTI/AMBER), peer-reviewed',
+  url: 'https://arxiv.org/abs/1305.6179',
+  retrieved: '2026-10-11',
+};
+
+export const ESO_R136A1: Source = {
+  id: 'eso-r136a1',
+  title: 'ESO — Stars Just Got Bigger: A 300 Solar Mass Star Uncovered (eso1030)',
+  url: 'https://www.eso.org/public/news/eso1030/',
+  retrieved: '2026-10-11',
+};
+
+export const CROWTHER_2010: Source = {
+  id: 'crowther-2010',
+  title:
+    'Crowther et al. 2010, MNRAS 408, 731 — The R136 star cluster hosts several stars whose individual masses greatly exceed the accepted 150 Msun stellar mass limit (Table 5: temperatures of the R136 stars), peer-reviewed',
+  url: 'https://arxiv.org/abs/1007.3284',
+  retrieved: '2026-10-11',
+};
+
+export const NOIRLAB_R136A1: Source = {
+  id: 'noirlab-r136a1',
+  title: 'NSF NOIRLab — Sharpest Image Ever of the Most Massive Known Star (noirlab2220)',
+  url: 'https://noirlab.edu/public/news/noirlab2220/',
+  retrieved: '2026-10-11',
+};

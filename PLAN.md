@@ -952,6 +952,15 @@ recorded last.
       main engines burn pale under the orbiter's tail at the same time. The Shuttle climbs
       heads down under its tank and, once the tank is let go, is drawn rolling over in 8
       seconds, belly to the ground (`belly`); the roll is a drawing and the note says so.
+- [x] 12.35 More stars in Deep Space (owner's request, 2026-10-11): Alpha Centauri A and B,
+      Barnard's Star, Canopus, UY Scuti and R136a1, each with its card (three facts, English
+      and Vietnamese) and recording. Sizes from the NASA Exoplanet Archive (Alpha Centauri A
+      and B, Barnard's Star), NASA (Canopus) and ESO (R136a1); with the owner's leave, UY
+      Scuti's size (1,708 ± 192 Suns, which rests on a distance known only roughly) and
+      R136a1's temperature come from the peer-reviewed papers. Left out, as no trusted source
+      gives a size: Polaris, Arcturus, Deneb, Spica, Eta Carinae, and Stephenson 2-18, whose
+      oft-quoted 2,150 Suns no paper states (it is worked out by encyclopedia editors, at a
+      distance astronomers doubt). TRAPPIST-1 was already here as a planet system.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

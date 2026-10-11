@@ -121,6 +121,15 @@ import {
   NASA_TRAPPIST1,
   SI_COLUMBIA,
   SI_DISCOVERY,
+  ARROYO_TORRES_2013,
+  ESO_BARNARD_MOTION,
+  ESO_BARNARD_PLANET_2024,
+  ESO_R136A1,
+  NASA_BARNARD_PLANETS,
+  NASA_CHANDRA_ALF_CEN,
+  NASA_JSC_CANOPUS,
+  NASA_WEBB_ALF_CEN,
+  NOIRLAB_R136A1,
 } from '../catalogue/sources';
 import type { CardContent } from '../types';
 
@@ -1935,6 +1944,177 @@ export const cards: readonly CardContent[] = [
     ],
     moons: null,
     sources: [NASA_51_PEGASI],
+  },
+  {
+    id: 'alpha-centauri-a',
+    hello: {
+      key: 'cardAlphaCentauriAHello',
+      sourceId: 'nasa-chandra-alf-cen',
+      quote: 'Alpha Cen A is a near twin of our Sun in almost every way, including age',
+    },
+    facts: [
+      {
+        key: 'cardAlphaCentauriAFact1',
+        sourceId: 'nasa-webb-alf-cen',
+        quote:
+          'Alpha Centauri A is the third brightest star in the night sky, and the closest Sun-like star to Earth.',
+      },
+      {
+        key: 'cardAlphaCentauriAFact2',
+        sourceId: 'nasa-chandra-alf-cen',
+        quote: 'Alpha Centauri is a triple star system located just over four light years',
+      },
+      {
+        key: 'cardAlphaCentauriAFact3',
+        sourceId: 'nasa-chandra-alf-cen',
+        quote:
+          'a pair called “A” and “B,” (AB for short) which orbit relatively close to each other',
+      },
+    ],
+    moons: null,
+    sources: [NASA_CHANDRA_ALF_CEN, NASA_WEBB_ALF_CEN],
+  },
+  {
+    id: 'alpha-centauri-b',
+    hello: {
+      key: 'cardAlphaCentauriBHello',
+      sourceId: 'nasa-chandra-alf-cen',
+      quote: 'Alpha Cen B is somewhat smaller and dimmer but still quite similar to the Sun',
+    },
+    facts: [
+      {
+        key: 'cardAlphaCentauriBFact1',
+        sourceId: 'nasa-chandra-alf-cen',
+        quote:
+          'a pair called “A” and “B,” (AB for short) which orbit relatively close to each other',
+      },
+      {
+        key: 'cardAlphaCentauriBFact2',
+        sourceId: 'nasa-chandra-alf-cen',
+        quote:
+          'is a much smaller red dwarf star that travels around the AB pair in a much larger orbit',
+      },
+      {
+        key: 'cardAlphaCentauriBFact3',
+        sourceId: 'nasa-chandra-alf-cen',
+        quote: 'Alpha Centauri is a triple star system located just over four light years',
+      },
+    ],
+    moons: null,
+    sources: [NASA_CHANDRA_ALF_CEN],
+  },
+  {
+    id: 'barnards-star',
+    hello: {
+      key: 'cardBarnardsStarHello',
+      sourceId: 'eso-barnard-2024',
+      quote: 'the closest individual star to us',
+    },
+    facts: [
+      {
+        key: 'cardBarnardsStarFact1',
+        sourceId: 'eso-barnard-2024',
+        quote: 'Located just six light-years away',
+      },
+      {
+        key: 'cardBarnardsStarFact2',
+        sourceId: 'eso-barnard-motion',
+        quote: 'Barnard’s star is the fastest moving star in the night sky.',
+      },
+      {
+        key: 'cardBarnardsStarFact3',
+        sourceId: 'nasa-barnard-planets',
+        quote: 'Four rocky planets much smaller than Earth orbit Barnard’s Star',
+      },
+    ],
+    moons: null,
+    sources: [ESO_BARNARD_MOTION, ESO_BARNARD_PLANET_2024, NASA_BARNARD_PLANETS],
+  },
+  {
+    id: 'canopus',
+    hello: {
+      key: 'cardCanopusHello',
+      sourceId: 'nasa-jsc-canopus',
+      quote: 'Canopus, the second-brightest star in the sky',
+    },
+    facts: [
+      {
+        key: 'cardCanopusFact1',
+        sourceId: 'nasa-jsc-canopus',
+        quote:
+          'It is 65 times wider and 15,000 times more luminous than the Sun and is large enough to stretch three-fourths of the way across Mercury’s orbit.',
+      },
+      {
+        key: 'cardCanopusFact2',
+        sourceId: 'nasa-jsc-canopus',
+        quote:
+          'Canopus is about 300 light years from Earth in the southern hemisphere constellation Carina',
+      },
+      {
+        key: 'cardCanopusFact3',
+        sourceId: 'nasa-jsc-canopus',
+        quote:
+          'photographed by astronaut Donald R. Pettit, Expedition 6 NASA ISS science officer, on board the International Space Station (ISS)',
+      },
+    ],
+    moons: null,
+    sources: [NASA_JSC_CANOPUS],
+  },
+  {
+    id: 'uy-scuti',
+    hello: {
+      key: 'cardUyScutiHello',
+      sourceId: 'arroyo-torres-2013',
+      quote: 'the red supergiants (RSGs) AH Sco, UY Sct, and KW Sgr',
+    },
+    facts: [
+      {
+        key: 'cardUyScutiFact1',
+        sourceId: 'arroyo-torres-2013',
+        quote: '1708±192 R⊙ for UY Sct',
+      },
+      {
+        key: 'cardUyScutiFact2',
+        sourceId: 'arroyo-torres-2013',
+        quote: 'Together with the distance and the spectro-photometry, we calculate radii',
+      },
+      {
+        key: 'cardUyScutiFact3',
+        sourceId: 'arroyo-torres-2013',
+        quote: '3365±134 K for UY Sct',
+      },
+    ],
+    moons: null,
+    sources: [ARROYO_TORRES_2013],
+  },
+  {
+    id: 'r136a1',
+    hello: {
+      key: 'cardR136a1Hello',
+      sourceId: 'noirlab-r136a1',
+      quote: 'R136a1, the most massive known star in the Universe',
+    },
+    facts: [
+      {
+        key: 'cardR136a1Fact1',
+        sourceId: 'eso-r136a1',
+        quote: 'R136a1, which is blue, is about 35 times as large as the Sun.',
+      },
+      {
+        key: 'cardR136a1Fact2',
+        sourceId: 'eso-r136a1',
+        quote:
+          'in one of our neighbouring galaxies, the Large Magellanic Cloud, 165 000 light-years away',
+      },
+      {
+        key: 'cardR136a1Fact3',
+        sourceId: 'eso-r136a1',
+        quote:
+          'If R136a1 replaced the Sun in our Solar System, it would outshine the Sun by as much as the Sun currently outshines the full Moon.',
+      },
+    ],
+    moons: null,
+    sources: [ESO_R136A1, NOIRLAB_R136A1],
   },
   {
     id: 'aldebaran',

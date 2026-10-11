@@ -103,6 +103,7 @@ import { eagleNebula } from './eagleNebula';
 import { ringNebula } from './ringNebula';
 import { helixNebula } from './helixNebula';
 import { carinaNebula } from './carinaNebula';
+import { uyScuti } from './uyScuti';
 import { veilNebula } from './veilNebula';
 import { rigel } from './rigel';
 import { sirius } from './sirius';
@@ -111,10 +112,15 @@ import { vega } from './vega';
 import { pollux } from './pollux';
 import { pegasi51 } from './pegasi51';
 import { aldebaran } from './aldebaran';
+import { canopus } from './canopus';
 import { vyCanisMajoris } from './vyCanisMajoris';
 import { proximaCentauri } from './proximaCentauri';
+import { alphaCentauriA } from './alphaCentauriA';
+import { alphaCentauriB } from './alphaCentauriB';
+import { barnardsStar } from './barnardsStar';
 import { trappist1 } from './trappist1';
 import { milkyWay } from './milkyWay';
+import { r136a1 } from './r136a1';
 import { m87BlackHole } from './m87BlackHole';
 import { sagittariusA } from './sagittariusA';
 import { gaiaBh1 } from './gaiaBh1';
@@ -187,6 +193,9 @@ export const catalogue: readonly CelestialObject[] = [
   halley,
   kuiperBelt,
   proximaCentauri,
+  alphaCentauriA,
+  alphaCentauriB,
+  barnardsStar,
   sirius,
   siriusB,
   vega,
@@ -194,6 +203,7 @@ export const catalogue: readonly CelestialObject[] = [
   trappist1,
   pegasi51,
   aldebaran,
+  canopus,
   mira,
   pleiades,
   antares,
@@ -210,10 +220,12 @@ export const catalogue: readonly CelestialObject[] = [
   crabNebula,
   eagleNebula,
   carinaNebula,
+  uyScuti,
   omegaCentauri,
   herculesCluster,
   sagittariusA,
   milkyWay,
+  r136a1,
   andromeda,
   triangulum,
   centaurusA,

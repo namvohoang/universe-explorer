@@ -68,7 +68,7 @@ describe('groups of places', () => {
     const stars = membersOf('stars', catalogue);
     const shelves = stars.map((star) => starShelfOf(star));
     expect([...new Set(shelves)]).toEqual(['red', 'orange', 'yellow', 'blue-white', 'leftover']);
-    expect(ids(stars).slice(0, 2)).toEqual(['proxima-centauri', 'mira']);
+    expect(ids(stars).slice(0, 2)).toEqual(['proxima-centauri', 'barnards-star']);
     // A white dwarf and a neutron star no longer shine the way the Sun does.
     expect(ids(stars.filter((star) => starShelfOf(star) === 'leftover'))).toEqual([
       'sirius-b',

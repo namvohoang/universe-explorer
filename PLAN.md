@@ -1017,13 +1017,16 @@ still 44 px or more; what is to scale is always said on screen; the gate passes.
 ### Phase 14 — Earth at work: earthquakes, tsunamis, storms and tornadoes (asked for on 2026-10-11)
 
 The owner asked for animations or simulations of what happens on Earth itself: an earthquake, a
-tsunami, a storm, a tornado and the like. Each is a **story** on the Watch screen, in a third
-group ("Earth at work") beside the sky events and the space flights, built on what Phase 12
-already has: chapters on a real clock, the globe turned the way it really faced, close-ups, the
-look from a place on the ground, the scrubber, the captions and the recordings.
+tsunami, a storm, a tornado and the like. Each is a **story**, played as the Watch screen plays
+its own, on what Phase 12 already has: chapters on a real clock, the globe turned the way it
+really faced, close-ups, the look from a place on the ground, the scrubber, the captions and
+the recordings.
 
-Nothing below is decided until the three open decisions it leans on are (§8, 9 to 11). No
-number is written in this plan: every size, speed, depth and time is looked up in 14.1 and after.
+Decided on 2026-10-11 (§8, 9 to 11): Earth's stories have a screen of their own, a main tab
+called Earth beside Watch, with two groups ("Earth at work" and "How the land is shaped");
+USGS, NOAA, the Japan Meteorological Agency and the Smithsonian are sources for this phase;
+each story is one real event, told calmly. The tab is task 14.2b. No number is written in this
+plan: every size, speed, depth and time is looked up in 14.1 and after.
 
 **Each story is one real event, shown twice.** First on the globe at true scale (where it
 happened, how big it was against Earth, how it moved), then in a close-up or a slice cut
@@ -1074,9 +1077,14 @@ anything is built on it:
 - [ ] 14.2 Types and checks. `src/data/types/earthEvent.ts`: a discriminated union on `kind`
       (`earthquake`, `tsunami`, `tropical-cyclone`, `tornado`, `eruption`), units in every
       field name (`depthKm`, `lonDegEast`, `latDegNorth`, `windKmPerH`, `pressureHpa`), each
-      value `Sourced`, unknowns `null` with a reason. The `earth` story group and the
+      value `Sourced`, unknowns `null` with a reason. The two Earth story groups and the
       `worked-out` path in `story.ts`, with its sentence. `validate`: every event value
       sourced; a staged or worked-out story says so; a slice carries the stretched-scale label.
+- [ ] 14.2b The Earth screen: a main tab beside Watch that opens the same story player on
+      Earth's two groups only, while Watch keeps its own two; the address follows the story
+      (`#earth/<id>`); watched stories ticked and counted as on Watch; the tab's word shown
+      at every width, in English and Vietnamese; layout tests at the five screen sizes and
+      the sizes in between of 13.18. Ships with its first story, not empty.
 - [ ] 14.3 Earth close up. The globe is drawn for looking at from space; these stories stand a
       few hundred kilometres over one region. A sharper NASA map of the region loaded only for
       its story, the sea floor from the depth data, and the plate edges as lines, each with
@@ -1232,17 +1240,16 @@ Tolerances are named constants with a comment saying why. They are never widened
 9. **Sources for what happens on Earth** (Phase 14). The records are held by USGS (earthquakes,
    volcanoes), NOAA (tsunamis, hurricanes, tornadoes, the depth of the sea), the Japan
    Meteorological Agency (typhoons) and the Smithsonian (volcanoes), none of them on the lists
-   in `.claude/rules/` for this kind of data. Recommended: approve them as primary sources for
-   Phase 14 only, each after 14.1 has read its licence.
+   in `.claude/rules/` for this kind of data. Decided on 2026-10-11: they are primary sources
+   for Phase 14 only, each after 14.1 has read its licence.
 10. **Real disasters for children of 6 to 9** (Phase 14). Real events keep "real numbers only",
-    but people died in most of the famous ones. Recommended: one real event per story, chosen
-    for how well it was measured and not for how bad it was, told as what the ground, sea and
-    air did, with no counts of the dead and no pictures of ruins, ending on what keeps people
-    safe. The other way is an event with no name and typical numbers, which is gentler but is
-    a made-up event and sets principle 1 aside.
-11. **Where Earth's stories live** (Phase 14). Recommended: a third group on the Watch screen,
-    so nothing new has to be learned. The other way is a tab of its own, which makes room for
-    more but puts a sixth word in a bar Phase 13 has just made fit on a phone.
+    but people died in most of the famous ones. Decided on 2026-10-11: one real event per
+    story, chosen for how well it was measured and not for how bad it was, told as what the
+    ground, sea and air did, with no counts of the dead and no pictures of ruins, ending on
+    what keeps people safe.
+11. **Where Earth's stories live** (Phase 14). Decided on 2026-10-11: a screen of their own, a
+    main tab called Earth. It puts one more word in the bar Phase 13 made fit on a phone, so
+    the tab's task carries the layout tests at every screen size.
 12. **Where the continents were** (Phase 14, part two). A mountain story that shows two plates
     meeting needs their places long ago. The agencies publish this mostly as pictures;
     the data comes from university groups, which are not on the trusted list. Recommended:

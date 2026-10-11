@@ -18,6 +18,7 @@ import {
 import { createScale, type Scale } from '../sim/scale';
 import { add, cross, dot, length, scale as scaleBy, subtract, type Vec3 } from '../sim/vec3';
 import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
+import { createGroundPicture, type GroundPicture, type PictureBox } from './groundPicture';
 import { createStormCloud, type StormCloud } from './stormCloud';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
@@ -249,6 +250,20 @@ export interface SolarSystem {
    */
   setStorm(onId: string | null, track: readonly Vec3[] | null): void;
   /**
+   * Real pictures of a body's ground taken from above, each put back where it belongs and
+   * riding round with the body; none is shown until `showGroundPicture` asks. `null` takes
+   * them away.
+   */
+  setGroundPictures(
+    onId: string | null,
+    pictures: readonly { readonly box: PictureBox; readonly url: string }[] | null,
+  ): void;
+  /**
+   * Shows one of those pictures, by its place in the list, and no other; `null` shows none.
+   * While one is shown the drawn cloud of a storm is left out: the picture has the real one.
+   */
+  showGroundPicture(index: number | null): void;
+  /**
    * Puts the storm's cloud over a place, so wide (an angle at the body's centre) and turned so
    * far, with the line of where it has been drawn through the first `passed` places of its
    * track; `null` for a date its record says nothing of.
@@ -374,6 +389,7 @@ export function createSolarSystem(
   let dust: DustTrail | null = null;
   let aurora: AuroraRings | null = null;
   let storm: StormCloud | null = null;
+  let groundPictures: GroundPicture[] = [];
   /** How many sights a sky track is drawn through, and how far off it is drawn, in scene units. */
   const SKY_TRACK_STEPS = 400;
   const SKY_TRACK_FAR = 200_000;
@@ -946,6 +962,21 @@ export function createSolarSystem(
       storm = createStormCloud(track);
       body.frame.add(storm.group);
     },
+    setGroundPictures(onId, pictures) {
+      for (const picture of groundPictures) {
+        picture.mesh.removeFromParent();
+        picture.dispose();
+      }
+      groundPictures = [];
+      const body = onId === null ? undefined : bodies.get(onId);
+      if (!body || !pictures) return;
+      groundPictures = pictures.map(({ box, url }) => createGroundPicture(box, url));
+      for (const picture of groundPictures) body.frame.add(picture.mesh);
+    },
+    showGroundPicture(index) {
+      for (const [at, picture] of groundPictures.entries()) picture.show(at === index);
+      storm?.drawCloud(index === null);
+    },
     showStorm(now) {
       if (!storm) return;
       if (now) storm.set(now.place, now.reachRad, now.turnRad, now.anticlockwise, now.passed);
@@ -1035,6 +1066,7 @@ export function createSolarSystem(
       dust?.dispose();
       aurora?.dispose();
       storm?.dispose();
+      for (const picture of groundPictures) picture.dispose();
       sky?.trail.dispose();
       stars?.dispose();
     },

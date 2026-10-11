@@ -88,6 +88,8 @@ export interface StormCloud {
    * drawn through the first `passed` places of the track and on to the cloud.
    */
   set(place: Vec3, reachRad: number, turnRad: number, anticlockwise: boolean, passed: number): void;
+  /** Draws the cloud, or leaves it out where a real picture of the storm is shown in its place. */
+  drawCloud(now: boolean): void;
   /** Takes the cloud away, for a date the track says nothing of; the line stays as it was. */
   hide(): void;
   dispose(): void;
@@ -122,6 +124,7 @@ export function createStormCloud(track: readonly Vec3[]): StormCloud {
   const facing = new Quaternion();
   const spin = new Quaternion();
   const outwards = new Vector3(0, 0, 1);
+  let cloudWanted = true;
 
   return {
     group,
@@ -135,7 +138,7 @@ export function createStormCloud(track: readonly Vec3[]): StormCloud {
       const wide = Math.sin(reachRad);
       // South of the equator the picture is turned over, so its arms wind the other way.
       cloud.scale.set(anticlockwise ? wide : -wide, wide, 1);
-      cloud.visible = reachRad > 0;
+      cloud.visible = cloudWanted && reachRad > 0;
 
       const drawn = Math.min(Math.max(0, passed), track.length);
       for (let index = 0; index < drawn; index++) {
@@ -156,6 +159,10 @@ export function createStormCloud(track: readonly Vec3[]): StormCloud {
       );
       positions.needsUpdate = true;
       lineGeometry.setDrawRange(0, drawn + 1);
+    },
+    drawCloud(now) {
+      cloudWanted = now;
+      if (!now) cloud.visible = false;
     },
     hide() {
       cloud.visible = false;

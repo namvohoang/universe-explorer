@@ -246,6 +246,34 @@ export interface StoryStorm {
   /** Catalogue id of the world. */
   readonly onId: string;
   readonly track: StormTrack;
+  /**
+   * Real pictures of the storm taken from space, each laid on the world where it was taken
+   * and shown for a stretch of the story in place of the drawn cloud. Earliest first.
+   */
+  readonly pictures?: readonly StormPicture[];
+}
+
+/**
+ * A picture of a storm taken from above and laid out evenly in longitude and latitude, so
+ * that it can be put back on its world at its true place and size.
+ */
+export interface StormPicture {
+  readonly media: MediaRef;
+  /** The picture's edges: [west, south, east, north], in degrees east and degrees north. */
+  readonly box: Sourced<
+    readonly [
+      westDegEast: number,
+      southDegNorth: number,
+      eastDegEast: number,
+      northDegNorth: number,
+    ]
+  >;
+  /**
+   * The stretch of the story it is shown for, which must be on the day it was taken. The
+   * picture is of one moment of that day; the storm's middle moves on along its record.
+   */
+  readonly fromJd: Sourced<number>;
+  readonly untilJd: Sourced<number>;
 }
 
 /** A spacecraft that flies in a story. It is drawn as a named point: at true scale it is too small to see. */

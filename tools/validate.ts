@@ -50,6 +50,7 @@ const mediaUses = catalogue.flatMap((object) =>
 const storyMedia = (story: (typeof stories)[number]): MediaRef[] => [
   ...(story.fromEarth ?? []).map(({ media }) => media),
   ...(story.photos ?? []).map(({ media }) => media),
+  ...(story.storm?.pictures ?? []).map(({ media }) => media),
   // So is the 3D figure of somebody who steps out of a craft.
   ...(story.craft ?? []).flatMap((craft) => (craft.walker ? [craft.walker.media] : [])),
 ];

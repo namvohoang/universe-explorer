@@ -1305,7 +1305,10 @@ export const en = {
   storyAuroraSouthToo:
     'There is a ring round the far south too. The green light comes from oxygen, about 100 km above the ground.',
   storyHurricaneTitle: 'A hurricane',
-  storyHurricaneNote: 'The line is where the storm really went. The cloud is a drawing.',
+  storyHurricaneNote:
+    'The pictures are real, taken from space on each day. The line is where the storm really went. Between the days the cloud is a drawing.',
+  storyHurricanePictureAlt:
+    'A hurricane seen from space: a great white spiral of cloud over the dark blue sea.',
   storyHurricaneBorn:
     'This storm is called Sam. It began over the warm sea west of Africa, in September 2021.',
   storyHurricaneWarmSea:

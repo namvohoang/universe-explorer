@@ -1731,8 +1731,12 @@ function start(): void {
     });
   };
   /** The storm of the story on show, and how big the world it is on is. */
-  let watchStorm: { readonly points: readonly StormPoint[]; readonly groundKm: number } | null =
-    null;
+  let watchStorm: {
+    readonly points: readonly StormPoint[];
+    readonly groundKm: number;
+    /** When each real picture of it is shown, in the order the scene was given them. */
+    readonly pictured: readonly (readonly [fromJd: number, untilJd: number])[];
+  } | null = null;
   /** Draws a story's storm, from the record of where it went. */
   const showStorm = (story: Story): void => {
     const { storm } = story;
@@ -1741,17 +1745,32 @@ function start(): void {
     if (!storm || groundKm === null) {
       watchStorm = null;
       system.setStorm(null, null);
+      system.setGroundPictures(null, null);
       return;
     }
     const points = storm.track.points.value;
-    watchStorm = { points, groundKm };
+    const pictures = storm.pictures ?? [];
+    watchStorm = {
+      points,
+      groundKm,
+      pictured: pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]),
+    };
     system.setStorm(storm.onId, points.map(stormPlace));
+    system.setGroundPictures(
+      storm.onId,
+      pictures.map(({ media, box }) => {
+        const [westDeg, southDeg, eastDeg, northDeg] = box.value;
+        return { box: { westDeg, southDeg, eastDeg, northDeg }, url: mediaUrl(media.file) };
+      }),
+    );
   };
   /** Puts the storm where its record has it at a date. */
   const moveStorm = (jd: number): void => {
     if (!watchStorm) return;
-    const { points, groundKm } = watchStorm;
+    const { points, groundKm, pictured } = watchStorm;
     const now = stormAt(points, jd);
+    const picture = pictured.findIndex(([fromJd, untilJd]) => jd >= fromJd && jd <= untilJd);
+    system.showGroundPicture(picture < 0 ? null : picture);
     system.showStorm(
       now
         ? {
@@ -2254,6 +2273,7 @@ function start(): void {
       system.setAurora(null, null);
       watchStorm = null;
       system.setStorm(null, null);
+      system.setGroundPictures(null, null);
       system.setSkyTrack(null);
       stage.setSky(null);
       system.setExposure(1);

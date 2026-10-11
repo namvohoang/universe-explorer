@@ -996,7 +996,10 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyMeteorShowerOctober:
     'Tháng Mười, Trái Đất lại gặp bụi của sao chổi Halley. Rất nhiều sao băng trong một đêm được gọi là mưa sao băng.',
   storyHurricaneTitle: 'Một cơn bão',
-  storyHurricaneNote: 'Đường vàng là đường đi thật của cơn bão. Đám mây là hình vẽ.',
+  storyHurricaneNote:
+    'Các bức ảnh là ảnh thật, chụp từ vũ trụ vào từng ngày. Đường vàng là đường đi thật của cơn bão. Giữa các ngày, đám mây là hình vẽ.',
+  storyHurricanePictureAlt:
+    'Một cơn bão nhìn từ vũ trụ: một xoáy mây trắng khổng lồ trên mặt biển xanh thẫm.',
   storyHurricaneBorn:
     'Cơn bão này tên là Sam. Nó sinh ra trên vùng biển ấm phía tây châu Phi, vào tháng 9 năm 2021.',
   storyHurricaneWarmSea:

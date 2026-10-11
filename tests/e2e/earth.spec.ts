@@ -77,13 +77,20 @@ test.describe('the Earth screen', () => {
     await expect(page.locator('.watch-caption h2')).toHaveText('A hurricane');
   });
 
-  test('says the storm’s path is real and its cloud a drawing, and tells nine parts', async ({
+  test('says what is a real picture, what is on record and what is drawn, and tells nine parts', async ({
     page,
   }) => {
+    const pictures: string[] = [];
+    page.on('response', (response) => {
+      if (/stories\/sam-.*\.webp/.test(response.url()) && response.ok())
+        pictures.push(response.url());
+    });
     await page.goto('/#earth/hurricane-sam');
     await expect(page.locator('.watch-path')).toHaveText(
-      'The line is where the storm really went. The cloud is a drawing.',
+      'The pictures are real, taken from space on each day. The line is where the storm really went. Between the days the cloud is a drawing.',
     );
+    // The real pictures of the storm come from the app itself, one for each day told.
+    await expect.poll(() => pictures.length).toBe(8);
     await expect(page.locator('.watch-step')).toHaveText('Part 1 of 9');
     await expect(page.locator('.watch-date')).toContainText('23 September 2021');
     await expect(page.locator('#scale-label, .scale-label').first()).toContainText('Real sizes');

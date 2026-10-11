@@ -7,19 +7,27 @@
 // ground. Earth is turned the way it faced at the first instant (JPL Horizons), so the storm
 // is over the right sea. The dates here are clock time (UTC), as the track's are; Horizons'
 // own clock was 69 s ahead, which is nothing to a storm that is on record every six hours.
-// The cloud is a drawing, and the screen says so: a spiral as wide as the record says gales
-// reached (so it grows as Sam grew), turning the way storms north of the equator turn, with
-// an eye drawn big enough to see. A real hurricane's cloud spreads much wider than its gales.
+// In each part the storm itself is a real picture: what the VIIRS camera on one of two
+// satellites saw that afternoon, from NASA Worldview, laid on the globe at its true place and
+// size. Each is a picture of one moment (the satellites pass at about half past one in the
+// afternoon, by the Sun, which over the middle of the Atlantic is between 16:00 and 18:00 UTC)
+// shown for three hours, while the line of the storm's middle goes on along its record. Of the
+// two satellites, the one whose passes do not join across the storm was picked for each day.
+// Between the days there is no picture, and the cloud is a drawing, which the screen says: a
+// spiral as wide as the record says gales reached, turning the way storms north of the equator
+// turn, with an eye drawn big enough to see. A real hurricane's cloud spreads much wider than
+// its gales, as the pictures show.
 // Each part shows three hours round the middle of the day over the storm, 15:00 to 18:00 UTC,
 // when the Sun is high over the middle of the Atlantic; the days between are run through quickly.
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
-import type { Story } from '../types';
+import type { StormPicture, Story } from '../types';
 import { SAM_2021_EARTH_TURN } from '../paths/sam2021EarthTurn';
 import { SAM_2021_TRACK } from '../paths/sam2021Track';
 import { s } from './sourced';
 import {
   JPL_HORIZONS_TURN_SAM_2021_EARTH,
   NASA_SPACE_PLACE_HURRICANES,
+  NASA_WORLDVIEW_SAM,
   NHC_HURDAT2_SAM,
   NHC_REPORT_SAM,
 } from './sources';
@@ -27,6 +35,7 @@ import {
 const TRACK = 'nhc-hurdat2-al182021';
 const REPORT = 'nhc-tcr-al182021';
 const NASA = 'nasa-space-place-hurricanes';
+const WORLDVIEW = 'nasa-worldview-sam-2021';
 
 /**
  * Three hours of a day of the track, given the Julian date of its record for 12:00 UTC: from
@@ -36,6 +45,25 @@ const afternoon = (noonJd: number, day: string) => ({
   atJd: s(noonJd + 0.125, TRACK, `15:00 UTC on ${day}, half way between two records.`),
   untilJd: s(noonJd + 0.25, TRACK, `The record of 18:00 UTC on ${day}.`),
 });
+/** The picture of one day, shown for the same three hours as the part of the story of that day. */
+const picture = (
+  day: string,
+  box: readonly [number, number, number, number],
+  noonJd: number,
+  date: string,
+): StormPicture => ({
+  media: {
+    file: `public/media/stories/sam-${day}.webp`,
+    kind: 'composite',
+    role: 'picture',
+    altKey: 'storyHurricanePictureAlt',
+    credit: 'NASA Worldview, NASA Earth Science Data and Information System (ESDIS)',
+  },
+  box: s(box, WORLDVIEW, `The square asked for: west, south, east, north, on ${date}.`),
+  fromJd: s(noonJd + 0.125, TRACK, `15:00 UTC on ${date}.`),
+  untilJd: s(noonJd + 0.25, TRACK, `18:00 UTC on ${date}.`),
+});
+
 const OVER_THE_STORM = { lookAtId: 'earth', closeUp: true, overStorm: true } as const;
 
 export const hurricaneSam: Story = {
@@ -46,7 +74,20 @@ export const hurricaneSam: Story = {
   noteKey: 'storyHurricaneNote',
   actorIds: ['earth', 'sun'],
   turned: { earth: SAM_2021_EARTH_TURN },
-  storm: { onId: 'earth', track: SAM_2021_TRACK },
+  storm: {
+    onId: 'earth',
+    track: SAM_2021_TRACK,
+    pictures: [
+      picture('2021-09-23', [-54, -4, -24, 26], 2459481, '23 September 2021'),
+      picture('2021-09-24', [-59, -3, -29, 27], 2459482, '24 September 2021'),
+      picture('2021-09-25', [-63, -2, -33, 28], 2459483, '25 September 2021'),
+      picture('2021-09-26', [-65, -1, -35, 29], 2459484, '26 September 2021'),
+      picture('2021-09-28', [-70, 3, -40, 33], 2459486, '28 September 2021'),
+      picture('2021-09-30', [-75, 8, -45, 38], 2459488, '30 September 2021'),
+      picture('2021-10-02', [-74, 20, -44, 50], 2459490, '2 October 2021'),
+      picture('2021-10-04', [-59, 29, -29, 59], 2459492, '4 October 2021'),
+    ],
+  },
   chapters: [
     {
       id: 'born',
@@ -154,6 +195,7 @@ export const hurricaneSam: Story = {
     NHC_HURDAT2_SAM,
     NHC_REPORT_SAM,
     NASA_SPACE_PLACE_HURRICANES,
+    NASA_WORLDVIEW_SAM,
     JPL_HORIZONS_TURN_SAM_2021_EARTH,
   ],
 };

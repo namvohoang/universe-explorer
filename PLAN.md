@@ -1136,7 +1136,16 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       in a slice, order and ratios of heights kept) and a scene piece that draws a cut through
       ground, sea or air with its label. Earth's layers for the slice through the whole
       planet, their depths from the source.
-- [ ] 14.5 Real pictures in Earth's stories. A story can already show real photos small in a
+- [x] 14.5 Done on 2026-10-11 for a storm: `StormPicture` lays a picture from NASA Worldview's
+      snapshot service on the globe by its four edges (`src/scene/groundPicture.ts`,
+      `tools/storms/fetchPicture.ts`), lit by the Sun like the ground, its edges faded into
+      the map. Eight pictures of Sam from the VIIRS cameras, each credited in `CREDITS.md` as
+      a composite: Worldview joins the passes of a day, and of the two satellites the one
+      whose join misses the storm was picked. `validate` holds the storm inside its picture
+      for as long as the picture is shown. The pictures weigh 4 MB together and are fetched
+      only when the story opens. Worldview's page is an app that draws the same picture, so
+      the picture itself, not a page of words, is what was opened and looked at. As planned:
+      Real pictures in Earth's stories. A story can already show real photos small in a
       corner (`photos` in `story.ts`), taken from the ground. Check that it serves a picture
       taken from space as well (its kind said where it is not a plain photo), and add only
       what is missing, so a real picture sits beside each drawing.
@@ -1168,8 +1177,10 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       eye drawn big enough to see. Each part shows 15:00 to 18:00 UTC of one day, and the
       days between are run through. The sea close up is blurred: the map of Earth is made
       for looking at from space (14.3). Left: the slice through the storm (14.4), real
-      pictures from space (14.5), the wind as a number that changes while the story plays, a
-      typhoon that reached Vietnam, and the recording. As planned: **Hurricane or typhoon.** `tracked`: the storm's place, wind and pressure every few
+      the wind as a number that changes while the story plays, a typhoon that reached Vietnam,
+      and the recording. Done since: real pictures (14.5), so in each part the storm is what
+      a satellite saw that afternoon, at its true place and size, and the sea round it is
+      sharp; the drawn cloud is left for the days between. As planned: **Hurricane or typhoon.** `tracked`: the storm's place, wind and pressure every few
       hours from the agency's best track, fetched by a tool into `src/data/paths/` like a
       flight's; its width from the record where given. `staged`: the turning cloud, which
       turns the right way for its half of the world, and the slice with the eye, the wall and

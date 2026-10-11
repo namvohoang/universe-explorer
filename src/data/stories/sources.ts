@@ -480,6 +480,14 @@ export const NHC_REPORT_SAM: Source = {
   retrieved: '2026-10-11',
 };
 
+export const NASA_WORLDVIEW_SAM: Source = {
+  id: 'nasa-worldview-sam-2021',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — true-colour pictures from the VIIRS cameras on the Suomi NPP and NOAA-20 satellites, 23 September to 4 October 2021, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=-65,-1,-35,29&l=VIIRS_NOAA20_CorrectedReflectance_TrueColor&t=2021-09-26',
+  retrieved: '2026-10-11',
+};
+
 export const NASA_SPACE_PLACE_HURRICANES: Source = {
   id: 'nasa-space-place-hurricanes',
   title: 'NASA Space Place — How Do Hurricanes Form?',

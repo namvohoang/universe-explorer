@@ -350,6 +350,35 @@ function stormErrors(story: Story): string[] {
   if (shown.some((jd) => jd < first || jd > last)) {
     errors.push(`${at} shows a time the storm's record says nothing of`);
   }
+  for (const picture of storm.pictures ?? []) {
+    const [west, south, east, north] = picture.box.value;
+    if (!(
+      west < east &&
+      south < north &&
+      west >= -180 &&
+      east <= 180 &&
+      south >= -90 &&
+      north <= 90
+    )) {
+      errors.push(`${at} a picture of the storm covers no part of a globe`);
+    }
+    const [fromJd, untilJd] = [picture.fromJd.value, picture.untilJd.value];
+    // A picture is of one day: shown for longer, it would stand for a storm that has moved on.
+    if (!(untilJd > fromJd && untilJd - fromJd <= 1 && fromJd >= first && untilJd <= last)) {
+      errors.push(
+        `${at} a picture of the storm is shown for no time, for over a day, or off its record`,
+      );
+    }
+    // The storm must be in its picture for as long as the picture is shown.
+    for (const jd of [fromJd, untilJd]) {
+      const near = points.reduce((best, point) =>
+        Math.abs(point[0] - jd) < Math.abs(best[0] - jd) ? point : best,
+      );
+      if (near[1] < west || near[1] > east || near[2] < south || near[2] > north) {
+        errors.push(`${at} a picture of the storm is shown while the storm is outside it`);
+      }
+    }
+  }
   for (const chapter of story.chapters) {
     if (chapter.overStorm !== undefined && chapter.closeUp !== true) {
       errors.push(

@@ -997,7 +997,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Tháng Mười, Trái Đất lại gặp bụi của sao chổi Halley. Rất nhiều sao băng trong một đêm được gọi là mưa sao băng.',
   storyHurricaneTitle: 'Một cơn bão',
   storyHurricaneNote:
-    'Các bức ảnh là ảnh thật, chụp từ vũ trụ vào từng ngày. Đường vàng là đường đi thật của cơn bão. Giữa các ngày, đám mây là hình vẽ.',
+    'Các bức ảnh và đường vàng là thật. Đám mây giữa các ngày và hình cơn bão cắt đôi là hình vẽ.',
   storyHurricanePictureAlt:
     'Một cơn bão nhìn từ vũ trụ: một xoáy mây trắng khổng lồ trên mặt biển xanh thẫm.',
   storyHurricaneBorn:
@@ -1008,6 +1008,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Cơn bão vừa lớn vừa xoay. Ở phía bắc xích đạo, bão xoay theo chiều này. Ở phía nam, bão xoay theo chiều ngược lại. Đó là vì chính Trái Đất đang quay.',
   storyHurricaneEye:
     'Ở giữa có một cái lỗ gọi là mắt bão. Trong mắt bão, trời lặng gió và quang mây. Gió mạnh nhất thổi vòng quanh mắt bão.',
+  storyHurricaneCut:
+    'Nếu cắt đôi cơn bão, ta sẽ thấy như thế này. Không khí ấm và ẩm (màu vàng) tràn vào trên mặt biển rồi bốc lên trong bức tường mây. Không khí mát và khô (màu xanh) chìm xuống trong mắt bão.',
   storyHurricaneStrongest: 'Lúc này Sam mạnh nhất. Gió của nó thổi 250 km mỗi giờ.',
   storyHurricaneNames:
     'Những cơn bão như Sam có tên gọi khác nhau ở mỗi nơi. Tiếng Anh gọi là hurricane, typhoon hay cyclone. Tất cả đều là cùng một loại bão.',
@@ -1062,6 +1064,9 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchGroupSkyEvents: 'Chuyện trên trời',
   watchGroupSpaceFlights: 'Chuyến bay vũ trụ',
   watchGroupEarthAtWork: 'Trái Đất chuyển động',
+  watchStormWind: 'Gió: {n} km mỗi giờ',
+  watchPaneSlice: 'Cắt đôi (hình vẽ)',
+  scaleLabelSlice: 'Bức ảnh là thật. Hình cắt đôi là hình vẽ, cao hơn cơn bão thật rất nhiều.',
   watchPlay: 'Chạy',
   watchPause: 'Tạm dừng',
   watchAgain: 'Xem lại',

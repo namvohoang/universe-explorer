@@ -76,6 +76,11 @@ export interface Chapter {
    * Beside it the whole picture is the same look from further off, where the whole world shows.
    */
   readonly overStorm?: true;
+  /**
+   * With `overStorm`, in a story whose storm has a `slice`: the storm cut in half is drawn
+   * beside the close look, in place of the whole picture.
+   */
+  readonly slice?: true;
   /** With `closeUp`: stands over this pole of the body, on its night side, in place of its sunlit side. */
   readonly over?: 'north' | 'south';
   /**
@@ -251,6 +256,20 @@ export interface StoryStorm {
    * and shown for a stretch of the story in place of the drawn cloud. Earliest first.
    */
   readonly pictures?: readonly StormPicture[];
+  /**
+   * The storm cut through its middle, as a drawing with moving dots of air. The widths of its
+   * eye and of the wall of cloud round the eye are real and keep their true ratio to how far
+   * its gales reached then; how tall it is drawn, and everything else, is a drawing, far
+   * taller than a real storm. The story must say so with `noteKey`.
+   */
+  readonly slice?: {
+    /** The instant the widths are of. */
+    readonly atJd: Sourced<number>;
+    /** From the storm's middle to the edge of its clear eye, in km. */
+    readonly eyeRadiusKm: Sourced<number>;
+    /** How far out the wall of cloud is drawn: as far as winds of hurricane force reached, in km. */
+    readonly wallReachKm: Sourced<number>;
+  };
 }
 
 /**

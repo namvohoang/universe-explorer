@@ -65,6 +65,20 @@ export function stormAt(points: readonly StormPoint[], jd: number): StormNow | n
 }
 
 /**
+ * A storm cut through its middle, for a drawing: how far out its clear eye ends and how far
+ * out the wall of cloud round it ends, as shares of how far out its gales reach, so that the
+ * three widths keep their true ratios. `null` when they are not in that order.
+ */
+export function sliceShares(
+  eyeRadiusKm: number,
+  wallReachKm: number,
+  galeReachKm: number,
+): { readonly eye: number; readonly wall: number } | null {
+  if (!(eyeRadiusKm > 0 && wallReachKm > eyeRadiusKm && galeReachKm > wallReachKm)) return null;
+  return { eye: eyeRadiusKm / galeReachKm, wall: wallReachKm / galeReachKm };
+}
+
+/**
  * The wind the record measures a storm's reach by: gales of 34 knots, in km/h (a knot is
  * 1.852 km/h by definition).
  */

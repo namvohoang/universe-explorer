@@ -1121,6 +1121,9 @@ export const en = {
   watchGroupSkyEvents: 'Sky events',
   watchGroupSpaceFlights: 'Space flights',
   watchGroupEarthAtWork: 'Earth at work',
+  watchStormWind: 'Wind: {n} km an hour',
+  watchPaneSlice: 'Cut in half (a drawing)',
+  scaleLabelSlice: 'The picture is real. The cut is a drawing, far taller than a real storm.',
   watchPlay: 'Play',
   watchPause: 'Pause',
   watchAgain: 'Play again',
@@ -1306,7 +1309,7 @@ export const en = {
     'There is a ring round the far south too. The green light comes from oxygen, about 100 km above the ground.',
   storyHurricaneTitle: 'A hurricane',
   storyHurricaneNote:
-    'The pictures are real, taken from space on each day. The line is where the storm really went. Between the days the cloud is a drawing.',
+    'The pictures and the line are real. The cloud between the days and the storm cut in half are drawings.',
   storyHurricanePictureAlt:
     'A hurricane seen from space: a great white spiral of cloud over the dark blue sea.',
   storyHurricaneBorn:
@@ -1317,6 +1320,8 @@ export const en = {
     'The storm turns as it grows. North of the equator, storms turn this way. South of it they turn the other way. That is because Earth itself is turning.',
   storyHurricaneEye:
     'In the middle is a hole called the eye. There the air is calm and clear. Round the eye blow the strongest winds.',
+  storyHurricaneCut:
+    'If you could cut the storm in half, it would look like this. Warm, wet air (yellow) flows in over the sea and rises in the wall of cloud. Cool, dry air (blue) sinks in the eye.',
   storyHurricaneStrongest: 'Now Sam is at its strongest. Its winds blow at 250 km an hour.',
   storyHurricaneNames:
     'Storms like Sam have different names in different places: hurricane, typhoon or cyclone. They are all the same kind of storm.',

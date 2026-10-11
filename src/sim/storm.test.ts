@@ -4,6 +4,7 @@ import type { StormPoint } from '../data/types';
 import {
   GALE_KM_PER_H,
   galeReachKm,
+  sliceShares,
   stormAt,
   stormPlace,
   stormTurnRad,
@@ -110,6 +111,21 @@ describe('stormTurnRad', () => {
     const calm: StormPoint = [100, -40, 10, 40, 1008, 0, 0, 0, 0, 'TD'];
     const stillCalm: StormPoint = [100.25, -41, 10, 40, 1008, 0, 0, 0, 0, 'TD'];
     expect(stormTurnRad([calm, stillCalm], 100.25)).toBe(0);
+  });
+});
+
+describe('sliceShares', () => {
+  it('keeps the true ratios of the three widths', () => {
+    const shares = sliceShares(9, 36, 180);
+    expect(shares?.eye).toBeCloseTo(0.05, 12);
+    expect(shares?.wall).toBeCloseTo(0.2, 12);
+    expect((shares?.wall ?? 0) / (shares?.eye ?? 1)).toBeCloseTo(36 / 9, 12);
+  });
+
+  it('is nothing when the eye is not inside the wall, or the wall not inside the gales', () => {
+    expect(sliceShares(40, 36, 180)).toBeNull();
+    expect(sliceShares(9, 200, 180)).toBeNull();
+    expect(sliceShares(0, 36, 180)).toBeNull();
   });
 });
 

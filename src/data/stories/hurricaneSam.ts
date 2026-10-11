@@ -77,6 +77,19 @@ export const hurricaneSam: Story = {
   storm: {
     onId: 'earth',
     track: SAM_2021_TRACK,
+    slice: {
+      atJd: s(2459484.25, TRACK, 'The record of 18:00 UTC on 26 September 2021.'),
+      eyeRadiusKm: s(
+        6.482,
+        REPORT,
+        'Half of "a diameter of near 7 n mi late on 26 September": 3.5 nautical miles of 1.852 km.',
+      ),
+      wallReachKm: s(
+        39.355,
+        TRACK,
+        'The same file’s record for 18:00 UTC on 26 September gives winds of hurricane force (64 knots) out to 25, 20, 20 and 20 nautical miles in its four quarters: their mean, 21.25, times 1.852 km.',
+      ),
+    },
     pictures: [
       picture('2021-09-23', [-54, -4, -24, 26], 2459481, '23 September 2021'),
       picture('2021-09-24', [-59, -3, -29, 27], 2459482, '24 September 2021'),
@@ -134,8 +147,20 @@ export const hurricaneSam: Story = {
       ...OVER_THE_STORM,
     },
     {
+      id: 'cut-in-half',
+      atJd: s(2459484.166667, TRACK, '16:00 UTC on 26 September 2021, between two records.'),
+      text: {
+        key: 'storyHurricaneCut',
+        sourceId: NASA,
+        quote:
+          "The small red arrows show warm, moist air rising from the ocean's surface, and forming clouds in bands around the eye. The blue arrows show how cool, dry air sinks in the eye and between the bands of clouds.",
+      },
+      ...OVER_THE_STORM,
+      slice: true,
+    },
+    {
       id: 'strongest',
-      atJd: s(2459484.1875, TRACK, '16:30 UTC on 26 September 2021, between two records.'),
+      atJd: s(2459484.208333, TRACK, '17:00 UTC on 26 September 2021, between two records.'),
       untilJd: s(2459484.25, TRACK, 'The record of 18:00 UTC on 26 September 2021.'),
       text: {
         key: 'storyHurricaneStrongest',

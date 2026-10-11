@@ -20,6 +20,7 @@ import {
   storyTimes,
   type StoryTimes,
 } from '../sim/story';
+import { stormAt } from '../sim/storm';
 import { create } from './dom';
 import { narrationFor } from './narration';
 import type { Speaker } from './speech';
@@ -41,6 +42,8 @@ const GROUP_DOTS: Readonly<Record<StoryGroup, string>> = {
   'space-flights': '#ffc53d',
   'earth-at-work': '#7ee0a1',
 };
+/** A storm's wind is told to the nearest so many km/h: its record is no finer than that. */
+const WIND_ROUNDED_TO_KM_PER_H = 10;
 /** A story shorter than this many days shows the minute as well as the hour. */
 const MINUTES_SHOWN_UNDER_DAYS = 3;
 
@@ -330,9 +333,15 @@ export function createWatch(host: WatchHost): Watch {
         : days < MINUTES_SHOWN_UNDER_DAYS
           ? formatDateAndMinute(jd)
           : formatDateAndHour(jd);
-    if (label !== shownDate) {
-      shownDate = label;
-      date.textContent = label;
+    // A storm's wind is told beside the date, as its record has it then.
+    const wind = story.storm ? stormAt(story.storm.track.points.value, jd)?.windKmPerH : undefined;
+    const dated =
+      wind === undefined
+        ? label
+        : `${label} · ${fill(words.watchStormWind, { n: Math.round(wind / WIND_ROUNDED_TO_KM_PER_H) * WIND_ROUNDED_TO_KM_PER_H })}`;
+    if (dated !== shownDate) {
+      shownDate = dated;
+      date.textContent = dated;
     }
     const progress = Math.round(storyProgress(times, jd) * SCRUBBER_STEPS);
     if (progress !== shownProgress) {

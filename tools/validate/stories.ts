@@ -379,7 +379,28 @@ function stormErrors(story: Story): string[] {
       }
     }
   }
+  if (storm.slice) {
+    const cutAt = storm.slice.atJd.value;
+    const record = points.reduce((best, point) =>
+      Math.abs(point[0] - cutAt) < Math.abs(best[0] - cutAt) ? point : best,
+    );
+    const gales = [record[5], record[6], record[7], record[8]].reduce<number>(
+      (sum, quarter) => sum + (quarter ?? 0) / 4,
+      0,
+    );
+    const eye = storm.slice.eyeRadiusKm.value;
+    const wall = storm.slice.wallReachKm.value;
+    // The three widths are the only real things in the drawing: they must nest.
+    if (!(eye > 0 && wall > eye && gales > wall)) {
+      errors.push(`${at} the storm cut in half has an eye, a wall and gales that do not nest`);
+    }
+  }
   for (const chapter of story.chapters) {
+    if (chapter.slice === true && (chapter.overStorm !== true || !storm.slice)) {
+      errors.push(
+        `${at} chapter "${chapter.id}" shows the storm cut in half but has no cut to show`,
+      );
+    }
     if (chapter.overStorm !== undefined && chapter.closeUp !== true) {
       errors.push(
         `${at} chapter "${chapter.id}" looks from over the storm but is not a close look`,

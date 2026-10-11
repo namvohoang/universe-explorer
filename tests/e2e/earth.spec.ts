@@ -77,7 +77,7 @@ test.describe('the Earth screen', () => {
     await expect(page.locator('.watch-caption h2')).toHaveText('A hurricane');
   });
 
-  test('says what is a real picture, what is on record and what is drawn, and tells nine parts', async ({
+  test('says what is a real picture, what is on record and what is drawn, and tells ten parts', async ({
     page,
   }) => {
     const pictures: string[] = [];
@@ -87,13 +87,30 @@ test.describe('the Earth screen', () => {
     });
     await page.goto('/#earth/hurricane-sam');
     await expect(page.locator('.watch-path')).toHaveText(
-      'The pictures are real, taken from space on each day. The line is where the storm really went. Between the days the cloud is a drawing.',
+      'The pictures and the line are real. The cloud between the days and the storm cut in half are drawings.',
     );
     // The real pictures of the storm come from the app itself, one for each day told.
     await expect.poll(() => pictures.length).toBe(8);
-    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 9');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 10');
     await expect(page.locator('.watch-date')).toContainText('23 September 2021');
+    // The wind is the record's, between its 12:00 and 18:00 that day, to the nearest 10 km/h.
+    await expect(page.locator('.watch-date')).toContainText('Wind: 90 km an hour');
     await expect(page.locator('#scale-label, .scale-label').first()).toContainText('Real sizes');
+  });
+
+  test('shows the storm cut in half as a drawing, and says it is one', async ({ page }) => {
+    await page.goto('/#earth/hurricane-sam');
+    const next = page.locator('.watch-step-button').nth(1);
+    for (let part = 1; part < 5; part++) await next.click();
+    await expect(page.locator('.watch-step')).toHaveText('Part 5 of 10');
+    await expect(page.locator('.pane:visible').last()).toContainText('Cut in half (a drawing)');
+    await expect(page.locator('#scale-label')).toHaveText(
+      'The picture is real. The cut is a drawing, far taller than a real storm.',
+    );
+    // The part after it has the whole picture back, and the usual sentence about scale.
+    await next.click();
+    await expect(page.locator('.pane:visible').last()).toContainText('The whole picture');
+    await expect(page.locator('#scale-label')).toContainText('Real sizes');
   });
 
   test('is left with Escape, back to the solar system', async ({ page }) => {

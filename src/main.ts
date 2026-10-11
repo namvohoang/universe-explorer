@@ -15,6 +15,7 @@ import {
 import { createDiagram, type Diagram } from './scene/diagram';
 import { createMeteorStreaks } from './scene/meteorStreaks';
 import { createSightLine } from './scene/sightLine';
+import { createStormSlice, type StormSlice } from './scene/stormSlice';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
   ZOOM_SECONDS,
@@ -29,7 +30,14 @@ import { FIELD_OF_VIEW_DEG, createStage, type FlyTo, type PaneBox } from './scen
 import { eclipticToScene, northPoleEcliptic, poleOf } from './sim/frames';
 import { DUST_TRAIL_RADIUS_KM } from './sim/dust';
 import { showerAt } from './sim/radiant';
-import { stormAt, stormPlace, stormTurnRad, turnsAnticlockwise } from './sim/storm';
+import {
+  galeReachKm,
+  sliceShares,
+  stormAt,
+  stormPlace,
+  stormTurnRad,
+  turnsAnticlockwise,
+} from './sim/storm';
 import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
@@ -496,16 +504,29 @@ function start(): void {
     const overStorm = stormView(story, chapter, STORM_WIDE_RADII * sideFit);
     const whole = overStorm ?? close ?? stageView(story, chapter, sideAspect, 1);
     const heldBearing = close?.direction ?? STAGE_DIRECTION;
-    stage.setPanes({
-      main,
-      side,
-      target: whole.target,
-      distance: whole.distanceNow ?? (() => whole.distance),
-      direction:
-        overStorm?.bearing ??
-        (close ? (close.bearing ?? (() => heldBearing)) : stageBearing(story, sideAspect)),
-      ...(diagram ? { scene: diagram.scene } : {}),
-    });
+    // A part that shows the storm cut in half has that drawing beside the close look.
+    const cut = chapter.slice === true ? stormSlice : null;
+    stage.setPanes(
+      cut
+        ? {
+            main,
+            side,
+            target: () => cut.target,
+            distance: () => cut.distance * sideFit,
+            direction: () => cut.direction,
+            scene: cut.scene,
+          }
+        : {
+            main,
+            side,
+            target: whole.target,
+            distance: whole.distanceNow ?? (() => whole.distance),
+            direction:
+              overStorm?.bearing ??
+              (close ? (close.bearing ?? (() => heldBearing)) : stageBearing(story, sideAspect)),
+            ...(diagram ? { scene: diagram.scene } : {}),
+          },
+    );
     const strings: Readonly<Record<string, string>> = words;
     const photos = [...(story.fromEarth ?? []), ...(story.photos ?? [])];
     const from = catalogue.find((o) => o.id === (chapter.standAtId ?? chapter.viewFromId));
@@ -528,13 +549,15 @@ function start(): void {
       },
       {
         box: side,
-        label: modelled
-          ? words.watchPaneWhole
-          : close
-            ? words.watchPaneClose
-            : diagram
-              ? words.watchPaneDrawing
-              : words.watchPaneWhole,
+        label: cut
+          ? words.watchPaneSlice
+          : modelled
+            ? words.watchPaneWhole
+            : close
+              ? words.watchPaneClose
+              : diagram
+                ? words.watchPaneDrawing
+                : words.watchPaneWhole,
       },
     ]);
   };
@@ -1737,9 +1760,13 @@ function start(): void {
     /** When each real picture of it is shown, in the order the scene was given them. */
     readonly pictured: readonly (readonly [fromJd: number, untilJd: number])[];
   } | null = null;
+  /** The storm of the story on show cut in half, as a drawing in a scene of its own. */
+  let stormSlice: StormSlice | null = null;
   /** Draws a story's storm, from the record of where it went. */
   const showStorm = (story: Story): void => {
     const { storm } = story;
+    stormSlice?.dispose();
+    stormSlice = null;
     const world = catalogue.find((object) => object.id === storm?.onId);
     const groundKm = world ? bodyRadiusKm(world) : null;
     if (!storm || groundKm === null) {
@@ -1755,6 +1782,19 @@ function start(): void {
       groundKm,
       pictured: pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]),
     };
+    if (storm.slice) {
+      // As wide as the gales reached at the instant the slice is of, by the record nearest it.
+      const at = storm.slice.atJd.value;
+      const record = points.reduce((best, point) =>
+        Math.abs(point[0] - at) < Math.abs(best[0] - at) ? point : best,
+      );
+      const shares = sliceShares(
+        storm.slice.eyeRadiusKm.value,
+        storm.slice.wallReachKm.value,
+        galeReachKm(record),
+      );
+      if (shares) stormSlice = createStormSlice(shares.eye, shares.wall);
+    }
     system.setStorm(storm.onId, points.map(stormPlace));
     system.setGroundPictures(
       storm.onId,
@@ -2017,6 +2057,7 @@ function start(): void {
                 chapter.closeUp,
                 chapter.over,
                 chapter.overStorm,
+                chapter.slice,
                 chapter.standOn?.value,
                 chapter.lookUpAt?.value,
                 // Shooting stars come from another spot in the sky at each meeting with the dust.
@@ -2045,7 +2086,10 @@ function start(): void {
               // A diagram on its own fills the room, and the screen says it is a drawing.
               diagramAlone = !paired && diagram !== null;
               stage.setScene(diagramAlone && diagram ? diagram.scene : null);
-              scaleLabel.textContent = words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+              scaleLabel.textContent =
+                chapter.slice === true && stormSlice
+                  ? words.scaleLabelSlice
+                  : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -2272,6 +2316,8 @@ function start(): void {
       system.setDust(null, clock.jd);
       system.setAurora(null, null);
       watchStorm = null;
+      stormSlice?.dispose();
+      stormSlice = null;
       system.setStorm(null, null);
       system.setGroundPictures(null, null);
       system.setSkyTrack(null);
@@ -2510,6 +2556,7 @@ function start(): void {
       watchJd = jd;
       system.setDate(jd);
       moveStorm(jd);
+      if (!reducedMotion) stormSlice?.flow(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
       if (moved && !reducedMotion) system.flowTails(dt);

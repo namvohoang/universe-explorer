@@ -91,7 +91,11 @@ export interface TrackedCraft {
      */
     lookShedAt(jd: number): number;
     /** The flames its engines make at a date, each under the part it belongs to, if any. */
-    flamesAt(jd: number): readonly { readonly flame: Flame; readonly under?: string }[];
+    flamesAt(jd: number): readonly {
+      readonly flame: Flame;
+      readonly under?: string;
+      readonly nozzlesAt?: readonly [number, number, number];
+    }[];
     /**
      * A part it has just let go of, drawn dropping behind it: the stretch of the model it
      * was (shares of its length) and how far behind, in km. `null` when there is none near.

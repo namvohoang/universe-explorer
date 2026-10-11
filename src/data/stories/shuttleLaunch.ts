@@ -72,7 +72,17 @@ export const shuttleLaunch: Story = {
       // before liftoff they start is not given, so their flame is drawn from liftoff).
       burns: [
         { fromJd: liftoff, untilJd: boostersAway, flame: 'bright', under: 'boosters' },
-        { fromJd: liftoff, untilJd: tankAway, flame: 'faint', under: 'orbiter' },
+        {
+          fromJd: liftoff,
+          untilJd: tankAway,
+          flame: 'faint',
+          under: 'orbiter',
+          nozzlesAt: s(
+            [0, -27.07, 3.1],
+            'nasa-space-shuttle-3d-model',
+            "Measured on NASA's model on 2026-10-11, in metres: the bells of the three main engines end at y = -27.07, between x = -2.75 and 2.79 and z = 0.45 and 5.70; the orbiter's tail fin reaches further back, to y = -29.04.",
+          ),
+        },
       ],
       // It climbs heads down, hanging under its tank; once the tank is let go it is drawn
       // rolling over, belly to the ground. When the real Shuttle rolled is not given here, so

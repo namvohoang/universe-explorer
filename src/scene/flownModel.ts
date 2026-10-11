@@ -1,3 +1,4 @@
+import type { BufferGeometry } from 'three';
 import {
   Box3,
   BufferAttribute,
@@ -117,6 +118,8 @@ function colourFlame(
 }
 
 const MODEL_NOSE = new Vector3(0, 1, 0);
+/** A flame under a part is centred on what lies in this share of its height at the bottom: its nozzles. A drawing choice. */
+const NOZZLE_SHARE = 0.03;
 
 /**
  * `url` is an agency's model that stands nose up along its own +y, as a rocket on its pad or
@@ -243,14 +246,30 @@ export function createFlownModel(
     upright.position.sub(new Vector3(middle.x, box.min.y + from * size.y, middle.z));
     holder.add(upright);
     group.add(holder);
-    // The bottom of each named piece, in the group's own units, for a flame drawn under it.
+    // The bottom of each named piece, in the group's own units, for a flame drawn under it:
+    // measured on its corners themselves (a box turned with the craft would be too big), and
+    // centred on what is at the very bottom, its nozzles.
     group.updateMatrixWorld(true);
     const toGroup = group.matrixWorld.clone().invert();
     for (const [piece, name] of pieces) {
-      const bounds = new Box3().setFromObject(piece).applyMatrix4(toGroup);
-      const centre = bounds.getCenter(new Vector3());
+      const corners: Vector3[] = [];
+      piece.traverse((part) => {
+        if (!(part instanceof Mesh)) return;
+        const position = (part.geometry as BufferGeometry).getAttribute('position');
+        const inGroup = toGroup.clone().multiply(part.matrixWorld);
+        for (let index = 0; index < position.count; index++) {
+          corners.push(new Vector3().fromBufferAttribute(position, index).applyMatrix4(inGroup));
+        }
+      });
+      if (corners.length === 0) continue;
+      const lowest = Math.min(...corners.map((corner) => corner.y));
+      const highest = Math.max(...corners.map((corner) => corner.y));
+      const bottom = new Box3().setFromPoints(
+        corners.filter((corner) => corner.y <= lowest + NOZZLE_SHARE * (highest - lowest)),
+      );
+      const centre = bottom.getCenter(new Vector3());
       const bottoms = partBottoms.get(name) ?? [];
-      bottoms.push(new Vector3(centre.x, bounds.min.y, centre.z));
+      bottoms.push(new Vector3(centre.x, lowest, centre.z));
       partBottoms.set(name, bottoms);
     }
     showParts();

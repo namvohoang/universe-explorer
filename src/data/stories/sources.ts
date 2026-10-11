@@ -504,6 +504,14 @@ export const NASA_STS_133: Source = {
   retrieved: '2026-10-07',
 };
 
+export const NASA_SHUTTLE_MODEL: Source = {
+  id: 'nasa-space-shuttle-3d-model',
+  title:
+    'NASA Science — 3D Resources: Space Shuttle (D), and Space Shuttle Parts (the 3D model the app draws)',
+  url: 'https://science.nasa.gov/3d-resources/space-shuttle-d/',
+  retrieved: '2026-10-11',
+};
+
 export const NASA_SRB_ET_FACTS: Source = {
   id: 'nasa-srb-et-facts',
   title:

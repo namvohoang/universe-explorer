@@ -16,6 +16,7 @@ import { STS_133_ASCENT, STS_133_ASCENT_TURN } from '../paths/sts133Ascent';
 import { s } from './sourced';
 import {
   JPL_HORIZONS_EARTH_TURN_STS_133_ASCENT,
+  NASA_SHUTTLE_MODEL,
   NASA_SHUTTLE_REFERENCE_ASCENT,
   NASA_SP4029_APOLLO_10_ASCENT,
   NASA_SRB_ET_FACTS,
@@ -65,12 +66,29 @@ export const shuttleLaunch: Story = {
         { atJd: boostersAway, part: 'boosters' },
         { atJd: tankAway, part: 'tank' },
       ],
-      // The two boosters blaze; once they are gone, the three main engines burn hydrogen with a
-      // pale flame.
+      // Each of the two boosters blazes under its own nozzle. The Shuttle's three main engines
+      // burn hydrogen from the tank, with a pale flame, from liftoff until the tank is let go
+      // (NASA: "After the main engines were running, the boosters were ignited"; how long
+      // before liftoff they start is not given, so their flame is drawn from liftoff).
       burns: [
-        { fromJd: liftoff, untilJd: boostersAway, flame: 'bright' },
-        { fromJd: boostersAway, untilJd: tankAway, flame: 'faint' },
+        { fromJd: liftoff, untilJd: boostersAway, flame: 'bright', under: 'boosters' },
+        { fromJd: liftoff, untilJd: tankAway, flame: 'faint', under: 'orbiter' },
       ],
+      // It climbs heads down, hanging under its tank; once the tank is let go it is drawn
+      // rolling over, belly to the ground. When the real Shuttle rolled is not given here, so
+      // the roll is a drawing.
+      belly: {
+        inModel: s(
+          [0, 0, -1],
+          'nasa-space-shuttle-3d-model',
+          "Measured on NASA's model on 2026-10-11: the orbiter lies on the +z side of the tank (its middle at z = 6.0 m, the tank's at z = -3.4 m), so its belly, fixed to the tank, faces -z.",
+        ),
+        turnsOverAtJd: s(
+          tankAway.value,
+          REFERENCE,
+          'As the tank is let go; a moment chosen, as the roll is a drawing.',
+        ),
+      },
       tower: true,
     },
   ],
@@ -83,9 +101,10 @@ export const shuttleLaunch: Story = {
   chapters: [
     {
       id: 'liftoff',
-      // The first seconds are played slowly, to watch the Shuttle leave the ground.
-      slowStart: { storySeconds: 24, overSeconds: 9 },
-      atJd: liftoff,
+      // It opens with the last five seconds before liftoff, counted down as a clock does,
+      // and the first seconds of the climb are played at that pace too.
+      slowStart: { storySeconds: 15, overSeconds: 15 },
+      atJd: at(-5, 'nasa-sts-133', 'Five seconds before liftoff.'),
       text: {
         key: 'storyShuttleLaunchLiftoff',
         sourceId: 'nasa-sts-133',
@@ -145,6 +164,7 @@ export const shuttleLaunch: Story = {
     NASA_STS_133,
     NASA_SRB_ET_FACTS,
     NASA_SHUTTLE_REFERENCE_ASCENT,
+    NASA_SHUTTLE_MODEL,
     NASA_SP4029_APOLLO_10_ASCENT,
     JPL_HORIZONS_EARTH_TURN_STS_133_ASCENT,
     NSSDC_EARTH_AIR,

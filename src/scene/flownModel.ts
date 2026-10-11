@@ -6,10 +6,11 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
-  type Object3D,
   Plane,
+  Quaternion,
   Vector3,
   type Material,
+  type Object3D,
 } from 'three';
 import type { Vec3 } from '../sim/vec3';
 import { loadGltf } from './gltf';
@@ -24,17 +25,28 @@ export interface FlownModel {
    * height, tail (0) to nose (1), is drawn: the rest is a stage let go, or the craft that
    * let this stage go.
    */
-  place(tail: Vec3, nose: Vec3, size: number, from: number, to: number): void;
+  place(
+    tail: Vec3,
+    nose: Vec3,
+    size: number,
+    from: number,
+    to: number,
+    belly?: { readonly inModel: Vec3; readonly towards: Vec3 },
+  ): void;
   /**
    * How tall the model is, tail to nose, as a share of its longest side: 1 for a rocket,
    * less for a craft wider than it is tall. 1 until the model has arrived.
    */
   tall(): number;
   /**
-   * Draws a flame behind what is left of the model, or none. `flicker` is any number that
-   * changes as time runs: the flame's length wavers with it.
+   * Draws the flames its engines make, or none: each under the part of the model's file it
+   * names (one under each piece of that part), or else behind what is left of the model.
+   * `flicker` is any number that changes as time runs: the flames' length wavers with it.
    */
-  setFlame(flame: Flame | null, flicker: number): void;
+  setFlames(
+    flames: readonly { readonly flame: Flame; readonly under?: string }[],
+    flicker: number,
+  ): void;
   /**
    * Draws only the parts of the model, named as in its file, that `shown` says yes to: a
    * part let go is hidden, or a part let go is all that is drawn. `null` draws every part.
@@ -113,7 +125,9 @@ const MODEL_NOSE = new Vector3(0, 1, 0);
  * `noseInModel`. A model that holds more than the craft (two craft joined) is given the
  * `stretch` of its length, tail to nose, that is the craft: only that is ever drawn, and the
  * shares given to `place` are shares of it. The size given to `place` is still the longest
- * side of the whole file. It is fetched at once; until it arrives nothing is drawn.
+ * side of the whole file. `place` may be given which way the model's belly faces in its file
+ * (`inModel`) and the way it is to face (`towards`): the model is turned about its length
+ * until it does. It is fetched at once; until it arrives nothing is drawn.
  */
 export function createFlownModel(
   url: string,
@@ -122,6 +136,12 @@ export function createFlownModel(
 ): FlownModel {
   const group = new Group();
   const towards = new Vector3();
+  const bellyNow = new Vector3();
+  const bellyWanted = new Vector3();
+  const across = new Vector3();
+  const roll = new Quaternion();
+  /** How the file is turned to stand nose up: its belly turns with it. */
+  const standUp = new Quaternion();
   // Everything behind the first plane and ahead of the second is left out. The renderer must
   // have local clipping on.
   const cut = new Plane();
@@ -134,16 +154,35 @@ export function createFlownModel(
     depthWrite: false,
     side: DoubleSide,
   });
-  const outer = new Mesh(flameCone(), flameMaterial);
-  const core = new Mesh(flameCone(), flameMaterial);
-  const flames = new Group();
-  flames.add(outer, core);
-  flames.visible = false;
-  group.add(flames);
-  let drawnFlame: Flame | null = null;
+  /** A flame: an outer cone and an inner one, coloured for the kind it last was. */
+  interface DrawnFlame {
+    readonly cones: Group;
+    readonly outer: Mesh<ConeGeometry, MeshBasicMaterial>;
+    readonly core: Mesh<ConeGeometry, MeshBasicMaterial>;
+    kind: Flame | null;
+  }
+  const drawnFlames: DrawnFlame[] = [];
+  const flameNumber = (index: number): DrawnFlame => {
+    const made = drawnFlames[index];
+    if (made) return made;
+    const outer = new Mesh(flameCone(), flameMaterial);
+    const core = new Mesh(flameCone(), flameMaterial);
+    const cones = new Group();
+    cones.add(outer, core);
+    group.add(cones);
+    const flame: DrawnFlame = { cones, outer, core, kind: null };
+    drawnFlames.push(flame);
+    return flame;
+  };
+  /** Where the engines of what is left are, along its length: where the last part came off. */
+  let tailY = 0;
+  /** Under each piece of a named part of the file: the middle of its bottom, in the group's units. */
+  const partBottoms = new Map<string, Vector3[]>();
   let tall = 1;
   /** Each mesh of the model, with the name of the part of the file it belongs to. */
   const parts: { readonly mesh: Object3D; readonly name: string }[] = [];
+  /** Each named piece of the file that holds a mesh: two boosters are two pieces of one part. */
+  const pieces = new Map<Object3D, string>();
   let partShown: ((name: string) => boolean) | null = null;
   const showParts = (): void => {
     for (const { mesh, name } of parts) mesh.visible = partShown === null || partShown(name);
@@ -163,7 +202,10 @@ export function createFlownModel(
     const partOf = (mesh: Object3D): string => {
       for (let node: Object3D | null = mesh; node && node !== model; node = node.parent) {
         const name: unknown = node.userData.name;
-        if (typeof name === 'string' && name !== '') return name;
+        if (typeof name === 'string' && name !== '') {
+          pieces.set(node, name);
+          return name;
+        }
       }
       return mesh.name;
     };
@@ -181,6 +223,7 @@ export function createFlownModel(
     if (noseInModel) {
       const lies = new Vector3(noseInModel.x, noseInModel.y, noseInModel.z).normalize();
       upright.quaternion.setFromUnitVectors(lies, MODEL_NOSE);
+      standUp.copy(upright.quaternion);
     }
     upright.add(model);
     upright.updateMatrixWorld(true);
@@ -200,16 +243,39 @@ export function createFlownModel(
     upright.position.sub(new Vector3(middle.x, box.min.y + from * size.y, middle.z));
     holder.add(upright);
     group.add(holder);
+    // The bottom of each named piece, in the group's own units, for a flame drawn under it.
+    group.updateMatrixWorld(true);
+    const toGroup = group.matrixWorld.clone().invert();
+    for (const [piece, name] of pieces) {
+      const bounds = new Box3().setFromObject(piece).applyMatrix4(toGroup);
+      const centre = bounds.getCenter(new Vector3());
+      const bottoms = partBottoms.get(name) ?? [];
+      bottoms.push(new Vector3(centre.x, bounds.min.y, centre.z));
+      partBottoms.set(name, bottoms);
+    }
     showParts();
     disposeModel = dispose;
   });
   return {
     group,
     tall: () => tall,
-    place(tail, nose, size, from, to) {
+    place(tail, nose, size, from, to, belly) {
       const length = size * tall;
       group.position.set(tail.x, tail.y, tail.z);
       group.quaternion.setFromUnitVectors(MODEL_NOSE, towards.set(nose.x, nose.y, nose.z));
+      if (belly) {
+        // Turned about its length until its belly, as it now faces, faces the way wanted.
+        bellyNow
+          .set(belly.inModel.x, belly.inModel.y, belly.inModel.z)
+          .applyQuaternion(standUp)
+          .applyQuaternion(group.quaternion);
+        bellyWanted.set(belly.towards.x, belly.towards.y, belly.towards.z);
+        const angle = Math.atan2(
+          towards.dot(across.copy(bellyNow).cross(bellyWanted)),
+          bellyNow.dot(bellyWanted),
+        );
+        group.quaternion.premultiply(roll.setFromAxisAngle(towards, angle));
+      }
       group.scale.setScalar(size);
       // A plane for an end that is not cut lies well clear of the model; the ends of a
       // stretch of a larger file are always cut.
@@ -221,20 +287,29 @@ export function createFlownModel(
       cutAt.copy(group.position).addScaledVector(towards, length * (to < 1 || cutsEnds ? to : 2));
       cutAhead.setFromNormalAndCoplanarPoint(back.copy(towards).negate(), cutAt);
       // The engines of what is left are where the last part came off.
-      flames.position.y = from * tall;
+      tailY = from * tall;
     },
-    setFlame(flame, flicker) {
-      flames.visible = flame !== null;
-      if (flame === null) return;
-      const { long, wide, strength, hot, cool } = FLAMES[flame];
-      if (flame !== drawnFlame) {
-        drawnFlame = flame;
-        colourFlame(outer.geometry, hot, cool, strength);
-        colourFlame(core.geometry, [1, 1, 1], hot, strength);
+    setFlames(burning, flicker) {
+      let used = 0;
+      for (const { flame, under } of burning) {
+        const { long, wide, strength, hot, cool } = FLAMES[flame];
+        const now = long * (1 + WAVER * Math.sin(flicker));
+        const at = under === undefined ? [null] : (partBottoms.get(under) ?? []);
+        for (const bottom of at) {
+          const drawn = flameNumber(used++);
+          if (drawn.kind !== flame) {
+            drawn.kind = flame;
+            colourFlame(drawn.outer.geometry, hot, cool, strength);
+            colourFlame(drawn.core.geometry, [1, 1, 1], hot, strength);
+          }
+          drawn.cones.visible = true;
+          if (bottom) drawn.cones.position.copy(bottom);
+          else drawn.cones.position.set(0, tailY, 0);
+          drawn.outer.scale.set(wide, now, wide);
+          drawn.core.scale.set(wide * CORE_SHARE, now * CORE_SHARE, wide * CORE_SHARE);
+        }
       }
-      const now = long * (1 + WAVER * Math.sin(flicker));
-      outer.scale.set(wide, now, wide);
-      core.scale.set(wide * CORE_SHARE, now * CORE_SHARE, wide * CORE_SHARE);
+      for (const unused of drawnFlames.slice(used)) unused.cones.visible = false;
     },
     showParts(shown) {
       if (shown === partShown) return;
@@ -244,8 +319,10 @@ export function createFlownModel(
     dispose() {
       disposed = true;
       group.removeFromParent();
-      outer.geometry.dispose();
-      core.geometry.dispose();
+      for (const { outer, core } of drawnFlames) {
+        outer.geometry.dispose();
+        core.geometry.dispose();
+      }
       flameMaterial.dispose();
       disposeModel?.();
     },

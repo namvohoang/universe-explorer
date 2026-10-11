@@ -87,8 +87,17 @@ function bentPlace(pad: Vec3, end: Vec3, s: number): Vec3 {
 }
 
 /**
+ * How long before its path starts a craft that stands on the ground may be shown waiting on
+ * its pad, riding round with the turning ground: room for a countdown. A drawing choice.
+ */
+export const ON_PAD_SECONDS = 60;
+/** The pad's place is drawn every this many seconds while the craft waits. A drawing choice. */
+const ON_PAD_STEP_SECONDS = 5;
+
+/**
  * The curve drawn through the known places of a staged path. A craft that stands on the
- * ground at the first of them leaves it from rest, and its first stretch is drawn as a climb
+ * ground at the first of them waits there on the turning ground for `ON_PAD_SECONDS` before
+ * it (standing still on it, so drawn upright), then leaves it from rest, and its first stretch is drawn as a climb
  * that starts straight up and bends over (`bentPlace`), riding round with the turning ground,
  * so it is not drawn setting off sideways; from the second place on the curve is drawn as
  * for any staged path.
@@ -132,6 +141,20 @@ export function stagedSamples(
       speed.z,
     ];
   };
+  const waiting: PathSample[] = [];
+  for (let seconds = ON_PAD_SECONDS; seconds > 0; seconds -= ON_PAD_STEP_SECONDS) {
+    const place = turnedAbout(pad, turning.north, -radiansPerSecond * seconds);
+    const speed = groundAt(place, turning);
+    waiting.push([
+      first[0] - seconds / SECONDS_PER_DAY,
+      place.x,
+      place.y,
+      place.z,
+      speed.x,
+      speed.y,
+      speed.z,
+    ]);
+  }
   const bend: PathSample[] = [];
   for (let step = 0; step <= BEND_STEPS; step++) bend.push(sampleAt(step / BEND_STEPS));
   // The ends are the known places themselves, not the bend's own sums of them.
@@ -141,7 +164,7 @@ export function stagedSamples(
   if (!last || !start) return drawn;
   bend[0] = start;
   bend[BEND_STEPS] = [second[0], second[1], second[2], second[3], last[4], last[5], last[6]];
-  return [...bend, ...rest];
+  return [...waiting, ...bend, ...rest];
 }
 
 /**
@@ -197,6 +220,55 @@ export function noseAlongPath(
     (burn) => burn.backwards?.value === true && burn.fromJd.value <= jd && jd < burn.untilJd.value,
   );
   return slowing ? scale(ahead, -1) : ahead;
+}
+
+/** A craft that rolls over is drawn turning over this many seconds. A drawing choice. */
+export const TURN_OVER_SECONDS = 8;
+/** Below this share of a turn's worth, "up" lies too nearly along the nose to say which side is up. */
+const ALONG_NOSE = 0.05;
+
+/**
+ * Which way a climbing craft's belly is drawn facing at a date: across its nose (a unit
+ * vector), up and away from the ground while it climbs, then rolled over, from
+ * `turnsOverAtJd` and over `TURN_OVER_SECONDS`, to face the ground. While the nose points
+ * nearly straight up, "up" says nothing about which side is which, and the belly faces back
+ * the way the craft will go, `downrange` taken off: which is where "up" goes as it leans.
+ */
+export function bellyTowards(
+  placeKm: Vec3,
+  nose: Vec3,
+  downrange: Vec3,
+  turnsOverAtJd: number,
+  jd: number,
+): Vec3 {
+  const across = (v: Vec3): Vec3 => subtract(v, scale(nose, dot(v, nose)));
+  const upAcross = across(normalize(placeKm));
+  const back = across(scale(downrange, -1));
+  const facing =
+    length(upAcross) > ALONG_NOSE || !(length(back) > 0) ? normalize(upAcross) : normalize(back);
+  const through = Math.min(
+    1,
+    Math.max(0, ((jd - turnsOverAtJd) * SECONDS_PER_DAY) / TURN_OVER_SECONDS),
+  );
+  const eased = through * through * (3 - 2 * through);
+  return turnedAbout(facing, nose, Math.PI * eased);
+}
+
+/** Every flame a craft's engines make at a date, each with the part it is under, if any. */
+export function flamesAt<Flame>(
+  burns: readonly {
+    readonly fromJd: { readonly value: number };
+    readonly untilJd: { readonly value: number };
+    readonly flame: Flame;
+    readonly under?: string;
+  }[],
+  jd: number,
+): { readonly flame: Flame; readonly under?: string }[] {
+  return burns
+    .filter((burn) => burn.fromJd.value <= jd && jd < burn.untilJd.value)
+    .map((burn) =>
+      burn.under === undefined ? { flame: burn.flame } : { flame: burn.flame, under: burn.under },
+    );
 }
 
 /** Which flame, if any, a craft's engines make at a date. */

@@ -11,6 +11,7 @@ import type {
   StoryCraft,
 } from '../../src/data/types';
 import { sourceErrors } from './catalogue';
+import { ON_PAD_SECONDS } from '../../src/sim/launch';
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -87,6 +88,7 @@ function pathErrors(
   name: string,
   path: SampledPath | StagedPath | GroundPath,
   known: ReadonlySet<string>,
+  onPadDays = 0,
 ): string[] {
   const errors: string[] = [];
   const at = `story ${story.id}: path of "${name}"`;
@@ -105,7 +107,8 @@ function pathErrors(
   const first = samples[0]?.[0] ?? Infinity;
   const last = samples[samples.length - 1]?.[0] ?? -Infinity;
   const start = story.chapters[0]?.atJd.value ?? first;
-  if (start < first || story.endJd.value > last) {
+  // A craft that stands on the ground may be shown waiting on its pad before its path starts.
+  if (start < first - onPadDays || story.endJd.value > last) {
     errors.push(`${at} does not cover the whole story`);
   }
   return errors;
@@ -218,12 +221,33 @@ function modelErrors(
   if ((craft.burns || craft.uprightUntilJd) && craft.modelOfId === undefined) {
     errors.push(`${at} has engine burns or a lean but is not drawn as a 3D model`);
   }
-  let burntUntilJd = -Infinity;
+  // Burns under the same part (or under none) take turns; under different parts they may overlap.
+  const burntUntilJd = new Map<string, number>();
   for (const burn of craft.burns ?? []) {
-    if (!(burn.fromJd.value >= burntUntilJd && burn.untilJd.value > burn.fromJd.value)) {
+    const engines = burn.under ?? '';
+    if (!(
+      burn.fromJd.value >= (burntUntilJd.get(engines) ?? -Infinity) &&
+      burn.untilJd.value > burn.fromJd.value
+    )) {
       errors.push(`${at} has engine burns that overlap or run backwards`);
     }
-    burntUntilJd = burn.untilJd.value;
+    burntUntilJd.set(engines, burn.untilJd.value);
+    const parts = craft.modelOfId === undefined ? undefined : modelParts.get(craft.modelOfId);
+    if (burn.under !== undefined && !parts?.has(burn.under)) {
+      errors.push(`${at} burns under "${burn.under}", which is not a part of its model's file`);
+    }
+  }
+  if (craft.belly) {
+    const [x, y, z] = craft.belly.inModel.value;
+    if (craft.modelOfId === undefined || craft.fromGround !== true) {
+      errors.push(`${at} turns its belly but is not a 3D model that climbs from the ground`);
+    }
+    if (Math.abs(Math.hypot(x, y, z) - 1) > 1e-9) {
+      errors.push(`${at} gives its belly a direction that is not of length one`);
+    }
+    if (story.noteKey === undefined) {
+      errors.push(`${at} is drawn rolling over, but the story has no note to say it is a drawing`);
+    }
   }
   if (craft.tower === true && craft.fromGround !== true) {
     errors.push(`${at} has a launch tower but does not start on the ground`);
@@ -366,7 +390,15 @@ export function checkStories(
       if (known.has(one.id)) {
         errors.push(`story ${story.id}: craft "${one.id}" has the id of a catalogue object`);
       }
-      errors.push(...pathErrors(story, one.id, one.path, known));
+      errors.push(
+        ...pathErrors(
+          story,
+          one.id,
+          one.path,
+          known,
+          one.fromGround === true ? ON_PAD_SECONDS / 86_400 : 0,
+        ),
+      );
       errors.push(...modelErrors(story, one, modelIds, modelParts));
     }
     if (story.air) {

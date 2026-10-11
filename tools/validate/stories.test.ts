@@ -53,7 +53,7 @@ describe('checkStories', () => {
         ]),
         new Map([
           ['sls', new Set(['boosters', 'core', 'engines', 'upper'])],
-          ['space-shuttle', new Set(['boosters', 'tank'])],
+          ['space-shuttle', new Set(['boosters', 'tank', 'orbiter'])],
         ]),
       ),
     ).toEqual([]);
@@ -221,6 +221,45 @@ describe('checkStories', () => {
       expect(checkStories([{ ...burning, noteKey: 'storyTestNote' }], IDS, MODELS)).toEqual([]);
       const tangled = flying({ modelOfId: 'toy-rocket', burns: [burn(10, 20), burn(15, 25)] });
       expect(checkStories([tangled], IDS, MODELS).join('\n')).toMatch(/overlap or run backwards/);
+      // Under different parts of the file, two engines burn at once.
+      const parts = new Map([['toy-rocket', new Set(['boosters', 'core'])]]);
+      const both = flying({
+        modelOfId: 'toy-rocket',
+        burns: [
+          { ...burn(10, 20), under: 'boosters' },
+          { ...burn(10, 25), under: 'core' },
+        ],
+      });
+      expect(checkStories([{ ...both, noteKey: 'storyTestNote' }], IDS, MODELS, parts)).toEqual([]);
+      const nowhere = flying({
+        modelOfId: 'toy-rocket',
+        burns: [{ ...burn(10, 20), under: 'fins' }],
+      });
+      expect(
+        checkStories([{ ...nowhere, noteKey: 'storyTestNote' }], IDS, MODELS, parts).join('\n'),
+      ).toMatch(/burns under "fins", which is not a part/);
+      const rolling = flying({
+        modelOfId: 'toy-rocket',
+        fromGround: true,
+        belly: {
+          inModel: { value: [0, 0, -1], sourceId: 'test' },
+          turnsOverAtJd: { value: 20, sourceId: 'test' },
+        },
+      });
+      expect(checkStories([rolling], IDS, MODELS).join('\n')).toMatch(
+        /rolling over, but the story has no note/,
+      );
+      const askew = flying({
+        modelOfId: 'toy-rocket',
+        fromGround: true,
+        belly: {
+          inModel: { value: [0, 0, -2], sourceId: 'test' },
+          turnsOverAtJd: { value: 20, sourceId: 'test' },
+        },
+      });
+      expect(
+        checkStories([{ ...askew, noteKey: 'storyTestNote' }], IDS, MODELS).join('\n'),
+      ).toMatch(/not of length one/);
       const towered = flying({ modelOfId: 'toy-rocket', fromGround: true, tower: true });
       expect(checkStories([towered], IDS, MODELS).join('\n')).toMatch(
         /tower, but the story has no note/,

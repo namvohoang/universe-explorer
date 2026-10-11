@@ -102,9 +102,14 @@ export const apollo11Launch: Story = {
   chapters: [
     {
       id: 'liftoff',
-      // The first seconds are played slowly, to watch the rocket leave the ground.
-      slowStart: { storySeconds: 24, overSeconds: 9 },
-      atJd: s(2440419.063896181, TABLE, 'Liftoff, 0.63 s after 13:32:00 UTC on 1969-07-16.'),
+      // It opens with the last five seconds before liftoff, counted down as a clock does,
+      // and the first seconds of the climb are played at that pace too.
+      slowStart: { storySeconds: 15, overSeconds: 15 },
+      atJd: s(
+        2440419.063896181 - 5 / 86_400,
+        TABLE,
+        'Five seconds before liftoff, which was 0.63 s after 13:32:00 UTC on 1969-07-16.',
+      ),
       text: {
         key: 'storyApollo11LaunchLiftoff',
         sourceId: STUDENTS,

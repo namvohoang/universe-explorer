@@ -243,11 +243,28 @@ export interface StoryCraft {
     readonly untilJd: Sourced<number>;
     readonly flame: 'bright' | 'faint';
     /**
+     * A part of the model's file whose engines these are: a flame is drawn under each piece
+     * of it (each of two boosters), not under the middle of the craft. Burns under different
+     * parts may burn at the same time.
+     */
+    readonly under?: string;
+    /**
      * Set when the burn slowed the craft along the way it was going, as the agency's
      * numbers show: it is drawn tail first for as long, its engine pushing against its path.
      */
     readonly backwards?: Sourced<true>;
   }[];
+  /**
+   * With `modelOfId`, for a craft that climbs from the ground: which way its belly faces in
+   * its model's file, a unit vector across its length. While it climbs, its belly is drawn
+   * facing up, away from the ground (a Shuttle hanging under its tank, heads down); from
+   * `turnsOverAtJd` it rolls over, in a few seconds, so that its belly faces the ground.
+   * Which way it faces is a drawing, and the story must say so with `noteKey`.
+   */
+  readonly belly?: {
+    readonly inModel: Sourced<readonly [number, number, number]>;
+    readonly turnsOverAtJd: Sourced<number>;
+  };
   /**
    * With `modelOfId`, for a craft on a sampled path: one of the story's tracked bodies. The
    * model is drawn nose first the way the craft moves as seen from that body (a moon it flies

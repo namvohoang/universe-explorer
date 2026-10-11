@@ -1273,7 +1273,7 @@ export const en = {
     'There is a ring round the far south too. The green light comes from oxygen, about 100 km above the ground.',
   storyShuttleLaunchTitle: 'The Shuttle: the launch',
   storyShuttleLaunchNote:
-    'The time and the heights are real. The path, the lean, the flame and smoke, the tower, the clouds and the colours are drawings.',
+    'The time and the heights are real. The path, the lean and roll, the flame and smoke, the tower, the clouds and the colours are drawings.',
   storyShuttleLaunchLiftoff:
     'Liftoff! Discovery rises from Florida with six astronauts, on their way to the space station.',
   storyShuttleLaunchBoostersAway:

@@ -929,6 +929,19 @@ recorded last.
       whole picture of a craft on a tracked path is the whole stage (Earth, the Moon and the
       path), not the look from just over the craft, which suits a craft near the ground; this
       holds for Artemis II as well.
+- [x] 12.33 The Shuttle: the launch (owner's request, 2026-10-11: the Shuttle's launch and its
+      parts coming away). Discovery's last flight, STS-133, from Pad 39A at NASA's own liftoff
+      time (24 February 2011, 21:53:24 UTC), leading into "A shuttle meets the station". The
+      heights and times are NASA's for a usual flight: the boosters let go at 124 s, 47.5 km
+      up (NASA Facts, Solid Rocket Boosters and External Tank), and the tank about 8.5 minutes
+      in, about 113 km up (NASA's Shuttle reference). NASA gives no track over the ground, so
+      the line is drawn north-east, into the plane of the space station's orbit (inclination
+      from JPL Horizons), as far as Apollo 10 had gone at each second; Horizons turns each
+      place into space (`tools/horizons/sts133Ascent.json`). The story plays on 20 seconds
+      after the tank lets go, held at the tank's height, a drawing, so the tank is seen
+      falling away. Close up it is NASA's Shuttle model at true size: the boosters blaze, then
+      the main engines' pale flame. A model's parts are now its named nodes, so the Shuttle's
+      two boosters and its tank are let go as parts of the file.
 - [~] 12.12 Done: Vietnamese text for every story; a section on the grown-ups' page saying
       what in a story is real and what is drawn, with the stories' sources; and "Read it to
       me" on each part of a story, in English, with the voice on the device. The recording

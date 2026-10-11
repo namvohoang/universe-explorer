@@ -504,6 +504,31 @@ export const NASA_STS_133: Source = {
   retrieved: '2026-10-07',
 };
 
+export const NASA_SRB_ET_FACTS: Source = {
+  id: 'nasa-srb-et-facts',
+  title:
+    'NASA Facts — Solid Rocket Boosters and External Tank (Kennedy Space Center): when and how high the boosters separate',
+  url: 'https://www3.nasa.gov/centers/kennedy/pdf/146685main_srb-et.pdf',
+  retrieved: '2026-10-11',
+};
+
+// The same page as the catalogue's `nasa-shuttle-reference`, written again here so that the
+// stories do not reach into the catalogue's sources.
+export const NASA_SHUTTLE_REFERENCE_ASCENT: Source = {
+  id: 'nasa-shuttle-reference-ascent',
+  title: 'NASA — The Space Shuttle (reference): the climb to orbit, the boosters and the tank',
+  url: 'https://www.nasa.gov/reference/the-space-shuttle/',
+  retrieved: '2026-10-11',
+};
+
+export const JPL_HORIZONS_EARTH_TURN_STS_133_ASCENT: Source = {
+  id: 'jpl-horizons-earth-turn-sts133ascent',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at Discovery’s liftoff on STS-133 (2011-02-24 21:53:24 UTC), ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272455617.412849366%27',
+  retrieved: '2026-10-11',
+};
+
 export const NASA_STS_133_DOCKING_PHOTO: Source = {
   id: 'nasa-sts-133-docking-photo',
   title: 'NASA — International Space Station (photo S133-E-006859, 26 Feb. 2011)',

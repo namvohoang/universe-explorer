@@ -38,6 +38,7 @@ import { apollo11Landing } from '../src/data/stories/apollo11Landing';
 import { apollo11Launch } from '../src/data/stories/apollo11Launch';
 import { artemis1 } from '../src/data/stories/artemis1';
 import { artemis1Launch } from '../src/data/stories/artemis1Launch';
+import { shuttleLaunch } from '../src/data/stories/shuttleLaunch';
 import { artemis2 } from '../src/data/stories/artemis2';
 import { aurora } from '../src/data/stories/aurora';
 import { halleyTail } from '../src/data/stories/halleyTail';
@@ -328,6 +329,75 @@ describe('the launch of Artemis I', () => {
     expect(shedShareAt(sheds, liftoffJd + 494 * second)).toBe(0);
     expect(shedShareAt(sheds, artemis1Launch.endJd.value)).toBeGreaterThan(0);
     expect(artemis1Launch.endJd.value).toBeCloseTo(liftoffJd + 495 * second, 9);
+  });
+});
+
+describe('the launch of the Space Shuttle', () => {
+  const flown = shuttleLaunch.craft?.[0];
+  const path = flown?.path;
+  const points = path && 'points' in path && !('heading' in path) ? path.points.value : [];
+  const earth = catalogue.find((object) => object.id === 'earth') ?? fail();
+  const turning = turningOf(earth);
+  const samples =
+    path && 'points' in path && !('heading' in path) ? stagedSamples(path, true, turning) : [];
+  const liftoffJd = points[0]?.[0] ?? 0;
+  const { shape } = earth;
+  if (shape?.type !== 'spheroid') throw new Error('Earth is drawn as a spheroid');
+  const [a, b] = [shape.equatorialRadiusKm.value, shape.polarRadiusKm.value];
+  /**
+   * Height over the ground under it, km. The drawn line heads north-east, where Earth's
+   * flattened ground lies nearer its centre, so the ground is the catalogue's spheroid there.
+   */
+  const heightKm = (jd: number): number => {
+    const place = eclipticToEquatorial(pathPositionKm(samples, jd));
+    const out = Math.hypot(place.x, place.y, place.z);
+    const latitude = Math.asin(place.z / out);
+    const ground = (a * b) / Math.hypot(b * Math.cos(latitude), a * Math.sin(latitude));
+    return out - ground;
+  };
+  /** NASA's heights are given to 0.1 km; the curve between places is held to them within this. */
+  const HEIGHT_TOLERANCE_KM = 0.1;
+  const second = 1 / 86_400;
+
+  it("lifts off at NASA's time for STS-133 and passes NASA's heights at NASA's times", () => {
+    // NASA's STS-133 page: "Launched: Feb. 24, 2011 at 4:53:24 p.m. EST" (21:53:24 UTC).
+    expect(liftoffJd).toBeCloseTo(Date.parse('2011-02-24T21:53:24Z') / 86_400_000 + 2_440_587.5, 8);
+    // NASA Facts: boosters separate at 124 s, "156,000 feet (47,549 meters)"; NASA's reference:
+    // the tank separates about 8.5 minutes in, "approximately 113 kilometers" up.
+    for (const [seconds, km] of [
+      [0, 0],
+      [124, 47.549],
+      [510, 113],
+    ] as const) {
+      expect(Math.abs(heightKm(liftoffJd + seconds * second) - km), String(seconds)).toBeLessThan(
+        HEIGHT_TOLERANCE_KM,
+      );
+    }
+  });
+
+  it('blazes with the boosters until they go, then burns pale until the tank is let go', () => {
+    const burns = flown?.burns ?? [];
+    expect(flameAt(burns, liftoffJd - second)).toBeNull();
+    expect(flameAt(burns, liftoffJd)).toBe('bright');
+    expect(flameAt(burns, liftoffJd + 123 * second)).toBe('bright');
+    expect(flameAt(burns, liftoffJd + 125 * second)).toBe('faint');
+    expect(flameAt(burns, liftoffJd + 511 * second)).toBeNull();
+  });
+
+  it('lets go of the two boosters, then the tank, and is seen for a while after', () => {
+    const letsGo = flown?.letsGo ?? [];
+    expect(partsGoneAt(letsGo, liftoffJd + 123 * second)).toEqual([]);
+    expect(partsGoneAt(letsGo, liftoffJd + 124 * second)).toEqual(['boosters']);
+    expect(partsGoneAt(letsGo, liftoffJd + 509 * second)).toEqual(['boosters']);
+    expect(partsGoneAt(letsGo, liftoffJd + 510 * second)).toEqual(['boosters', 'tank']);
+    expect(shuttleLaunch.endJd.value).toBeCloseTo(liftoffJd + 530 * second, 9);
+  });
+
+  it('leads into the docking: the same Discovery, two days before it meets the station', () => {
+    expect(flown?.nameKey).toBe('craftDiscovery');
+    const docking = shuttleDocking.chapters.at(-1)?.atJd.value ?? 0;
+    expect(docking - liftoffJd).toBeGreaterThan(1.8);
+    expect(docking - liftoffJd).toBeLessThan(2.0);
   });
 });
 

@@ -159,9 +159,17 @@ export function createFlownModel(
         }
       });
     };
+    /** The part of the file a mesh belongs to: the nearest node above it, or itself, with a name. */
+    const partOf = (mesh: Object3D): string => {
+      for (let node: Object3D | null = mesh; node && node !== model; node = node.parent) {
+        const name: unknown = node.userData.name;
+        if (typeof name === 'string' && name !== '') return name;
+      }
+      return mesh.name;
+    };
     model.traverse((part) => {
       if (!(part instanceof Mesh)) return;
-      parts.push({ mesh: part as Object3D, name: part.name });
+      parts.push({ mesh: part as Object3D, name: partOf(part) });
       for (const material of [part.material].flat() as Material[]) {
         material.clippingPlanes = [cut, cutAhead];
         // Cut open, a stage is seen into: its inside wall is drawn, not left as a hole.

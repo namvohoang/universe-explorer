@@ -968,6 +968,17 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Ở trên cao, các hạt va vào không khí và làm nó phát sáng. Ánh sáng đó là cực quang. Người ta thấy nó nhiều nhất trong một vòng quanh vùng cực bắc.',
   storyAuroraSouthToo:
     'Quanh vùng cực nam cũng có một vòng như thế. Ánh sáng xanh là của khí ô-xy, ở cao khoảng 100 km trên mặt đất.',
+  storyShuttleLaunchTitle: 'Tàu con thoi: lúc phóng',
+  storyShuttleLaunchNote:
+    'Thời điểm và độ cao là thật. Đường bay, độ nghiêng, ngọn lửa và khói, tháp phóng, mây và màu sắc là hình vẽ.',
+  storyShuttleLaunchLiftoff:
+    'Cất cánh! Discovery bay lên từ Florida, chở sáu phi hành gia tới trạm vũ trụ.',
+  storyShuttleLaunchBoostersAway:
+    'Hai tên lửa đẩy màu trắng đã đốt hết nhiên liệu. Chúng tách ra và rơi xuống biển bằng dù.',
+  storyShuttleLaunchMainEngines:
+    'Giờ chỉ còn ba động cơ chính đẩy tàu. Chúng đốt nhiên liệu từ thùng lớn màu cam, và Discovery bay nhanh hơn, nhanh hơn nữa.',
+  storyShuttleLaunchTankAway:
+    'Động cơ tắt và thùng nhiên liệu rỗng tách ra. Nó rơi lại và phần lớn cháy rụi trong không khí. Discovery bay tiếp mà không có nó.',
   storyShuttleDockingTitle: 'Tàu con thoi gặp trạm vũ trụ',
   storyShuttleDockingNote: 'Trạm: đường thật. Tàu con thoi và lúc ghép nối: hình vẽ.',
   craftSpaceStation: 'Trạm vũ trụ',

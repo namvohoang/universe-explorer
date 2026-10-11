@@ -21,9 +21,10 @@ function glbPartNames(path: string): ReadonlySet<string> {
   // A 12-byte header, then the first chunk: its length, its type, and the JSON itself.
   const jsonLength = file.readUInt32LE(12);
   const json = JSON.parse(file.subarray(20, 20 + jsonLength).toString('utf8')) as {
-    readonly meshes?: readonly { readonly name?: string }[];
+    readonly nodes?: readonly { readonly name?: string }[];
   };
-  return new Set((json.meshes ?? []).flatMap((mesh) => (mesh.name ? [mesh.name] : [])));
+  // A part is a named node: everything drawn under it belongs to it.
+  return new Set((json.nodes ?? []).flatMap((node) => (node.name ? [node.name] : [])));
 }
 
 function filesUnder(dir: string): string[] {

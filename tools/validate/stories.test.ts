@@ -49,8 +49,12 @@ describe('checkStories', () => {
           'orion-craft',
           'iss',
           'discovery',
+          'space-shuttle',
         ]),
-        new Map([['sls', new Set(['boosters', 'core', 'engines', 'upper'])]]),
+        new Map([
+          ['sls', new Set(['boosters', 'core', 'engines', 'upper'])],
+          ['space-shuttle', new Set(['boosters', 'tank'])],
+        ]),
       ),
     ).toEqual([]);
   });

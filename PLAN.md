@@ -1014,6 +1014,139 @@ the controls leave the view its room. Tasks keep the spec's names and its order 
 `tests/e2e/screens.ts`, in English and Vietnamese where words are measured; every control is
 still 44 px or more; what is to scale is always said on screen; the gate passes.
 
+### Phase 14 — Earth at work: earthquakes, tsunamis, storms and tornadoes (asked for on 2026-10-11)
+
+The owner asked for animations or simulations of what happens on Earth itself: an earthquake, a
+tsunami, a storm, a tornado and the like. Each is a **story** on the Watch screen, in a third
+group ("Earth at work") beside the sky events and the space flights, built on what Phase 12
+already has: chapters on a real clock, the globe turned the way it really faced, close-ups, the
+look from a place on the ground, the scrubber, the captions and the recordings.
+
+Nothing below is decided until the three open decisions it leans on are (§8, 9 to 11). No
+number is written in this plan: every size, speed, depth and time is looked up in 14.1 and after.
+
+**Each story is one real event, shown twice.** First on the globe at true scale (where it
+happened, how big it was against Earth, how it moved), then in a close-up or a slice cut
+through the ground, the sea or the cloud (how it works). The first is mostly a record; the
+second is mostly a drawing, and says so.
+
+**Not a weather or ocean simulator.** The app does not solve the flow of air or water in the
+browser: that could not be checked against anything and would look real while being made up. A
+story moves in one of four ways, and the screen says which, as it does for flights:
+
+| Path | Meaning | What the kid is told |
+|---|---|---|
+| `orbits` | Worked out from the catalogue (the tides, from where the Moon and Sun are) | Only the scale label |
+| `tracked` | Places and times from the agency's record (a storm's track, a tornado's surveyed path, where the ground shook) | "This is where it really went." |
+| `worked-out` (new) | Worked out by the app from a simple, tested rule and real data (how long a wave takes to cross an ocean of the real depth), and held by a test to what was measured | "Worked out from how deep the sea is. Real waves arrived at about these times." |
+| `staged` | Real times and places; the movement between them is drawn (the clouds of a storm, the funnel, the ground slipping) | "The times are real. The picture is a drawing." |
+
+**A new scale mode for slices.** The sea is a few kilometres deep and thousands wide; a storm
+is far wider than it is tall. A slice at true scale would be a flat line, so heights in a slice
+are stretched by one named factor in `src/sim/scale.ts`, the same for everything in the slice,
+with its sentence on screen ("Drawn much taller than it is, so you can see it"). The globe view
+stays at true scale.
+
+**Sources.** The space agencies on the lists in `.claude/rules/` do not hold these records.
+The candidates, each to be opened and read in 14.1 (as Horizons was on 2026-10-07) before
+anything is built on it:
+
+| Data | Candidate source |
+|---|---|
+| Earthquakes: place, depth, time, size, where the ground shook, the fault, plate edges | USGS Earthquake Hazards Program (earthquake.usgs.gov) |
+| When earthquake waves reach far places, and Earth's layers | USGS, and the standard table of travel times it uses |
+| Tsunamis: source, arrival times and heights at buoys and gauges | NOAA (NCEI tsunami database, the DART buoys, the Center for Tsunami Research) |
+| Depth of the sea and height of the land | NOAA ETOPO |
+| Hurricanes and typhoons: track, wind, pressure, size | NOAA National Hurricane Center (Atlantic, east Pacific); NOAA IBTrACS and the Japan Meteorological Agency (the typhoons that reach Vietnam) |
+| Tornadoes: surveyed path, width, rating | NOAA National Weather Service and Storm Prediction Center |
+| Volcanoes | Smithsonian Global Volcanism Program, USGS Volcano Hazards Program |
+| Pictures from space, maps of Earth's surface | NASA (Earth Observatory, Worldview, Scientific Visualization Studio), NOAA's weather satellites |
+| How to stay safe | The same agencies' own pages for families |
+
+- [ ] 14.1 Research, no code. For each candidate source: what it really holds, in what form,
+      under what licence, written here as "Found on" notes. Choose one event per story
+      (decision 10), preferring one that was measured well, seen from space, and that the
+      agency itself tells calmly. Candidates to weigh, none chosen: an earthquake whose ground
+      break can be seen in satellite pictures; a tsunami that crossed the Pacific past many
+      buoys; the Hunga Tonga eruption of 2022, seen from space, for the volcano; an Atlantic
+      hurricane with a full track; a typhoon that reached Vietnam; a tornado with a surveyed
+      path. Add the approved sources to `data.md` and `media.md`.
+- [ ] 14.2 Types and checks. `src/data/types/earthEvent.ts`: a discriminated union on `kind`
+      (`earthquake`, `tsunami`, `tropical-cyclone`, `tornado`, `eruption`), units in every
+      field name (`depthKm`, `lonDegEast`, `latDegNorth`, `windKmPerH`, `pressureHpa`), each
+      value `Sourced`, unknowns `null` with a reason. The `earth` story group and the
+      `worked-out` path in `story.ts`, with its sentence. `validate`: every event value
+      sourced; a staged or worked-out story says so; a slice carries the stretched-scale label.
+- [ ] 14.3 Earth close up. The globe is drawn for looking at from space; these stories stand a
+      few hundred kilometres over one region. A sharper NASA map of the region loaded only for
+      its story, the sea floor from the depth data, and the plate edges as lines, each with
+      its `CREDITS.md` row. Great-circle distance and bearing in `src/sim/` (some is in
+      `groundPatch.ts` already), tested.
+- [ ] 14.4 The slice. The stretched-height scale mode (pure, tested: one factor for everything
+      in a slice, order and ratios of heights kept) and a scene piece that draws a cut through
+      ground, sea or air with its label. Earth's layers for the slice through the whole
+      planet, their depths from the source.
+- [ ] 14.5 A picture in a story part (left over from 12.7): a chapter can show one credited
+      photo with its kind and alt text, so a real picture from space sits beside the drawing.
+- [ ] 14.6 **Earthquake.** `tracked`: the place, depth and time, and the map of how hard the
+      ground shook. `worked-out`: the waves spreading through and round Earth
+      (`src/sim/seismic.ts`, from the table of travel times), the fast wave and the slow one,
+      and the far side of Earth the slow one never reaches because it cannot cross the liquid
+      part of the core; a test holds the arrival at several real stations to the times
+      recorded. `staged`: the two sides of the fault slipping, in the slice. Parts: the plates
+      push; the fault slips; the waves go out; the waves cross Earth; how the size of a quake
+      is told; what keeps people safe.
+- [ ] 14.7 **Tsunami**, following from an earthquake or an eruption. `worked-out`: the front
+      of the wave crossing the ocean, its speed at each place from the depth there
+      (`src/sim/tsunami.ts`, pure; the grid of arrival times made once by a tool in `tools/`
+      and stored with its source). A test holds the arrival at each buoy and gauge NOAA lists
+      to the measured time, within a named tolerance that is not widened. `staged`: the slice
+      showing the wave low and fast over deep water, slower and taller near the shore.
+      Parts: the sea floor moves; the wave sets off; across the ocean as fast as a jet (the
+      comparison worked out from the data, not typed); the buoys that feel it pass; reaching
+      the shore; the warning that goes ahead of it.
+- [ ] 14.8 **Hurricane or typhoon.** `tracked`: the storm's place, wind and pressure every few
+      hours from the agency's best track, fetched by a tool into `src/data/paths/` like a
+      flight's; its width from the record where given. `staged`: the turning cloud, which
+      turns the right way for its half of the world, and the slice with the eye, the wall and
+      the bands of rain. Real pictures from space in two or three parts (14.5). Parts: warm
+      sea; the storm gathers and spins; the eye; the track across the ocean; over land it
+      weakens; hurricane, typhoon and cyclone are one thing with three names; forecasts and
+      warnings. If decision 10 allows two storms: one Atlantic, one that reached Vietnam.
+- [ ] 14.9 **Tornado.** `tracked`: the surveyed path on the ground, its length, width and
+      rating. `staged`: the storm cloud and the funnel, drawn at true size on the ground view
+      Phase 12 built for launches. The card says what is not known: why one storm makes a
+      tornado and the next does not, and that the rating comes from the damage, not from a
+      measured wind. Parts: the tall storm; the turning air; the funnel touches down; the
+      path; how small it is beside a hurricane; shelter and warnings.
+- [ ] 14.10 **Volcano** (the eruption chosen in 14.1), if the first four have gone well: the
+      cloud's height and spread as seen from space, the slice through the mountain, and, if
+      it is Hunga Tonga, the wave it sent across the sea (14.7's maths again).
+- [ ] 14.11 **The tides**: `orbits`, with no new source. The sea's two bulges following the
+      Moon, and the bigger tides when the Sun and Moon line up, from the catalogue's own
+      positions. Ties Earth's stories to the sky ones.
+- [ ] 14.12 How big? In Compare: a tornado, a thunderstorm, a hurricane, the country of
+      Vietnam and Earth lined up at true size, each from its event record.
+- [ ] 14.13 Words and checks: English and Vietnamese for every part; "Read it to me" lines;
+      a section on the grown-ups' page saying what is recorded, worked out and drawn, with
+      the sources and a note on how these events are told to a child; keyboard, screen reader
+      and reduced motion; layout tests at the five screen sizes.
+- [ ] 14.14 Later, each its own story if wanted: lightning, the water cycle, the drifting of
+      the continents, the monsoon, a flood, an avalanche.
+
+**How these are told to a child** (to be confirmed, decision 10): calm and true. What happened
+to the ground, the sea and the air, not what happened to people: no counts of the dead, no
+pictures of ruins, no sounds of alarm. Every story ends with what scientists measure and what
+keeps people safe, from the agency's own pages for families. Nothing shakes or flashes on
+screen; with reduced motion a story waits to be played and the ground does not move.
+
+**Acceptance:** every event value has a cited source and retrieval date; every worked-out
+movement is held by a test to what was measured, with a named tolerance; every slice says it is
+stretched and every drawing says it is a drawing; a storm, a wave front or a path always lies
+where its record puts it; no story names a number of people hurt; each story works by keyboard
+and with reduced motion, in English and Vietnamese; the app still asks nothing of a third
+party; the gate passes.
+
 ## 7. Testing
 
 | Layer | Tests |
@@ -1042,3 +1175,17 @@ Tolerances are named constants with a comment saying why. They are never widened
    approves that source, with its licence, or TON 618 stays out.
 8. **Paths that are drawn.** Decided on 2026-10-07: on the Watch screen a flight with no
    published path may be shown as a drawing between real event times, labelled as one. See Phase 12.
+9. **Sources for what happens on Earth** (Phase 14). The records are held by USGS (earthquakes,
+   volcanoes), NOAA (tsunamis, hurricanes, tornadoes, the depth of the sea), the Japan
+   Meteorological Agency (typhoons) and the Smithsonian (volcanoes), none of them on the lists
+   in `.claude/rules/` for this kind of data. Recommended: approve them as primary sources for
+   Phase 14 only, each after 14.1 has read its licence.
+10. **Real disasters for children of 6 to 9** (Phase 14). Real events keep "real numbers only",
+    but people died in most of the famous ones. Recommended: one real event per story, chosen
+    for how well it was measured and not for how bad it was, told as what the ground, sea and
+    air did, with no counts of the dead and no pictures of ruins, ending on what keeps people
+    safe. The other way is an event with no name and typical numbers, which is gentler but is
+    a made-up event and sets principle 1 aside.
+11. **Where Earth's stories live** (Phase 14). Recommended: a third group on the Watch screen,
+    so nothing new has to be learned. The other way is a tab of its own, which makes room for
+    more but puts a sixth word in a bar Phase 13 has just made fit on a phone.

@@ -48,6 +48,8 @@ export const artemis2: Story = {
         credit: 'NASA/Robert Markowitz',
       },
       captionKey: 'storyArtemis2Crew',
+      // A tall photo in a wide frame: the crop keeps the four faces, near the top.
+      focusYPercent: 6,
     },
   ],
   actorIds: ['earth', 'moon', 'sun'],

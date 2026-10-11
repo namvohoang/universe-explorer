@@ -405,13 +405,13 @@ export interface Story {
    * corner of the look from Earth for a tap to make big. `captionKey` says plainly what,
    * where and when each photo is of.
    */
-  readonly fromEarth?: readonly { readonly media: MediaRef; readonly captionKey: string }[];
+  readonly fromEarth?: readonly StoryPhoto[];
   /**
    * Real photos of the people of the story (a crew, say), kept small in a corner of the close
    * look like `fromEarth`'s, for a tap to make big. `captionKey` says who they are, and when and
    * where the photo was taken.
    */
-  readonly photos?: readonly { readonly media: MediaRef; readonly captionKey: string }[];
+  readonly photos?: readonly StoryPhoto[];
   /**
    * Real seconds each chapter takes to play, where the usual pace is too quick to follow:
    * years of a planet's path in one chapter, say. A choice of pace, not a measurement.
@@ -432,4 +432,16 @@ export interface Story {
   /** Names the season in each half of this actor, worked out from how it leans to its star. */
   readonly seasonsOf?: string;
   readonly sources: readonly Source[];
+}
+
+/** A real photo shown small in a corner of a look, for a tap to make big. */
+export interface StoryPhoto {
+  readonly media: MediaRef;
+  readonly captionKey: string;
+  /**
+   * How far down the photo its subject is, in percent (0 the top, 100 the bottom): a photo
+   * cropped to fit its frame keeps that part in view, the faces of a crew, say. A choice of
+   * framing, not a measurement. Left out, the middle.
+   */
+  readonly focusYPercent?: number;
 }

@@ -504,6 +504,7 @@ function start(): void {
           caption: `${strings[photo.captionKey] ?? ''} ${fill(words.watchPhotoBy, { credit: photo.media.credit ?? '' })}`,
           bigger: words.watchPhotoBigger,
           smaller: words.watchPhotoSmaller,
+          ...(photo.focusYPercent === undefined ? {} : { focusYPercent: photo.focusYPercent }),
         })),
       },
       {

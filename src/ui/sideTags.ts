@@ -29,6 +29,8 @@ export interface SideTags {
             caption: string;
             bigger: string;
             smaller: string;
+            /** How far down the photo its subject is, in percent, kept in view when it is cropped. */
+            focusYPercent?: number;
           }[];
         }[]
       | null,
@@ -77,6 +79,9 @@ export function createSideTags(layer: HTMLElement): SideTags {
             const image = create('img', 'pane-photo');
             image.src = picture.src;
             image.alt = picture.alt;
+            if (picture.focusYPercent !== undefined) {
+              image.style.objectPosition = `50% ${String(picture.focusYPercent)}%`;
+            }
             inset.append(image, create('span', 'pane-caption', picture.caption));
             inset.addEventListener('click', () => {
               show(bigPicture === index ? -1 : index);

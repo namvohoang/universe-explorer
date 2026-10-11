@@ -1133,8 +1133,59 @@ anything is built on it:
       a section on the grown-ups' page saying what is recorded, worked out and drawn, with
       the sources and a note on how these events are told to a child; keyboard, screen reader
       and reduced motion; layout tests at the five screen sizes.
-- [ ] 14.14 Later, each its own story if wanted: lightning, the water cycle, the drifting of
-      the continents, the monsoon, a flood, an avalanche.
+- [ ] 14.14 Later, each its own story if wanted: lightning, the water cycle, the monsoon, a
+      flood, an avalanche.
+
+**Part two: how the land is shaped** (asked for on 2026-10-11: mountains, rivers, canyons, a
+sand storm). A sand storm is a fast event like the ones above. The others are slow: nobody
+watched a mountain range rise, so there is no record of the movement and no real clock to
+play it on. Three things make them honest all the same:
+
+- **The end of the story is real.** Each slow story is one real place, and it ends on that
+  place as it is measured today: its true heights as a 3D block of land, with a real picture
+  from space laid over it. Heights are stretched only through 14.4's mode, with its label.
+- **A clock in years, said on screen.** The story clock counts years, or millions of years,
+  ago, and the screen says how long one second stands for. A rate that is measured today (how
+  far a plate moves in a year) is given from its source and compared with something a child
+  knows, the comparison worked out, not typed.
+- **A fifth way of moving, `rebuilt`:** "Nobody was there to see this. Scientists worked it
+  out from the rocks. The picture is a drawing." Where scientists still disagree (how old a
+  canyon is), the story says so.
+
+Where a satellite has watched a place change for tens of years (a river moving its bends, a
+delta growing), that record is used in place of a drawing, as `tracked`.
+
+- [ ] 14.15 Research, no code, as 14.1: the heights of the land (NASA and USGS elevation
+      data), the pictures taken year after year (NASA and USGS Landsat), measured plate
+      speeds, and what the agencies say of each place's past and how sure they are. Choose
+      the places. Candidates to weigh, none chosen: the Himalaya for a mountain range; the
+      Grand Canyon for a canyon; a river whose bends Landsat has watched move, and a delta it
+      has watched grow; a dust cloud from the Sahara followed across the Atlantic. Find out
+      whether any trusted source gives where the continents were in the past as data, or
+      only as pictures (decision 12).
+- [ ] 14.16 Real land in 3D and the clock in years: a block of ground built from the height
+      data of one region, loaded only for its story, with its `CREDITS.md` row; the story
+      clock's years and its sentence ("One second here is [N] years"); the `rebuilt` path and
+      its `validate` check. Pure and tested: the block's heights keep their true ratios.
+- [ ] 14.17 **Sand storm.** `tracked`: a dust cloud's way across the sea, from the pictures
+      taken from space day by day. `staged`: the wall of dust seen from the ground. Parts:
+      dry ground and strong wind; the dust lifts; seen from space; where it comes down and
+      what it does there; dust storms on Mars, from the catalogue's Mars.
+- [ ] 14.18 **A mountain range.** `rebuilt`: two plates meeting and the land between them
+      folding up, in a slice, ending on the real range. Today's measured speed is `tracked`.
+      Parts: plates move; they meet; the land folds and rises; rain and ice wear it down as
+      it grows; the range today; how it stands beside the tallest mountain of the solar
+      system, from the catalogue.
+- [ ] 14.19 **A river.** `tracked` where Landsat has watched it: the bends wandering, a loop
+      cut off, the delta building out. `staged`: rain running off high ground into one
+      stream, in a slice. Parts: rain and a slope; streams join; the bends move; the river
+      meets the sea; dry river beds on Mars and rivers that are not water on Titan.
+- [ ] 14.20 **A canyon.** `rebuilt`: a river cutting down through layers of rock while the
+      land is lifted, ending on the real canyon. Parts: the layers were laid down first; the
+      land rises; the river cuts; the sides fall in and widen; the canyon today; what is
+      still argued over; how it stands beside the great canyon of Mars, from the catalogue.
+- [ ] 14.21 Later, if wanted: a glacier carving a valley and melting back, an island born
+      from a volcano, a cave, sand dunes.
 
 **How these are told to a child** (to be confirmed, decision 10): calm and true. What happened
 to the ground, the sea and the air, not what happened to people: no counts of the dead, no
@@ -1145,7 +1196,8 @@ screen; with reduced motion a story waits to be played and the ground does not m
 **Acceptance:** every event value has a cited source and retrieval date; every worked-out
 movement is held by a test to what was measured, with a named tolerance; every slice says it is
 stretched and every drawing says it is a drawing; a storm, a wave front or a path always lies
-where its record puts it; no story names a number of people hurt; each story works by keyboard
+where its record puts it; every slow story says how long one second stands for and ends on
+the land as it is measured today; no story names a number of people hurt; each story works by keyboard
 and with reduced motion, in English and Vietnamese; the app still asks nothing of a third
 party; the gate passes.
 
@@ -1191,3 +1243,8 @@ Tolerances are named constants with a comment saying why. They are never widened
 11. **Where Earth's stories live** (Phase 14). Recommended: a third group on the Watch screen,
     so nothing new has to be learned. The other way is a tab of its own, which makes room for
     more but puts a sixth word in a bar Phase 13 has just made fit on a phone.
+12. **Where the continents were** (Phase 14, part two). A mountain story that shows two plates
+    meeting needs their places long ago. The agencies publish this mostly as pictures;
+    the data comes from university groups, which are not on the trusted list. Recommended:
+    wait for 14.15 to say what exists; if there is no trusted data, show the meeting only in
+    a slice, as a drawing, and do not move continents over the globe.

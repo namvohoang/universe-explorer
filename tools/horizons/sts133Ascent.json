@@ -1,0 +1,41 @@
+{
+  "name": "sts133Ascent",
+  "centre": "399",
+  "centreId": "earth",
+  "rangeZeroUtc": "2011-02-24T21:53:24Z",
+  "tableUrl": "https://www3.nasa.gov/centers/kennedy/pdf/146685main_srb-et.pdf",
+  "sourceId": "nasa-srb-et-facts",
+  "note": "Discovery's climb on STS-133, counted from liftoff at 4:53:24 p.m. EST (21:53:24 UTC) on 24 February 2011 (NASA's STS-133 page). Each row: event, seconds after liftoff, height (km), latitude, longitude. The heights and times are NASA's: 0 on the pad; 156,000 feet (47.549 km) at 124 seconds when the boosters separate (NASA Facts, 'Solid Rocket Boosters and External Tank'); about 113 km when the tank separates, 'approximately 8.5 minutes into the flight' (NASA's 'The Space Shuttle' reference page). These are NASA's figures for a usual flight, not measured on this one. The last row, 20 seconds after the tank lets go, is a drawing: it keeps the tank's height, so that the story can show the tank falling away. The pad is Launch Complex 39, Pad A, where NASA's table of Apollo 11's climb (SP-2000-4029) puts that flight at liftoff. NASA gives no track over the ground for STS-133, so the other places are a drawing: from the pad at 44.87 degrees east of north, the heading that leaves the pad in the plane of the space station's orbit (JPL Horizons, the station -125544 at 2011-02-24 21:54 TDB against Earth's equator: inclination 51.66 degrees), as far as Apollo 10 had gone at the same second (that table's range, read straight-line between its rows).",
+  "altitudeUnit": "km",
+  "drawn": {
+    "pad": [28.447, -80.6041],
+    "azimuthDeg": 44.87,
+    "rangeTable": [
+      [0.58, 0],
+      [66.8, 1.037],
+      [82.6, 2.893],
+      [135.16, 25.009],
+      [161.63, 50.419],
+      [162.31, 51.223],
+      [460.61, 599.079],
+      [552.64, 883.67],
+      [553.5, 886.634],
+      [703.76, 1430.977],
+      [713.76, 1469.79]
+    ],
+    "sourceId": "nasa-sp4029-apollo10-ascent",
+    "how": "The pad is where NASA's table of Apollo 11's climb puts it at liftoff (Launch Complex 39, Pad A). The other places are drawn north-east of the pad, the way that leaves it in the plane of the space station's orbit (JPL Horizons), as far as Apollo 10 had gone at the same second (NASA's table of its climb): NASA gives the Shuttle's heights but not this flight's track over the ground."
+  },
+  "rows": [
+    ["Liftoff", 0, 0, null, null],
+    ["Booster separation from Shuttle", 124, 47.549, null, null],
+    ["External tank separation", 510, 113, null, null],
+    [
+      "Twenty seconds after the tank separates: a drawing, held at the height NASA gives for the tank's separation, so that the tank is seen falling away",
+      530,
+      113,
+      null,
+      null
+    ]
+  ]
+}

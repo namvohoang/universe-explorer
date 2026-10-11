@@ -32,6 +32,7 @@ const STORIES = [
   ['lunar-eclipse', 'A lunar eclipse'],
   ['artemis-1', 'Artemis I: round the Moon'],
   ['artemis-2', 'Artemis II: with astronauts'],
+  ['shuttle-launch', 'The Shuttle: the launch'],
   ['apollo-11-launch', 'Apollo 11: the launch'],
   ['artemis-1-launch', 'Artemis I: the launch'],
   ['apollo-11-landing', 'Apollo 11: the landing'],

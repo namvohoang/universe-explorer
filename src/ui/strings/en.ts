@@ -1271,6 +1271,17 @@ export const en = {
     'High up, the particles hit the air and make it glow. That glow is an aurora. It is seen most in a ring round the far north.',
   storyAuroraSouthToo:
     'There is a ring round the far south too. The green light comes from oxygen, about 100 km above the ground.',
+  storyShuttleLaunchTitle: 'The Shuttle: the launch',
+  storyShuttleLaunchNote:
+    'The time and the heights are real. The path, the lean, the flame and smoke, the tower, the clouds and the colours are drawings.',
+  storyShuttleLaunchLiftoff:
+    'Liftoff! Discovery rises from Florida with six astronauts, on their way to the space station.',
+  storyShuttleLaunchBoostersAway:
+    'The two white boosters have burned all their fuel. They let go and float down on parachutes into the sea.',
+  storyShuttleLaunchMainEngines:
+    'Now only the three main engines push. They burn fuel from the big orange tank, and Discovery goes faster and faster.',
+  storyShuttleLaunchTankAway:
+    'The engines stop and the empty tank lets go. It falls back and most of it burns up in the air. Discovery flies on without it.',
   storyShuttleDockingTitle: 'A shuttle meets the station',
   storyShuttleDockingNote: 'Station: real path. Shuttle and docking: a drawing.',
   craftSpaceStation: 'The space station',

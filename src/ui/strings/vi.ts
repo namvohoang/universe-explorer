@@ -1092,6 +1092,19 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Trong khoảng nửa ngày, sóng đi hết cả đại dương. Gần bờ, sóng thần chậm lại và cao lên. Đợt sóng này vẫn nhỏ: ở mọi trạm đo, nó cao chưa tới một mét.',
   storyTsunamiWarnings:
     'Sóng thần mất nhiều giờ để vượt đại dương. Các trung tâm cảnh báo theo dõi suốt ngày đêm, nên người ở xa có thể được báo trước khi sóng tới.',
+  storyTornadoTitle: 'Lốc xoáy',
+  storyTornadoNote:
+    'Đường đi và bề rộng của vòi lốc là thật. Đám mây và hình dáng vòi lốc là hình vẽ.',
+  storyTornadoFromAStorm:
+    'Lốc xoáy là một cột không khí hẹp, xoay rất nhanh. Nó vươn từ một đám mây dông xuống tới mặt đất.',
+  storyTornadoTouchesDown:
+    'Tối ngày 1 tháng 5 năm 2018, một cơn lốc xoáy mạnh chạm đất giữa những cánh đồng ở bang Kansas, miền trung nước Mỹ. Vòng tròn trên quả địa cầu cho biết chỗ đó.',
+  storyTornadoItsPath:
+    'Nó đi 23 km qua các cánh đồng trong 29 phút. Chỗ rộng nhất, nó rộng 800 m. Không ai bị thương.',
+  storyTornadoHowStrong:
+    'Lốc xoáy mạnh đến đâu? Các chuyên gia xem nó đã làm hỏng những gì, rồi từ đó tính ra sức gió. Cơn lốc này được xếp mức 3, trên thang từ 0 đến 5.',
+  storyTornadoNotYetKnown:
+    'Các nhà khoa học chưa hiểu hết lốc xoáy hình thành như thế nào. Nhưng họ biết kiểu thời tiết sinh ra lốc xoáy, nên các nhà dự báo có thể cảnh báo khi lốc xoáy dễ xảy ra.',
   storyAuroraTitle: 'Cực quang',
   storyAuroraNote: 'Các vòng xanh là hình vẽ.',
   storyAuroraWind:
@@ -1140,6 +1153,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchGroupEarthAtWork: 'Trái Đất chuyển động',
   watchStormWind: 'Gió: {n} km mỗi giờ',
   watchPaneSlice: 'Cắt đôi (hình vẽ)',
+  watchPaneTornado: 'Lốc xoáy (hình vẽ)',
+  scaleLabelTornado: 'Đường đi và bề rộng của vòi lốc là thật. Phần còn lại là hình vẽ.',
   scaleLabelSlice: 'Bức ảnh là thật. Hình cắt đôi là hình vẽ, cao hơn cơn bão thật rất nhiều.',
   watchPlay: 'Chạy',
   watchPause: 'Tạm dừng',

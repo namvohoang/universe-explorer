@@ -125,7 +125,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(6);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(7);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -192,6 +192,21 @@ test.describe('the Earth screen', () => {
     );
     // The times worked out for the sea come from the app itself.
     await expect.poll(() => maps.length).toBe(1);
+  });
+
+  test('shows a tornado as a drawing on its real path, and says which is which', async ({
+    page,
+  }) => {
+    await page.goto('/#earth/tornado-tescott');
+    await expect(page.locator('.watch-caption h2')).toHaveText('A tornado');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 5');
+    await expect(page.locator('.pane:visible').last()).toContainText('The tornado (a drawing)');
+    await expect(page.locator('#scale-label')).toHaveText(
+      'The path and the width of the funnel are real. The rest is a drawing.',
+    );
+    await expect(page.locator('.watch-path')).toHaveText(
+      'The path and the width of the funnel are real. The cloud and the shape of the funnel are a drawing.',
+    );
   });
 
   test('is left with Escape, back to the solar system', async ({ page }) => {

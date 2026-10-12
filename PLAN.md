@@ -1240,7 +1240,19 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       sea; the storm gathers and spins; the eye; the track across the ocean; over land it
       weakens; hurricane, typhoon and cyclone are one thing with three names; forecasts and
       warnings. If decision 10 allows two storms: one Atlantic, one that reached Vietnam.
-- [ ] 14.9 **Tornado.** `tracked`: the surveyed path on the ground, its length, width and
+- [~] 14.9 Done on 2026-10-12: the EF-3 tornado of 1 May 2018 south of Tescott, Kansas, in
+      five parts, in English and Vietnamese, recorded. Chosen because the weather service
+      surveyed it, it crossed open farmland and hurt nobody ("Injuries/Deaths 0/0"). Beside
+      the globe, where a ring marks the place, a drawing in a scene of its own
+      (`src/scene/tornadoScene.ts`) shows the funnel going the surveyed path: its length
+      (23.3 km between the two ends in NOAA's database, the survey's 14.5 miles), the way it
+      ran, its greatest width at the ground (805 m) and its 29 minutes are real; the cloud,
+      the shape of the funnel above the ground and its steady pace are a drawing, and the
+      screen says so. It tells that the rating comes from the damage, and that how a tornado
+      forms is not fully understood. `distanceAndBearing` in `src/sim/seismic.ts`, tested.
+      Left: the ground view built for launches (the drawing stands in for it); the height of
+      the storm cloud, for which no figure was read; the tornado beside a hurricane in
+      Compare (14.12). As planned: **Tornado.** `tracked`: the surveyed path on the ground, its length, width and
       rating. `staged`: the storm cloud and the funnel, drawn at true size on the ground view
       Phase 12 built for launches. The card says what is not known: why one storm makes a
       tornado and the next does not, and that the rating comes from the damage, not from a

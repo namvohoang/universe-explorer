@@ -84,8 +84,8 @@ export interface Chapter {
    */
   readonly overPlace?: Sourced<readonly [lonDegEast: number, latDegNorth: number]>;
   /**
-   * With `overStorm`, in a story whose storm has a `slice`: the storm cut in half is drawn
-   * beside the close look, in place of the whole picture.
+   * In a story with a drawing in a scene of its own (a storm's `slice`, a `tornado`): that
+   * drawing is shown beside the close look, in place of the whole picture.
    */
   readonly slice?: true;
   /** With `closeUp`: stands over this pole of the body, on its night side, in place of its sunlit side. */
@@ -621,6 +621,30 @@ export interface Story {
     readonly arrivalMap: MediaRef;
     /** The depths of the sea the times were worked out from: on what grid, from whom. */
     readonly depths: Sourced<string>;
+  };
+  /**
+   * A tornado on the path a survey found for it, in a drawing of its own: the length of the
+   * path, the way it ran and the width of the funnel at the ground are the survey's, and the
+   * funnel goes from one end to the other in the time the survey gives. How tall and wide
+   * the cloud is, and the shape of the funnel above the ground, are a drawing; the story
+   * must say so with `noteKey`.
+   */
+  readonly tornado?: {
+    /** Catalogue id of the world. */
+    readonly onId: string;
+    /** Where it touched down and where it lifted: [longitude east, latitude north] of each. */
+    readonly ends: Sourced<
+      readonly [
+        startLonDegEast: number,
+        startLatDegNorth: number,
+        endLonDegEast: number,
+        endLatDegNorth: number,
+      ]
+    >;
+    readonly fromJd: Sourced<number>;
+    readonly untilJd: Sourced<number>;
+    /** How wide it was at the ground at its widest, in km. */
+    readonly widthKm: Sourced<number>;
   };
   /** A storm drawn on its recorded track over a world's ground. */
   readonly storm?: StoryStorm;

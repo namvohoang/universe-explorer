@@ -594,6 +594,44 @@ export const JPL_HORIZONS_TURN_KERMADEC_2021_EARTH: Source = {
   retrieved: '2026-10-12',
 };
 
+export const NWS_TOPEKA_2018_05_01: Source = {
+  id: 'nws-topeka-2018-05-01',
+  title:
+    'NOAA National Weather Service, Topeka, Kansas — May 1, 2018 Tornado Summary: Tornado #4, 4.5 mi S of Tescott, KS',
+  url: 'https://www.weather.gov/top/180501_Summary',
+  retrieved: '2026-10-12',
+};
+
+export const NOAA_SPC_TORNADOES: Source = {
+  id: 'noaa-spc-tornadoes',
+  title:
+    'NOAA Storm Prediction Center — Severe Weather Database Files: tornadoes, 1950 to 2024 (1950-2024_actual_tornadoes.csv)',
+  url: 'https://www.spc.noaa.gov/wcm/',
+  retrieved: '2026-10-12',
+};
+
+export const NOAA_NSSL_TORNADOES: Source = {
+  id: 'noaa-nssl-tornadoes',
+  title: 'NOAA National Severe Storms Laboratory — Severe Weather 101: Tornado Basics',
+  url: 'https://www.nssl.noaa.gov/education/svrwx101/tornadoes/',
+  retrieved: '2026-10-12',
+};
+
+export const NOAA_NSSL_TORNADO_FAQ: Source = {
+  id: 'noaa-nssl-tornado-faq',
+  title: 'NOAA National Severe Storms Laboratory — Severe Weather 101: Tornado FAQ',
+  url: 'https://www.nssl.noaa.gov/education/svrwx101/tornadoes/faq/',
+  retrieved: '2026-10-12',
+};
+
+export const JPL_HORIZONS_TURN_TESCOTT_2018_EARTH: Source = {
+  id: 'jpl-horizons-turn-tescott2018earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2018-05-02 00:41:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272458240.529272980%27',
+  retrieved: '2026-10-12',
+};
+
 export const NASA_TIDES: Source = {
   id: 'nasa-tides',
   title: 'NASA Science — Earth’s Moon: Tides',

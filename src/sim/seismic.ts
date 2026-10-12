@@ -28,6 +28,31 @@ export function placeAlong(
   return bodyFramePoint({ lonDegEast: toLon / DEG, latDeg: toLat / DEG, altitudeKm: 0 }, 1);
 }
 
+/**
+ * How far it is round a world from one place to another, in degrees, and which way to set off
+ * from the first to get there (degrees east of north): the other way round from `placeAlong`.
+ */
+export function distanceAndBearing(
+  fromLonDegEast: number,
+  fromLatDegNorth: number,
+  toLonDegEast: number,
+  toLatDegNorth: number,
+): { readonly distanceDeg: number; readonly azimuthDeg: number } {
+  const lat1 = fromLatDegNorth * DEG;
+  const lat2 = toLatDegNorth * DEG;
+  const across = (toLonDegEast - fromLonDegEast) * DEG;
+  const half =
+    Math.sin((lat2 - lat1) / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(across / 2) ** 2;
+  const way = Math.atan2(
+    Math.sin(across) * Math.cos(lat2),
+    Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(across),
+  );
+  return {
+    distanceDeg: (2 * Math.asin(Math.min(1, Math.sqrt(half)))) / DEG,
+    azimuthDeg: (((way / DEG) % 360) + 360) % 360,
+  };
+}
+
 /** Whether a picked wave came straight through the rock, not round or through the core. */
 export function cameStraight(arrival: QuakeArrival): boolean {
   return arrival[3] === 'P';

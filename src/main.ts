@@ -17,6 +17,7 @@ import { createDiagram, type Diagram } from './scene/diagram';
 import { createMeteorStreaks } from './scene/meteorStreaks';
 import { createSightLine } from './scene/sightLine';
 import { createStormSlice, type StormSlice } from './scene/stormSlice';
+import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
   ZOOM_SECONDS,
@@ -32,7 +33,13 @@ import { eclipticToScene, northPoleEcliptic, poleOf } from './sim/frames';
 import { DUST_TRAIL_RADIUS_KM } from './sim/dust';
 import { SECONDS_PER_DAY } from './sim/constants';
 import { showerAt } from './sim/radiant';
-import { cameStraight, placeAlong, waveFront, type WaveFront } from './sim/seismic';
+import {
+  cameStraight,
+  distanceAndBearing,
+  placeAlong,
+  waveFront,
+  type WaveFront,
+} from './sim/seismic';
 import { tideHeights, type TideRaiser } from './sim/tides';
 import {
   galeReachKm,
@@ -517,7 +524,7 @@ function start(): void {
     const whole = overStorm ?? close ?? stageView(story, chapter, sideAspect, 1);
     const heldBearing = close?.direction ?? STAGE_DIRECTION;
     // A part that shows the storm cut in half has that drawing beside the close look.
-    const cut = chapter.slice === true ? stormSlice : null;
+    const cut = chapter.slice === true ? (stormSlice ?? tornadoDrawing?.scene ?? null) : null;
     stage.setPanes(
       cut
         ? {
@@ -562,7 +569,9 @@ function start(): void {
       {
         box: side,
         label: cut
-          ? words.watchPaneSlice
+          ? cut === stormSlice
+            ? words.watchPaneSlice
+            : words.watchPaneTornado
           : modelled
             ? words.watchPaneWhole
             : close
@@ -1936,6 +1945,45 @@ function start(): void {
       pulls.map((pull) => pull.offsetKm),
     );
   };
+  /** The tornado of the story on show, as a drawing in a scene of its own, and when it was on the ground. */
+  let tornadoDrawing: {
+    readonly scene: TornadoScene;
+    readonly fromJd: number;
+    readonly untilJd: number;
+  } | null = null;
+  /** Draws a story's tornado, from the survey of its path. */
+  const showTornado = (story: Story): void => {
+    tornadoDrawing?.scene.dispose();
+    tornadoDrawing = null;
+    const { tornado } = story;
+    const world = catalogue.find((object) => object.id === tornado?.onId);
+    const groundKm = world ? bodyRadiusKm(world) : null;
+    if (!tornado || groundKm === null) return;
+    const [startLon, startLat, endLon, endLat] = tornado.ends.value;
+    const { distanceDeg, azimuthDeg } = distanceAndBearing(startLon, startLat, endLon, endLat);
+    tornadoDrawing = {
+      scene: createTornadoScene(
+        ((distanceDeg * Math.PI) / 180) * groundKm,
+        azimuthDeg,
+        tornado.widthKm.value,
+      ),
+      fromJd: tornado.fromJd.value,
+      untilJd: tornado.untilJd.value,
+    };
+    // A ring on the globe round where it touched down, as over where an earthquake began.
+    system.setQuake(
+      tornado.onId,
+      bodyFramePoint({ lonDegEast: startLon, latDeg: startLat, altitudeKm: 0 }, 1),
+      [],
+    );
+    system.showQuake(0, null);
+  };
+  /** Puts the funnel where it was on its path at a date. */
+  const moveTornado = (jd: number): void => {
+    if (!tornadoDrawing) return;
+    const { scene, fromJd, untilJd } = tornadoDrawing;
+    scene.set(jd < fromJd ? null : (jd - fromJd) / (untilJd - fromJd));
+  };
   /** The storm of the story on show cut in half, as a drawing in a scene of its own. */
   let stormSlice: StormSlice | null = null;
   /** Draws a story's storm, from the record of where it went. */
@@ -2255,7 +2303,9 @@ function start(): void {
               scaleLabel.textContent =
                 chapter.slice === true && stormSlice
                   ? words.scaleLabelSlice
-                  : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+                  : chapter.slice === true && tornadoDrawing
+                    ? words.scaleLabelTornado
+                    : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -2340,6 +2390,7 @@ function start(): void {
               showAurora(story);
               showStorm(story);
               showQuake(story);
+              showTornado(story);
               showTsunami(story);
               showPictures(story);
               showTide(story);
@@ -2489,6 +2540,8 @@ function start(): void {
       system.setTide(null, null);
       watchQuake = null;
       system.setQuake(null, null, []);
+      tornadoDrawing?.scene.dispose();
+      tornadoDrawing = null;
       watchTsunamiJd = null;
       system.setTsunami(null, null);
       watchStorm = null;
@@ -2735,9 +2788,11 @@ function start(): void {
       movePictures(jd);
       moveStorm(jd);
       moveQuake(jd);
+      moveTornado(jd);
       moveTsunami(jd);
       moveTide(jd);
       if (!reducedMotion) stormSlice?.flow(dt);
+      if (!reducedMotion) tornadoDrawing?.scene.flow(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
       if (moved && !reducedMotion) system.flowTails(dt);
@@ -2828,7 +2883,13 @@ function start(): void {
       if (seen) farSky.trail.setDate(watchJd, seen.to);
       farSky.trail.line.visible = seen !== null;
     }
+    // A drawing in a scene of its own holds none of the story's worlds: nothing there is named.
+    const besideADrawing =
+      paired?.chapter.slice === true && (stormSlice !== null || tornadoDrawing !== null);
     sideTags.update((id) => {
+      if (besideADrawing) {
+        return { point: { ...stage.toSideScreen(ORIGIN), visible: false }, radiusPixels: 0 };
+      }
       if (id === FAR_SKY) {
         const point = stage.toSideScreen(seen?.to ?? ORIGIN);
         return {

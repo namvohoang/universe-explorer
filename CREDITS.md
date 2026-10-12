@@ -178,7 +178,7 @@ ship with the app.
 
 | What | Made with | Licence | Source |
 |---|---|---|---|
-| 136 recordings of the cards being read, and 23 of the stories (`story-<id>.mp3`) | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
+| 136 recordings of the cards being read, and 24 of the stories (`story-<id>.mp3`) | Kokoro-82M 0.9.4, voice `af_heart`, with misaki 0.9.4 for pronunciation (installed without espeak-ng) | Apache-2.0 (model weights and voice) | https://huggingface.co/hexgrad/Kokoro-82M |
 
 ## App icon
 

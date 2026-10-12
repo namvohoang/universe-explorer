@@ -687,6 +687,11 @@ export const NARRATION: Readonly<
     fingerprint: '8b4f41f5',
     starts: [0.0, 2.23, 13.12, 22.6, 30.98, 38.92, 49.38],
   },
+  'story-tornado-tescott': {
+    file: 'public/voice/story-tornado-tescott.mp3',
+    fingerprint: '24f2169a',
+    starts: [0.0, 2.23, 9.2, 20.88, 30.25, 40.23],
+  },
   'story-tides': {
     file: 'public/voice/story-tides.mp3',
     fingerprint: '75a932d3',

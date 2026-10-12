@@ -1123,6 +1123,8 @@ export const en = {
   watchGroupEarthAtWork: 'Earth at work',
   watchStormWind: 'Wind: {n} km an hour',
   watchPaneSlice: 'Cut in half (a drawing)',
+  watchPaneTornado: 'The tornado (a drawing)',
+  scaleLabelTornado: 'The path and the width of the funnel are real. The rest is a drawing.',
   scaleLabelSlice: 'The picture is real. The cut is a drawing, far taller than a real storm.',
   watchPlay: 'Play',
   watchPause: 'Pause',
@@ -1406,6 +1408,19 @@ export const en = {
     'In about half a day the wave crosses the whole ocean. Near land a tsunami slows down and grows taller. This one stayed small: at every gauge it was less than a metre high.',
   storyTsunamiWarnings:
     'A tsunami takes hours to cross an ocean. Warning centres watch for them day and night, so people far away can be told before the wave comes.',
+  storyTornadoTitle: 'A tornado',
+  storyTornadoNote:
+    'The path and the width of the funnel are real. The cloud and the shape of the funnel are a drawing.',
+  storyTornadoFromAStorm:
+    'A tornado is a narrow, spinning tube of air. It reaches from a thunderstorm down to the ground.',
+  storyTornadoTouchesDown:
+    'On the evening of 1 May 2018, a strong tornado touched down among the fields of Kansas, in the middle of the United States. The ring on the globe shows where.',
+  storyTornadoItsPath:
+    'It went 23 km across the fields in 29 minutes. At its widest it was 800 m across. Nobody was hurt.',
+  storyTornadoHowStrong:
+    'How strong is a tornado? Experts look at what it broke, and work out the wind from that. This one was rated 3, on a scale from 0 to 5.',
+  storyTornadoNotYetKnown:
+    'Scientists do not fully understand yet how a tornado forms. But they know the kind of weather that makes them, so forecasters can warn people when tornadoes are likely.',
   storyShuttleLaunchTitle: 'The Shuttle: the launch',
   storyShuttleLaunchNote:
     'The time and the heights are real. The path, the lean and roll, the flame and smoke, the tower, the clouds and the colours are drawings.',

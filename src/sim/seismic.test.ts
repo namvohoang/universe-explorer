@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { FIJI_2018_QUAKE } from '../data/paths/fiji2018Quake';
 import type { QuakeArrival } from '../data/types';
 import { bodyFramePoint } from './groundPath';
-import { cameStraight, placeAlong, waveFront } from './seismic';
+import { cameStraight, distanceAndBearing, placeAlong, waveFront } from './seismic';
 import { angleBetween } from './vec3';
 
 const DEG = Math.PI / 180;
@@ -30,6 +30,29 @@ describe('placeAlong', () => {
 
   it('comes to the far side of the world half way round, whichever way it set off', () => {
     expect(angleBetween(placeAlong(30, 20, 180, 77), at(-150, -20))).toBeCloseTo(0, 6);
+  });
+});
+
+describe('distanceAndBearing', () => {
+  it('finds the way and the distance that placeAlong goes', () => {
+    for (const [far, way] of [
+      [0.2, 28],
+      [40, 300],
+      [120, 135],
+    ] as const) {
+      const reached = placeAlong(-97.883, 38.94, far, way);
+      const lat = Math.asin(reached.y) / DEG;
+      const lon = Math.atan2(-reached.z, reached.x) / DEG;
+      const found = distanceAndBearing(-97.883, 38.94, lon, lat);
+      expect(found.distanceDeg).toBeCloseTo(far, 9);
+      expect(found.azimuthDeg).toBeCloseTo(way, 6);
+    }
+  });
+
+  it('is a quarter of the way round from the equator to a pole, due north', () => {
+    const found = distanceAndBearing(10, 0, 10, 90);
+    expect(found.distanceDeg).toBeCloseTo(90, 9);
+    expect(found.azimuthDeg).toBeCloseTo(0, 9);
   });
 });
 

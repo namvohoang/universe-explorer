@@ -589,6 +589,38 @@ export function checkStories(
         errors.push(`story ${story.id}: draws a tsunami but has no note to say what is worked out`);
       }
     }
+    if (story.tornado) {
+      const { onId, ends, fromJd, untilJd, widthKm } = story.tornado;
+      if (!story.actorIds.includes(onId)) {
+        errors.push(`story ${story.id}: draws a tornado on "${onId}", not one of its actors`);
+      }
+      const [startLon, startLat, endLon, endLat] = ends.value;
+      if (
+        [startLon, endLon].some((lon) => !(lon >= -180 && lon <= 180)) ||
+        [startLat, endLat].some((lat) => !(lat >= -90 && lat <= 90)) ||
+        (startLon === endLon && startLat === endLat)
+      ) {
+        errors.push(
+          `story ${story.id}: the tornado’s path has no length, or is nowhere on a globe`,
+        );
+      }
+      if (!(untilJd.value > fromJd.value) || !(widthKm.value > 0)) {
+        errors.push(`story ${story.id}: the tornado lasts no time, or has no width`);
+      }
+      // The line between the two ends, and all of the cloud, is drawn.
+      if (story.path !== 'staged' || story.noteKey === undefined) {
+        errors.push(
+          `story ${story.id}: draws a tornado but does not say it is staged, with a note`,
+        );
+      }
+    }
+    for (const chapter of story.chapters) {
+      if (chapter.slice === true && !story.storm?.slice && !story.tornado) {
+        errors.push(
+          `story ${story.id}: chapter "${chapter.id}" shows a drawing the story does not have`,
+        );
+      }
+    }
     if (story.tide) {
       for (const id of [story.tide.onId, ...story.tide.raiserIds]) {
         if (!story.actorIds.includes(id)) {

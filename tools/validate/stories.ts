@@ -477,6 +477,20 @@ export function checkStories(
         errors.push(`story ${story.id}: draws an aurora but has no note to say it is a drawing`);
       }
     }
+    if (story.tide) {
+      for (const id of [story.tide.onId, ...story.tide.raiserIds]) {
+        if (!story.actorIds.includes(id)) {
+          errors.push(`story ${story.id}: draws tides with "${id}", not one of its actors`);
+        }
+      }
+      if (story.tide.raiserIds.length === 0) {
+        errors.push(`story ${story.id}: draws tides with nothing to raise them`);
+      }
+      // The swelling is drawn far bigger than life, and the screen must say so.
+      if (story.noteKey === undefined) {
+        errors.push(`story ${story.id}: draws tides but has no note to say they are a drawing`);
+      }
+    }
     for (const shadow of story.shadows ?? []) {
       for (const id of [shadow.casterId, shadow.onId]) {
         if (!story.actorIds.includes(id)) {

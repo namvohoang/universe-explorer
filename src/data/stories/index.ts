@@ -17,6 +17,7 @@ import { seasons } from './seasons';
 import { shuttleDocking } from './shuttleDocking';
 import { solarEclipse } from './solarEclipse';
 import { supermoon } from './supermoon';
+import { tides } from './tides';
 import { typhoonNoru } from './typhoonNoru';
 
 /** Everything the Watch screen can play, in the order shown within each group. */
@@ -40,4 +41,5 @@ export const stories: readonly Story[] = [
   shuttleDocking,
   hurricaneSam,
   typhoonNoru,
+  tides,
 ];

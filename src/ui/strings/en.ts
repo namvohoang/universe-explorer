@@ -1347,6 +1347,19 @@ export const en = {
     'Forecasters could see where Noru was going: to the middle of Vietnam. Before it came, hundreds of thousands of people got ready to move to safe places.',
   storyTyphoonAshore:
     'Noru has come ashore in the middle of Vietnam. Over land it has no warm sea to feed it, so it quickly grows weak.',
+  storyTidesTitle: 'The tides',
+  storyTidesNote:
+    'The swelling of the sea is a drawing, far bigger than the real one. The pale line points to the Moon, the yellow one to the Sun.',
+  storyTidesTwoBulges:
+    'The Moon pulls on Earth and on its seas. The water swells out on the side nearest the Moon, and on the far side too.',
+  storyTidesTwoADay:
+    'Earth turns inside the two swellings. When a shore passes through one, the tide there is high. So most shores have two high tides every day.',
+  storyTidesSpring:
+    'The Sun pulls on the sea too, about half as hard as the Moon. At full Moon and at new Moon they pull along one line, and the tides are bigger.',
+  storyTidesNeap:
+    'A week later the Sun and the Moon pull across each other. The Sun takes a little away from the Moon’s tide, and the tides are smaller.',
+  storyTidesRealSeas:
+    'Real seas are not this tidy. Land is in the way, and the sea is deep in some places and shallow in others. So high tide comes at different times on different shores.',
   storyShuttleLaunchTitle: 'The Shuttle: the launch',
   storyShuttleLaunchNote:
     'The time and the heights are real. The path, the lean and roll, the flame and smoke, the tower, the clouds and the colours are drawings.',

@@ -1034,6 +1034,19 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Các nhà dự báo thấy được Noru đang đi đâu: vào miền Trung Việt Nam. Trước khi bão đến, hàng trăm nghìn người đã chuẩn bị đi đến nơi an toàn.',
   storyTyphoonAshore:
     'Noru đã vào đất liền ở miền Trung Việt Nam. Trên đất liền không có biển ấm tiếp sức, nên nó yếu đi rất nhanh.',
+  storyTidesTitle: 'Thủy triều',
+  storyTidesNote:
+    'Chỗ biển phồng lên là hình vẽ, lớn hơn thật rất nhiều. Đường màu nhạt chỉ về Mặt Trăng, đường màu vàng chỉ về Mặt Trời.',
+  storyTidesTwoBulges:
+    'Mặt Trăng hút Trái Đất và nước biển trên Trái Đất. Nước phồng lên ở phía gần Mặt Trăng nhất, và ở cả phía đối diện.',
+  storyTidesTwoADay:
+    'Trái Đất quay bên trong hai chỗ nước phồng. Khi một bờ biển đi qua chỗ phồng, nước ở đó dâng cao. Vì vậy hầu hết các bờ biển có hai lần triều lên mỗi ngày.',
+  storyTidesSpring:
+    'Mặt Trời cũng hút nước biển, mạnh bằng khoảng một nửa Mặt Trăng. Vào ngày trăng tròn và ngày không trăng, cả hai cùng hút theo một đường thẳng, và thủy triều lớn hơn.',
+  storyTidesNeap:
+    'Một tuần sau, Mặt Trời và Mặt Trăng hút theo hai hướng vuông góc. Mặt Trời làm triều của Mặt Trăng bớt đi một chút, và thủy triều nhỏ hơn.',
+  storyTidesRealSeas:
+    'Biển thật không gọn gàng như vậy. Đất liền chắn đường, biển có chỗ sâu chỗ nông. Vì thế mỗi bờ biển có triều lên vào một giờ khác nhau.',
   storyAuroraTitle: 'Cực quang',
   storyAuroraNote: 'Các vòng xanh là hình vẽ.',
   storyAuroraWind:

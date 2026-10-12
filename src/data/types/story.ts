@@ -505,6 +505,18 @@ export interface Story {
   readonly skyTrack?: { readonly ofId: string; readonly fromId: string };
   /** Auroral rings drawn round a world's magnetic poles. */
   readonly aurora?: StoryAurora;
+  /**
+   * The tides of a world's sea, worked out from where the catalogue puts the bodies that
+   * raise them: the sea a smooth world with no land would have, drawn as a shell of water
+   * swollen towards each raiser and away from it, far bigger than life, with a line towards
+   * each raiser. The story must say it is a drawing with `noteKey`.
+   */
+  readonly tide?: {
+    /** Catalogue id of the world. */
+    readonly onId: string;
+    /** Catalogue ids of what raises its tides: its moon, its star. */
+    readonly raiserIds: readonly string[];
+  };
   /** A storm drawn on its recorded track over a world's ground. */
   readonly storm?: StoryStorm;
   /** Shadows drawn from one body onto another. */

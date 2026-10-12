@@ -20,6 +20,7 @@ import { add, cross, dot, length, scale as scaleBy, subtract, type Vec3 } from '
 import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
 import { createGroundPicture, type GroundPicture, type PictureBox } from './groundPicture';
 import { createStormCloud, type StormCloud } from './stormCloud';
+import { createTideBulge, type TideBulge } from './tideBulge';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
@@ -250,6 +251,13 @@ export interface SolarSystem {
    */
   setStorm(onId: string | null, track: readonly Vec3[] | null): void;
   /**
+   * Draws a body's sea with its tides, far bigger than life, and a line towards each thing
+   * that raises them, in these colours; `null` takes it away.
+   */
+  setTide(onId: string | null, lineColors: readonly number[] | null): void;
+  /** Shapes that sea: the tide in each direction (scene axes), and the way to each raiser. */
+  showTide(height: (towards: Vec3) => number, towards: readonly Vec3[]): void;
+  /**
    * Real pictures of a body's ground taken from above, each put back where it belongs and
    * riding round with the body; none is shown until `showGroundPicture` asks. `null` takes
    * them away.
@@ -389,6 +397,7 @@ export function createSolarSystem(
   let dust: DustTrail | null = null;
   let aurora: AuroraRings | null = null;
   let storm: StormCloud | null = null;
+  let tide: { readonly onId: string; readonly bulge: TideBulge } | null = null;
   let groundPictures: GroundPicture[] = [];
   /** How many sights a sky track is drawn through, and how far off it is drawn, in scene units. */
   const SKY_TRACK_STEPS = 400;
@@ -962,6 +971,22 @@ export function createSolarSystem(
       storm = createStormCloud(track);
       body.frame.add(storm.group);
     },
+    setTide(onId, lineColors) {
+      if (tide) {
+        tide.bulge.group.removeFromParent();
+        tide.bulge.dispose();
+        tide = null;
+      }
+      if (onId === null || !lineColors || !bodies.has(onId)) return;
+      tide = { onId, bulge: createTideBulge(lineColors) };
+      group.add(tide.bulge.group);
+    },
+    showTide(height, towards) {
+      if (!tide) return;
+      const at = positions.get(tide.onId);
+      if (at) tide.bulge.group.position.set(at.x, at.y, at.z);
+      tide.bulge.set(this.radiusOf(tide.onId), height, towards);
+    },
     setGroundPictures(onId, pictures) {
       for (const picture of groundPictures) {
         picture.mesh.removeFromParent();
@@ -1066,6 +1091,7 @@ export function createSolarSystem(
       dust?.dispose();
       aurora?.dispose();
       storm?.dispose();
+      tide?.bulge.dispose();
       for (const picture of groundPictures) picture.dispose();
       sky?.trail.dispose();
       stars?.dispose();

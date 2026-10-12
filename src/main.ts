@@ -1,6 +1,7 @@
 import './ui/fonts';
 import { catalogue } from './data/catalogue';
 import {
+  isKnown,
   isSatellite,
   isShowpiece,
   screenOfGroup,
@@ -30,6 +31,7 @@ import { FIELD_OF_VIEW_DEG, createStage, type FlyTo, type PaneBox } from './scen
 import { eclipticToScene, northPoleEcliptic, poleOf } from './sim/frames';
 import { DUST_TRAIL_RADIUS_KM } from './sim/dust';
 import { showerAt } from './sim/radiant';
+import { tideHeights, type TideRaiser } from './sim/tides';
 import {
   galeReachKm,
   sliceShares,
@@ -230,6 +232,9 @@ const BODY_CLOSEST_RADII = 1.8;
  * look near enough to see the storm's shape, the whole picture far enough to see the world it
  * is on and the ocean it crosses. Choices of framing.
  */
+/** The colours of the lines from a world towards what raises its tides. */
+const TIDE_STAR_LINE = 0xffc53d;
+const TIDE_MOON_LINE = 0xf4eedc;
 const STORM_CLOSE_RADII = 1.35;
 const STORM_WIDE_RADII = 3;
 /** The nearest the look from over a storm may be brought, in radii of its world. */
@@ -1241,7 +1246,10 @@ function start(): void {
         distance: distanceNow(),
         ...(system.glowRadiusOf(seen) > 0 || tailed.has(seen) ? { distanceNow } : {}),
         direction: chapter.over
-          ? overPole(seen, chapter.over)
+          ? story.tide
+            ? // Tides are looked at from straight over the pole, where both swellings show.
+              scaleBy(system.northOf(seen), chapter.over === 'north' ? 1 : -1)
+            : overPole(seen, chapter.over)
           : litSideBearing(system.positionOf(seen), system.positionOf('sun')),
         minDistance: system.radiusOf(seen) * BODY_CLOSEST_RADII,
         maxDistance: Infinity,
@@ -1762,6 +1770,53 @@ function start(): void {
     /** When each real picture of it is shown, in the order the scene was given them. */
     readonly pictured: readonly (readonly [fromJd: number, untilJd: number])[];
   } | null = null;
+  /** What raises the tides of the story on show, and on which world. */
+  let watchTide: {
+    readonly world: CelestialObject;
+    readonly raisers: readonly { readonly object: CelestialObject; readonly massKg: number }[];
+  } | null = null;
+  /** Draws a story's tides: the sea of its world, and a line towards each thing that pulls on it. */
+  const showTide = (story: Story): void => {
+    const world = catalogue.find((object) => object.id === story.tide?.onId);
+    const raisers = (story.tide?.raiserIds ?? []).flatMap((id) => {
+      const object = catalogue.find((candidate) => candidate.id === id);
+      return object && 'massKg' in object && isKnown(object.massKg)
+        ? [{ object, massKg: object.massKg.value }]
+        : [];
+    });
+    if (!story.tide || !world || raisers.length === 0) {
+      watchTide = null;
+      system.setTide(null, null);
+      return;
+    }
+    watchTide = { world, raisers };
+    // The line towards a star is the colour of sunlight; towards a moon, pale.
+    system.setTide(
+      world.id,
+      raisers.map(({ object }) => (object.kind === 'star' ? TIDE_STAR_LINE : TIDE_MOON_LINE)),
+    );
+  };
+  /** Shapes the sea for a date, from where the catalogue puts what pulls on it. */
+  const moveTide = (jd: number): void => {
+    if (!watchTide) return;
+    const { world, raisers } = watchTide;
+    const pulls: TideRaiser[] = raisers.flatMap(({ object, massKg }) => {
+      // Something that goes round the world is where its own orbit puts it; what the world
+      // goes round is where the world's orbit puts the world, the other way.
+      if (isSatellite(object) && object.parentId === world.id) {
+        return [{ massKg, offsetKm: eclipticToScene(eclipticOffsetKm(object, catalogue, jd)) }];
+      }
+      if (world.orbit && world.parentId === object.id) {
+        const from = eclipticToScene(eclipticOffsetKm(world, catalogue, jd));
+        return [{ massKg, offsetKm: { x: -from.x, y: -from.y, z: -from.z } }];
+      }
+      return [];
+    });
+    system.showTide(
+      tideHeights(pulls),
+      pulls.map((pull) => pull.offsetKm),
+    );
+  };
   /** The storm of the story on show cut in half, as a drawing in a scene of its own. */
   let stormSlice: StormSlice | null = null;
   /** Draws a story's storm, from the record of where it went. */
@@ -2176,6 +2231,7 @@ function start(): void {
               const craft = story.craft ?? [];
               showAurora(story);
               showStorm(story);
+              showTide(story);
               system.setSkyTrack(
                 story.skyTrack
                   ? {
@@ -2318,6 +2374,8 @@ function start(): void {
       system.setTracks(null);
       system.setDust(null, clock.jd);
       system.setAurora(null, null);
+      watchTide = null;
+      system.setTide(null, null);
       watchStorm = null;
       stormSlice?.dispose();
       stormSlice = null;
@@ -2559,6 +2617,7 @@ function start(): void {
       watchJd = jd;
       system.setDate(jd);
       moveStorm(jd);
+      moveTide(jd);
       if (!reducedMotion) stormSlice?.flow(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.

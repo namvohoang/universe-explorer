@@ -488,6 +488,21 @@ export const NASA_WORLDVIEW_SAM: Source = {
   retrieved: '2026-10-11',
 };
 
+export const NASA_TIDES: Source = {
+  id: 'nasa-tides',
+  title: 'NASA Science — Earth’s Moon: Tides',
+  url: 'https://science.nasa.gov/moon/tides/',
+  retrieved: '2026-10-12',
+};
+
+export const NOAA_TIDES_VARIATIONS: Source = {
+  id: 'noaa-tides-variations',
+  title:
+    'NOAA National Ocean Service — Tides and Water Levels tutorial: Tidal Variations, the Influence of Position and Distance (with its pages on what causes tides and on the two bulges)',
+  url: 'https://oceanservice.noaa.gov/education/tutorial_tides/tides06_variations.html',
+  retrieved: '2026-10-12',
+};
+
 export const JMA_BEST_TRACK_NORU: Source = {
   id: 'jma-best-track-2216',
   title:

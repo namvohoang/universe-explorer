@@ -59,6 +59,22 @@ describe('checkStories', () => {
     ).toEqual([]);
   });
 
+  describe('tides', () => {
+    const tidal = (changes: Partial<Story> = {}): Story =>
+      story({ noteKey: 'storyTestNote', tide: { onId: 'earth', raiserIds: ['moon'] }, ...changes });
+
+    it('are accepted when the world and what pulls on it are in the story', () => {
+      expect(checkStories([tidal()], IDS)).toEqual([]);
+    });
+
+    it('are rejected when raised by nothing, or by something that is not in the story', () => {
+      const none = tidal({ tide: { onId: 'earth', raiserIds: [] } });
+      expect(checkStories([none], IDS).join('\n')).toMatch(/nothing to raise them/);
+      const stranger = tidal({ tide: { onId: 'earth', raiserIds: ['sun'] } });
+      expect(checkStories([stranger], IDS).join('\n')).toMatch(/not one of its actors/);
+    });
+  });
+
   describe('a storm on its record', () => {
     const record = (jd: number, wind = 100): StormPoint => [
       jd,

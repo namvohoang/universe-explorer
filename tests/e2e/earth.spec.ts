@@ -125,7 +125,21 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(2);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(3);
+  });
+
+  test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
+    page,
+  }) => {
+    await page.goto('/#earth/tides');
+    await expect(page.locator('.watch-caption h2')).toHaveText('The tides');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 5');
+    await expect(page.locator('.watch-path')).toContainText(
+      'The swelling of the sea is a drawing, far bigger than the real one.',
+    );
+    // A story with no storm tells no wind.
+    await expect(page.locator('.watch-date')).not.toContainText('Wind');
+    await expect(page.locator('.pane:visible')).toHaveCount(2);
   });
 
   test('is left with Escape, back to the solar system', async ({ page }) => {

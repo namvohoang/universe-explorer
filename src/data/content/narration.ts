@@ -677,4 +677,9 @@ export const NARRATION: Readonly<
     fingerprint: '8b4f41f5',
     starts: [0.0, 2.23, 13.12, 22.6, 30.98, 38.92, 49.38],
   },
+  'story-tides': {
+    file: 'public/voice/story-tides.mp3',
+    fingerprint: '75a932d3',
+    starts: [0.0, 2.1, 10.45, 20.45, 30.23, 39.45],
+  },
 };

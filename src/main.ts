@@ -1121,6 +1121,13 @@ function start(): void {
       z: sign * north.z + (NIGHT_LEAN * night.z) / far,
     };
   };
+  /** The bodies raising a story's tides that go round the world the tides are on. */
+  const moonsRaisingTides = (story: Story): ReadonlySet<string> =>
+    new Set(
+      (story.tide?.raiserIds ?? []).filter(
+        (id) => catalogue.find((object) => object.id === id)?.parentId === story.tide?.onId,
+      ),
+    );
   /**
    * How far the close look over a story's picture of the ground stands from its world's middle,
    * in radii: far enough for the picture on show when the chapter begins to fill the view, and
@@ -2408,7 +2415,12 @@ function start(): void {
               showers.clear();
               seasonsOfId = story.seasonsOf ?? null;
               watchActors = new Set(story.actorIds);
-              system.showOnly(watchActors);
+              // A story of Earth is told on its ground: no orbit line is drawn across it, but
+              // for the path of a moon that raises its tides.
+              system.showOnly(
+                watchActors,
+                watchScreen === 'earth' ? moonsRaisingTides(story) : undefined,
+              );
               const craft = story.craft ?? [];
               showAurora(story);
               showStorm(story);

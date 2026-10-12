@@ -327,9 +327,11 @@ export interface SolarSystem {
   setDust(alongId: string | null, jd: number): void;
   /**
    * Draws only these bodies and their paths, for a story told with a few of them; `null` draws
-   * everything again. The light of the star stays either way.
+   * everything again. The light of the star stays either way. With `pathIds`, only the orbits
+   * of those bodies are drawn as lines: a story told on the ground of one world has no use for
+   * the line of its own orbit running across it.
    */
-  showOnly(ids: ReadonlySet<string> | null): void;
+  showOnly(ids: ReadonlySet<string> | null, pathIds?: ReadonlySet<string>): void;
   /**
    * For the next picture drawn: only these bodies, and no orbit lines, or (`null`) everything
    * the story shows. Light still falls from the star when the star itself is left out.
@@ -429,6 +431,8 @@ export function createSolarSystem(
   let shownIds: ReadonlySet<string> | null = null;
   const heldSpins = new Map<string, number>();
   let linesDrawn = true;
+  /** The bodies whose orbit lines a story on show wants; `null` for all of those it shows. */
+  let pathIds: ReadonlySet<string> | null = null;
   const trails = new Map<string, { readonly craft: TrackedCraft; readonly trail: Trail }>();
   const models = new Map<
     string,
@@ -461,6 +465,7 @@ export function createSolarSystem(
       const shown = shownIds === null || shownIds.has(orbit.objectId);
       orbit.line.visible =
         linesDrawn &&
+        (pathIds === null || pathIds.has(orbit.objectId)) &&
         shown &&
         (tracks?.keepOrbitLines === true || !tracks?.bodies.has(orbit.objectId));
     }
@@ -1089,9 +1094,10 @@ export function createSolarSystem(
         showLines();
       }
     },
-    showOnly(ids) {
+    showOnly(ids, paths) {
       const shown = (id: string): boolean => ids === null || ids.has(id);
       shownIds = ids;
+      pathIds = ids === null ? null : (paths ?? null);
       for (const [id, body] of bodies) body.group.visible = shown(id);
       showLines();
       for (const [id, tail] of tails) tail.group.visible = shown(id);

@@ -237,6 +237,7 @@ const BODY_CLOSEST_RADII = 1.8;
 /** The colours of the lines from a world towards what raises its tides. */
 const TIDE_STAR_LINE = 0xffc53d;
 const TIDE_MOON_LINE = 0xf4eedc;
+const SECONDS_PER_MINUTE = 60;
 const STORM_CLOSE_RADII = 1.35;
 /** How far from a world's middle the close look at an earthquake's wave stands, in radii. A choice of framing. */
 const QUAKE_CLOSE_RADII = 1.9;
@@ -1124,7 +1125,7 @@ function start(): void {
         // An earthquake's wave crosses the whole world: its close look stands well back.
         distance:
           system.radiusOf(world) *
-          (story.quake && radii === STORM_CLOSE_RADII
+          ((story.quake ?? story.tsunami) && radii === STORM_CLOSE_RADII
             ? QUAKE_CLOSE_RADII
             : radii * PLACE_VIEW_WIDER),
         direction: over(),
@@ -1851,6 +1852,43 @@ function start(): void {
     const secondsAfter = (jd - watchQuake.originJd) * SECONDS_PER_DAY;
     system.showQuake(secondsAfter, watchQuake.front.reachDeg(secondsAfter));
   };
+  /** When the tsunami of the story on show began. */
+  let watchTsunamiJd: number | null = null;
+  /** Draws a story's tsunami: where it began, every gauge that timed it, and the band worked out for it. */
+  const showTsunami = (story: Story): void => {
+    const { tsunami } = story;
+    if (!tsunami) {
+      watchTsunamiJd = null;
+      system.setTsunami(null, null);
+      return;
+    }
+    const { record } = tsunami;
+    const [lonDegEast, latDeg] = record.place.value;
+    watchTsunamiJd = record.originJd.value;
+    system.setTsunami(tsunami.onId, {
+      url: mediaUrl(record.arrivalMap.file),
+      cellsAcross: record.arrivalMap.cellsAcross,
+      cellsUp: record.arrivalMap.cellsUp,
+      unitsPerMinute: record.arrivalMap.unitsPerMinute,
+    });
+    // The gauges are dots like an earthquake's stations, each lit when the wave was measured there.
+    system.setQuake(
+      tsunami.onId,
+      bodyFramePoint({ lonDegEast, latDeg, altitudeKm: 0 }, 1),
+      record.gauges.value.map(([lon, lat, measuredMinutes]) => ({
+        place: bodyFramePoint({ lonDegEast: lon, latDeg: lat, altitudeKm: 0 }, 1),
+        secondsAfter: measuredMinutes * SECONDS_PER_MINUTE,
+        throughCore: false,
+      })),
+    );
+  };
+  /** Draws the band and lights the gauges for a date. */
+  const moveTsunami = (jd: number): void => {
+    if (watchTsunamiJd === null) return;
+    const secondsAfter = (jd - watchTsunamiJd) * SECONDS_PER_DAY;
+    system.showTsunami(secondsAfter / SECONDS_PER_MINUTE);
+    system.showQuake(secondsAfter, null);
+  };
   /** What raises the tides of the story on show, and on which world. */
   let watchTide: {
     readonly world: CelestialObject;
@@ -2302,6 +2340,7 @@ function start(): void {
               showAurora(story);
               showStorm(story);
               showQuake(story);
+              showTsunami(story);
               showPictures(story);
               showTide(story);
               system.setSkyTrack(
@@ -2450,6 +2489,8 @@ function start(): void {
       system.setTide(null, null);
       watchQuake = null;
       system.setQuake(null, null, []);
+      watchTsunamiJd = null;
+      system.setTsunami(null, null);
       watchStorm = null;
       stormSlice?.dispose();
       stormSlice = null;
@@ -2694,6 +2735,7 @@ function start(): void {
       movePictures(jd);
       moveStorm(jd);
       moveQuake(jd);
+      moveTsunami(jd);
       moveTide(jd);
       if (!reducedMotion) stormSlice?.flow(dt);
       diagram?.setDate(jd);

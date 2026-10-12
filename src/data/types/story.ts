@@ -248,6 +248,43 @@ export interface QuakeRecord {
 }
 
 /**
+ * One gauge's timing of a tsunami, from an agency's record: [longitude (degrees east), latitude
+ * (degrees north), minutes after the tsunami began that the wave was measured arriving, minutes
+ * worked out for the sea beside the gauge from the depths (`null` where no sea was found
+ * there), the highest the water was measured (m, `null` if not given), and the place].
+ */
+export type TsunamiGauge = readonly [
+  lonDegEast: number,
+  latDegNorth: number,
+  measuredMinutes: number,
+  workedOutMinutes: number | null,
+  heightM: number | null,
+  place: string,
+];
+
+/** A tsunami as an agency recorded it, with the times worked out for it from the depth of the sea. */
+export interface TsunamiRecord {
+  /** The instant it began, as a Julian date (UTC). */
+  readonly originJd: Sourced<number>;
+  /** Where it began: [longitude (degrees east), latitude (degrees north)]. */
+  readonly place: Sourced<readonly [lonDegEast: number, latDegNorth: number]>;
+  /**
+   * A picture that holds how many minutes the wave takes to reach each cell of the sea, worked
+   * out from the depths: evenly spaced in longitude and latitude over the whole world, west to
+   * east and north to south, `unitsPerMinute` units to a minute in its red (high) and green
+   * (low) bytes, with blue set where the wave gets to.
+   */
+  readonly arrivalMap: {
+    readonly file: `public/media/${string}`;
+    readonly cellsAcross: number;
+    readonly cellsUp: number;
+    readonly unitsPerMinute: number;
+  };
+  /** Soonest first. */
+  readonly gauges: Sourced<readonly TsunamiGauge[]>;
+}
+
+/**
  * Where a storm was at one instant, from an agency's record of it: [Julian date (UTC),
  * longitude (degrees east), latitude (degrees north), strongest steady wind (km/h), pressure at
  * its middle (hPa), how far out gales reached to the north-east, south-east, south-west and
@@ -569,6 +606,21 @@ export interface Story {
     /** Catalogue id of the world. */
     readonly onId: string;
     readonly record: QuakeRecord;
+  };
+  /**
+   * A tsunami crossing a world's sea: a dot for every gauge, lit from the instant the wave
+   * was really measured there, and a pale band for the sea the front has just crossed, which
+   * is worked out from the depth of the sea and does not always agree with the gauges. The
+   * story must say so with `noteKey`.
+   */
+  readonly tsunami?: {
+    /** Catalogue id of the world. */
+    readonly onId: string;
+    readonly record: TsunamiRecord;
+    /** The picture of worked-out times, for its credit: the same file as the record's. */
+    readonly arrivalMap: MediaRef;
+    /** The depths of the sea the times were worked out from: on what grid, from whom. */
+    readonly depths: Sourced<string>;
   };
   /** A storm drawn on its recorded track over a world's ground. */
   readonly storm?: StoryStorm;

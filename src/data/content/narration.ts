@@ -672,6 +672,11 @@ export const NARRATION: Readonly<
     fingerprint: 'd801deda',
     starts: [0.0, 2.2, 9.7, 19.88, 30.25, 41.73],
   },
+  'story-tsunami-kermadec': {
+    file: 'public/voice/story-tsunami-kermadec.mp3',
+    fingerprint: '4203e0ae',
+    starts: [0.0, 2.15, 12.5, 17.57, 28.5, 39.95, 52.45],
+  },
   'story-hurricane-sam': {
     file: 'public/voice/story-hurricane-sam.mp3',
     fingerprint: '7c6dcbe5',

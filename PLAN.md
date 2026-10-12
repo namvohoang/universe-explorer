@@ -1184,7 +1184,23 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       recorded. `staged`: the two sides of the fault slipping, in the slice. Parts: the plates
       push; the fault slips; the waves go out; the waves cross Earth; how the size of a quake
       is told; what keeps people safe.
-- [ ] 14.7 **Tsunami**, following from an earthquake or an eruption. `worked-out`: the front
+- [~] 14.7 Done on 2026-10-12: the tsunami of 4 March 2021 from near Raoul Island, north of New
+      Zealand, in six parts, in English and Vietnamese, recorded. Chosen because 121 gauges
+      timed it right across the Pacific, the highest of them measured 0.56 m, and NOAA's
+      database records no deaths. Each gauge is a dot lit when the wave was measured there.
+      The pale band is worked out: `tools/tsunami/travel_times.py` asks NOAA's DEM Global
+      Mosaic for depths on a grid of an eighth of a degree and finds the quickest way to
+      every cell, at the square root of gravity times depth; the times ship as a picture
+      (credited as a simulation) that the app turns into the band. **It does not agree with
+      the gauges as well as was hoped.** Set beforehand: within 6 per cent at half the
+      gauges (met: 5.6) and within 15 at nine in ten (not met: 17.6, and no better on a finer
+      grid). The band is mostly early: the wave is started at one point, and gauges stand in
+      harbours where the wave comes later than in the open sea beside them. The screen says
+      the band "does not always agree" with the gauges, and a test holds the figures found.
+      The validator now takes noaa.gov pages as sources of media, as the owner approved for
+      this phase. Left: the slice showing the wave grow near the shore; the buoys on the sea
+      floor (this record has tide gauges only); the comparison with a jet worked out from
+      the data. As planned: **Tsunami**, following from an earthquake or an eruption. `worked-out`: the front
       of the wave crossing the ocean, its speed at each place from the depth there
       (`src/sim/tsunami.ts`, pure; the grid of arrival times made once by a tool in `tools/`
       and stored with its source). A test holds the arrival at each buoy and gauge NOAA lists

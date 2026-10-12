@@ -20,6 +20,7 @@ import { shuttleDocking } from './shuttleDocking';
 import { solarEclipse } from './solarEclipse';
 import { supermoon } from './supermoon';
 import { tides } from './tides';
+import { tsunamiKermadec } from './tsunamiKermadec';
 import { typhoonNoru } from './typhoonNoru';
 
 /** Everything the Watch screen can play, in the order shown within each group. */
@@ -42,6 +43,7 @@ export const stories: readonly Story[] = [
   shuttleLaunch,
   shuttleDocking,
   earthquakeFiji,
+  tsunamiKermadec,
   hurricaneSam,
   typhoonNoru,
   tides,

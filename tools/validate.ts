@@ -52,6 +52,7 @@ const storyMedia = (story: (typeof stories)[number]): MediaRef[] => [
   ...(story.photos ?? []).map(({ media }) => media),
   ...(story.storm?.pictures ?? []).map(({ media }) => media),
   ...(story.groundPictures?.pictures ?? []).map(({ media }) => media),
+  ...(story.tsunami ? [story.tsunami.arrivalMap] : []),
   // So is the 3D figure of somebody who steps out of a craft.
   ...(story.craft ?? []).flatMap((craft) => (craft.walker ? [craft.walker.media] : [])),
 ];

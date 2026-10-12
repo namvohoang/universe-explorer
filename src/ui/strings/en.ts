@@ -1389,6 +1389,23 @@ export const en = {
     'The blue dots are on the far side of the world. The wave they felt went through Earth’s core, deep in the middle. Waves like these are how scientists found out that Earth has a core.',
   storyQuakeDeep:
     'This was one of the biggest earthquakes ever measured so deep down. An earthquake this deep does less harm on the ground above than one near the surface.',
+  storyTsunamiTitle: 'A tsunami',
+  storyTsunamiNote:
+    'The dots are real gauges. The pale band is worked out from how deep the sea is, and does not always agree with them.',
+  storyTsunamiMapAlt:
+    'A map of the sea, shaded by how long a wave takes to reach each part of it from north of New Zealand.',
+  storyTsunamiSeaFloor:
+    'North of New Zealand, the sea floor suddenly sprang up in a big earthquake. It lifted the water above it, and that started a great wave called a tsunami.',
+  storyTsunamiEveryDirection:
+    'From there the wave spreads out in every direction, across the ocean.',
+  storyTsunamiFastAndSlow:
+    'Where the sea is deep, a tsunami goes as fast as a jet plane. Where it is shallower, it goes more slowly. That is why the pale band is not a neat ring.',
+  storyTsunamiGauges:
+    'Each dot is a gauge that measures how high the sea is. A dot lights up when the wave really got there. Out at sea a tsunami is low, and ships do not notice it pass.',
+  storyTsunamiAcross:
+    'In about half a day the wave crosses the whole ocean. Near land a tsunami slows down and grows taller. This one stayed small: at every gauge it was less than a metre high.',
+  storyTsunamiWarnings:
+    'A tsunami takes hours to cross an ocean. Warning centres watch for them day and night, so people far away can be told before the wave comes.',
   storyShuttleLaunchTitle: 'The Shuttle: the launch',
   storyShuttleLaunchNote:
     'The time and the heights are real. The path, the lean and roll, the flame and smoke, the tower, the clouds and the colours are drawings.',

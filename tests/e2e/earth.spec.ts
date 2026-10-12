@@ -125,7 +125,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(5);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(6);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -173,6 +173,25 @@ test.describe('the Earth screen', () => {
       'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',
     );
     await expect(page.locator('.pane:visible')).toHaveCount(2);
+  });
+
+  test('tells a tsunami from its gauges and from the depth of the sea, and says they may differ', async ({
+    page,
+  }) => {
+    const maps: string[] = [];
+    page.on('response', (response) => {
+      if (response.url().includes('tsunami-arrival.png') && response.ok())
+        maps.push(response.url());
+    });
+    await page.goto('/#earth/tsunami-kermadec');
+    await expect(page.locator('.watch-caption h2')).toHaveText('A tsunami');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 6');
+    await expect(page.locator('.watch-date')).toContainText('4 March 2021, 19:28');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'The dots are real gauges. The pale band is worked out from how deep the sea is, and does not always agree with them.',
+    );
+    // The times worked out for the sea come from the app itself.
+    await expect.poll(() => maps.length).toBe(1);
   });
 
   test('is left with Escape, back to the solar system', async ({ page }) => {

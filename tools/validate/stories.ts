@@ -485,7 +485,8 @@ export function checkStories(
       craft.length === 0 &&
       !story.storm &&
       !story.groundPictures &&
-      !story.quake
+      !story.quake &&
+      !story.tsunami
     ) {
       errors.push(
         `story ${story.id}: says its path is tracked but has no tracked craft, no storm on record and no pictures of the ground`,
@@ -556,6 +557,36 @@ export function checkStories(
         errors.push(
           `story ${story.id}: draws an earthquake but has no note to say what is worked out`,
         );
+      }
+    }
+    if (story.tsunami) {
+      const { onId, record, arrivalMap } = story.tsunami;
+      if (!story.actorIds.includes(onId)) {
+        errors.push(`story ${story.id}: draws a tsunami on "${onId}", not one of its actors`);
+      }
+      if (arrivalMap.file !== record.arrivalMap.file) {
+        errors.push(
+          `story ${story.id}: credits another picture than the one its tsunami is drawn from`,
+        );
+      }
+      // What is worked out is a simulation, never to be passed off as a measurement.
+      if (arrivalMap.kind !== 'simulation') {
+        errors.push(
+          `story ${story.id}: the tsunami’s worked-out times are not marked as a simulation`,
+        );
+      }
+      if (
+        record.gauges.value.some(
+          ([lon, lat, measured]) =>
+            !(lon >= -180 && lon <= 180 && lat >= -90 && lat <= 90) || !(measured > 0),
+        )
+      ) {
+        errors.push(
+          `story ${story.id}: a gauge of the tsunami is nowhere on a globe, or timed it before it began`,
+        );
+      }
+      if (story.noteKey === undefined) {
+        errors.push(`story ${story.id}: draws a tsunami but has no note to say what is worked out`);
       }
     }
     if (story.tide) {

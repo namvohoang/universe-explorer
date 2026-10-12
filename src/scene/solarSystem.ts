@@ -22,6 +22,7 @@ import { createGroundPicture, type GroundPicture, type PictureBox } from './grou
 import { createQuakeWaves, type QuakeStation, type QuakeWaves } from './quakeWaves';
 import { createStormCloud, type StormCloud } from './stormCloud';
 import { createTideBulge, type TideBulge } from './tideBulge';
+import { createTsunamiFront, type ArrivalMap, type TsunamiFront } from './tsunamiFront';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
 import { createBody, type Body } from './body';
 import { createCometTail, type CometTail } from './cometTail';
@@ -260,6 +261,13 @@ export interface SolarSystem {
   /** Lights the stations that have felt the wave by now, and draws its front so far round. */
   showQuake(secondsAfter: number, reachDeg: number | null): void;
   /**
+   * Draws the sea a tsunami has just crossed, over a body's ground and riding round with it,
+   * from a picture of how long the wave takes to reach each part of the sea. `null` takes it away.
+   */
+  setTsunami(onId: string | null, map: ArrivalMap | null): void;
+  /** Draws that band for so many minutes after the tsunami began. */
+  showTsunami(minutesAfter: number): void;
+  /**
    * Draws a body's sea with its tides, far bigger than life, and a line towards each thing
    * that raises them, in these colours; `null` takes it away.
    */
@@ -407,6 +415,7 @@ export function createSolarSystem(
   let aurora: AuroraRings | null = null;
   let storm: StormCloud | null = null;
   let quake: QuakeWaves | null = null;
+  let tsunami: TsunamiFront | null = null;
   let tide: { readonly onId: string; readonly bulge: TideBulge } | null = null;
   let groundPictures: GroundPicture[] = [];
   /** How many sights a sky track is drawn through, and how far off it is drawn, in scene units. */
@@ -995,6 +1004,20 @@ export function createSolarSystem(
     showQuake(secondsAfter, reachDeg) {
       quake?.set(secondsAfter, reachDeg);
     },
+    setTsunami(onId, map) {
+      if (tsunami) {
+        tsunami.mesh.removeFromParent();
+        tsunami.dispose();
+        tsunami = null;
+      }
+      const body = onId === null ? undefined : bodies.get(onId);
+      if (!body || !map) return;
+      tsunami = createTsunamiFront(map);
+      body.frame.add(tsunami.mesh);
+    },
+    showTsunami(minutesAfter) {
+      tsunami?.set(minutesAfter);
+    },
     setTide(onId, lineColors) {
       if (tide) {
         tide.bulge.group.removeFromParent();
@@ -1116,6 +1139,7 @@ export function createSolarSystem(
       aurora?.dispose();
       storm?.dispose();
       quake?.dispose();
+      tsunami?.dispose();
       tide?.bulge.dispose();
       for (const picture of groundPictures) picture.dispose();
       sky?.trail.dispose();

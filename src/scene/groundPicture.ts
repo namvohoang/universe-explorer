@@ -68,26 +68,35 @@ export interface GroundPicture {
   dispose(): void;
 }
 
-export function createGroundPicture(box: PictureBox, url: string): GroundPicture {
+/**
+ * A patch of a unit sphere between the edges of `box`, standing `lift` radii off it, with a
+ * picture's left edge at the west and its top at the north.
+ */
+export function patchGeometry(
+  box: PictureBox,
+  lift: number,
+  /** How many flat pieces across and up: enough that none sags under the ground between its corners. */
+  segments = SEGMENTS,
+): BufferGeometry {
   const positions: number[] = [];
   const normals: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
-  for (let row = 0; row <= SEGMENTS; row++) {
-    const up = row / SEGMENTS;
+  for (let row = 0; row <= segments; row++) {
+    const up = row / segments;
     const lat = (box.southDeg + (box.northDeg - box.southDeg) * up) * DEG;
-    for (let column = 0; column <= SEGMENTS; column++) {
-      const across = column / SEGMENTS;
+    for (let column = 0; column <= segments; column++) {
+      const across = column / segments;
       const lon = (box.westDeg + (box.eastDeg - box.westDeg) * across) * DEG;
       const x = Math.cos(lat) * Math.cos(lon);
       const y = Math.sin(lat);
       const z = -Math.cos(lat) * Math.sin(lon);
-      positions.push(x * (1 + PICTURE_LIFT), y * (1 + PICTURE_LIFT), z * (1 + PICTURE_LIFT));
+      positions.push(x * (1 + lift), y * (1 + lift), z * (1 + lift));
       normals.push(x, y, z);
       uvs.push(across, up);
-      if (row < SEGMENTS && column < SEGMENTS) {
-        const at = row * (SEGMENTS + 1) + column;
-        const above = at + SEGMENTS + 1;
+      if (row < segments && column < segments) {
+        const at = row * (segments + 1) + column;
+        const above = at + segments + 1;
         indices.push(at, at + 1, above, at + 1, above + 1, above);
       }
     }
@@ -98,6 +107,11 @@ export function createGroundPicture(box: PictureBox, url: string): GroundPicture
   geometry.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
   geometry.setIndex(indices);
 
+  return geometry;
+}
+
+export function createGroundPicture(box: PictureBox, url: string): GroundPicture {
+  const geometry = patchGeometry(box, PICTURE_LIFT);
   const fade = edgeFade();
   const material = new MeshLambertMaterial({
     alphaMap: fade,

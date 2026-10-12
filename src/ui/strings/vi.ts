@@ -1076,6 +1076,22 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Các chấm xanh nằm ở phía bên kia thế giới. Đợt sóng tới đó đã đi xuyên qua lõi Trái Đất, nằm sâu ở chính giữa. Nhờ những đợt sóng như vậy mà các nhà khoa học biết Trái Đất có lõi.',
   storyQuakeDeep:
     'Đây là một trong những trận động đất lớn nhất từng đo được ở độ sâu như vậy. Động đất sâu thế này gây hại trên mặt đất ít hơn động đất ở gần bề mặt.',
+  storyTsunamiTitle: 'Sóng thần',
+  storyTsunamiNote:
+    'Các chấm là trạm đo thật. Dải màu nhạt được tính ra từ độ sâu của biển, và không phải lúc nào cũng khớp với các trạm.',
+  storyTsunamiMapAlt:
+    'Bản đồ biển, tô theo thời gian sóng cần để đi tới từng vùng từ phía bắc New Zealand.',
+  storyTsunamiSeaFloor:
+    'Ở phía bắc New Zealand, đáy biển bỗng bật lên trong một trận động đất lớn. Nó nâng khối nước bên trên, tạo ra một đợt sóng rất lớn gọi là sóng thần.',
+  storyTsunamiEveryDirection: 'Từ đó sóng lan ra mọi hướng, khắp đại dương.',
+  storyTsunamiFastAndSlow:
+    'Ở nơi biển sâu, sóng thần đi nhanh như máy bay phản lực. Ở nơi biển nông hơn, nó đi chậm hơn. Vì thế dải màu nhạt không phải là một vòng tròn đều.',
+  storyTsunamiGauges:
+    'Mỗi chấm là một trạm đo mực nước biển. Chấm sáng lên đúng lúc sóng tới đó. Ngoài khơi, sóng thần rất thấp, tàu thuyền không nhận ra nó đi qua.',
+  storyTsunamiAcross:
+    'Trong khoảng nửa ngày, sóng đi hết cả đại dương. Gần bờ, sóng thần chậm lại và cao lên. Đợt sóng này vẫn nhỏ: ở mọi trạm đo, nó cao chưa tới một mét.',
+  storyTsunamiWarnings:
+    'Sóng thần mất nhiều giờ để vượt đại dương. Các trung tâm cảnh báo theo dõi suốt ngày đêm, nên người ở xa có thể được báo trước khi sóng tới.',
   storyAuroraTitle: 'Cực quang',
   storyAuroraNote: 'Các vòng xanh là hình vẽ.',
   storyAuroraWind:

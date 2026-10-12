@@ -24,6 +24,9 @@ export const TRUSTED_HOSTS = [
   'jhuapl.edu',
   'jaxa.jp',
   'roscosmos.ru',
+  // Approved by the owner on 2026-10-11 for what happens on Earth (PLAN.md Phase 14).
+  'noaa.gov',
+  'weather.gov',
 ] as const;
 
 const COLUMNS = [

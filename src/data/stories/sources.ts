@@ -549,6 +549,51 @@ export const JPL_HORIZONS_TURN_FIJI_2018_EARTH: Source = {
   retrieved: '2026-10-12',
 };
 
+export const NOAA_TSUNAMI_KERMADEC_2021: Source = {
+  id: 'noaa-tsunami-5771',
+  title:
+    'NOAA National Centers for Environmental Information / World Data Service — Global Historical Tsunami Database (doi:10.7289/V5PN93H7): tsunami event 5771, 4 March 2021, south of Raoul Island, Kermadec Islands, and its 174 runups',
+  url: 'https://www.ngdc.noaa.gov/hazel/view/hazards/tsunami/event-more-info/5771',
+  retrieved: '2026-10-12',
+};
+
+export const NOAA_DEM_GLOBAL_MOSAIC: Source = {
+  id: 'noaa-dem-global-mosaic',
+  title:
+    'NOAA National Centers for Environmental Information — DEM Global Mosaic (image service): the height of the land and the depth of the sea, asked for on a grid of an eighth of a degree',
+  url: 'https://gis.ngdc.noaa.gov/arcgis/rest/services/DEM_mosaics/DEM_global_mosaic/ImageServer',
+  retrieved: '2026-10-12',
+};
+
+export const NOAA_JETSTREAM_TSUNAMI_GENERATION: Source = {
+  id: 'noaa-jetstream-tsunami-generation',
+  title: 'NOAA JetStream — Tsunami Generation: Earthquakes',
+  url: 'https://www.noaa.gov/jetstream/tsunamis/tsunami-generation-earthquakes',
+  retrieved: '2026-10-12',
+};
+
+export const NOAA_JETSTREAM_TSUNAMI_PROPAGATION: Source = {
+  id: 'noaa-jetstream-tsunami-propagation',
+  title: 'NOAA JetStream — Tsunami Propagation',
+  url: 'https://www.noaa.gov/jetstream/tsunamis/tsunami-propagation',
+  retrieved: '2026-10-12',
+};
+
+export const NOAA_JETSTREAM_TSUNAMI_WARNING: Source = {
+  id: 'noaa-jetstream-tsunami-warning',
+  title: 'NOAA JetStream — Tsunami Detection, Warning, and Forecasting',
+  url: 'https://www.noaa.gov/jetstream/tsunamis/detection-warning-and-forecasting',
+  retrieved: '2026-10-12',
+};
+
+export const JPL_HORIZONS_TURN_KERMADEC_2021_EARTH: Source = {
+  id: 'jpl-horizons-turn-kermadec2021earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2021-03-04 19:28:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272459278.311911869%27',
+  retrieved: '2026-10-12',
+};
+
 export const NASA_TIDES: Source = {
   id: 'nasa-tides',
   title: 'NASA Science — Earth’s Moon: Tides',

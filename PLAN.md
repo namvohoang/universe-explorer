@@ -1272,7 +1272,16 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       data of one region, loaded only for its story, with its `CREDITS.md` row; the story
       clock's years and its sentence ("One second here is [N] years"); the `rebuilt` path and
       its `validate` check. Pure and tested: the block's heights keep their true ratios.
-- [ ] 14.17 **Sand storm.** `tracked`: a dust cloud's way across the sea, from the pictures
+- [x] 14.17 Done on 2026-10-12 as "Desert dust": the cloud of Sahara dust of June 2020, in
+      six parts, in English and Vietnamese, recorded. Nothing in it is drawn: each part is
+      what a satellite saw that day (NASA Worldview), laid on the globe, and the dust is the
+      pale brown haze over the sea. A story may now hold pictures of the ground without a
+      storm (`groundPictures`) and look straight down on a named place (`overPlace`); which
+      place is a choice of framing, since there is no record of where "the cloud" was.
+      `validate` holds each place looked at inside the picture on show. The sentences rest
+      on NASA Earth Observatory's two pages on the event. Left out: the wall of dust seen
+      from the ground, and dust storms on Mars, for which no page was read. As planned:
+      **Sand storm.** `tracked`: a dust cloud's way across the sea, from the pictures
       taken from space day by day. `staged`: the wall of dust seen from the ground. Parts:
       dry ground and strong wind; the dust lifts; seen from space; where it comes down and
       what it does there; dust storms on Mars, from the catalogue's Mars.

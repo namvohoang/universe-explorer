@@ -12,6 +12,7 @@ import { lunarEclipse } from './lunarEclipse';
 import { marsBackwards } from './marsBackwards';
 import { meteorShower } from './meteorShower';
 import { moonPhases } from './moonPhases';
+import { saharaDust } from './saharaDust';
 import { saturnRings } from './saturnRings';
 import { seasons } from './seasons';
 import { shuttleDocking } from './shuttleDocking';
@@ -42,4 +43,5 @@ export const stories: readonly Story[] = [
   hurricaneSam,
   typhoonNoru,
   tides,
+  saharaDust,
 ];

@@ -1360,6 +1360,22 @@ export const en = {
     'A week later the Sun and the Moon pull across each other. The Sun takes a little away from the Moon’s tide, and the tides are smaller.',
   storyTidesRealSeas:
     'Real seas are not this tidy. Land is in the way, and the sea is deep in some places and shallow in others. So high tide comes at different times on different shores.',
+  storyDustTitle: 'Desert dust',
+  storyDustNote: 'These are real pictures, taken from space on each day.',
+  storyDustPictureAlt:
+    'The sea seen from space, with a wide pale brown haze of dust lying over the dark blue water.',
+  storyDustLiftsOff:
+    'The Sahara is a great desert in Africa. Every year the wind lifts dust from it, more than from anywhere else on Earth. Here a big cloud of it is blowing out over the sea.',
+  storyDustOverTheSea:
+    'From space the dust shows as a pale brown haze over the dark sea. The wind carries it west, towards the other side of the ocean.',
+  storyDustHowBig:
+    'Dust often crosses this ocean. But scientists rarely see a cloud as big and as thick as this one, in June 2020.',
+  storyDustHeavyFallsFirst:
+    'As the dust crosses the ocean, the bigger grains fall into the sea first. Only the finest dust goes all the way.',
+  storyDustCaribbean:
+    'About a week after it left Africa, the dust reaches the islands of the Caribbean. The sky there turns a hazy yellow-grey, and for a few days the air is not good to breathe.',
+  storyDustGoodToo:
+    'Dust does good too. It feeds the soil of the Amazon rainforest and helps to build beaches in the Caribbean.',
   storyShuttleLaunchTitle: 'The Shuttle: the launch',
   storyShuttleLaunchNote:
     'The time and the heights are real. The path, the lean and roll, the flame and smoke, the tower, the clouds and the colours are drawings.',

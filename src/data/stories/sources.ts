@@ -488,6 +488,36 @@ export const NASA_WORLDVIEW_SAM: Source = {
   retrieved: '2026-10-11',
 };
 
+export const NASA_EARTH_OBSERVATORY_DUST_TRAVERSES: Source = {
+  id: 'nasa-earth-observatory-dust-traverses',
+  title: 'NASA Earth Observatory — Dust Traverses the Atlantic Ocean (image of 18 June 2020)',
+  url: 'https://earthobservatory.nasa.gov/images/146871/dust-traverses-the-atlantic-ocean',
+  retrieved: '2026-10-12',
+};
+
+export const NASA_EARTH_OBSERVATORY_DUST_PLUME: Source = {
+  id: 'nasa-earth-observatory-dust-plume',
+  title: 'NASA Earth Observatory — A Dust Plume to Remember (image of the day for 1 July 2020)',
+  url: 'https://earthobservatory.nasa.gov/images/146913/a-dust-plume-to-remember',
+  retrieved: '2026-10-12',
+};
+
+export const NASA_WORLDVIEW_DUST: Source = {
+  id: 'nasa-worldview-dust-2020',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — true-colour pictures from the VIIRS camera on the Suomi NPP satellite, 14 to 24 June 2020, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=-55,1,-25,31&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2020-06-18',
+  retrieved: '2026-10-12',
+};
+
+export const JPL_HORIZONS_TURN_DUST_2020_EARTH: Source = {
+  id: 'jpl-horizons-turn-dust2020earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2020-06-14 15:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272459015.125800747%27',
+  retrieved: '2026-10-12',
+};
+
 export const NASA_TIDES: Source = {
   id: 'nasa-tides',
   title: 'NASA Science — Earth’s Moon: Tides',

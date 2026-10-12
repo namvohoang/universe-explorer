@@ -682,4 +682,9 @@ export const NARRATION: Readonly<
     fingerprint: '75a932d3',
     starts: [0.0, 2.1, 10.45, 20.45, 30.23, 39.45],
   },
+  'story-sahara-dust': {
+    file: 'public/voice/story-sahara-dust.mp3',
+    fingerprint: '4cb02027',
+    starts: [0.0, 2.23, 14.07, 23.4, 32.55, 41.0, 52.9],
+  },
 };

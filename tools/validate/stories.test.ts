@@ -59,6 +59,47 @@ describe('checkStories', () => {
     ).toEqual([]);
   });
 
+  describe('pictures of the ground', () => {
+    const shot = (
+      fromJd: number,
+      untilJd: number,
+    ): NonNullable<Story['groundPictures']>['pictures'][number] => ({
+      media: {
+        file: 'public/media/stories/test.webp',
+        kind: 'composite',
+        role: 'picture',
+        altKey: 'alt',
+      },
+      box: { value: [-10, 0, 10, 20], sourceId: 'test' },
+      fromJd: { value: fromJd, sourceId: 'test' },
+      untilJd: { value: untilJd, sourceId: 'test' },
+    });
+    const looking = (lon: number): Chapter => ({
+      ...chapter('one', 10),
+      closeUp: true,
+      overPlace: { value: [lon, 10], sourceId: 'test' },
+    });
+    const pictured = (lon: number, pictures = [shot(10, 20), shot(20, 30)]): Story =>
+      story({
+        path: 'tracked',
+        chapters: [looking(lon), chapter('two', 20)],
+        groundPictures: { onId: 'earth', pictures },
+      });
+
+    it('are accepted when they follow one another and hold the place looked at', () => {
+      expect(checkStories([pictured(0)], IDS)).toEqual([]);
+    });
+
+    it('are rejected when the place looked at is outside the picture on show', () => {
+      expect(checkStories([pictured(40)], IDS).join('\n')).toMatch(/outside the picture on show/);
+    });
+
+    it('are rejected when two are on show at once', () => {
+      const errors = checkStories([pictured(0, [shot(10, 25), shot(20, 30)])], IDS);
+      expect(errors.join('\n')).toMatch(/lie over one another/);
+    });
+  });
+
   describe('tides', () => {
     const tidal = (changes: Partial<Story> = {}): Story =>
       story({ noteKey: 'storyTestNote', tide: { onId: 'earth', raiserIds: ['moon'] }, ...changes });
@@ -129,7 +170,7 @@ describe('checkStories', () => {
       });
       expect(checkStories([looking], IDS).join('\n')).toMatch(/over a storm but has none/);
       expect(checkStories([story({ path: 'tracked' })], IDS).join('\n')).toMatch(
-        /no tracked craft and no storm/,
+        /no tracked craft, no storm/,
       );
     });
   });

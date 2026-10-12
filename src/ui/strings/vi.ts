@@ -1047,6 +1047,22 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Một tuần sau, Mặt Trời và Mặt Trăng hút theo hai hướng vuông góc. Mặt Trời làm triều của Mặt Trăng bớt đi một chút, và thủy triều nhỏ hơn.',
   storyTidesRealSeas:
     'Biển thật không gọn gàng như vậy. Đất liền chắn đường, biển có chỗ sâu chỗ nông. Vì thế mỗi bờ biển có triều lên vào một giờ khác nhau.',
+  storyDustTitle: 'Bụi sa mạc',
+  storyDustNote: 'Đây là ảnh thật, chụp từ vũ trụ vào từng ngày.',
+  storyDustPictureAlt:
+    'Mặt biển nhìn từ vũ trụ, với một dải bụi rộng màu nâu nhạt phủ trên làn nước xanh thẫm.',
+  storyDustLiftsOff:
+    'Sahara là một sa mạc rất lớn ở châu Phi. Mỗi năm gió cuốn bụi từ đây lên, nhiều hơn bất cứ nơi nào khác trên Trái Đất. Ở đây một đám bụi lớn đang bị thổi ra biển.',
+  storyDustOverTheSea:
+    'Từ vũ trụ, bụi hiện ra như một màn mờ màu nâu nhạt trên mặt biển sẫm màu. Gió đưa nó về phía tây, sang bờ bên kia đại dương.',
+  storyDustHowBig:
+    'Bụi vẫn thường bay qua đại dương này. Nhưng các nhà khoa học hiếm khi thấy một đám bụi lớn và dày như đám này, vào tháng 6 năm 2020.',
+  storyDustHeavyFallsFirst:
+    'Khi bụi bay qua đại dương, những hạt to rơi xuống biển trước. Chỉ những hạt bụi mịn nhất mới đi hết quãng đường.',
+  storyDustCaribbean:
+    'Khoảng một tuần sau khi rời châu Phi, bụi tới các hòn đảo vùng Caribe. Bầu trời ở đó ngả màu vàng xám mờ đục, và trong vài ngày không khí không tốt để hít thở.',
+  storyDustGoodToo:
+    'Bụi cũng có ích. Nó bón cho đất của rừng mưa Amazon và góp phần bồi đắp các bãi biển ở Caribe.',
   storyAuroraTitle: 'Cực quang',
   storyAuroraNote: 'Các vòng xanh là hình vẽ.',
   storyAuroraWind:

@@ -125,7 +125,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(3);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(4);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -140,6 +140,25 @@ test.describe('the Earth screen', () => {
     // A story with no storm tells no wind.
     await expect(page.locator('.watch-date')).not.toContainText('Wind');
     await expect(page.locator('.pane:visible')).toHaveCount(2);
+  });
+
+  test('shows desert dust crossing the sea in real pictures, one for each part', async ({
+    page,
+  }) => {
+    const pictures: string[] = [];
+    page.on('response', (response) => {
+      if (/stories\/dust-.*\.webp/.test(response.url()) && response.ok())
+        pictures.push(response.url());
+    });
+    await page.goto('/#earth/sahara-dust');
+    await expect(page.locator('.watch-caption h2')).toHaveText('Desert dust');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 6');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'These are real pictures, taken from space on each day.',
+    );
+    await expect.poll(() => pictures.length).toBe(6);
+    await expect(page.locator('.pane:visible').first()).toContainText('Close up');
+    await expect(page.locator('.pane:visible').last()).toContainText('The whole picture');
   });
 
   test('is left with Escape, back to the solar system', async ({ page }) => {

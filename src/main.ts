@@ -236,6 +236,8 @@ const BODY_CLOSEST_RADII = 1.8;
 const TIDE_STAR_LINE = 0xffc53d;
 const TIDE_MOON_LINE = 0xf4eedc;
 const STORM_CLOSE_RADII = 1.35;
+/** The close look over a named place stands this many times further off: what it shows is wider than a storm. */
+const PLACE_VIEW_WIDER = 1.15;
 const STORM_WIDE_RADII = 3;
 /** The nearest the look from over a storm may be brought, in radii of its world. */
 const STORM_CLOSEST_RADII = 1.2;
@@ -1105,7 +1107,25 @@ function start(): void {
    * so many radii of its world away. `null` when the chapter asks for none.
    */
   const stormView = (story: Story, chapter: Chapter, radii: number): FlyTo | null => {
-    if (chapter.closeUp !== true || chapter.overStorm !== true || !story.storm) return null;
+    if (chapter.closeUp !== true) return null;
+    // Over one place the chapter names, on the world looked at.
+    if (chapter.overPlace) {
+      const [lonDegEast, latDeg] = chapter.overPlace.value;
+      const place = bodyFramePoint({ lonDegEast, latDeg, altitudeKm: 0 }, 1);
+      const world = chapter.lookAtId;
+      const over = (): Vec3 =>
+        subtract(system.groundPointOf(world, place), system.positionOf(world));
+      return {
+        target: () => system.positionOf(world),
+        distance: system.radiusOf(world) * radii * PLACE_VIEW_WIDER,
+        direction: over(),
+        bearing: over,
+        minDistance: system.radiusOf(world) * STORM_CLOSEST_RADII,
+        maxDistance: Infinity,
+        idleTurn: false,
+      };
+    }
+    if (chapter.overStorm !== true || !story.storm) return null;
     const { onId, track } = story.storm;
     const points = track.points.value;
     const first = points[0];
@@ -1767,9 +1787,31 @@ function start(): void {
     /** The wind the record measures the storm's reach by, where it says. */
     readonly reachWindKmPerH: number | undefined;
     readonly groundKm: number;
-    /** When each real picture of it is shown, in the order the scene was given them. */
-    readonly pictured: readonly (readonly [fromJd: number, untilJd: number])[];
   } | null = null;
+  /** When each real picture of the story's ground is shown, in the order the scene was given them. */
+  let watchPictured: readonly (readonly [fromJd: number, untilJd: number])[] = [];
+  /** Lays a story's real pictures of the ground, of its storm or of anything else, ready to show. */
+  const showPictures = (story: Story): void => {
+    const onId = story.storm?.onId ?? story.groundPictures?.onId ?? null;
+    const pictures = story.storm?.pictures ?? story.groundPictures?.pictures ?? [];
+    watchPictured = pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]);
+    system.setGroundPictures(
+      pictures.length === 0 ? null : onId,
+      pictures.map(({ media, box }) => {
+        const [westDeg, southDeg, eastDeg, northDeg] = box.value;
+        return { box: { westDeg, southDeg, eastDeg, northDeg }, url: mediaUrl(media.file) };
+      }),
+    );
+  };
+  /** Shows the picture that belongs to a date, if any. */
+  const movePictures = (jd: number): void => {
+    // The latest that has begun: at the instant one picture gives way to the next, the next.
+    let picture: number | null = null;
+    for (const [index, [fromJd, untilJd]] of watchPictured.entries()) {
+      if (jd >= fromJd && jd <= untilJd) picture = index;
+    }
+    system.showGroundPicture(picture);
+  };
   /** What raises the tides of the story on show, and on which world. */
   let watchTide: {
     readonly world: CelestialObject;
@@ -1829,16 +1871,13 @@ function start(): void {
     if (!storm || groundKm === null) {
       watchStorm = null;
       system.setStorm(null, null);
-      system.setGroundPictures(null, null);
       return;
     }
     const points = storm.track.points.value;
-    const pictures = storm.pictures ?? [];
     watchStorm = {
       points,
       reachWindKmPerH: storm.track.reachWindKmPerH?.value,
       groundKm,
-      pictured: pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]),
     };
     if (storm.slice) {
       // As wide as the gales reached at the instant the slice is of, by the record nearest it.
@@ -1854,21 +1893,12 @@ function start(): void {
       if (shares) stormSlice = createStormSlice(shares.eye, shares.wall);
     }
     system.setStorm(storm.onId, points.map(stormPlace));
-    system.setGroundPictures(
-      storm.onId,
-      pictures.map(({ media, box }) => {
-        const [westDeg, southDeg, eastDeg, northDeg] = box.value;
-        return { box: { westDeg, southDeg, eastDeg, northDeg }, url: mediaUrl(media.file) };
-      }),
-    );
   };
   /** Puts the storm where its record has it at a date. */
   const moveStorm = (jd: number): void => {
     if (!watchStorm) return;
-    const { points, groundKm, pictured, reachWindKmPerH } = watchStorm;
+    const { points, groundKm, reachWindKmPerH } = watchStorm;
     const now = stormAt(points, jd);
-    const picture = pictured.findIndex(([fromJd, untilJd]) => jd >= fromJd && jd <= untilJd);
-    system.showGroundPicture(picture < 0 ? null : picture);
     system.showStorm(
       now
         ? {
@@ -2115,6 +2145,7 @@ function start(): void {
                 chapter.closeUp,
                 chapter.over,
                 chapter.overStorm,
+                chapter.overPlace?.value,
                 chapter.slice,
                 chapter.standOn?.value,
                 chapter.lookUpAt?.value,
@@ -2231,6 +2262,7 @@ function start(): void {
               const craft = story.craft ?? [];
               showAurora(story);
               showStorm(story);
+              showPictures(story);
               showTide(story);
               system.setSkyTrack(
                 story.skyTrack
@@ -2380,6 +2412,7 @@ function start(): void {
       stormSlice?.dispose();
       stormSlice = null;
       system.setStorm(null, null);
+      watchPictured = [];
       system.setGroundPictures(null, null);
       system.setSkyTrack(null);
       stage.setSky(null);
@@ -2616,6 +2649,7 @@ function start(): void {
       const moved = jd !== watchJd;
       watchJd = jd;
       system.setDate(jd);
+      movePictures(jd);
       moveStorm(jd);
       moveTide(jd);
       if (!reducedMotion) stormSlice?.flow(dt);
@@ -2651,7 +2685,8 @@ function start(): void {
       const shown = diagramAlone && diagram ? diagram.system : system;
       const named = eyeOnly ?? actors;
       // Close over a storm the world fills the look: its name would only lie on the other picture.
-      const overStorm = paired?.chapter.overStorm === true;
+      const overStorm =
+        paired?.chapter.overStorm === true || paired?.chapter.overPlace !== undefined;
       markers.update((id) => {
         if (!named?.has(id) || overStorm) {
           return { point: { ...stage.toScreen(ORIGIN), visible: false }, radiusPixels: 0 };

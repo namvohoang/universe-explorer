@@ -305,6 +305,54 @@ function modelErrors(
   return errors;
 }
 
+/** Pictures of the ground must cover part of a globe, follow one another, and hold what is looked at. */
+function groundPictureErrors(story: Story): string[] {
+  const errors: string[] = [];
+  const at = `story ${story.id}:`;
+  const shown = story.groundPictures;
+  for (const chapter of story.chapters) {
+    if (chapter.overPlace !== undefined && chapter.closeUp !== true) {
+      errors.push(`${at} chapter "${chapter.id}" looks from over a place but is not a close look`);
+    }
+  }
+  if (!shown) return errors;
+  if (!story.actorIds.includes(shown.onId)) {
+    errors.push(`${at} lays pictures on "${shown.onId}", not one of its actors`);
+  }
+  let before = -Infinity;
+  for (const picture of shown.pictures) {
+    const [west, south, east, north] = picture.box.value;
+    if (!(
+      west < east &&
+      south < north &&
+      west >= -180 &&
+      east <= 180 &&
+      south >= -90 &&
+      north <= 90
+    )) {
+      errors.push(`${at} a picture of the ground covers no part of a globe`);
+    }
+    const [fromJd, untilJd] = [picture.fromJd.value, picture.untilJd.value];
+    // One picture at a time: each is on show only until the next takes its place.
+    if (!(untilJd > fromJd && fromJd >= before)) {
+      errors.push(`${at} the pictures of the ground are out of order or lie over one another`);
+    }
+    before = untilJd;
+    // A part that looks down on a place while a picture is on show must be looking at the picture.
+    for (const chapter of story.chapters) {
+      const place = chapter.overPlace?.value;
+      const when = chapter.atJd.value;
+      if (!place || when < fromJd || when >= untilJd) continue;
+      if (place[0] < west || place[0] > east || place[1] < south || place[1] > north) {
+        errors.push(
+          `${at} chapter "${chapter.id}" looks down on a place outside the picture on show`,
+        );
+      }
+    }
+  }
+  return errors;
+}
+
 /** A storm must lie on its record at every instant the story shows, and say its cloud is drawn. */
 function stormErrors(story: Story): string[] {
   const errors: string[] = [];
@@ -432,11 +480,12 @@ export function checkStories(
         errors.push(`story ${story.id}: actor "${actor}" is not in the catalogue`);
     }
     const craft = story.craft ?? [];
-    if (story.path === 'tracked' && craft.length === 0 && !story.storm) {
+    if (story.path === 'tracked' && craft.length === 0 && !story.storm && !story.groundPictures) {
       errors.push(
-        `story ${story.id}: says its path is tracked but has no tracked craft and no storm on record`,
+        `story ${story.id}: says its path is tracked but has no tracked craft, no storm on record and no pictures of the ground`,
       );
     }
+    errors.push(...groundPictureErrors(story));
     errors.push(...stormErrors(story));
     // A path drawn between a few known places must never be passed off as the path flown.
     if (

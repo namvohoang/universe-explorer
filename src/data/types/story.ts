@@ -77,6 +77,13 @@ export interface Chapter {
    */
   readonly overStorm?: true;
   /**
+   * With `closeUp`: stands straight over this place on the world looked at, [longitude
+   * (degrees east), latitude (degrees north)], and rides round with the ground under it.
+   * Beside it the whole picture is the same look from further off. Which place is a choice of
+   * framing, not a measurement.
+   */
+  readonly overPlace?: Sourced<readonly [lonDegEast: number, latDegNorth: number]>;
+  /**
    * With `overStorm`, in a story whose storm has a `slice`: the storm cut in half is drawn
    * beside the close look, in place of the whole picture.
    */
@@ -278,7 +285,7 @@ export interface StoryStorm {
 }
 
 /**
- * A picture of a storm taken from above and laid out evenly in longitude and latitude, so
+ * A picture of a storm, or of anything else on a world's ground, taken from above and laid out evenly in longitude and latitude, so
  * that it can be put back on its world at its true place and size.
  */
 export interface StormPicture {
@@ -516,6 +523,16 @@ export interface Story {
     readonly onId: string;
     /** Catalogue ids of what raises its tides: its moon, its star. */
     readonly raiserIds: readonly string[];
+  };
+  /**
+   * Real pictures of a world's ground taken from space, each laid on the world where it was
+   * taken and shown for a stretch of the story: for something seen from space that has no
+   * record of its own to be drawn from (a cloud of dust crossing a sea). Earliest first.
+   */
+  readonly groundPictures?: {
+    /** Catalogue id of the world. */
+    readonly onId: string;
+    readonly pictures: readonly StormPicture[];
   };
   /** A storm drawn on its recorded track over a world's ground. */
   readonly storm?: StoryStorm;

@@ -1123,7 +1123,9 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       value `Sourced`, unknowns `null` with a reason. The two Earth story groups and the
       `worked-out` path in `story.ts`, with its sentence. `validate`: every event value
       sourced; a staged or worked-out story says so; a slice carries the stretched-scale label.
-- [x] 14.2b Done on 2026-10-11 with its first story (14.8). Six main tabs: on a phone a
+- [x] 14.2b Done on 2026-10-11 with its first story (14.8). For now, by the owner's word on
+      2026-10-12, the tab is on offer only on localhost (`EARTH_SCREEN_SHOWN` in
+      `src/main.ts`); elsewhere it is left out and its addresses open Watch. Six main tabs: on a phone a
       name of two words goes one word over the other; between a phone and a wide screen the
       tabs sit closer and may do the same. As planned: The Earth screen: a main tab beside Watch that opens the same story player on
       Earth's two groups only, while Watch keeps its own two; the address follows the story

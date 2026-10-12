@@ -6,6 +6,7 @@ import {
   type Chapter,
   type Story,
   type StoryGroup,
+  STORY_SCREENS,
   type StoryScreen,
 } from '../data/types';
 import {
@@ -63,6 +64,8 @@ const text = (key: string): string => (words as Readonly<Record<string, string>>
 export interface WatchHost {
   /** Starts with nothing moving and no swooping, as the device asks. */
   readonly reducedMotion: boolean;
+  /** The screens whose stories are on offer; all of them if not given. */
+  readonly screens?: readonly StoryScreen[];
   /** A voice on the device to read a part aloud, or `null` when there is none or the words are not English. */
   readonly speaker: Speaker | null;
   /** Whether recordings may be played: only where the words shown are the English they were made from. */
@@ -436,7 +439,12 @@ export function createWatch(host: WatchHost): Watch {
     element,
     open(storyId, wanted) {
       element.hidden = false;
-      const asked = stories.find((candidate) => candidate.id === storyId);
+      // A story of a screen that is not on offer cannot be asked for by its address either.
+      const asked = stories.find(
+        (candidate) =>
+          candidate.id === storyId &&
+          (host.screens ?? STORY_SCREENS).includes(screenOfGroup(candidate.group)),
+      );
       const picked =
         asked ??
         lastShown.get(wanted) ??

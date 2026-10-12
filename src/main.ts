@@ -11,6 +11,7 @@ import {
   type SampledPath,
   type StormPoint,
   type StoryCraft,
+  STORY_SCREENS,
   type StoryScreen,
 } from './data/types';
 import { createDiagram, type Diagram } from './scene/diagram';
@@ -247,6 +248,12 @@ const BODY_CLOSEST_RADII = 1.8;
 const TIDE_STAR_LINE = 0xffc53d;
 const TIDE_MOON_LINE = 0xf4eedc;
 const SECONDS_PER_MINUTE = 60;
+/**
+ * For now the Earth screen is on offer only where the app is run on the machine it is built
+ * on (localhost): its stories are still being made. Elsewhere its tab is left out and its
+ * addresses open the Watch screen. To put it back for everyone, make this `true`.
+ */
+const EARTH_SCREEN_SHOWN = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
 const STORM_CLOSE_RADII = 1.35;
 /** How far from a world's middle the close look at an earthquake's wave stands, in radii. A choice of framing. */
 const QUAKE_CLOSE_RADII = 1.9;
@@ -908,7 +915,9 @@ function start(): void {
       { value: 'deep', label: words.sceneDeep, icon: 'sparkle' },
       { value: 'craft', label: words.sceneCraft, icon: 'rocket' },
       { value: 'watch', label: words.sceneWatch, icon: 'watch' },
-      { value: 'earth', label: words.sceneEarth, icon: 'globe' },
+      ...(EARTH_SCREEN_SHOWN
+        ? [{ value: 'earth', label: words.sceneEarth, icon: 'globe' } as const]
+        : []),
       { value: 'compare', label: words.compare, icon: 'compare' },
     ],
     'solar',
@@ -2323,6 +2332,7 @@ function start(): void {
         if (!watchPanel) {
           watchPanel = createWatch({
             reducedMotion,
+            screens: EARTH_SCREEN_SHOWN ? STORY_SCREENS : ['watch'],
             // The recordings and the device voice are English; other languages are read by eye only.
             speaker: language === 'en' ? createBrowserSpeaker() : null,
             recordings: language === 'en',
@@ -2826,7 +2836,7 @@ function start(): void {
   // Aimed again now that the card is on show, for the room it leaves.
   if (!isDeep(focus)) stage.lookAt(currentView());
   if (linkedStory !== undefined)
-    watch.open(linkedStory, linkedScreen === 'earth' ? 'earth' : 'watch');
+    watch.open(linkedStory, linkedScreen === 'earth' && EARTH_SCREEN_SHOWN ? 'earth' : 'watch');
 
   // On the very first visit, point at Earth and say what a tap does. Any touch or key ends it.
   if (recall(HINT_SEEN) === null && focus === null && !watch.isOpen()) {

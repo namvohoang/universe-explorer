@@ -85,7 +85,9 @@ export interface Chapter {
   readonly overPlace?: Sourced<readonly [lonDegEast: number, latDegNorth: number]>;
   /**
    * In a story with a drawing in a scene of its own (a storm's `slice`, a `tornado`): that
-   * drawing is shown beside the close look, in place of the whole picture.
+   * drawing is shown beside the close look, in place of the whole picture. In a story with a
+   * `quake` the drawing is the ground cut open over where it began: that is the close look, and
+   * the look at the world beside it is the whole picture.
    */
   readonly slice?: true;
   /** With `closeUp`: stands over this pole of the body, on its night side, in place of its sunlit side. */

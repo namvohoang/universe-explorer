@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { FIJI_2018_QUAKE } from '../data/paths/fiji2018Quake';
 import type { QuakeArrival } from '../data/types';
 import { bodyFramePoint } from './groundPath';
-import { cameStraight, distanceAndBearing, placeAlong, waveFront } from './seismic';
+import { cameStraight, distanceAndBearing, placeAlong, waveFront, waveReachKm } from './seismic';
 import { angleBetween } from './vec3';
 
 const DEG = Math.PI / 180;
@@ -126,5 +126,48 @@ describe('the Fiji earthquake of 2018, from the USGS record', () => {
     // What goes through the core comes later than anything that came straight.
     const lastStraight = Math.max(...arrivals.filter(cameStraight).map((arrival) => arrival[2]));
     expect(Math.min(...throughCore.map((arrival) => arrival[2]))).toBeGreaterThan(lastStraight);
+  });
+});
+
+describe('waveReachKm', () => {
+  // Two stations: 4 degrees out felt at 80 s, 8 degrees out at 120 s. A degree is 100 km here.
+  const front = waveFront([
+    [4, 0, 80, 'P'],
+    [8, 0, 120, 'P'],
+  ]);
+  const reach = (seconds: number) => waveReachKm(front, 300, 100, seconds);
+
+  it('is the straight line from the break to where the front is on the ground', () => {
+    expect(reach(80)).toBeCloseTo(500, 9);
+    expect(reach(100)).toBeCloseTo(Math.hypot(300, 600), 9);
+    expect(reach(120)).toBeCloseTo(Math.hypot(300, 800), 9);
+  });
+
+  it('goes out evenly from nothing until the nearest station feels it', () => {
+    expect(reach(0)).toBe(0);
+    expect(reach(40)).toBeCloseTo(250, 9);
+  });
+
+  it('is not known before the earthquake, with no station, or past the record', () => {
+    expect(reach(-1)).toBeNull();
+    expect(reach(121)).toBeNull();
+    expect(waveReachKm(waveFront([]), 300, 100, 10)).toBeNull();
+  });
+
+  it('never goes back, and reaches the ground over the Fiji earthquake before any station felt it', () => {
+    const [, , depthKm] = FIJI_2018_QUAKE.place.value;
+    const fiji = waveFront(FIJI_2018_QUAKE.arrivals.value);
+    const kmPerDeg = 111;
+    let before = 0;
+    let reachedGroundAt: number | null = null;
+    for (let seconds = 0; seconds <= 300; seconds++) {
+      const now = waveReachKm(fiji, depthKm, kmPerDeg, seconds);
+      expect(now).not.toBeNull();
+      expect(now ?? 0).toBeGreaterThanOrEqual(before);
+      before = now ?? 0;
+      if (reachedGroundAt === null && before >= depthKm) reachedGroundAt = seconds;
+    }
+    expect(reachedGroundAt).not.toBeNull();
+    expect(reachedGroundAt ?? Infinity).toBeLessThan(fiji.nearest?.[1] ?? 0);
   });
 });

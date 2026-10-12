@@ -63,6 +63,11 @@ export interface WaveFront {
   /** The farthest station the wave reached straight through the rock, in degrees round the world. */
   readonly farthestDeg: number;
   /**
+   * The nearest station to have felt it: how far round the world it is (degrees) and how long
+   * after the earthquake began it felt the wave (seconds). `null` with no station.
+   */
+  readonly nearest: readonly [distanceDeg: number, seconds: number] | null;
+  /**
    * How far round the world the wave has got so many seconds after the earthquake began, in
    * degrees: `null` before the nearest station felt it, and once it has passed the farthest
    * station it reached straight, beyond which the record does not follow it.
@@ -89,6 +94,7 @@ export function waveFront(arrivals: readonly QuakeArrival[]): WaveFront {
   const last = steps[steps.length - 1];
   return {
     farthestDeg: last?.[0] ?? 0,
+    nearest: first ?? null,
     reachDeg(secondsAfter) {
       if (!first || !last || secondsAfter < first[1] || secondsAfter > last[1]) return null;
       // The last station to have felt it by now, and the next one out.
@@ -102,4 +108,31 @@ export function waveFront(arrivals: readonly QuakeArrival[]): WaveFront {
       );
     },
   };
+}
+
+/**
+ * How far from where an earthquake began its first wave has got through the rock so many
+ * seconds after, in km, for a drawing of the ground cut open. From the instant the nearest
+ * station felt it, the wave is as far out as the straight line from where it began, `depthKm`
+ * down, to the place on the ground the front has reached (`kmPerDeg` is how far a degree round
+ * the world is on its ground): the ground is taken as flat, which holds near the earthquake.
+ * Before that instant no station says where the wave was, and it is taken to go out evenly
+ * from nothing. `null` before the earthquake began, with no station, and once the record no
+ * longer follows the front.
+ */
+export function waveReachKm(
+  front: WaveFront,
+  depthKm: number,
+  kmPerDeg: number,
+  secondsAfter: number,
+): number | null {
+  const { nearest } = front;
+  if (!nearest || secondsAfter < 0) return null;
+  const through = (distanceDeg: number): number => Math.hypot(depthKm, distanceDeg * kmPerDeg);
+  const [nearestDeg, nearestSeconds] = nearest;
+  if (secondsAfter < nearestSeconds) {
+    return nearestSeconds > 0 ? (through(nearestDeg) * secondsAfter) / nearestSeconds : null;
+  }
+  const reachDeg = front.reachDeg(secondsAfter);
+  return reachDeg === null ? null : through(reachDeg);
 }

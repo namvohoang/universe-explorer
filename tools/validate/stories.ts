@@ -615,7 +615,7 @@ export function checkStories(
       }
     }
     for (const chapter of story.chapters) {
-      if (chapter.slice === true && !story.storm?.slice && !story.tornado) {
+      if (chapter.slice === true && !story.storm?.slice && !story.tornado && !story.quake) {
         errors.push(
           `story ${story.id}: chapter "${chapter.id}" shows a drawing the story does not have`,
         );

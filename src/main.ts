@@ -17,6 +17,7 @@ import { createDiagram, type Diagram } from './scene/diagram';
 import { createMeteorStreaks } from './scene/meteorStreaks';
 import { createSightLine } from './scene/sightLine';
 import { createStormSlice, type StormSlice } from './scene/stormSlice';
+import { createQuakeBlock, type QuakeBlock } from './scene/quakeBlock';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
@@ -39,6 +40,7 @@ import {
   placeAlong,
   waveFront,
   type WaveFront,
+  waveReachKm,
 } from './sim/seismic';
 import { tideHeights, type TideRaiser } from './sim/tides';
 import {
@@ -509,7 +511,10 @@ function start(): void {
       sight.line.visible = false;
     }
     const { story, chapter } = paired;
-    const { main, side } = roomHalves();
+    const halves = roomHalves();
+    const block = chapter.slice === true ? (watchQuake?.block ?? null) : null;
+    // The ground cut open is the close look: it takes the first place, and the world the second.
+    const { main, side } = block ? { main: halves.side, side: halves.main } : halves;
     const sideAspect = side.width / side.height;
     // Beside a look from a world: the close look, where the part asks for both, or the whole stage.
     const fromAWorld = chapter.standAtId !== undefined || chapter.viewFromId !== undefined;
@@ -529,7 +534,8 @@ function start(): void {
     const whole = overStorm ?? close ?? stageView(story, chapter, sideAspect, 1);
     const heldBearing = close?.direction ?? STAGE_DIRECTION;
     // A part that shows the storm cut in half has that drawing beside the close look.
-    const cut = chapter.slice === true ? (stormSlice ?? tornadoDrawing?.scene ?? null) : null;
+    const cut =
+      chapter.slice === true ? (stormSlice ?? tornadoDrawing?.scene ?? block ?? null) : null;
     stage.setPanes(
       cut
         ? {
@@ -554,14 +560,16 @@ function start(): void {
     const strings: Readonly<Record<string, string>> = words;
     const photos = [...(story.fromEarth ?? []), ...(story.photos ?? [])];
     const from = catalogue.find((o) => o.id === (chapter.standAtId ?? chapter.viewFromId));
-    sideTags.frame([
+    const looks: Parameters<typeof sideTags.frame>[0] & object = [
       {
         box: main,
-        label: chapter.lookUpAt
-          ? words.watchPaneGround
-          : from
-            ? fill(words.watchPaneFrom, { name: displayName(from) })
-            : words.watchPaneClose,
+        label: block
+          ? words.watchPaneWhole
+          : chapter.lookUpAt
+            ? words.watchPaneGround
+            : from
+              ? fill(words.watchPaneFrom, { name: displayName(from) })
+              : words.watchPaneClose,
         pictures: photos.map((photo) => ({
           src: mediaUrl(photo.media.file),
           alt: strings[photo.media.altKey] ?? '',
@@ -576,7 +584,9 @@ function start(): void {
         label: cut
           ? cut === stormSlice
             ? words.watchPaneSlice
-            : words.watchPaneTornado
+            : cut === block
+              ? words.watchPaneQuakeBlock
+              : words.watchPaneTornado
           : modelled
             ? words.watchPaneWhole
             : close
@@ -585,7 +595,9 @@ function start(): void {
                 ? words.watchPaneDrawing
                 : words.watchPaneWhole,
       },
-    ]);
+    ];
+    // The frames are put on the page in the order they are seen: the close look first.
+    sideTags.frame(block ? [...looks].reverse() : looks);
   };
   /** The same for width: how many times wider the screen is than the room beside a card. */
   const sideSqueeze = (): number =>
@@ -1299,7 +1311,12 @@ function start(): void {
     const modelled = modelledCraft(story, chapter);
     if (modelled) return besideCraft(modelled, squeeze);
     if (chapter.closeUp === true && flown) return overCraft(flown, squeeze);
-    const overStorm = stormView(story, chapter, STORM_CLOSE_RADII);
+    // Beside the ground cut open over an earthquake, the look at the world is the whole picture.
+    const overStorm = stormView(
+      story,
+      chapter,
+      chapter.slice === true && story.quake ? STORM_WIDE_RADII * squeeze : STORM_CLOSE_RADII,
+    );
     if (overStorm) return overStorm;
     if (chapter.closeUp === true) {
       const seen = chapter.lookAtId;
@@ -1862,10 +1879,19 @@ function start(): void {
     system.showGroundPicture(picture);
   };
   /** The earthquake of the story on show: when it began, and how far its wave had got when. */
-  let watchQuake: { readonly originJd: number; readonly front: WaveFront } | null = null;
+  let watchQuake: {
+    readonly originJd: number;
+    readonly front: WaveFront;
+    /** The ground cut open over where it began, as a drawing in a scene of its own. */
+    readonly block: QuakeBlock | null;
+    readonly depthKm: number;
+    /** How far a degree round its world is on the ground, in km. */
+    readonly kmPerDeg: number;
+  } | null = null;
   /** Draws a story's earthquake: where it began, and every station that felt its first wave. */
   const showQuake = (story: Story): void => {
     const { quake } = story;
+    watchQuake?.block?.dispose();
     if (!quake) {
       watchQuake = null;
       system.setQuake(null, null, []);
@@ -1873,7 +1899,16 @@ function start(): void {
     }
     const [lonDegEast, latDeg] = quake.record.place.value;
     const arrivals = quake.record.arrivals.value;
-    watchQuake = { originJd: quake.record.originJd.value, front: waveFront(arrivals) };
+    const world = catalogue.find((object) => object.id === quake.onId);
+    const groundKm = world ? bodyRadiusKm(world) : null;
+    const depthKm = quake.record.place.value[2];
+    watchQuake = {
+      originJd: quake.record.originJd.value,
+      front: waveFront(arrivals),
+      block: groundKm === null ? null : createQuakeBlock(depthKm),
+      depthKm,
+      kmPerDeg: ((groundKm ?? 0) * Math.PI) / 180,
+    };
     system.setQuake(
       quake.onId,
       bodyFramePoint({ lonDegEast, latDeg, altitudeKm: 0 }, 1),
@@ -1890,6 +1925,8 @@ function start(): void {
     if (!watchQuake) return;
     const secondsAfter = (jd - watchQuake.originJd) * SECONDS_PER_DAY;
     system.showQuake(secondsAfter, watchQuake.front.reachDeg(secondsAfter));
+    const { block, front, depthKm, kmPerDeg } = watchQuake;
+    block?.set(waveReachKm(front, depthKm, kmPerDeg, secondsAfter), secondsAfter >= 0);
   };
   /** When the tsunami of the story on show began. */
   let watchTsunamiJd: number | null = null;
@@ -2335,7 +2372,9 @@ function start(): void {
                   ? words.scaleLabelSlice
                   : chapter.slice === true && tornadoDrawing
                     ? words.scaleLabelTornado
-                    : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+                    : chapter.slice === true && watchQuake?.block
+                      ? words.scaleLabelQuakeBlock
+                      : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -2573,6 +2612,7 @@ function start(): void {
       system.setAurora(null, null);
       watchTide = null;
       system.setTide(null, null);
+      watchQuake?.block?.dispose();
       watchQuake = null;
       system.setQuake(null, null, []);
       tornadoDrawing?.scene.dispose();
@@ -2920,7 +2960,8 @@ function start(): void {
     }
     // A drawing in a scene of its own holds none of the story's worlds: nothing there is named.
     const besideADrawing =
-      paired?.chapter.slice === true && (stormSlice !== null || tornadoDrawing !== null);
+      paired?.chapter.slice === true &&
+      (stormSlice !== null || tornadoDrawing !== null || (watchQuake?.block ?? null) !== null);
     sideTags.update((id) => {
       if (besideADrawing) {
         return { point: { ...stage.toSideScreen(ORIGIN), visible: false }, radiusPixels: 0 };

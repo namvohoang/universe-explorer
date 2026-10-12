@@ -1173,7 +1173,14 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       world, then no station for 18 degrees, then stations that felt a wave through the
       core, lit in blue; a test holds the gap. Chosen for being among the biggest so deep and
       for doing little on the ground (USGS's estimate of harm was its lowest). The sentences
-      rest on USGS's text for the event and two USGS publications. Left: the slower wave,
+      rest on USGS's text for the event and two USGS publications. Added on 2026-10-12, asked
+      for by the owner: in the parts over where it began, the close look is a block of ground
+      cut open in 3D (`src/scene/quakeBlock.ts`), with the break at its real depth against
+      the width of the block and the wave going out from it, and the world with its stations
+      is the whole picture beside it. The wave is as far from the break as the nearest
+      stations say (`waveReachKm`, tested), and is drawn going out evenly before the first
+      of them felt it; the block's colours, its size and the crack are a drawing, and the
+      screen says so. No building is drawn, standing or falling (decision 10). Left: the slower wave,
       which the record does not hold; the map of how hard the ground shook; the slice
       through the whole Earth with the paths of the waves; the fault slipping; how the size
       of a quake is told. As planned: **Earthquake.** `tracked`: the place, depth and time, and the map of how hard the

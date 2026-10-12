@@ -1093,7 +1093,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyQuakePlates:
     'Lớp ngoài của Trái Đất gồm những mảng đá khổng lồ. Chúng di chuyển rất chậm, chậm hơn cả móng tay bạn mọc dài ra.',
   storyQuakeBreaks:
-    'Sâu dưới đáy biển gần Fiji, khoảng 560 km bên dưới, đá bên trong một mảng bỗng nứt vỡ và trượt đi. Đó là một trận động đất.',
+    'Sâu dưới đáy biển gần Fiji, khoảng 560 km bên dưới, đá bên trong một mảng bỗng nứt vỡ và trượt đi. Đó là một trận động đất. Đường màu vàng là đợt sóng đầu tiên của nó, lan đi trong lòng đá.',
   storyQuakeWaves:
     'Chỗ đứt gãy phát ra những đợt sóng lan đi trong lòng Trái Đất. Mỗi chấm là một trạm lắng nghe các đợt sóng ấy. Chấm sáng lên đúng lúc trạm ghi nhận được đợt sóng đầu tiên.',
   storyQuakeCore:
@@ -1178,6 +1178,9 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchStormWind: 'Gió: {n} km mỗi giờ',
   watchPaneSlice: 'Cắt đôi (hình vẽ)',
   watchPaneTornado: 'Lốc xoáy (hình vẽ)',
+  watchPaneQuakeBlock: 'Cận cảnh (hình vẽ)',
+  scaleLabelQuakeBlock:
+    'Khối đất cắt ra là hình vẽ. Độ sâu của chỗ nứt vỡ và lúc sóng lên tới mặt đất là thật.',
   scaleLabelTornado: 'Đường đi và bề rộng của vòi lốc là thật. Phần còn lại là hình vẽ.',
   scaleLabelSlice: 'Bức ảnh là thật. Hình cắt đôi là hình vẽ, cao hơn cơn bão thật rất nhiều.',
   watchPlay: 'Chạy',

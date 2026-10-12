@@ -1133,6 +1133,9 @@ export const en = {
   watchStormWind: 'Wind: {n} km an hour',
   watchPaneSlice: 'Cut in half (a drawing)',
   watchPaneTornado: 'The tornado (a drawing)',
+  watchPaneQuakeBlock: 'Close up (a drawing)',
+  scaleLabelQuakeBlock:
+    'The ground cut open is a drawing. How deep the break is, and when the wave comes up, are real.',
   scaleLabelTornado: 'The path and the width of the funnel are real. The rest is a drawing.',
   scaleLabelSlice: 'The picture is real. The cut is a drawing, far taller than a real storm.',
   watchPlay: 'Play',
@@ -1409,7 +1412,7 @@ export const en = {
   storyQuakePlates:
     'The outside of Earth is made of huge plates of rock. They move very slowly, slower than your fingernails grow.',
   storyQuakeBreaks:
-    'Deep under the sea near Fiji, about 560 km down, rock inside a plate suddenly broke and slipped. That is an earthquake.',
+    'Deep under the sea near Fiji, about 560 km down, rock inside a plate suddenly broke and slipped. That is an earthquake. The yellow line is its first wave, going out through the rock.',
   storyQuakeWaves:
     'The break sends waves out through the Earth. Each dot is a station that listens for them. A dot lights up at the moment its station felt the first wave.',
   storyQuakeCore:

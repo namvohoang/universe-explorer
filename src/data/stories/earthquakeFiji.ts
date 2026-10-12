@@ -11,6 +11,12 @@
 // record has no station (bar one picked as bent round the core), and from 115 degrees on the
 // stations felt a wave that had gone through the core, 17 to 19 minutes after the start: they
 // are lit in blue. A test holds the gap and the order.
+// In the parts over where it began, the close look is a block of ground cut open
+// (src/scene/quakeBlock.ts): a drawing, in which the break is as deep as the catalogue's 600 km
+// against the width of the block, and the wave is as far from the break as the nearest
+// stations say (src/sim/seismic.ts, `waveReachKm`). Before the nearest station felt it, 81 s
+// after the start, the wave is drawn going out evenly. The world with its stations is then
+// the whole picture beside it.
 // The record has only the first wave. The slower wave that follows, which shakes the ground
 // more, was not picked in it, and is not drawn or told.
 // USGS's own text gives the depth as "approximately 560 km"; its catalogue has 600 km. The
@@ -47,6 +53,8 @@ const over = (lonDegEast: number, latDegNorth: number, why: string) =>
     overPlace: s([lonDegEast, latDegNorth] as const, EVENT, why),
   }) as const;
 const OVER_THE_START = over(-178.153, -18.1125, 'The place on the ground over where it began.');
+/** With the ground cut open over where it began as the close look, and the world beside it. */
+const CUT_OPEN = { ...OVER_THE_START, slice: true } as const;
 
 export const earthquakeFiji: Story = {
   id: 'earthquake-fiji',
@@ -67,7 +75,7 @@ export const earthquakeFiji: Story = {
         quote:
           'they move over a hot, yielding upper mantle zone at very slow rates of a few centimeters per year, slower than the rate at which fingernails grow.',
       },
-      ...OVER_THE_START,
+      ...CUT_OPEN,
     },
     {
       id: 'it-breaks',
@@ -78,7 +86,7 @@ export const earthquakeFiji: Story = {
         quote:
           'occurred as the result of deep, normal faulting approximately 560 km beneath the South Pacific Ocean',
       },
-      ...OVER_THE_START,
+      ...CUT_OPEN,
     },
     {
       id: 'the-waves',
@@ -111,7 +119,7 @@ export const earthquakeFiji: Story = {
         quote:
           'Deep-focus earthquakes cause less damage on the ground surface above their foci than similar-magnitude shallow-focus earthquakes',
       },
-      ...OVER_THE_START,
+      ...CUT_OPEN,
     },
   ],
   endJd: after(1260, 'Twenty-one minutes after it began.'),

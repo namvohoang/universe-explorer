@@ -192,6 +192,22 @@ test.describe('the Earth screen', () => {
       'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',
     );
     await expect(page.locator('.pane:visible')).toHaveCount(2);
+    // Over where it began, the close look is the ground cut open, and says it is a drawing;
+    // the world with its stations is the whole picture, on the far side of it.
+    const drawing = page.locator('.pane:visible', { hasText: 'Close up (a drawing)' });
+    const world = page.locator('.pane:visible', { hasText: 'The whole picture' });
+    await expect(drawing).toHaveCount(1);
+    await expect(world).toHaveCount(1);
+    const [drawingBox, worldBox] = [await drawing.boundingBox(), await world.boundingBox()];
+    expect((drawingBox?.x ?? 0) + (drawingBox?.y ?? 0)).toBeLessThan(
+      (worldBox?.x ?? 0) + (worldBox?.y ?? 0),
+    );
+    await expect(page.locator('#scale-label')).toContainText('The ground cut open is a drawing.');
+    // Once the wave is crossing the world, both looks are at the world again.
+    await page.locator('.watch-step-button').nth(1).click();
+    await page.locator('.watch-step-button').nth(1).click();
+    await expect(page.locator('.watch-step')).toHaveText('Part 3 of 5');
+    await expect(page.locator('.pane:visible', { hasText: 'a drawing' })).toHaveCount(0);
   });
 
   test('tells a tsunami from its gauges and from the depth of the sea, and says they may differ', async ({

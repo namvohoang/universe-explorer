@@ -669,8 +669,8 @@ export const NARRATION: Readonly<
   },
   'story-earthquake-fiji': {
     file: 'public/voice/story-earthquake-fiji.mp3',
-    fingerprint: 'd801deda',
-    starts: [0.0, 2.2, 9.7, 19.88, 30.25, 41.73],
+    fingerprint: 'd39d901d',
+    starts: [0.0, 2.2, 9.7, 23.85, 34.23, 45.7],
   },
   'story-tsunami-kermadec': {
     file: 'public/voice/story-tsunami-kermadec.mp3',

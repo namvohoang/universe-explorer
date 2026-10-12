@@ -336,7 +336,7 @@ export function createWatch(host: WatchHost): Watch {
     // A storm's wind is told beside the date, as its record has it then.
     const wind = story.storm ? stormAt(story.storm.track.points.value, jd)?.windKmPerH : undefined;
     const dated =
-      wind === undefined
+      wind === undefined || wind === null
         ? label
         : `${label} · ${fill(words.watchStormWind, { n: Math.round(wind / WIND_ROUNDED_TO_KM_PER_H) * WIND_ROUNDED_TO_KM_PER_H })}`;
     if (dated !== shownDate) {

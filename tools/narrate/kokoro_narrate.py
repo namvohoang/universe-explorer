@@ -44,6 +44,8 @@ SAY: dict[str, str] = {
     "Halley’s": "hˈæliz",  # the same, with the curly apostrophe the stories use
     "Jeremy": "ʤˈɛɹəmi",  # JERR-uh-mee
     "Reid": "ɹˈid",  # REED
+    "Noru": "nˈɔɹu",  # NOR-oo
+    "Luzon": "luzˈɑn",  # loo-ZON
     "Makemake": "mˌɑkimˈɑki",  # MAH-kee-MAH-kee
     "Proxima": "pɹˈɑksəmə",  # PROK-sih-muh
     "Centauri": "sɛntˈɔɹi",  # sen-TOR-ee

@@ -7,8 +7,8 @@ export interface StormNow {
   /** Where its middle is over the ground: a unit vector in the frame of the world it is on. */
   readonly place: Vec3;
   readonly latDegNorth: number;
-  /** The strongest steady wind, in km/h. */
-  readonly windKmPerH: number;
+  /** The strongest steady wind, in km/h; `null` where a record on either side gives none. */
+  readonly windKmPerH: number | null;
   /** How far out from the middle gales reach, in km: 0 while there are none. */
   readonly reachKm: number;
 }
@@ -59,7 +59,7 @@ export function stormAt(points: readonly StormPoint[], jd: number): StormNow | n
   return {
     place: alongGround(stormPlace(from), stormPlace(to), through),
     latDegNorth: between(from[2], to[2]),
-    windKmPerH: between(from[3], to[3]),
+    windKmPerH: from[3] === null || to[3] === null ? null : between(from[3], to[3]),
     reachKm: between(galeReachKm(from), galeReachKm(to)),
   };
 }
@@ -92,7 +92,12 @@ const HOURS_PER_DAY = 24;
  * middle and slower outside, so this is a drawing; it rests on the record's own numbers so
  * that a wider storm is drawn turning more slowly. While there are no gales it does not turn.
  */
-export function stormTurnRad(points: readonly StormPoint[], jd: number): number {
+export function stormTurnRad(
+  points: readonly StormPoint[],
+  jd: number,
+  /** The wind the record measures the storm's reach by. */
+  reachWindKmPerH = GALE_KM_PER_H,
+): number {
   let turned = 0;
   for (const [index, from] of points.entries()) {
     const to = points[index + 1];
@@ -102,7 +107,7 @@ export function stormTurnRad(points: readonly StormPoint[], jd: number): number 
     const reachFrom = galeReachKm(from);
     // The reach at the middle of the stretch gone through stands for the whole of it.
     const reachKm = reachFrom + ((galeReachKm(to) - reachFrom) * through) / 2;
-    if (reachKm > 0) turned += (GALE_KM_PER_H / reachKm) * (until - from[0]) * HOURS_PER_DAY;
+    if (reachKm > 0) turned += (reachWindKmPerH / reachKm) * (until - from[0]) * HOURS_PER_DAY;
   }
   return turned;
 }

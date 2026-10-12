@@ -97,6 +97,10 @@ describe('stormTurnRad', () => {
     expect(stormTurnRad(track, to[0])).toBeCloseTo((GALE_KM_PER_H / 70) * 6, 9);
   });
 
+  it('turns at the speed of the wind its record measures reach by', () => {
+    expect(stormTurnRad(track, to[0], 50)).toBeCloseTo((50 / 70) * 6, 9);
+  });
+
   it('goes on turning the same way, never back', () => {
     const points = SAM_2021_TRACK.points.value;
     let before = 0;

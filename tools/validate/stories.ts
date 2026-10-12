@@ -332,7 +332,8 @@ function stormErrors(story: Story): string[] {
     if (!(lon >= -180 && lon <= 180 && lat >= -90 && lat <= 90)) {
       errors.push(`${at} a record of the storm is at no place on a globe`);
     }
-    if (!(wind >= 0)) errors.push(`${at} a record of the storm has a wind below nothing`);
+    if (wind !== null && !(wind >= 0))
+      errors.push(`${at} a record of the storm has a wind below nothing`);
     if (pressure !== null && !(pressure > 0)) {
       errors.push(`${at} a record of the storm has no pressure at its middle`);
     }

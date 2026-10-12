@@ -113,6 +113,21 @@ test.describe('the Earth screen', () => {
     await expect(page.locator('#scale-label')).toContainText('Real sizes');
   });
 
+  test('tells of a typhoon that reached Vietnam, with no wind where its record has none', async ({
+    page,
+  }) => {
+    await page.goto('/#earth/typhoon-noru');
+    await expect(page.locator('.watch-caption h2')).toHaveText('A typhoon');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 6');
+    await expect(page.locator('.watch-date')).toContainText('23 September 2022');
+    await expect(page.locator('.watch-date')).toContainText('Wind: 70 km an hour');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'The pictures and the line are real. The cloud between the days is a drawing.',
+    );
+    // Both of Earth's stories are there to pick from.
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(2);
+  });
+
   test('is left with Escape, back to the solar system', async ({ page }) => {
     await page.goto('/#earth/hurricane-sam');
     await expect(page.locator('.watch-caption h2')).toHaveText('A hurricane');

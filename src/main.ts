@@ -1756,6 +1756,8 @@ function start(): void {
   /** The storm of the story on show, and how big the world it is on is. */
   let watchStorm: {
     readonly points: readonly StormPoint[];
+    /** The wind the record measures the storm's reach by, where it says. */
+    readonly reachWindKmPerH: number | undefined;
     readonly groundKm: number;
     /** When each real picture of it is shown, in the order the scene was given them. */
     readonly pictured: readonly (readonly [fromJd: number, untilJd: number])[];
@@ -1779,6 +1781,7 @@ function start(): void {
     const pictures = storm.pictures ?? [];
     watchStorm = {
       points,
+      reachWindKmPerH: storm.track.reachWindKmPerH?.value,
       groundKm,
       pictured: pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]),
     };
@@ -1807,7 +1810,7 @@ function start(): void {
   /** Puts the storm where its record has it at a date. */
   const moveStorm = (jd: number): void => {
     if (!watchStorm) return;
-    const { points, groundKm, pictured } = watchStorm;
+    const { points, groundKm, pictured, reachWindKmPerH } = watchStorm;
     const now = stormAt(points, jd);
     const picture = pictured.findIndex(([fromJd, untilJd]) => jd >= fromJd && jd <= untilJd);
     system.showGroundPicture(picture < 0 ? null : picture);
@@ -1816,7 +1819,7 @@ function start(): void {
         ? {
             place: now.place,
             reachRad: now.reachKm / groundKm,
-            turnRad: stormTurnRad(points, jd),
+            turnRad: stormTurnRad(points, jd, reachWindKmPerH),
             anticlockwise: turnsAnticlockwise(now.latDegNorth),
             passed: points.filter((point) => point[0] <= jd).length,
           }

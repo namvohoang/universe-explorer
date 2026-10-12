@@ -226,7 +226,7 @@ export type StormPoint = readonly [
   jd: number,
   lonDegEast: number,
   latDegNorth: number,
-  windKmPerH: number,
+  windKmPerH: number | null,
   pressureHpa: number | null,
   galesNorthEastKm: number | null,
   galesSouthEastKm: number | null,
@@ -237,6 +237,11 @@ export type StormPoint = readonly [
 
 /** The path a storm's middle took, as an agency worked it out afterwards from every measurement. */
 export interface StormTrack {
+  /**
+   * The wind the record measures the storm's reach by, in km/h, when it is not the gale of
+   * 34 knots the American records use.
+   */
+  readonly reachWindKmPerH?: Sourced<number>;
   /** Earliest first. */
   readonly points: Sourced<readonly StormPoint[]>;
 }

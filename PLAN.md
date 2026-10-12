@@ -1179,7 +1179,16 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       Parts: the sea floor moves; the wave sets off; across the ocean as fast as a jet (the
       comparison worked out from the data, not typed); the buoys that feel it pass; reaching
       the shore; the warning that goes ahead of it.
-- [~] 14.8 Done: Hurricane Sam on the Earth screen, in nine parts, in English and
+- [x] 14.8 Done on 2026-10-12 with its second story, a typhoon that reached Vietnam: Typhoon
+      Noru of September 2022, in six parts, in English and Vietnamese, recorded. Its track is
+      the Japan Meteorological Agency's (`tools/storms/fetchJmaTrack.ts`): the wind is a
+      mean over ten minutes and is `null` while the agency gave none; the file gives the
+      longest and the shortest reach of 30-knot winds, and their mean stands for all four
+      quarters. Six real pictures from NASA Worldview. Its sentences rest on NASA Earth
+      Observatory's page on Noru. Noru was not harmless (people died in the Philippines and
+      in Vietnam): the story says what the storm did and that hundreds of thousands got ready
+      to move to safety, and gives no count. It has no cut in half: no source read gives the
+      width of its eye. First: Hurricane Sam on the Earth screen, in nine parts, in English and
       Vietnamese. `tools/storms/fetchTrack.ts` writes the hurricane centre's six-hourly
       record into `src/data/paths/`; `src/sim/storm.ts` moves the storm's middle along the
       ground between two records (tested); Earth is turned as it faced (JPL Horizons). The

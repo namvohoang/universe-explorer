@@ -672,4 +672,9 @@ export const NARRATION: Readonly<
     fingerprint: '7c6dcbe5',
     starts: [0.0, 2.17, 9.97, 19.9, 30.7, 38.5, 50.88, 57.48, 66.75, 76.55, 82.12],
   },
+  'story-typhoon-noru': {
+    file: 'public/voice/story-typhoon-noru.mp3',
+    fingerprint: '8b4f41f5',
+    starts: [0.0, 2.23, 13.12, 22.6, 30.98, 38.92, 49.38],
+  },
 };

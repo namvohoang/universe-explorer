@@ -1331,6 +1331,22 @@ export const en = {
     'Sam stayed far out at sea, away from where people live. Nobody was hurt.',
   storyHurricaneFades:
     'Far to the north, Sam slowly grew weaker and lost its round shape. The next day it had changed into another kind of storm.',
+  storyTyphoonTitle: 'A typhoon',
+  storyTyphoonNote: 'The pictures and the line are real. The cloud between the days is a drawing.',
+  storyTyphoonPictureAlt:
+    'A typhoon seen from space: a great white spiral of cloud over the sea, with land beside it.',
+  storyTyphoonFarOut:
+    'This storm is called Noru. It began far out over the warm sea, east of the Philippines. In this part of the world a storm like this is called a typhoon.',
+  storyTyphoonGrowsFast:
+    'In one day Noru grew from a small storm into a very strong one. Only a few storms have ever been seen to grow so much so quickly.',
+  storyTyphoonPhilippines:
+    'Noru is at its strongest. This evening it will reach the Philippines and cross the big island of Luzon in one night.',
+  storyTyphoonSeaAgain:
+    'The mountains of Luzon made Noru weaker. Now it is over warm sea again, where it will grow stronger once more.',
+  storyTyphoonGettingReady:
+    'Forecasters could see where Noru was going: to the middle of Vietnam. Before it came, hundreds of thousands of people got ready to move to safe places.',
+  storyTyphoonAshore:
+    'Noru has come ashore in the middle of Vietnam. Over land it has no warm sea to feed it, so it quickly grows weak.',
   storyShuttleLaunchTitle: 'The Shuttle: the launch',
   storyShuttleLaunchNote:
     'The time and the heights are real. The path, the lean and roll, the flame and smoke, the tower, the clouds and the colours are drawings.',

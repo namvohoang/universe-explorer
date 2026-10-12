@@ -41,6 +41,7 @@ const STORIES: readonly (readonly [id: string, title: string, screen?: 'earth'])
   ['apollo-11-landing', 'Apollo 11: the landing'],
   ['shuttle-docking', 'A shuttle meets the station'],
   ['hurricane-sam', 'A hurricane', 'earth'],
+  ['typhoon-noru', 'A typhoon', 'earth'],
 ];
 
 for (const screen of SCREENS) {

@@ -488,6 +488,37 @@ export const NASA_WORLDVIEW_SAM: Source = {
   retrieved: '2026-10-11',
 };
 
+export const JMA_BEST_TRACK_NORU: Source = {
+  id: 'jma-best-track-2216',
+  title:
+    'Japan Meteorological Agency, RSMC Tokyo – Typhoon Center — RSMC Best Track Data: Typhoon Noru (2216), every six hours, and the format of the file',
+  url: 'https://www.jma.go.jp/jma/jma-eng/jma-center/rsmc-hp-pub-eg/besttrack.html',
+  retrieved: '2026-10-11',
+};
+
+export const NASA_EARTH_OBSERVATORY_NORU: Source = {
+  id: 'nasa-earth-observatory-noru',
+  title: 'NASA Earth Observatory — Noru Strikes the Philippines (image of 25 September 2022)',
+  url: 'https://science.nasa.gov/earth/earth-observatory/noru-strikes-the-philippines-150399/',
+  retrieved: '2026-10-11',
+};
+
+export const NASA_WORLDVIEW_NORU: Source = {
+  id: 'nasa-worldview-noru-2022',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — true-colour pictures from the VIIRS camera on the NOAA-20 satellite, 23 to 28 September 2022, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=96,1,126,31&l=VIIRS_NOAA20_CorrectedReflectance_TrueColor&t=2022-09-27',
+  retrieved: '2026-10-11',
+};
+
+export const JPL_HORIZONS_TURN_NORU_2022_EARTH: Source = {
+  id: 'jpl-horizons-turn-noru2022earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2022-09-23 03:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272459845.625800722%27',
+  retrieved: '2026-10-11',
+};
+
 export const NASA_SPACE_PLACE_HURRICANES: Source = {
   id: 'nasa-space-place-hurricanes',
   title: 'NASA Space Place — How Do Hurricanes Form?',

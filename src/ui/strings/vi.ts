@@ -1018,6 +1018,22 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyHurricaneOutAtSea: 'Sam ở rất xa ngoài biển, cách xa nơi có người ở. Không ai bị thương.',
   storyHurricaneFades:
     'Lên xa về phía bắc, Sam yếu dần và không còn tròn trịa nữa. Hôm sau nó đã biến thành một loại bão khác.',
+  storyTyphoonTitle: 'Bão vào Việt Nam',
+  storyTyphoonNote: 'Các bức ảnh và đường vàng là thật. Đám mây giữa các ngày là hình vẽ.',
+  storyTyphoonPictureAlt:
+    'Một cơn bão nhìn từ vũ trụ: một xoáy mây trắng khổng lồ trên biển, bên cạnh là đất liền.',
+  storyTyphoonFarOut:
+    'Cơn bão này tên là Noru. Nó sinh ra ở rất xa ngoài biển ấm, phía đông Philippines. Ở vùng này của thế giới, tiếng Anh gọi bão như thế này là "typhoon".',
+  storyTyphoonGrowsFast:
+    'Chỉ trong một ngày, Noru từ một cơn bão nhỏ đã thành một cơn bão rất mạnh. Từ trước đến nay chỉ có vài cơn bão mạnh lên nhiều và nhanh như vậy.',
+  storyTyphoonPhilippines:
+    'Lúc này Noru mạnh nhất. Tối nay nó sẽ tới Philippines và đi qua đảo lớn Luzon chỉ trong một đêm.',
+  storyTyphoonSeaAgain:
+    'Núi non trên đảo Luzon làm Noru yếu đi. Giờ nó lại ở trên biển ấm, nơi nó sẽ mạnh lên lần nữa.',
+  storyTyphoonGettingReady:
+    'Các nhà dự báo thấy được Noru đang đi đâu: vào miền Trung Việt Nam. Trước khi bão đến, hàng trăm nghìn người đã chuẩn bị đi đến nơi an toàn.',
+  storyTyphoonAshore:
+    'Noru đã vào đất liền ở miền Trung Việt Nam. Trên đất liền không có biển ấm tiếp sức, nên nó yếu đi rất nhanh.',
   storyAuroraTitle: 'Cực quang',
   storyAuroraNote: 'Các vòng xanh là hình vẽ.',
   storyAuroraWind:

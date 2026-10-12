@@ -19,6 +19,7 @@ import { createScale, type Scale } from '../sim/scale';
 import { add, cross, dot, length, scale as scaleBy, subtract, type Vec3 } from '../sim/vec3';
 import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
 import { createGroundPicture, type GroundPicture, type PictureBox } from './groundPicture';
+import { createQuakeWaves, type QuakeStation, type QuakeWaves } from './quakeWaves';
 import { createStormCloud, type StormCloud } from './stormCloud';
 import { createTideBulge, type TideBulge } from './tideBulge';
 import { createBeltPoints, type BeltPoints } from './beltPoints';
@@ -251,6 +252,14 @@ export interface SolarSystem {
    */
   setStorm(onId: string | null, track: readonly Vec3[] | null): void;
   /**
+   * Draws an earthquake's first wave over a body's ground, riding round with it: a mark over
+   * where it began (a unit vector in the body's frame) and a dot for each station. `null`
+   * takes it away.
+   */
+  setQuake(onId: string | null, start: Vec3 | null, stations: readonly QuakeStation[]): void;
+  /** Lights the stations that have felt the wave by now, and draws its front so far round. */
+  showQuake(secondsAfter: number, reachDeg: number | null): void;
+  /**
    * Draws a body's sea with its tides, far bigger than life, and a line towards each thing
    * that raises them, in these colours; `null` takes it away.
    */
@@ -397,6 +406,7 @@ export function createSolarSystem(
   let dust: DustTrail | null = null;
   let aurora: AuroraRings | null = null;
   let storm: StormCloud | null = null;
+  let quake: QuakeWaves | null = null;
   let tide: { readonly onId: string; readonly bulge: TideBulge } | null = null;
   let groundPictures: GroundPicture[] = [];
   /** How many sights a sky track is drawn through, and how far off it is drawn, in scene units. */
@@ -971,6 +981,20 @@ export function createSolarSystem(
       storm = createStormCloud(track);
       body.frame.add(storm.group);
     },
+    setQuake(onId, start, stations) {
+      if (quake) {
+        quake.group.removeFromParent();
+        quake.dispose();
+        quake = null;
+      }
+      const body = onId === null ? undefined : bodies.get(onId);
+      if (!body || !start) return;
+      quake = createQuakeWaves(start, stations);
+      body.frame.add(quake.group);
+    },
+    showQuake(secondsAfter, reachDeg) {
+      quake?.set(secondsAfter, reachDeg);
+    },
     setTide(onId, lineColors) {
       if (tide) {
         tide.bulge.group.removeFromParent();
@@ -1091,6 +1115,7 @@ export function createSolarSystem(
       dust?.dispose();
       aurora?.dispose();
       storm?.dispose();
+      quake?.dispose();
       tide?.bulge.dispose();
       for (const picture of groundPictures) picture.dispose();
       sky?.trail.dispose();

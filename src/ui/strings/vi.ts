@@ -1063,6 +1063,19 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Khoảng một tuần sau khi rời châu Phi, bụi tới các hòn đảo vùng Caribe. Bầu trời ở đó ngả màu vàng xám mờ đục, và trong vài ngày không khí không tốt để hít thở.',
   storyDustGoodToo:
     'Bụi cũng có ích. Nó bón cho đất của rừng mưa Amazon và góp phần bồi đắp các bãi biển ở Caribe.',
+  storyQuakeTitle: 'Một trận động đất',
+  storyQuakeNote:
+    'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
+  storyQuakePlates:
+    'Lớp ngoài của Trái Đất gồm những mảng đá khổng lồ. Chúng di chuyển rất chậm, chậm hơn cả móng tay bạn mọc dài ra.',
+  storyQuakeBreaks:
+    'Sâu dưới đáy biển gần Fiji, khoảng 560 km bên dưới, đá bên trong một mảng bỗng nứt vỡ và trượt đi. Đó là một trận động đất.',
+  storyQuakeWaves:
+    'Chỗ đứt gãy phát ra những đợt sóng lan đi trong lòng Trái Đất. Mỗi chấm là một trạm lắng nghe các đợt sóng ấy. Chấm sáng lên đúng lúc trạm ghi nhận được đợt sóng đầu tiên.',
+  storyQuakeCore:
+    'Các chấm xanh nằm ở phía bên kia thế giới. Đợt sóng tới đó đã đi xuyên qua lõi Trái Đất, nằm sâu ở chính giữa. Nhờ những đợt sóng như vậy mà các nhà khoa học biết Trái Đất có lõi.',
+  storyQuakeDeep:
+    'Đây là một trong những trận động đất lớn nhất từng đo được ở độ sâu như vậy. Động đất sâu thế này gây hại trên mặt đất ít hơn động đất ở gần bề mặt.',
   storyAuroraTitle: 'Cực quang',
   storyAuroraNote: 'Các vòng xanh là hình vẽ.',
   storyAuroraWind:

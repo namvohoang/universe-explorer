@@ -10,9 +10,9 @@ for (const screen of SCREENS) {
     test('the Earth tab opens the Earth screen on its first story', async ({ page }) => {
       await page.goto('/');
       await page.locator(mainTab('Earth')).click();
-      await expect(page.locator('.watch-caption h2')).toHaveText('A hurricane');
+      await expect(page.locator('.watch-caption h2')).toHaveText('An earthquake');
       await expect(page.locator(mainTab('Earth'))).toHaveAttribute('aria-selected', 'true');
-      await expect(page).toHaveURL(/#earth\/hurricane-sam$/);
+      await expect(page).toHaveURL(/#earth\/earthquake-fiji$/);
       // The close look at the storm, and beside it the whole world it is on.
       await expect(page.locator('.pane:visible')).toHaveCount(2);
       await expect(page.locator('.pane:visible').first()).toContainText('Close up');
@@ -125,7 +125,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(4);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(5);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -159,6 +159,20 @@ test.describe('the Earth screen', () => {
     await expect.poll(() => pictures.length).toBe(6);
     await expect(page.locator('.pane:visible').first()).toContainText('Close up');
     await expect(page.locator('.pane:visible').last()).toContainText('The whole picture');
+  });
+
+  test('tells an earthquake to the second, and says what is recorded and what is worked out', async ({
+    page,
+  }) => {
+    await page.goto('/#earth/earthquake-fiji');
+    await expect(page.locator('.watch-caption h2')).toHaveText('An earthquake');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 5');
+    // It opens half a minute before the earthquake began, at 00:19:40.67 UTC.
+    await expect(page.locator('.watch-date')).toContainText('19 August 2018, 00:19:11');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',
+    );
+    await expect(page.locator('.pane:visible')).toHaveCount(2);
   });
 
   test('is left with Escape, back to the solar system', async ({ page }) => {

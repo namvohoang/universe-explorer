@@ -1162,7 +1162,21 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       corner (`photos` in `story.ts`), taken from the ground. Check that it serves a picture
       taken from space as well (its kind said where it is not a plain photo), and add only
       what is missing, so a real picture sits beside each drawing.
-- [ ] 14.6 **Earthquake.** `tracked`: the place, depth and time, and the map of how hard the
+- [~] 14.6 Done on 2026-10-12: the magnitude 8.2 earthquake of 19 August 2018 near Fiji, 600 km
+      down, in five parts, in English and Vietnamese, recorded. No table of travel times was
+      needed: the USGS record of an earthquake holds the instant its first wave was picked at
+      each station (`tools/quakes/fetchArrivals.ts`, 481 stations). Each station is a dot,
+      put where its distance and direction from the earthquake put it (`placeAlong`) and lit
+      when it really felt the wave; the ring is the wave's front drawn through those instants
+      (`waveFront`, never going back; a test holds every station to within 4 s of it). The
+      record itself shows the core: the wave came straight as far as 97 degrees round the
+      world, then no station for 18 degrees, then stations that felt a wave through the
+      core, lit in blue; a test holds the gap. Chosen for being among the biggest so deep and
+      for doing little on the ground (USGS's estimate of harm was its lowest). The sentences
+      rest on USGS's text for the event and two USGS publications. Left: the slower wave,
+      which the record does not hold; the map of how hard the ground shook; the slice
+      through the whole Earth with the paths of the waves; the fault slipping; how the size
+      of a quake is told. As planned: **Earthquake.** `tracked`: the place, depth and time, and the map of how hard the
       ground shook. `worked-out`: the waves spreading through and round Earth
       (`src/sim/seismic.ts`, from the table of travel times), the fast wave and the slow one,
       and the far side of Earth the slow one never reaches because it cannot cross the liquid

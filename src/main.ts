@@ -30,7 +30,9 @@ import { createSolarSystem, type TrackedCraft } from './scene/solarSystem';
 import { FIELD_OF_VIEW_DEG, createStage, type FlyTo, type PaneBox } from './scene/stage';
 import { eclipticToScene, northPoleEcliptic, poleOf } from './sim/frames';
 import { DUST_TRAIL_RADIUS_KM } from './sim/dust';
+import { SECONDS_PER_DAY } from './sim/constants';
 import { showerAt } from './sim/radiant';
+import { cameStraight, placeAlong, waveFront, type WaveFront } from './sim/seismic';
 import { tideHeights, type TideRaiser } from './sim/tides';
 import {
   galeReachKm,
@@ -236,6 +238,8 @@ const BODY_CLOSEST_RADII = 1.8;
 const TIDE_STAR_LINE = 0xffc53d;
 const TIDE_MOON_LINE = 0xf4eedc;
 const STORM_CLOSE_RADII = 1.35;
+/** How far from a world's middle the close look at an earthquake's wave stands, in radii. A choice of framing. */
+const QUAKE_CLOSE_RADII = 1.9;
 /** The close look over a named place stands this many times further off: what it shows is wider than a storm. */
 const PLACE_VIEW_WIDER = 1.15;
 const STORM_WIDE_RADII = 3;
@@ -1117,7 +1121,12 @@ function start(): void {
         subtract(system.groundPointOf(world, place), system.positionOf(world));
       return {
         target: () => system.positionOf(world),
-        distance: system.radiusOf(world) * radii * PLACE_VIEW_WIDER,
+        // An earthquake's wave crosses the whole world: its close look stands well back.
+        distance:
+          system.radiusOf(world) *
+          (story.quake && radii === STORM_CLOSE_RADII
+            ? QUAKE_CLOSE_RADII
+            : radii * PLACE_VIEW_WIDER),
         direction: over(),
         bearing: over,
         minDistance: system.radiusOf(world) * STORM_CLOSEST_RADII,
@@ -1812,6 +1821,36 @@ function start(): void {
     }
     system.showGroundPicture(picture);
   };
+  /** The earthquake of the story on show: when it began, and how far its wave had got when. */
+  let watchQuake: { readonly originJd: number; readonly front: WaveFront } | null = null;
+  /** Draws a story's earthquake: where it began, and every station that felt its first wave. */
+  const showQuake = (story: Story): void => {
+    const { quake } = story;
+    if (!quake) {
+      watchQuake = null;
+      system.setQuake(null, null, []);
+      return;
+    }
+    const [lonDegEast, latDeg] = quake.record.place.value;
+    const arrivals = quake.record.arrivals.value;
+    watchQuake = { originJd: quake.record.originJd.value, front: waveFront(arrivals) };
+    system.setQuake(
+      quake.onId,
+      bodyFramePoint({ lonDegEast, latDeg, altitudeKm: 0 }, 1),
+      arrivals.map((arrival) => ({
+        // Each station is where its distance and direction from the earthquake put it.
+        place: placeAlong(lonDegEast, latDeg, arrival[0], arrival[1]),
+        secondsAfter: arrival[2],
+        throughCore: !cameStraight(arrival),
+      })),
+    );
+  };
+  /** Lights the stations and draws the front for a date. */
+  const moveQuake = (jd: number): void => {
+    if (!watchQuake) return;
+    const secondsAfter = (jd - watchQuake.originJd) * SECONDS_PER_DAY;
+    system.showQuake(secondsAfter, watchQuake.front.reachDeg(secondsAfter));
+  };
   /** What raises the tides of the story on show, and on which world. */
   let watchTide: {
     readonly world: CelestialObject;
@@ -2262,6 +2301,7 @@ function start(): void {
               const craft = story.craft ?? [];
               showAurora(story);
               showStorm(story);
+              showQuake(story);
               showPictures(story);
               showTide(story);
               system.setSkyTrack(
@@ -2408,6 +2448,8 @@ function start(): void {
       system.setAurora(null, null);
       watchTide = null;
       system.setTide(null, null);
+      watchQuake = null;
+      system.setQuake(null, null, []);
       watchStorm = null;
       stormSlice?.dispose();
       stormSlice = null;
@@ -2651,6 +2693,7 @@ function start(): void {
       system.setDate(jd);
       movePictures(jd);
       moveStorm(jd);
+      moveQuake(jd);
       moveTide(jd);
       if (!reducedMotion) stormSlice?.flow(dt);
       diagram?.setDate(jd);

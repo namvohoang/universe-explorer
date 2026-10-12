@@ -223,6 +223,31 @@ export interface StoryAurora {
 }
 
 /**
+ * One station's first sight of an earthquake's wave, from an agency's record: [how far the
+ * station is from the place on the ground over the earthquake (degrees round the world), in
+ * which direction from there (degrees east of north), how long after the earthquake began
+ * (seconds), and the agency's name for the wave picked: `P` for the wave that came straight
+ * through the rock, `PKP…` for one that went through the core].
+ */
+export type QuakeArrival = readonly [
+  distanceDeg: number,
+  azimuthDeg: number,
+  secondsAfter: number,
+  phase: string,
+];
+
+/** An earthquake as an agency worked it out from the recordings of stations round the world. */
+export interface QuakeRecord {
+  /** The instant it began, as a Julian date (UTC). */
+  readonly originJd: Sourced<number>;
+  /** Where it began: [longitude (degrees east), latitude (degrees north), depth (km)]. */
+  readonly place: Sourced<readonly [lonDegEast: number, latDegNorth: number, depthKm: number]>;
+  readonly magnitude: Sourced<number>;
+  /** Nearest station first. */
+  readonly arrivals: Sourced<readonly QuakeArrival[]>;
+}
+
+/**
  * Where a storm was at one instant, from an agency's record of it: [Julian date (UTC),
  * longitude (degrees east), latitude (degrees north), strongest steady wind (km/h), pressure at
  * its middle (hPa), how far out gales reached to the north-east, south-east, south-west and
@@ -533,6 +558,17 @@ export interface Story {
     /** Catalogue id of the world. */
     readonly onId: string;
     readonly pictures: readonly StormPicture[];
+  };
+  /**
+   * An earthquake's first wave crossing a world, from the record of when each station felt
+   * it: a dot for every station, lit from the instant it really felt the wave, and a ring
+   * for how far the wave has got, drawn through those instants (which is worked out, and the
+   * story must say so with `noteKey`).
+   */
+  readonly quake?: {
+    /** Catalogue id of the world. */
+    readonly onId: string;
+    readonly record: QuakeRecord;
   };
   /** A storm drawn on its recorded track over a world's ground. */
   readonly storm?: StoryStorm;

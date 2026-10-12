@@ -480,7 +480,13 @@ export function checkStories(
         errors.push(`story ${story.id}: actor "${actor}" is not in the catalogue`);
     }
     const craft = story.craft ?? [];
-    if (story.path === 'tracked' && craft.length === 0 && !story.storm && !story.groundPictures) {
+    if (
+      story.path === 'tracked' &&
+      craft.length === 0 &&
+      !story.storm &&
+      !story.groundPictures &&
+      !story.quake
+    ) {
       errors.push(
         `story ${story.id}: says its path is tracked but has no tracked craft, no storm on record and no pictures of the ground`,
       );
@@ -524,6 +530,32 @@ export function checkStories(
       }
       if (story.noteKey === undefined) {
         errors.push(`story ${story.id}: draws an aurora but has no note to say it is a drawing`);
+      }
+    }
+    if (story.quake) {
+      const { onId, record } = story.quake;
+      if (!story.actorIds.includes(onId)) {
+        errors.push(`story ${story.id}: draws an earthquake on "${onId}", not one of its actors`);
+      }
+      const arrivals = record.arrivals.value;
+      if (arrivals.length === 0) errors.push(`story ${story.id}: the earthquake has no stations`);
+      if (
+        arrivals.some(
+          ([distanceDeg, azimuthDeg, secondsAfter]) =>
+            !(distanceDeg >= 0 && distanceDeg <= 180) ||
+            !(azimuthDeg >= 0 && azimuthDeg <= 360) ||
+            !(secondsAfter > 0),
+        )
+      ) {
+        errors.push(
+          `story ${story.id}: a station of the earthquake is nowhere on a globe, or felt it before it began`,
+        );
+      }
+      // The ring between the stations is worked out, and the screen must say so.
+      if (story.noteKey === undefined) {
+        errors.push(
+          `story ${story.id}: draws an earthquake but has no note to say what is worked out`,
+        );
       }
     }
     if (story.tide) {

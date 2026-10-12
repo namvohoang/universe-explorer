@@ -518,6 +518,37 @@ export const JPL_HORIZONS_TURN_DUST_2020_EARTH: Source = {
   retrieved: '2026-10-12',
 };
 
+export const USGS_EVENT_FIJI_2018: Source = {
+  id: 'usgs-event-us1000gcii',
+  title:
+    'USGS Earthquake Hazards Program — M 8.2, 2018 Fiji Earthquake (us1000gcii): its origin, its tectonic summary, and the picks of its first wave at stations round the world',
+  url: 'https://earthquake.usgs.gov/earthquakes/eventpage/us1000gcii/executive',
+  retrieved: '2026-10-12',
+};
+
+export const USGS_INTERIOR_OF_THE_EARTH: Source = {
+  id: 'usgs-interior-of-the-earth',
+  title: 'USGS General Interest Publication — The Interior of the Earth, by Eugene C. Robertson',
+  url: 'https://pubs.usgs.gov/gip/interior/',
+  retrieved: '2026-10-12',
+};
+
+export const USGS_EARTHQUAKES_HOW: Source = {
+  id: 'usgs-earthquakes-how',
+  title:
+    'USGS General Interest Publication — Earthquakes, by Kaye M. Shedlock and Louis C. Pakiser: How Earthquakes Happen',
+  url: 'https://pubs.usgs.gov/gip/earthq1/how.html',
+  retrieved: '2026-10-12',
+};
+
+export const JPL_HORIZONS_TURN_FIJI_2018_EARTH: Source = {
+  id: 'jpl-horizons-turn-fiji2018earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2018-08-19 00:19:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272458349.513995172%27',
+  retrieved: '2026-10-12',
+};
+
 export const NASA_TIDES: Source = {
   id: 'nasa-tides',
   title: 'NASA Science — Earth’s Moon: Tides',

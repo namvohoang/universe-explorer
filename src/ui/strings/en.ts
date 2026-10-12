@@ -1376,6 +1376,19 @@ export const en = {
     'About a week after it left Africa, the dust reaches the islands of the Caribbean. The sky there turns a hazy yellow-grey, and for a few days the air is not good to breathe.',
   storyDustGoodToo:
     'Dust does good too. It feeds the soil of the Amazon rainforest and helps to build beaches in the Caribbean.',
+  storyQuakeTitle: 'An earthquake',
+  storyQuakeNote:
+    'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',
+  storyQuakePlates:
+    'The outside of Earth is made of huge plates of rock. They move very slowly, slower than your fingernails grow.',
+  storyQuakeBreaks:
+    'Deep under the sea near Fiji, about 560 km down, rock inside a plate suddenly broke and slipped. That is an earthquake.',
+  storyQuakeWaves:
+    'The break sends waves out through the Earth. Each dot is a station that listens for them. A dot lights up at the moment its station felt the first wave.',
+  storyQuakeCore:
+    'The blue dots are on the far side of the world. The wave they felt went through Earth’s core, deep in the middle. Waves like these are how scientists found out that Earth has a core.',
+  storyQuakeDeep:
+    'This was one of the biggest earthquakes ever measured so deep down. An earthquake this deep does less harm on the ground above than one near the surface.',
   storyShuttleLaunchTitle: 'The Shuttle: the launch',
   storyShuttleLaunchNote:
     'The time and the heights are real. The path, the lean and roll, the flame and smoke, the tower, the clouds and the colours are drawings.',

@@ -667,6 +667,11 @@ export const NARRATION: Readonly<
     fingerprint: '44387884',
     starts: [0.0, 2.67, 11.53, 19.23, 27.05],
   },
+  'story-earthquake-fiji': {
+    file: 'public/voice/story-earthquake-fiji.mp3',
+    fingerprint: 'd801deda',
+    starts: [0.0, 2.2, 9.7, 19.88, 30.25, 41.73],
+  },
   'story-hurricane-sam': {
     file: 'public/voice/story-hurricane-sam.mp3',
     fingerprint: '7c6dcbe5',

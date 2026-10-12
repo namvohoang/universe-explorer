@@ -1258,7 +1258,20 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       tornado and the next does not, and that the rating comes from the damage, not from a
       measured wind. Parts: the tall storm; the turning air; the funnel touches down; the
       path; how small it is beside a hurricane; shelter and warnings.
-- [ ] 14.10 **Volcano** (the eruption chosen in 14.1), if the first four have gone well: the
+- [x] 14.10 Done on 2026-10-12 as "A volcano": the eruption of Raikoke, a small island of
+      the Kuril Islands, on 22 June 2019, in six parts, in English and Vietnamese, recorded.
+      Chosen in place of Hunga Tonga because NASA's cameras that pass over once a day saw
+      its ash well on the day itself, and NASA Earth Observatory tells it as what the ash and
+      the air did. Nothing in it is drawn: four real pictures from NASA Worldview (the day
+      before, the morning from MODIS on Terra, a few hours later from VIIRS, and the day
+      after) laid on the globe. Worldview gives each picture's day and not its minute; the
+      hours shown keep the order NASA's page gives. The close look over a picture of the
+      ground now stands as near as the picture's own size asks (`PICTURE_HEIGHTS_AWAY`), so
+      a small square fills the view. The sentences rest on NASA's page "Raikoke Erupts",
+      which serves without the Smithsonian. Left out: the astronauts' photograph of the
+      rising column, the cloud of gas that went on round the north of the world, the slice
+      through the mountain (no measured shape was read), and a wave across the sea, which
+      this eruption did not send. As planned: **Volcano** (the eruption chosen in 14.1), if the first four have gone well: the
       cloud's height and spread as seen from space, the slice through the mountain, and, if
       it is Hunga Tonga, the wave it sent across the sea (14.7's maths again).
 - [x] 14.11 Done on 2026-10-12, in five parts, in English and Vietnamese, recorded.

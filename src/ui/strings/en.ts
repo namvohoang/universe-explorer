@@ -99,9 +99,9 @@ export const en = {
   grownUpsEarth1:
     'Each story is one real event, picked because it was measured well and did little or no harm, and told as what the ground, the sea and the air did. No story gives a count of people hurt. The typhoon is the exception to “no harm”: people died in the Philippines and in Vietnam, and its story tells of the warnings and of people moving to safety.',
   grownUpsEarth2:
-    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms and of dust, which are what a NASA or NOAA satellite saw that day, laid on the globe where they were taken.',
+    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms, of dust and of a volcano’s ash, which are what a NASA or NOAA satellite saw that day, laid on the globe where they were taken.',
   grownUpsEarth3:
-    'What is worked out by the app: the ring of an earthquake’s wave between stations, the tides (from the pull of the Moon and the Sun), and the pale band of a tsunami, from the depth of the sea. The band does not match the gauges exactly: at half of them it is within 6 per cent of the time measured, at nine in ten within 18 per cent, and it is mostly too early, because gauges stand in harbours where the wave comes later than in the open sea.',
+    'What is worked out by the app: the ring of an earthquake’s wave between stations, the tides (from the pull of the Moon and the Sun), and the pale band of a tsunami, from the depth of the sea. The band does not match the gauges exactly: at half of them it is within 6 per cent of the time measured, at nine in ten within 18 per cent, and it is mostly too early. A likely reason, which the app has not tested, is that gauges stand in harbours, where the wave comes later than in the open sea.',
   grownUpsEarth4:
     'What is drawn, and labelled as a drawing on screen: a storm’s cloud on the days between pictures, the storm cut in half (only the widths of its eye and wall are real), the swelling of the tides (far bigger than life), and the tornado’s cloud and the shape of its funnel (its path, its width at the ground and its times are real).',
   grownUpsPicturesTitle: 'Where the pictures come from',
@@ -1387,6 +1387,22 @@ export const en = {
     'About a week after it left Africa, the dust reaches the islands of the Caribbean. The sky there turns a hazy yellow-grey, and for a few days the air is not good to breathe.',
   storyDustGoodToo:
     'Dust does good too. It feeds the soil of the Amazon rainforest and helps to build beaches in the Caribbean.',
+  storyVolcanoTitle: 'A volcano',
+  storyVolcanoNote: 'These are real pictures, taken from space on each day.',
+  storyVolcanoPictureAlt:
+    'Sea and white cloud seen from space. On the day of the eruption a long brown streak of ash lies over the cloud.',
+  storyVolcanoQuiet:
+    'Raikoke is a small island, and it is a volcano. It last erupted in 1924. This is the day before it woke up. The island is somewhere under these clouds.',
+  storyVolcanoErupts:
+    'Early on 22 June 2019, ash and gas shot up from its crater. This picture is from that morning. The brown streak is the ash, blowing away from the island.',
+  storyVolcanoWind:
+    'The volcano blasted several times, then grew calmer. Strong winds spread the ash far out over the sea. This picture is from later the same day.',
+  storyVolcanoHowHigh:
+    'How high did it go? Pilots were told the ash had reached 13 kilometres up. One satellite found that parts of the cloud may have gone as high as 17 kilometres.',
+  storyVolcanoDayLater:
+    'One day later, only a faint trace of the ash could still be seen from space.',
+  storyVolcanoPilots:
+    'Ash is not soft like smoke. It is tiny sharp bits of rock and glass, and it is dangerous for planes. So two centres, in Tokyo and in Anchorage, tracked the cloud and warned pilots.',
   storyQuakeTitle: 'An earthquake',
   storyQuakeNote:
     'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',

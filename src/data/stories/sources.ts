@@ -518,6 +518,29 @@ export const JPL_HORIZONS_TURN_DUST_2020_EARTH: Source = {
   retrieved: '2026-10-12',
 };
 
+export const NASA_EARTH_OBSERVATORY_RAIKOKE: Source = {
+  id: 'nasa-earth-observatory-raikoke-erupts',
+  title: 'NASA Earth Observatory — Raikoke Erupts (image of the day for 25 June 2019)',
+  url: 'https://science.nasa.gov/earth/earth-observatory/raikoke-erupts-145226/',
+  retrieved: '2026-10-12',
+};
+
+export const NASA_WORLDVIEW_RAIKOKE: Source = {
+  id: 'nasa-worldview-raikoke-2019',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — true-colour pictures from the VIIRS camera on the Suomi NPP satellite and the MODIS camera on the Terra satellite, 21 to 23 June 2019, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=150,42,162,54&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2019-06-22',
+  retrieved: '2026-10-12',
+};
+
+export const JPL_HORIZONS_TURN_RAIKOKE_2019_EARTH: Source = {
+  id: 'jpl-horizons-turn-raikoke2019earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2019-06-21 02:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272458655.584134079%27',
+  retrieved: '2026-10-12',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

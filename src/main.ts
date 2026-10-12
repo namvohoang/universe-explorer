@@ -251,6 +251,11 @@ const QUAKE_CLOSE_RADII = 1.9;
 /** The close look over a named place stands this many times further off: what it shows is wider than a storm. */
 const PLACE_VIEW_WIDER = 1.15;
 const STORM_WIDE_RADII = 3;
+/**
+ * Over a picture of the ground, the close look stands this many times the picture's height
+ * above the ground, so that the picture fills the view. A choice of framing.
+ */
+const PICTURE_HEIGHTS_AWAY = 1.05;
 /** The nearest the look from over a storm may be brought, in radii of its world. */
 const STORM_CLOSEST_RADII = 1.2;
 /** A pointer that has moved less than this between two turns of the wheel has not moved. */
@@ -1117,6 +1122,24 @@ function start(): void {
     };
   };
   /**
+   * How far the close look over a story's picture of the ground stands from its world's middle,
+   * in radii: far enough for the picture on show when the chapter begins to fill the view, and
+   * no nearer than the look may be brought. `null` for the whole picture, or with no picture.
+   */
+  const pictureCloseRadii = (story: Story, chapter: Chapter, radii: number): number | null => {
+    if (radii !== STORM_CLOSE_RADII || story.storm) return null;
+    const shown = story.groundPictures?.pictures.find(
+      (picture) =>
+        chapter.atJd.value >= picture.fromJd.value && chapter.atJd.value < picture.untilJd.value,
+    );
+    if (!shown) return null;
+    const [, south, , north] = shown.box.value;
+    return Math.max(
+      STORM_CLOSEST_RADII,
+      1 + (PICTURE_HEIGHTS_AWAY * (north - south) * Math.PI) / 180,
+    );
+  };
+  /**
    * The look from straight over a story's storm, riding round with the ground under it, from
    * so many radii of its world away. `null` when the chapter asks for none.
    */
@@ -1136,7 +1159,7 @@ function start(): void {
           system.radiusOf(world) *
           ((story.quake ?? story.tsunami) && radii === STORM_CLOSE_RADII
             ? QUAKE_CLOSE_RADII
-            : radii * PLACE_VIEW_WIDER),
+            : (pictureCloseRadii(story, chapter, radii) ?? radii * PLACE_VIEW_WIDER)),
         direction: over(),
         bearing: over,
         minDistance: system.radiusOf(world) * STORM_CLOSEST_RADII,

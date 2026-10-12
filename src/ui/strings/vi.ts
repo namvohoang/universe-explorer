@@ -111,9 +111,9 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsEarth1:
     'Mỗi câu chuyện là một sự kiện có thật, được chọn vì nó được đo đạc kỹ và gây ít hoặc không gây thiệt hại, và được kể qua những gì mặt đất, biển và không khí đã làm. Không câu chuyện nào nêu số người bị hại. Cơn bão vào Việt Nam là ngoại lệ của “không thiệt hại”: đã có người thiệt mạng ở Philippines và Việt Nam, và câu chuyện kể về cảnh báo và việc người dân đi sơ tán.',
   grownUpsEarth2:
-    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão và bụi, là những gì vệ tinh của NASA hoặc NOAA nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp.',
+    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi và tro núi lửa, là những gì vệ tinh của NASA hoặc NOAA nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp.',
   grownUpsEarth3:
-    'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn, vì các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
+    'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn. Một lý do có thể đúng, mà ứng dụng chưa kiểm chứng, là các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
   grownUpsEarth4:
     'Những gì là hình vẽ, và được ghi rõ là hình vẽ trên màn hình: đám mây của bão vào những ngày giữa các bức ảnh, hình cơn bão cắt đôi (chỉ bề rộng của mắt bão và tường mây là thật), chỗ biển phồng lên của thủy triều (lớn hơn thật rất nhiều), và đám mây cùng hình dáng vòi của lốc xoáy (đường đi, bề rộng sát mặt đất và thời gian là thật).',
   grownUpsPicturesTitle: 'Hình ảnh lấy từ đâu',
@@ -1072,6 +1072,21 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Khoảng một tuần sau khi rời châu Phi, bụi tới các hòn đảo vùng Caribe. Bầu trời ở đó ngả màu vàng xám mờ đục, và trong vài ngày không khí không tốt để hít thở.',
   storyDustGoodToo:
     'Bụi cũng có ích. Nó bón cho đất của rừng mưa Amazon và góp phần bồi đắp các bãi biển ở Caribe.',
+  storyVolcanoTitle: 'Một núi lửa',
+  storyVolcanoNote: 'Đây là ảnh thật, chụp từ vũ trụ vào từng ngày.',
+  storyVolcanoPictureAlt:
+    'Biển và mây trắng nhìn từ vũ trụ. Vào ngày núi lửa phun, một vệt tro dài màu nâu nằm trên lớp mây.',
+  storyVolcanoQuiet:
+    'Raikoke là một hòn đảo nhỏ, và cũng là một núi lửa. Lần gần nhất nó phun là năm 1924. Đây là ngày trước khi nó thức dậy. Hòn đảo nằm đâu đó dưới những đám mây này.',
+  storyVolcanoErupts:
+    'Sáng sớm ngày 22 tháng 6 năm 2019, tro và khí phun vọt lên từ miệng núi lửa. Bức ảnh này chụp vào sáng hôm đó. Vệt màu nâu là tro, đang bị gió thổi ra xa hòn đảo.',
+  storyVolcanoWind:
+    'Núi lửa phun mạnh vài đợt rồi dịu dần. Gió mạnh trải tro ra xa trên mặt biển. Bức ảnh này chụp muộn hơn trong cùng ngày.',
+  storyVolcanoHowHigh:
+    'Tro lên cao đến đâu? Các phi công được báo rằng tro đã lên tới độ cao 13 kilômét. Một vệ tinh đo được rằng có phần của đám tro có thể đã lên tới 17 kilômét.',
+  storyVolcanoDayLater: 'Một ngày sau, từ vũ trụ chỉ còn thấy một vệt tro mờ nhạt.',
+  storyVolcanoPilots:
+    'Tro không mềm như khói. Đó là những mảnh đá và thủy tinh li ti, sắc nhọn, rất nguy hiểm cho máy bay. Vì thế hai trung tâm, ở Tokyo và ở Anchorage, đã theo dõi đám tro và cảnh báo cho phi công.',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',

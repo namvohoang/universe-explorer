@@ -692,6 +692,11 @@ export const NARRATION: Readonly<
     fingerprint: '24f2169a',
     starts: [0.0, 2.23, 9.2, 20.88, 30.25, 40.23],
   },
+  'story-volcano-raikoke': {
+    file: 'public/voice/story-volcano-raikoke.mp3',
+    fingerprint: '1689fe84',
+    starts: [0.0, 2.27, 14.85, 27.02, 37.65, 49.1, 54.6],
+  },
   'story-tides': {
     file: 'public/voice/story-tides.mp3',
     fingerprint: '75a932d3',

@@ -46,6 +46,7 @@ SAY: dict[str, str] = {
     "Reid": "ɹˈid",  # REED
     "Noru": "nˈɔɹu",  # NOR-oo
     "Luzon": "luzˈɑn",  # loo-ZON
+    "Raikoke": "ɹIkˈOkA",  # rye-KOH-kay
     "Makemake": "mˌɑkimˈɑki",  # MAH-kee-MAH-kee
     "Proxima": "pɹˈɑksəmə",  # PROK-sih-muh
     "Centauri": "sɛntˈɔɹi",  # sen-TOR-ee

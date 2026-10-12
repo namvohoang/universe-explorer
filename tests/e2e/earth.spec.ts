@@ -125,7 +125,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(7);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(8);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -159,6 +159,25 @@ test.describe('the Earth screen', () => {
     await expect.poll(() => pictures.length).toBe(6);
     await expect(page.locator('.pane:visible').first()).toContainText('Close up');
     await expect(page.locator('.pane:visible').last()).toContainText('The whole picture');
+  });
+
+  test('shows a volcano’s ash in real pictures and stands close enough to see it', async ({
+    page,
+  }) => {
+    const pictures: string[] = [];
+    page.on('response', (response) => {
+      if (/stories\/raikoke-.*\.webp/.test(response.url()) && response.ok())
+        pictures.push(response.url());
+    });
+    await page.goto('/#earth/volcano-raikoke');
+    await expect(page.locator('.watch-caption h2')).toHaveText('A volcano');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 6');
+    await expect(page.locator('.watch-date')).toContainText('21 June 2019');
+    await expect(page.locator('.watch-path')).toHaveText(
+      'These are real pictures, taken from space on each day.',
+    );
+    await expect.poll(() => pictures.length).toBe(4);
+    await expect(page.locator('.pane:visible')).toHaveCount(2);
   });
 
   test('tells an earthquake to the second, and says what is recorded and what is worked out', async ({

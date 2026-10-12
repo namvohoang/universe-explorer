@@ -47,6 +47,7 @@ const STORIES: readonly (readonly [id: string, title: string, screen?: 'earth'])
   ['earthquake-fiji', 'An earthquake', 'earth'],
   ['tsunami-kermadec', 'A tsunami', 'earth'],
   ['tornado-tescott', 'A tornado', 'earth'],
+  ['volcano-raikoke', 'A volcano', 'earth'],
 ];
 
 for (const screen of SCREENS) {

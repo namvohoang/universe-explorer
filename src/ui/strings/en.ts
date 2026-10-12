@@ -95,6 +95,15 @@ export const en = {
     'Where a story says “This is the real path the spaceship flew”, the positions are NASA/JPL’s own record of the flight, from the JPL Horizons service. For the eclipses, the supermoon and the Artemis flights the Moon, too, is put where Horizons has it, and the space station is in the shuttle story. The solar eclipse is watched from the ground at the place the middle of the Moon’s shadow crosses when the eclipse is greatest, with Earth turned as it will be.',
   grownUpsWatch3:
     'Where a story says a line or a path is a drawing, only the times and places it names are real, from NASA’s own tables, and the app draws a smooth line between them. The dust of the meteor shower and the green rings of the aurora are drawings of where NASA and NOAA say they lie. A spacecraft is shown as a named point, since at true scale it is far too small to see.',
+  grownUpsEarthTitle: 'The stories on the Earth screen',
+  grownUpsEarth1:
+    'Each story is one real event, picked because it was measured well and did little or no harm, and told as what the ground, the sea and the air did. No story gives a count of people hurt. The typhoon is the exception to “no harm”: people died in the Philippines and in Vietnam, and its story tells of the warnings and of people moving to safety.',
+  grownUpsEarth2:
+    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms and of dust, which are what a NASA or NOAA satellite saw that day, laid on the globe where they were taken.',
+  grownUpsEarth3:
+    'What is worked out by the app: the ring of an earthquake’s wave between stations, the tides (from the pull of the Moon and the Sun), and the pale band of a tsunami, from the depth of the sea. The band does not match the gauges exactly: at half of them it is within 6 per cent of the time measured, at nine in ten within 18 per cent, and it is mostly too early, because gauges stand in harbours where the wave comes later than in the open sea.',
+  grownUpsEarth4:
+    'What is drawn, and labelled as a drawing on screen: a storm’s cloud on the days between pictures, the storm cut in half (only the widths of its eye and wall are real), the swelling of the tides (far bigger than life), and the tornado’s cloud and the shape of its funnel (its path, its width at the ground and its times are real).',
   grownUpsPicturesTitle: 'Where the pictures come from',
   grownUpsSourcesTitle: 'Where the numbers and facts come from',
   grownUpsLinksNotice: 'These links open other websites.',

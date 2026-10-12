@@ -1276,7 +1276,12 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       positions. Ties Earth's stories to the sky ones.
 - [ ] 14.12 How big? In Compare: a tornado, a thunderstorm, a hurricane, the country of
       Vietnam and Earth lined up at true size, each from its event record.
-- [ ] 14.13 Words and checks: English and Vietnamese for every part; "Read it to me" lines;
+- [~] 14.13 Done as each story was added: English and Vietnamese, "Read it to me" with a
+      recording, and the layout test at the five screen sizes. Done on 2026-10-12: a section
+      on the grown-ups' page saying what in Earth's stories is recorded, what is worked out
+      (with how well the tsunami's band matches its gauges) and what is drawn, and how these
+      events are told. Left: a pass with a screen reader, and a review of the Vietnamese by
+      a native reader. As planned: Words and checks: English and Vietnamese for every part; "Read it to me" lines;
       a section on the grown-ups' page saying what is recorded, worked out and drawn, with
       the sources and a note on how these events are told to a child; keyboard, screen reader
       and reduced motion; layout tests at the five screen sizes.

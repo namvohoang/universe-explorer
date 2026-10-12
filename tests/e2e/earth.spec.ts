@@ -223,3 +223,14 @@ test.describe('the Earth screen', () => {
     await expect(page.locator(mainTab('Trái Đất'))).toHaveAttribute('aria-selected', 'true');
   });
 });
+
+test('the grown-ups page says what in Earth’s stories is recorded, worked out and drawn', async ({
+  page,
+}) => {
+  await page.goto('/?grownups');
+  const section = page.locator('section', { hasText: 'The stories on the Earth screen' }).last();
+  await expect(section).toContainText('No story gives a count of people hurt.');
+  await expect(section).toContainText('What is recorded:');
+  await expect(section).toContainText('What is worked out by the app:');
+  await expect(section).toContainText('What is drawn, and labelled as a drawing on screen:');
+});

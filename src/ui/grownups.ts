@@ -138,6 +138,13 @@ export function createGrownUps(
       create('p', 'notice', words.grownUpsLinksNotice),
       storySources,
     ),
+    section(
+      words.grownUpsEarthTitle,
+      create('p', '', words.grownUpsEarth1),
+      create('p', '', words.grownUpsEarth2),
+      create('p', '', words.grownUpsEarth3),
+      create('p', '', words.grownUpsEarth4),
+    ),
     section(words.grownUpsPicturesTitle, pictures),
     section(words.grownUpsSourcesTitle, create('p', 'notice', words.grownUpsLinksNotice), sources),
   );

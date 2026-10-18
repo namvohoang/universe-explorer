@@ -19,6 +19,7 @@ import { createMeteorStreaks } from './scene/meteorStreaks';
 import { createSightLine } from './scene/sightLine';
 import { createStormSlice, type StormSlice } from './scene/stormSlice';
 import { createQuakeBlock, type QuakeBlock } from './scene/quakeBlock';
+import { createTsunamiSlice, type TsunamiSlice } from './scene/tsunamiSlice';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
@@ -519,8 +520,9 @@ function start(): void {
     }
     const { story, chapter } = paired;
     const halves = roomHalves();
-    const block = chapter.slice === true ? (watchQuake?.block ?? null) : null;
-    // The ground cut open is the close look: it takes the first place, and the world the second.
+    const block =
+      chapter.slice === true ? (watchQuake?.block ?? watchTsunamiSlice ?? null) : null;
+    // The ground or sea cut open is the close look: it takes the first place, and the world the second.
     const { main, side } = block ? { main: halves.side, side: halves.main } : halves;
     const sideAspect = side.width / side.height;
     // Beside a look from a world: the close look, where the part asks for both, or the whole stage.
@@ -1939,14 +1941,18 @@ function start(): void {
   };
   /** When the tsunami of the story on show began. */
   let watchTsunamiJd: number | null = null;
+  let watchTsunamiSlice: TsunamiSlice | null = null;
   /** Draws a story's tsunami: where it began, every gauge that timed it, and the band worked out for it. */
   const showTsunami = (story: Story): void => {
+    watchTsunamiSlice?.dispose();
+    watchTsunamiSlice = null;
     const { tsunami } = story;
     if (!tsunami) {
       watchTsunamiJd = null;
       system.setTsunami(null, null);
       return;
     }
+    watchTsunamiSlice = createTsunamiSlice();
     const { record } = tsunami;
     const [lonDegEast, latDeg] = record.place.value;
     watchTsunamiJd = record.originJd.value;
@@ -1971,8 +1977,10 @@ function start(): void {
   const moveTsunami = (jd: number): void => {
     if (watchTsunamiJd === null) return;
     const secondsAfter = (jd - watchTsunamiJd) * SECONDS_PER_DAY;
-    system.showTsunami(secondsAfter / SECONDS_PER_MINUTE);
+    const minutesAfter = secondsAfter / SECONDS_PER_MINUTE;
+    system.showTsunami(minutesAfter);
     system.showQuake(secondsAfter, null);
+    watchTsunamiSlice?.set(paired?.chapter.id ?? 'sea-floor', minutesAfter);
   };
   /** What raises the tides of the story on show, and on which world. */
   let watchTide: {
@@ -2384,7 +2392,9 @@ function start(): void {
                     ? words.scaleLabelTornado
                     : chapter.slice === true && watchQuake?.block
                       ? words.scaleLabelQuakeBlock
-                      : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+                      : chapter.slice === true && watchTsunamiSlice
+                        ? words.scaleLabelTsunamiSlice
+                        : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -2627,6 +2637,8 @@ function start(): void {
       system.setQuake(null, null, []);
       tornadoDrawing?.scene.dispose();
       tornadoDrawing = null;
+      watchTsunamiSlice?.dispose();
+      watchTsunamiSlice = null;
       watchTsunamiJd = null;
       system.setTsunami(null, null);
       watchStorm = null;
@@ -2879,6 +2891,7 @@ function start(): void {
       if (!reducedMotion) stormSlice?.flow(dt);
       if (!reducedMotion) tornadoDrawing?.scene.flow(dt);
       if (!reducedMotion) watchQuake?.block?.flow(dt);
+      if (!reducedMotion) watchTsunamiSlice?.flow(dt);
       if (!reducedMotion) system.flowQuake?.(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
@@ -2973,7 +2986,10 @@ function start(): void {
     // A drawing in a scene of its own holds none of the story's worlds: nothing there is named.
     const besideADrawing =
       paired?.chapter.slice === true &&
-      (stormSlice !== null || tornadoDrawing !== null || (watchQuake?.block ?? null) !== null);
+      (stormSlice !== null ||
+        tornadoDrawing !== null ||
+        (watchQuake?.block ?? null) !== null ||
+        watchTsunamiSlice !== null);
     sideTags.update((id) => {
       if (besideADrawing) {
         return { point: { ...stage.toSideScreen(ORIGIN), visible: false }, radiusPixels: 0 };

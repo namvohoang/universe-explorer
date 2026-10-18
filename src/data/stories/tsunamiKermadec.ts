@@ -47,7 +47,9 @@ const over = (lonDegEast: number, latDegNorth: number, why: string) =>
     closeUp: true,
     overPlace: s([lonDegEast, latDegNorth] as const, RECORD, why),
   }) as const;
-const OVER_THE_START = over(-177.267, -29.74, 'The place the tsunami began.');
+/** With the sea cut open as the close look, and the Pacific / Earth beside it. */
+const CUT_OPEN = (lonDegEast: number, latDegNorth: number, why: string) =>
+  ({ ...over(lonDegEast, latDegNorth, why), slice: true }) as const;
 
 export const tsunamiKermadec: Story = {
   id: 'tsunami-kermadec',
@@ -82,7 +84,7 @@ export const tsunamiKermadec: Story = {
         quote:
           'An earthquake along a subduction zone happens when the leading edge of the overriding plate breaks free and springs seaward, raising the sea floor and the water above it. This uplift starts a tsunami.',
       },
-      ...OVER_THE_START,
+      ...CUT_OPEN(-177.267, -29.74, 'The place the tsunami began.'),
     },
     {
       id: 'every-direction',
@@ -92,7 +94,7 @@ export const tsunamiKermadec: Story = {
         sourceId: PROPAGATION,
         quote: 'Once generated, tsunamis radiate outward in all directions from their source.',
       },
-      ...OVER_THE_START,
+      ...CUT_OPEN(-177.267, -29.74, 'The place the tsunami began.'),
     },
     {
       id: 'fast-and-slow',
@@ -103,7 +105,7 @@ export const tsunamiKermadec: Story = {
         quote:
           'The deeper the water, the faster they move. In the deep ocean, tsunamis can move as fast as a jet plane, over 500 mph (800 km/h), and can cross entire oceans in less than a day.',
       },
-      ...over(-168, -22, 'East of where it began, where the band is crossing deep sea.'),
+      ...CUT_OPEN(-168, -22, 'East of where it began, where the band is crossing deep sea.'),
     },
     {
       id: 'gauges',
@@ -114,7 +116,7 @@ export const tsunamiKermadec: Story = {
         quote:
           'a tsunami is barely noticeable in the deep ocean and rarely more than three feet (one meter) high. Mariners at sea will not normally notice a tsunami as it passes beneath their hulls.',
       },
-      ...over(-165, -15, 'Over the islands of the south Pacific, where many gauges stand.'),
+      ...CUT_OPEN(-165, -15, 'Over the islands of the south Pacific, where many gauges stand.'),
     },
     {
       id: 'across-the-ocean',
@@ -125,7 +127,7 @@ export const tsunamiKermadec: Story = {
         quote:
           'As a tsunami enters shallow water near land, it slows down, wavelengths decrease, waves grow in height, and currents intensify.',
       },
-      ...over(-135, 0, 'Over the middle of the Pacific.'),
+      ...CUT_OPEN(-135, 0, 'Over the middle of the Pacific.'),
     },
     {
       id: 'warnings',
@@ -136,7 +138,7 @@ export const tsunamiKermadec: Story = {
         quote:
           'These centers monitor for tsunamis and the earthquakes that cause them, forecast tsunami impacts, and prepare and issue tsunami messages.',
       },
-      ...over(-110, 5, 'Off the coast of the Americas.'),
+      ...CUT_OPEN(-110, 5, 'Off the coast of the Americas.'),
     },
   ],
   endJd: after(

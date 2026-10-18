@@ -103,7 +103,7 @@ export const en = {
   grownUpsEarth3:
     'What is worked out by the app: the ring of an earthquake’s wave between stations, the tides (from the pull of the Moon and the Sun), and the pale band of a tsunami, from the depth of the sea. The band does not match the gauges exactly: at half of them it is within 6 per cent of the time measured, at nine in ten within 18 per cent, and it is mostly too early. A likely reason, which the app has not tested, is that gauges stand in harbours, where the wave comes later than in the open sea.',
   grownUpsEarth4:
-    'What is drawn, and labelled as a drawing on screen: a storm’s cloud on the days between pictures, the storm cut in half (only the widths of its eye and wall are real), the swelling of the tides (far bigger than life), and the tornado’s cloud and the shape of its funnel (its path, its width at the ground and its times are real).',
+    'What is drawn, and labelled as a drawing on screen: a storm’s cloud on the days between pictures, the storm cut in half (only the widths of its eye and wall are real), the ground cut open for the earthquake (its depth and the arrival times are real), the sea cut open for the tsunami (stretched tall; wave speed and open-ocean height are real), the swelling of the tides (far bigger than life), and the tornado’s cloud and the shape of its funnel (its path, its width at the ground and its times are real).',
   grownUpsPicturesTitle: 'Where the pictures come from',
   grownUpsSourcesTitle: 'Where the numbers and facts come from',
   grownUpsLinksNotice: 'These links open other websites.',
@@ -1136,6 +1136,8 @@ export const en = {
   watchPaneQuakeBlock: 'Close up (a drawing)',
   scaleLabelQuakeBlock:
     'The ground cut open is a drawing. How deep the break is, and when the wave comes up, are real.',
+  scaleLabelTsunamiSlice:
+    'The sea cut open is a drawing, stretched tall. How the wave slows and rises near the shore is real.',
   scaleLabelTornado: 'The path and the width of the funnel are real. The rest is a drawing.',
   scaleLabelSlice: 'The picture is real. The cut is a drawing, far taller than a real storm.',
   watchPlay: 'Play',

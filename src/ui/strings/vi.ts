@@ -115,7 +115,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsEarth3:
     'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn. Một lý do có thể đúng, mà ứng dụng chưa kiểm chứng, là các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
   grownUpsEarth4:
-    'Những gì là hình vẽ, và được ghi rõ là hình vẽ trên màn hình: đám mây của bão vào những ngày giữa các bức ảnh, hình cơn bão cắt đôi (chỉ bề rộng của mắt bão và tường mây là thật), chỗ biển phồng lên của thủy triều (lớn hơn thật rất nhiều), và đám mây cùng hình dáng vòi của lốc xoáy (đường đi, bề rộng sát mặt đất và thời gian là thật).',
+    'Những gì là hình vẽ, và được ghi rõ là hình vẽ trên màn hình: đám mây của bão vào những ngày giữa các bức ảnh, hình cơn bão cắt đôi (chỉ bề rộng của mắt bão và tường mây là thật), mặt đất cắt mở khi động đất (độ sâu và thời điểm sóng truyền tới là thật), mặt biển cắt mở khi sóng thần (phóng đại chiều cao; tốc độ sóng và độ cao ngoài khơi là thật), chỗ biển phồng lên của thủy triều (lớn hơn thật rất nhiều), và đám mây cùng hình dáng vòi của lốc xoáy (đường đi, bề rộng sát mặt đất và thời gian là thật).',
   grownUpsPicturesTitle: 'Hình ảnh lấy từ đâu',
   grownUpsSourcesTitle: 'Con số và thông tin lấy từ đâu',
   grownUpsLinksNotice: 'Các liên kết này mở trang web khác.',
@@ -1181,6 +1181,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPaneQuakeBlock: 'Cận cảnh (hình vẽ)',
   scaleLabelQuakeBlock:
     'Khối đất cắt ra là hình vẽ. Độ sâu của chỗ nứt vỡ và lúc sóng lên tới mặt đất là thật.',
+  scaleLabelTsunamiSlice:
+    'Hình cắt biển là hình vẽ phóng đại chiều cao. Cách sóng chậm lại và dâng cao gần bờ là thật.',
   scaleLabelTornado: 'Đường đi và bề rộng của vòi lốc là thật. Phần còn lại là hình vẽ.',
   scaleLabelSlice: 'Bức ảnh là thật. Hình cắt đôi là hình vẽ, cao hơn cơn bão thật rất nhiều.',
   watchPlay: 'Chạy',

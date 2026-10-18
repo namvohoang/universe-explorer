@@ -260,6 +260,8 @@ export interface SolarSystem {
   setQuake(onId: string | null, start: Vec3 | null, stations: readonly QuakeStation[]): void;
   /** Lights the stations that have felt the wave by now, and draws its front so far round. */
   showQuake(secondsAfter: number, reachDeg: number | null): void;
+  /** Animates shockwave ripples and pulses on each frame. */
+  flowQuake?(seconds: number): void;
   /**
    * Draws the sea a tsunami has just crossed, over a body's ground and riding round with it,
    * from a picture of how long the wave takes to reach each part of the sea. `null` takes it away.
@@ -1008,6 +1010,9 @@ export function createSolarSystem(
     },
     showQuake(secondsAfter, reachDeg) {
       quake?.set(secondsAfter, reachDeg);
+    },
+    flowQuake(seconds) {
+      quake?.flow(seconds);
     },
     setTsunami(onId, map) {
       if (tsunami) {

@@ -1182,10 +1182,13 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       is the whole picture beside it. The wave is as far from the break as the nearest
       stations say (`waveReachKm`, tested), and is drawn going out evenly before the first
       of them felt it; the block's colours, its size and the crack are a drawing, and the
-      screen says so. No building is drawn, standing or falling (decision 10). Left: the slower wave,
-      which the record does not hold; the map of how hard the ground shook; the slice
-      through the whole Earth with the paths of the waves; the fault slipping; how the size
-      of a quake is told. As planned: **Earthquake.** `tracked`: the place, depth and time, and the map of how hard the
+      screen says so. No building is drawn, standing or falling (decision 10). Enhanced on
+      2026-10-18: mantle strata (Moho, 410 km and 660 km discontinuities), depth scale,
+      subducting Pacific slab, fault rupture flare and slip dynamics, 3D volumetric P and S wave
+      shells, surface shockwave breaches, dynamic tremor animation, and on the globe dual P/S
+      wavefronts, epicenter ripples, station arrival flashes, and internal curved ray paths through
+      the mantle and core. Left: the map of how hard the ground shook, and how the size of a
+      quake is told. As planned: **Earthquake.** `tracked`: the place, depth and time, and the map of how hard the
       ground shook. `worked-out`: the waves spreading through and round Earth
       (`src/sim/seismic.ts`, from the table of travel times), the fast wave and the slow one,
       and the far side of Earth the slow one never reaches because it cannot cross the liquid

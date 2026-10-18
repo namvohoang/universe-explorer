@@ -1935,7 +1935,7 @@ function start(): void {
     const secondsAfter = (jd - watchQuake.originJd) * SECONDS_PER_DAY;
     system.showQuake(secondsAfter, watchQuake.front.reachDeg(secondsAfter));
     const { block, front, depthKm, kmPerDeg } = watchQuake;
-    block?.set(waveReachKm(front, depthKm, kmPerDeg, secondsAfter), secondsAfter >= 0);
+    block?.set(waveReachKm(front, depthKm, kmPerDeg, secondsAfter), secondsAfter >= 0, secondsAfter);
   };
   /** When the tsunami of the story on show began. */
   let watchTsunamiJd: number | null = null;
@@ -2878,6 +2878,8 @@ function start(): void {
       moveTide(jd);
       if (!reducedMotion) stormSlice?.flow(dt);
       if (!reducedMotion) tornadoDrawing?.scene.flow(dt);
+      if (!reducedMotion) watchQuake?.block?.flow(dt);
+      if (!reducedMotion) system.flowQuake?.(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
       if (moved && !reducedMotion) system.flowTails(dt);

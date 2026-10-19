@@ -20,6 +20,7 @@ import { createSightLine } from './scene/sightLine';
 import { createStormSlice, type StormSlice } from './scene/stormSlice';
 import { createQuakeBlock, type QuakeBlock } from './scene/quakeBlock';
 import { createTsunamiSlice, type TsunamiSlice } from './scene/tsunamiSlice';
+import { createVolcanoSlice, type VolcanoSlice } from './scene/volcanoSlice';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
@@ -521,7 +522,9 @@ function start(): void {
     const { story, chapter } = paired;
     const halves = roomHalves();
     const block =
-      chapter.slice === true ? (watchQuake?.block ?? watchTsunamiSlice ?? null) : null;
+      chapter.slice === true
+        ? (watchQuake?.block ?? watchTsunamiSlice ?? watchVolcanoSlice ?? null)
+        : null;
     // The ground or sea cut open is the close look: it takes the first place, and the world the second.
     const { main, side } = block ? { main: halves.side, side: halves.main } : halves;
     const sideAspect = side.width / side.height;
@@ -1867,8 +1870,14 @@ function start(): void {
   } | null = null;
   /** When each real picture of the story's ground is shown, in the order the scene was given them. */
   let watchPictured: readonly (readonly [fromJd: number, untilJd: number])[] = [];
+  let watchVolcanoSlice: VolcanoSlice | null = null;
   /** Lays a story's real pictures of the ground, of its storm or of anything else, ready to show. */
   const showPictures = (story: Story): void => {
+    watchVolcanoSlice?.dispose();
+    watchVolcanoSlice = null;
+    if (story.id === 'volcano-raikoke') {
+      watchVolcanoSlice = createVolcanoSlice();
+    }
     const onId = story.storm?.onId ?? story.groundPictures?.onId ?? null;
     const pictures = story.storm?.pictures ?? story.groundPictures?.pictures ?? [];
     watchPictured = pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]);
@@ -1888,6 +1897,11 @@ function start(): void {
       if (jd >= fromJd && jd <= untilJd) picture = index;
     }
     system.showGroundPicture(picture);
+    if (watchVolcanoSlice) {
+      // 21 June 2019 noon UTC is 2458656; 22 June 00:00 UTC eruption onset is 2458656.5
+      const hoursAfter = (jd - 2458656.5) * 24;
+      watchVolcanoSlice.set(paired?.chapter.id ?? 'quiet', hoursAfter);
+    }
   };
   /** The earthquake of the story on show: when it began, and how far its wave had got when. */
   let watchQuake: {
@@ -2394,7 +2408,9 @@ function start(): void {
                       ? words.scaleLabelQuakeBlock
                       : chapter.slice === true && watchTsunamiSlice
                         ? words.scaleLabelTsunamiSlice
-                        : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+                        : chapter.slice === true && watchVolcanoSlice
+                          ? words.scaleLabelVolcanoSlice
+                          : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -2641,6 +2657,8 @@ function start(): void {
       watchTsunamiSlice = null;
       watchTsunamiJd = null;
       system.setTsunami(null, null);
+      watchVolcanoSlice?.dispose();
+      watchVolcanoSlice = null;
       watchStorm = null;
       stormSlice?.dispose();
       stormSlice = null;
@@ -2892,6 +2910,7 @@ function start(): void {
       if (!reducedMotion) tornadoDrawing?.scene.flow(dt);
       if (!reducedMotion) watchQuake?.block?.flow(dt);
       if (!reducedMotion) watchTsunamiSlice?.flow(dt);
+      watchVolcanoSlice?.flow(reducedMotion ? 0 : dt);
       if (!reducedMotion) system.flowQuake?.(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
@@ -2989,7 +3008,8 @@ function start(): void {
       (stormSlice !== null ||
         tornadoDrawing !== null ||
         (watchQuake?.block ?? null) !== null ||
-        watchTsunamiSlice !== null);
+        watchTsunamiSlice !== null ||
+        watchVolcanoSlice !== null);
     sideTags.update((id) => {
       if (besideADrawing) {
         return { point: { ...stage.toSideScreen(ORIGIN), visible: false }, radiusPixels: 0 };

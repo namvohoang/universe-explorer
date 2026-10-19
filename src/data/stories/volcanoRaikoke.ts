@@ -73,6 +73,12 @@ const over = {
   ),
 } as const;
 
+/** Looking straight down on the middle of the pictures' square, with dynamic 3D close up simulation beside it. */
+const CUT_OPEN = {
+  ...over,
+  slice: true,
+} as const;
+
 export const volcanoRaikoke: Story = {
   id: 'volcano-raikoke',
   group: 'earth-at-work',
@@ -99,7 +105,7 @@ export const volcanoRaikoke: Story = {
         sourceId: RAIKOKE,
         quote: 'The small, oval-shaped island most recently exploded in 1924 and in 1778.',
       },
-      ...over,
+      ...CUT_OPEN,
     },
     {
       id: 'erupts',
@@ -110,7 +116,7 @@ export const volcanoRaikoke: Story = {
         quote:
           'The dormant period ended around 4:00 a.m. local time on June 22, 2019, when a vast plume of ash and volcanic gases shot up from its 700-meter-wide crater.',
       },
-      ...over,
+      ...CUT_OPEN,
     },
     {
       id: 'the-wind',
@@ -121,7 +127,7 @@ export const volcanoRaikoke: Story = {
         quote:
           'After an initial surge of activity that included several distinct explosive pulses, activity subsided and strong winds spread the ash across the Pacific.',
       },
-      ...over,
+      ...CUT_OPEN,
     },
     {
       id: 'how-high',
@@ -132,7 +138,7 @@ export const volcanoRaikoke: Story = {
         quote:
           'have issued several notes to aviators indicating that ash had reached an altitude of 13 kilometers (8 miles). Meanwhile, data from the CALIPSO satellite indicate that parts of the plume may have reached 17 kilometers (10 miles).',
       },
-      ...over,
+      ...CUT_OPEN,
     },
     {
       id: 'a-day-later',
@@ -142,7 +148,7 @@ export const volcanoRaikoke: Story = {
         sourceId: RAIKOKE,
         quote: 'By the next day, just a faint remnant of the ash remained visible to MODIS.',
       },
-      ...over,
+      ...CUT_OPEN,
     },
     {
       id: 'pilots',
@@ -153,7 +159,7 @@ export const volcanoRaikoke: Story = {
         quote:
           'Since ash contains sharp fragments of rock and volcanic glass, it poses a serious hazard to aircraft. The Tokyo and Anchorage Volcanic Ash Advisory Centers have been tracking the plume closely and have issued several notes to aviators',
       },
-      ...over,
+      ...CUT_OPEN,
     },
   ],
   endJd: s(at(23, 4), WORLDVIEW, '4:00 UTC on 23 June 2019.'),

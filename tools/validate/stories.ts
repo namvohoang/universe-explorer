@@ -620,7 +620,8 @@ export function checkStories(
         !story.storm?.slice &&
         !story.tornado &&
         !story.quake &&
-        !story.tsunami
+        !story.tsunami &&
+        story.id !== 'volcano-raikoke'
       ) {
         errors.push(
           `story ${story.id}: chapter "${chapter.id}" shows a drawing the story does not have`,

@@ -5,6 +5,7 @@ import {
   BufferGeometry,
   CanvasTexture,
   Color,
+  ConeGeometry,
   CylinderGeometry,
   DirectionalLight,
   DoubleSide,
@@ -183,6 +184,281 @@ function createCausticTexture(): CanvasTexture {
   return texture;
 }
 
+/** Warm terracotta / ochre diorama title plaque ("TSUNAMI!" as in User Image 1) */
+function createPlaqueTexture(): CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 140;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.clearRect(0, 0, 512, 140);
+
+    // Warm kraft/ochre plaque base (Image 1 style)
+    ctx.fillStyle = '#ea8d3b';
+    ctx.beginPath();
+    ctx.roundRect(8, 8, 496, 124, 14);
+    ctx.fill();
+
+    // Dark brown outer border
+    ctx.strokeStyle = '#2d1e18';
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+    // Bold drop shadow for TSUNAMI!
+    ctx.font = '900 58px "Impact", "Arial Black", -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+
+    // Black outline / block shadow
+    ctx.strokeStyle = '#1a0d08';
+    ctx.lineWidth = 6;
+    ctx.strokeText('TSUNAMI!', 256, 74);
+
+    // Bright red face
+    ctx.fillStyle = '#d32f2f';
+    ctx.fillText('TSUNAMI!', 256, 74);
+
+    // Subtitle
+    ctx.fillStyle = '#261710';
+    ctx.font = '700 19px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('COASTAL SHOALING & INUNDATION', 256, 112);
+  }
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return texture;
+}
+
+/** Soft sky-blue backdrop with white clouds for the diorama back panel */
+function createSkyPanelTexture(): CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    const grad = ctx.createLinearGradient(0, 0, 0, 512);
+    grad.addColorStop(0, '#5ea8eb');
+    grad.addColorStop(0.55, '#98cbf5');
+    grad.addColorStop(0.9, '#dcecfc');
+    grad.addColorStop(1, '#ffffff');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1024, 512);
+
+    // Soft white cumulus clouds (Image 1 painted backdrop style)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+    const clouds = [
+      { x: 180, y: 140, rx: 110, ry: 40 },
+      { x: 250, y: 115, rx: 85, ry: 45 },
+      { x: 120, y: 155, rx: 70, ry: 30 },
+      { x: 740, y: 160, rx: 130, ry: 45 },
+      { x: 820, y: 130, rx: 90, ry: 50 },
+      { x: 670, y: 175, rx: 75, ry: 32 },
+      { x: 480, y: 220, rx: 100, ry: 35 },
+    ];
+    for (const c of clouds) {
+      ctx.beginPath();
+      ctx.ellipse(c.x, c.y, c.rx, c.ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return texture;
+}
+
+/** Helper: Small wooden fishing rowboat (matching User Image 1) */
+function createBoatMesh(keep: <T extends { dispose(): void }>(t: T) => T): Group {
+  const boat = new Group();
+  const hullGeom = keep(new BufferGeometry());
+  const hullPos = [
+    // Bottom
+    -0.45, -0.12, -0.14,  0.45, -0.08, 0.0,   -0.45, -0.12, 0.14,
+    // Port side
+    -0.45, -0.12, 0.14,   0.45, -0.08, 0.0,    0.42, 0.10, 0.0,
+    -0.45, -0.12, 0.14,   0.42, 0.10, 0.0,    -0.45, 0.12, 0.20,
+    // Starboard side
+    -0.45, -0.12, -0.14, -0.45, 0.12, -0.20,  0.42, 0.10, 0.0,
+    -0.45, -0.12, -0.14,  0.42, 0.10, 0.0,    0.45, -0.08, 0.0,
+    // Transom (stern)
+    -0.45, -0.12, -0.14, -0.45, -0.12, 0.14,  -0.45, 0.12, 0.20,
+    -0.45, -0.12, -0.14, -0.45, 0.12, 0.20,  -0.45, 0.12, -0.20,
+  ];
+  hullGeom.setAttribute('position', new BufferAttribute(new Float32Array(hullPos), 3));
+  hullGeom.computeVertexNormals();
+
+  const boatMat = keep(new MeshStandardMaterial({ color: 0x795548, roughness: 0.85, side: DoubleSide }));
+  boat.add(new Mesh(hullGeom, boatMat));
+
+  const seatGeom = keep(new BoxGeometry(0.12, 0.03, 0.32));
+  const seatMat = keep(new MeshStandardMaterial({ color: 0xa1887f, roughness: 0.8 }));
+  const seat = new Mesh(seatGeom, seatMat);
+  seat.position.set(-0.05, 0.02, 0);
+  boat.add(seat);
+
+  return boat;
+}
+
+/** Helper: Slender coastal palm tree (matching User Image 2 & 1) */
+function createPalmTree(keep: <T extends { dispose(): void }>(t: T) => T, height = 1.6): Group {
+  const palm = new Group();
+  const trunkMat = keep(new MeshStandardMaterial({ color: 0x5d4037, roughness: 0.9 }));
+  const frondMat = keep(new MeshStandardMaterial({ color: 0x2e7d32, roughness: 0.85, side: DoubleSide }));
+
+  const segHeight = height / 3;
+  for (let i = 0; i < 3; i++) {
+    const rTop = 0.045 - i * 0.008;
+    const rBot = 0.065 - i * 0.008;
+    const seg = new Mesh(keep(new CylinderGeometry(rTop, rBot, segHeight, 7)), trunkMat);
+    seg.position.set(i * 0.04, (i + 0.5) * segHeight, 0);
+    seg.rotation.z = -0.06 * (i + 1);
+    palm.add(seg);
+  }
+
+  const topY = height;
+  const topX = 3 * 0.04;
+  const frondCount = 6;
+  for (let i = 0; i < frondCount; i++) {
+    const angle = (i / frondCount) * Math.PI * 2;
+    const frond = new Mesh(keep(new ConeGeometry(0.22, 0.75, 4)), frondMat);
+    frond.position.set(topX + Math.cos(angle) * 0.28, topY - 0.08, Math.sin(angle) * 0.28);
+    frond.rotation.y = angle;
+    frond.rotation.z = Math.PI / 2 + 0.35;
+    palm.add(frond);
+  }
+
+  return palm;
+}
+
+/** Helper: Coastal village wooden hut with pitched thatch roof (matching User Image 1) */
+function createHut(
+  keep: <T extends { dispose(): void }>(t: T) => T,
+  width = 0.9,
+  depth = 0.8,
+  height = 0.65,
+  roofColor = 0xa1887f,
+): Group {
+  const hut = new Group();
+  const woodMat = keep(new MeshStandardMaterial({ color: 0x8d6e63, roughness: 0.88 }));
+  const roofMat = keep(new MeshStandardMaterial({ color: roofColor, roughness: 0.82 }));
+  const darkMat = keep(new MeshBasicMaterial({ color: 0x2d1e18 }));
+
+  const stiltMat = keep(new MeshStandardMaterial({ color: 0x5d4037, roughness: 0.9 }));
+  const stiltH = 0.20;
+  const dx = width * 0.42;
+  const dz = depth * 0.42;
+  const stiltCorners: [number, number][] = [
+    [dx, dz],
+    [-dx, dz],
+    [dx, -dz],
+    [-dx, -dz],
+  ];
+  for (const [cx, cz] of stiltCorners) {
+    const leg = new Mesh(keep(new CylinderGeometry(0.035, 0.035, stiltH, 6)), stiltMat);
+    leg.position.set(cx, stiltH / 2, cz);
+    hut.add(leg);
+  }
+
+  const body = new Mesh(keep(new BoxGeometry(width, height, depth)), woodMat);
+  body.position.set(0, stiltH + height / 2, 0);
+  hut.add(body);
+
+  const roofH = height * 0.65;
+  const roofGeom = keep(new ConeGeometry(Math.max(width, depth) * 0.72, roofH, 4));
+  roofGeom.rotateY(Math.PI / 4);
+  const roof = new Mesh(roofGeom, roofMat);
+  roof.position.set(0, stiltH + height + roofH / 2, 0);
+  roof.scale.set((width / Math.max(width, depth)) * 1.15, 1, (depth / Math.max(width, depth)) * 1.15);
+  hut.add(roof);
+
+  const door = new Mesh(keep(new PlaneGeometry(width * 0.26, height * 0.6)), darkMat);
+  door.position.set(0, stiltH + height * 0.35, depth / 2 + 0.01);
+  hut.add(door);
+
+  return hut;
+}
+
+/** Helper: Coastal lifeguard stilt cabin (matching User Image 2) */
+function createLifeguardTower(keep: <T extends { dispose(): void }>(t: T) => T): Group {
+  const tower = new Group();
+  const whiteMat = keep(new MeshStandardMaterial({ color: 0xf5f5f5, roughness: 0.6 }));
+  const blueMat = keep(new MeshStandardMaterial({ color: 0x81d4fa, roughness: 0.7 }));
+  const glassMat = keep(new MeshStandardMaterial({ color: 0xe0f7fa, roughness: 0.2, metalness: 0.3 }));
+
+  const stiltH = 0.65;
+  const legCorners: [number, number][] = [
+    [0.35, 0.3],
+    [-0.35, 0.3],
+    [0.35, -0.3],
+    [-0.35, -0.3],
+  ];
+  for (const [cx, cz] of legCorners) {
+    const leg = new Mesh(keep(new CylinderGeometry(0.03, 0.03, stiltH, 6)), whiteMat);
+    leg.position.set(cx, stiltH / 2, cz);
+    tower.add(leg);
+  }
+
+  const deck = new Mesh(keep(new BoxGeometry(0.95, 0.05, 0.85)), whiteMat);
+  deck.position.set(0, stiltH, 0);
+  tower.add(deck);
+
+  const cabin = new Mesh(keep(new BoxGeometry(0.70, 0.55, 0.60)), blueMat);
+  cabin.position.set(0, stiltH + 0.28, 0);
+  tower.add(cabin);
+
+  const windowBand = new Mesh(keep(new BoxGeometry(0.72, 0.22, 0.62)), glassMat);
+  windowBand.position.set(0, stiltH + 0.35, 0);
+  tower.add(windowBand);
+
+  const roof = new Mesh(keep(new BoxGeometry(0.85, 0.06, 0.75)), whiteMat);
+  roof.position.set(0, stiltH + 0.58, 0);
+  tower.add(roof);
+
+  return tower;
+}
+
+/** Helper: Faceted origami mountain with white snow cap (matching User Image 1) */
+function createSnowPeak(
+  keep: <T extends { dispose(): void }>(t: T) => T,
+  radius: number,
+  height: number,
+  snowRatio = 0.38,
+): Group {
+  const mountain = new Group();
+  const mountainMat = keep(new MeshStandardMaterial({ color: 0x795548, roughness: 0.9, flatShading: true }));
+  const snowMat = keep(new MeshStandardMaterial({ color: 0xffffff, roughness: 0.7, flatShading: true }));
+
+  const body = new Mesh(keep(new ConeGeometry(radius, height, 6)), mountainMat);
+  body.position.set(0, height / 2, 0);
+  mountain.add(body);
+
+  const snowH = height * snowRatio;
+  const snowR = radius * snowRatio;
+  const snow = new Mesh(keep(new ConeGeometry(snowR, snowH, 6)), snowMat);
+  snow.position.set(0, height - snowH / 2 + 0.01, 0);
+  mountain.add(snow);
+
+  return mountain;
+}
+
+/** Helper: Faceted green pine forest hill (matching User Image 1) */
+function createFacetedHill(
+  keep: <T extends { dispose(): void }>(t: T) => T,
+  radius: number,
+  height: number,
+  color = 0x2e7d32,
+): Group {
+  const hill = new Group();
+  const hillMat = keep(new MeshStandardMaterial({ color, roughness: 0.88, flatShading: true }));
+
+  const cone1 = new Mesh(keep(new ConeGeometry(radius, height * 0.7, 6)), hillMat);
+  cone1.position.set(0, height * 0.35, 0);
+  hill.add(cone1);
+
+  const cone2 = new Mesh(keep(new ConeGeometry(radius * 0.7, height * 0.55, 6)), hillMat);
+  cone2.position.set(0, height * 0.72, 0);
+  hill.add(cone2);
+
+  return hill;
+}
+
 export function createTsunamiSlice(): TsunamiSlice {
   const scene = new Scene();
   scene.background = new Color(BACKGROUND);
@@ -357,14 +633,14 @@ export function createTsunamiSlice(): TsunamiSlice {
   const waterFrontMesh = new Mesh(waterFrontGeom, waterFrontMaterial);
   root.add(waterFrontMesh);
 
-  // --- 3. THE HERO 3D CURLING WAVE BREAKER (MATCHING USER IMAGES 1 & 2) ---
+  // --- 3. THE HERO 3D TSUNAMI DIORAMA (MATCHING USER IMAGES 1 & 2) ---
   const waveBreakerGroup = new Group();
   waveBreakerGroup.position.set(7.6, -0.6, 0); // Positioned at continental shelf / coast
   root.add(waveBreakerGroup);
 
   const Nu = 96; // steps along wave profile (high-res curvature)
   const Nv = 36; // steps across wave span
-  const Z_SPAN = 4.6; // width across Z axis
+  const Z_SPAN = 5.0; // width across Z axis
 
   const breakerGeom = keep(new BufferGeometry());
   const breakerPos = new Float32Array((Nu + 1) * (Nv + 1) * 3);
@@ -443,25 +719,25 @@ export function createTsunamiSlice(): TsunamiSlice {
   const foamMesh = new Mesh(foamGeom, foamMaterial);
   waveBreakerGroup.add(foamMesh);
 
-  // --- 3C. BILLOWING 3D FOAM NODULES ALONG THE LIP & SECONDARY CREST ---
+  // --- 3C. VOLUMETRIC "COTTON CLOUD" FOAM BILLOWS (Matching User Images 1 & 2) ---
   const foamClumpsGroup = new Group();
   waveBreakerGroup.add(foamClumpsGroup);
 
-  const clumpGeom = keep(new SphereGeometry(0.18, 8, 8));
+  const noduleCount = 130;
+  const clumpGeom = keep(new SphereGeometry(0.26, 8, 8));
   const clumpMaterial = keep(
     new MeshStandardMaterial({
       color: 0xffffff,
-      emissive: 0xd0f5fa,
-      emissiveIntensity: 0.25,
-      roughness: 0.9,
+      emissive: 0xf0faff,
+      emissiveIntensity: 0.35,
+      roughness: 0.96,
     }),
   );
   const foamNodules: Mesh[] = [];
-  const noduleCount = 48;
   for (let i = 0; i < noduleCount; i++) {
     const nodule = new Mesh(clumpGeom, clumpMaterial);
-    const scale = 0.65 + Math.random() * 0.95;
-    nodule.scale.set(scale, scale * 0.8, scale * 1.1);
+    const scale = 0.6 + Math.random() * 1.25;
+    nodule.scale.set(scale, scale * 0.88, scale * 1.18);
     foamClumpsGroup.add(nodule);
     foamNodules.push(nodule);
   }
@@ -499,42 +775,224 @@ export function createTsunamiSlice(): TsunamiSlice {
   const sprayPoints = new Points(sprayGeom, sprayMaterial);
   waveBreakerGroup.add(sprayPoints);
 
-  // --- 3E. EXHIBITION PEDESTAL WEDGE (Image 1 signature white/chrome base) ---
-  const pedestalGeom = keep(new BufferGeometry());
-  const pedZ = Z_SPAN / 2;
-  const pedPositions = [
-    // Left angled bevel face
-    -5.2, -0.65, -pedZ,  -5.2, -0.65, pedZ,  -4.4, 0.2, pedZ,
-    -5.2, -0.65, -pedZ,  -4.4, 0.2, pedZ,   -4.4, 0.2, -pedZ,
-    // Top slope face (cradling wave swell)
-    -4.4, 0.2, -pedZ,   -4.4, 0.2, pedZ,   -1.2, 2.1, pedZ,
-    -4.4, 0.2, -pedZ,   -1.2, 2.1, pedZ,   -1.2, 2.1, -pedZ,
-    // Right vertical cut face
-    -1.2, 2.1, -pedZ,   -1.2, 2.1, pedZ,   -1.2, -0.65, pedZ,
-    -1.2, 2.1, -pedZ,   -1.2, -0.65, pedZ,  -1.2, -0.65, -pedZ,
-    // Bottom flat face
-    -5.2, -0.65, -pedZ, -1.2, -0.65, -pedZ, -1.2, -0.65, pedZ,
-    -5.2, -0.65, -pedZ, -1.2, -0.65, pedZ,  -5.2, -0.65, pedZ,
-    // Front facet (z = +pedZ)
-    -5.2, -0.65, pedZ,  -1.2, -0.65, pedZ,  -1.2, 2.1, pedZ,
-    -5.2, -0.65, pedZ,  -1.2, 2.1, pedZ,  -4.4, 0.2, pedZ,
-    // Back facet (z = -pedZ)
-    -5.2, -0.65, -pedZ, -1.2, 2.1, -pedZ,  -1.2, -0.65, -pedZ,
-    -5.2, -0.65, -pedZ, -4.4, 0.2, -pedZ,  -1.2, 2.1, -pedZ,
-  ];
-  pedestalGeom.setAttribute('position', new BufferAttribute(new Float32Array(pedPositions), 3));
-  pedestalGeom.computeVertexNormals();
+  // --- 3E. THE COMPLETE PHYSICAL DIORAMA BOX & COASTAL SCENE ---
+  const dioramaBoxGroup = new Group();
+  waveBreakerGroup.add(dioramaBoxGroup);
 
-  const pedestalMaterial = keep(
-    new MeshStandardMaterial({
-      color: 0xf5f8fa,
-      roughness: 0.22,
-      metalness: 0.18,
+  // 1. Kraft cardboard diorama tray / base box (Image 1 & 2 aesthetic)
+  const boxWidth = 10.4; // X: -5.1 to +5.3
+  const boxDepth = 5.6;  // Z: -2.8 to +2.8
+  const boxHeight = 0.75; // Y: -1.30 to -0.55
+  const boxMat = keep(new MeshStandardMaterial({ color: 0x9e826b, roughness: 0.88 }));
+  const boxTrimMat = keep(new MeshStandardMaterial({ color: 0x6d4c41, roughness: 0.85 }));
+
+  const boxBase = new Mesh(keep(new BoxGeometry(boxWidth, boxHeight, boxDepth)), boxMat);
+  boxBase.position.set(0.1, -0.925, 0);
+  dioramaBoxGroup.add(boxBase);
+
+  // Rim borders along top edge of the box
+  const rimH = 0.14;
+  const rimThick = 0.12;
+  const frontRim = new Mesh(keep(new BoxGeometry(boxWidth + 0.02, rimH, rimThick)), boxTrimMat);
+  frontRim.position.set(0.1, -0.50, boxDepth / 2);
+  dioramaBoxGroup.add(frontRim);
+
+  const backRim = new Mesh(keep(new BoxGeometry(boxWidth + 0.02, rimH, rimThick)), boxTrimMat);
+  backRim.position.set(0.1, -0.50, -boxDepth / 2);
+  dioramaBoxGroup.add(backRim);
+
+  const leftRim = new Mesh(keep(new BoxGeometry(rimThick, rimH, boxDepth)), boxTrimMat);
+  leftRim.position.set(-5.1, -0.50, 0);
+  dioramaBoxGroup.add(leftRim);
+
+  const rightRim = new Mesh(keep(new BoxGeometry(rimThick, rimH, boxDepth)), boxTrimMat);
+  rightRim.position.set(5.3, -0.50, 0);
+  dioramaBoxGroup.add(rightRim);
+
+  // Front Plaque: "TSUNAMI!" (Image 1 signature bold plaque)
+  const plaqueTex = keep(createPlaqueTexture());
+  const plaqueMesh = new Mesh(
+    keep(new PlaneGeometry(5.0, 0.64)),
+    keep(new MeshBasicMaterial({ map: plaqueTex, side: DoubleSide })),
+  );
+  plaqueMesh.position.set(0.1, -0.88, boxDepth / 2 + 0.02);
+  dioramaBoxGroup.add(plaqueMesh);
+
+  // Sky & Clouds Back Panel (Image 1 painted backdrop board)
+  const skyTex = keep(createSkyPanelTexture());
+  const skyPanel = new Mesh(
+    keep(new PlaneGeometry(boxWidth, 4.8)),
+    keep(new MeshBasicMaterial({ map: skyTex, side: DoubleSide })),
+  );
+  skyPanel.position.set(0.1, 1.85, -boxDepth / 2 - 0.01);
+  dioramaBoxGroup.add(skyPanel);
+
+  // 1B. Ocean Water Basin Floor (Open front, translucent marine blue floor under wave & boats)
+  const oceanBasinGeom = keep(new PlaneGeometry(6.4, boxDepth - 0.3, 16, 12));
+  oceanBasinGeom.rotateX(-Math.PI / 2);
+  const oceanBasinMat = keep(
+    new MeshPhysicalMaterial({
+      color: 0x0077b6,
+      emissive: 0x002244,
+      roughness: 0.12,
+      transmission: 0.65,
+      transparent: true,
+      opacity: 0.92,
+      clearcoat: 0.85,
       side: DoubleSide,
     }),
   );
-  const pedestalMesh = new Mesh(pedestalGeom, pedestalMaterial);
-  waveBreakerGroup.add(pedestalMesh);
+  const oceanBasinMesh = new Mesh(oceanBasinGeom, oceanBasinMat);
+  oceanBasinMesh.position.set(-1.8, -0.52, 0);
+  dioramaBoxGroup.add(oceanBasinMesh);
+
+  // Rear vertical bedrock slice against sky panel
+  const pedZ = Z_SPAN / 2;
+  const rearCutGeom = keep(new BufferGeometry());
+  const rearCutPositions = [
+    -5.0, -0.65, -pedZ,  0.8, -0.65, -pedZ,  0.8, 0.1, -pedZ,
+    -5.0, -0.65, -pedZ,  0.8, 0.1, -pedZ,   -5.0, 0.1, -pedZ,
+  ];
+  rearCutGeom.setAttribute('position', new BufferAttribute(new Float32Array(rearCutPositions), 3));
+  rearCutGeom.computeVertexNormals();
+  const rearCutMat = keep(new MeshStandardMaterial({ color: 0x243342, roughness: 0.88, side: DoubleSide }));
+  dioramaBoxGroup.add(new Mesh(rearCutGeom, rearCutMat));
+
+  // 2. Beach Sand Terrain (Sloping up from water to village terrace)
+  const sandWidth = 4.8;
+  const sandDepth = 5.4;
+  const sandGeom = keep(new PlaneGeometry(sandWidth, sandDepth, 18, 12));
+  sandGeom.rotateX(-Math.PI / 2);
+  const sandPosAttr = sandGeom.attributes.position as BufferAttribute;
+  for (let i = 0; i < sandPosAttr.count; i++) {
+    const localX = sandPosAttr.getX(i);
+    const t = (localX + sandWidth / 2) / sandWidth;
+    const elev = -0.55 + 0.35 * Math.pow(t, 0.8) + 0.32 * Math.pow(t, 2.5);
+    sandPosAttr.setY(i, elev);
+  }
+  sandGeom.computeVertexNormals();
+  const sandMat = keep(new MeshStandardMaterial({ color: 0xd9ba82, roughness: 0.95 }));
+  const sandMesh = new Mesh(sandGeom, sandMat);
+  sandMesh.position.set(2.8, 0, 0);
+  dioramaBoxGroup.add(sandMesh);
+
+  // 3. Concrete Seawall Breakwater Blocks (Image 1 row of concrete cubes)
+  const seawallCount = 9;
+  const blockGeom = keep(new BoxGeometry(0.32, 0.26, 0.36));
+  const blockMat = keep(new MeshStandardMaterial({ color: 0xdad5cb, roughness: 0.82 }));
+  for (let i = 0; i < seawallCount; i++) {
+    const block = new Mesh(blockGeom, blockMat);
+    const z = -2.1 + (i / (seawallCount - 1)) * 4.2;
+    block.position.set(2.4, -0.16, z);
+    dioramaBoxGroup.add(block);
+  }
+
+  // 4. Inundation Water Wash Sheet (Translucent water creeping over the sand)
+  const washGeom = keep(new PlaneGeometry(3.0, 5.0, 16, 12));
+  washGeom.rotateX(-Math.PI / 2);
+  const washMat = keep(
+    new MeshPhysicalMaterial({
+      color: 0x48cae4,
+      roughness: 0.1,
+      transmission: 0.75,
+      transparent: true,
+      opacity: 0.7,
+      side: DoubleSide,
+    }),
+  );
+  const washMesh = new Mesh(washGeom, washMat);
+  washMesh.position.set(2.4, -0.22, 0);
+  dioramaBoxGroup.add(washMesh);
+
+  // 5. Faceted Origami Mountains along back panel (Image 1)
+  const mnt1 = createFacetedHill(keep, 1.3, 2.4, 0x2e7d32);
+  mnt1.position.set(1.4, -0.50, -2.1);
+  dioramaBoxGroup.add(mnt1);
+
+  const mnt2 = createSnowPeak(keep, 1.5, 3.2, 0.36);
+  mnt2.position.set(2.9, -0.50, -2.2);
+  dioramaBoxGroup.add(mnt2);
+
+  const mnt3 = createSnowPeak(keep, 1.2, 2.7, 0.34);
+  mnt3.position.set(4.3, -0.50, -2.1);
+  dioramaBoxGroup.add(mnt3);
+
+  const mnt4 = createFacetedHill(keep, 1.0, 1.8, 0x388e3c);
+  mnt4.position.set(0.4, -0.50, -2.1);
+  dioramaBoxGroup.add(mnt4);
+
+  // 6. Coastal Village Huts & Houses
+  const hut1 = createHut(keep, 0.95, 0.80, 0.60, 0xa1887f);
+  hut1.position.set(3.8, 0.05, -1.5);
+  hut1.rotation.y = 0.15;
+  dioramaBoxGroup.add(hut1);
+
+  const hut2 = createHut(keep, 0.88, 0.75, 0.55, 0x8d6e63);
+  hut2.position.set(4.2, 0.08, -0.6);
+  hut2.rotation.y = -0.20;
+  dioramaBoxGroup.add(hut2);
+
+  // Two small barrels outside Hut 2 (Image 1 detail)
+  const barrelGeom = keep(new CylinderGeometry(0.09, 0.09, 0.22, 10));
+  const barrelMat = keep(new MeshStandardMaterial({ color: 0xbcaaa4, roughness: 0.8 }));
+  const b1 = new Mesh(barrelGeom, barrelMat);
+  b1.position.set(3.7, 0.16, -0.45);
+  dioramaBoxGroup.add(b1);
+  const b2 = new Mesh(barrelGeom, barrelMat);
+  b2.position.set(3.85, 0.16, -0.35);
+  dioramaBoxGroup.add(b2);
+
+  const hut3 = createHut(keep, 1.05, 0.85, 0.65, 0x6d4c41);
+  hut3.position.set(4.0, 0.08, 0.5);
+  hut3.rotation.y = 0.10;
+  dioramaBoxGroup.add(hut3);
+
+  // 7. Coastal Lifeguard Stilt Cabin (Image 2 signature tower)
+  const lifeguardTower = createLifeguardTower(keep);
+  lifeguardTower.position.set(3.4, -0.05, 1.7);
+  lifeguardTower.rotation.y = -0.15;
+  dioramaBoxGroup.add(lifeguardTower);
+
+  // 8. Slender Coastal Palm Trees (Image 2 & 1)
+  const palm1 = createPalmTree(keep, 1.7);
+  palm1.position.set(3.2, 0.0, 2.2);
+  dioramaBoxGroup.add(palm1);
+
+  const palm2 = createPalmTree(keep, 1.5);
+  palm2.position.set(4.1, 0.08, 1.4);
+  dioramaBoxGroup.add(palm2);
+
+  const palm3 = createPalmTree(keep, 1.8);
+  palm3.position.set(4.6, 0.10, 0.0);
+  dioramaBoxGroup.add(palm3);
+
+  const palm4 = createPalmTree(keep, 1.6);
+  palm4.position.set(4.5, 0.08, -1.2);
+  dioramaBoxGroup.add(palm4);
+
+  const palm5 = createPalmTree(keep, 1.4);
+  palm5.position.set(4.6, 0.05, -2.1);
+  dioramaBoxGroup.add(palm5);
+
+  // 9. Small Wooden Fishing Boats (Image 1)
+  const boat1 = createBoatMesh(keep);
+  boat1.scale.set(1.4, 1.4, 1.4);
+  boat1.position.set(0.3, -0.46, 0.6);
+  boat1.rotation.y = 0.35;
+  dioramaBoxGroup.add(boat1);
+
+  const boat2 = createBoatMesh(keep);
+  boat2.scale.set(1.4, 1.4, 1.4);
+  boat2.position.set(1.7, -0.28, -0.8);
+  boat2.rotation.y = -0.45;
+  boat2.rotation.z = 0.12;
+  dioramaBoxGroup.add(boat2);
+
+  const boat3 = createBoatMesh(keep);
+  boat3.scale.set(1.4, 1.4, 1.4);
+  boat3.position.set(3.0, -0.05, 0.9);
+  boat3.rotation.y = 0.2;
+  dioramaBoxGroup.add(boat3);
 
   // --- 3F. REAR PROFILE DIORAMA CAP ---
   const sideCapGeom = keep(new BufferGeometry());
@@ -792,7 +1250,7 @@ export function createTsunamiSlice(): TsunamiSlice {
     const isShoalingChapter = currentChapter === 'across-the-ocean' || currentChapter === 'warnings';
     const showBreaker = viewMode === 'breaker' || (viewMode === 'auto' && isShoalingChapter);
 
-    // In 3D Wave Breaker mode, isolate the sculpture on its white exhibition pedestal (Image 1 style)
+    // In 3D Diorama mode, display the complete Coastal Tsunami Diorama Box
     seabedMesh.visible = !showBreaker;
     waterMesh.visible = !showBreaker;
     waterFrontMesh.visible = !showBreaker;
@@ -802,15 +1260,17 @@ export function createTsunamiSlice(): TsunamiSlice {
     faultBlockGroup.visible = !showBreaker;
     barrelLight.intensity = showBreaker ? 4.8 : 2.0;
 
+    dioramaBoxGroup.visible = showBreaker;
+
     if (showBreaker) {
-      // Close-up cinematic 3/4 angle on the Hero Curling Wave Breaker (Matching User Images 1 & 2)
-      desiredTarget.x = 7.7;
-      desiredTarget.y = 0.8;
-      desiredTarget.z = 0.15;
-      desiredDistance = 10.8;
-      desiredDirection.x = -0.45;
-      desiredDirection.y = 0.25;
-      desiredDirection.z = 0.86;
+      // Elevated 3/4 front perspective framing the complete 3D Coastal Tsunami Diorama Box
+      desiredTarget.x = 8.1;
+      desiredTarget.y = 0.60;
+      desiredTarget.z = 0.0;
+      desiredDistance = 11.2;
+      desiredDirection.x = -0.16;
+      desiredDirection.y = 0.38;
+      desiredDirection.z = 0.91;
     } else {
       // Wide overview of ocean bathymetric cross-section
       desiredTarget.x = -0.5;
@@ -1014,8 +1474,11 @@ export function createTsunamiSlice(): TsunamiSlice {
     const leftProfile: { x: number; y: number }[] = [];
     const rightProfile: { x: number; y: number }[] = [];
 
-    // Lip nodule positions for foam clumps
-    const lipPoints: { x: number; y: number; z: number }[] = [];
+    // Lip and crest nodule positions for volumetric cotton foam billows
+    const crestPoints: { x: number; y: number; z: number }[] = [];
+    const primaryLipPoints: { x: number; y: number; z: number }[] = [];
+    const secondaryLipPoints: { x: number; y: number; z: number }[] = [];
+    const impactLipPoints: { x: number; y: number; z: number }[] = [];
 
     for (let iu = 0; iu <= Nu; iu++) {
       const u = iu / Nu;
@@ -1049,8 +1512,11 @@ export function createTsunamiSlice(): TsunamiSlice {
           x = -1.2 + rx * Math.sin(angle) + 0.38 * t * t * C;
           y = localH - ry * (1.0 - Math.cos(angle));
 
+          if (iu === Math.round(Nu * 0.48)) {
+            crestPoints.push({ x, y, z });
+          }
           if (iu === Math.round(Nu * 0.65)) {
-            lipPoints.push({ x, y, z });
+            primaryLipPoints.push({ x, y, z });
           }
         } else if (u < 0.76) {
           // Plunging lip waterfall crashing into impact trough
@@ -1064,8 +1530,12 @@ export function createTsunamiSlice(): TsunamiSlice {
 
           x = xLip + t * (0.65 + 0.35 * C);
           y = yLip - t * (yLip - (-0.45));
+
+          if (iu === Math.round(Nu * 0.74)) {
+            impactLipPoints.push({ x, y, z });
+          }
         } else if (u < 0.88) {
-          // Secondary Foreground Wave Crest (As seen in User Image 1!)
+          // Secondary Foreground Wave Crest (As seen in User Image 1 & 2!)
           const t = (u - 0.76) / 0.12;
           const H2 = 0.42 * localH;
           const t2 = Math.sin(t * Math.PI);
@@ -1080,8 +1550,8 @@ export function createTsunamiSlice(): TsunamiSlice {
           x = xLip + 0.8 + t * 1.8 + r2x * Math.sin(theta2);
           y = -0.45 + H2 * t2 - r2y * (1.0 - Math.cos(theta2));
 
-          if (iu === Math.round(Nu * 0.85)) {
-            lipPoints.push({ x, y, z });
+          if (iu === Math.round(Nu * 0.84)) {
+            secondaryLipPoints.push({ x, y, z });
           }
         } else {
           // Shoreward whitewash runoff
@@ -1146,21 +1616,63 @@ export function createTsunamiSlice(): TsunamiSlice {
     sPos.needsUpdate = true;
     sideCapGeom.computeVertexNormals();
 
-    // 4. Update Billowing Foam Nodules along the lips
-    if (lipPoints.length > 0) {
+    // 4. Update Billowing Cotton Foam Nodules along the lips & crests (130 nodules)
+    if (primaryLipPoints.length > 0) {
       for (let i = 0; i < noduleCount; i++) {
         const nodule = foamNodules[i];
         if (!nodule) continue;
-        const ptIdx = Math.floor((i / noduleCount) * (lipPoints.length - 1));
-        const pt = lipPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
-        const jitter = Math.sin(i * 1.7 + animTime * 3) * 0.08;
-        nodule.position.set(pt.x + 0.08, pt.y + jitter, pt.z);
-        nodule.visible = C > 0.2;
+
+        if (i < 50) {
+          // 50 nodules along primary curling lip: thick, billowing cotton-wool crest
+          const ptIdx = Math.floor((i / 50) * (primaryLipPoints.length - 1));
+          const pt = primaryLipPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
+          const jitterX = Math.sin(i * 2.1) * 0.22;
+          const jitterY = Math.cos(i * 1.9) * 0.20 + Math.sin(animTime * 3.0 + i) * 0.04;
+          const jitterZ = Math.sin(i * 3.3) * 0.16;
+          nodule.position.set(pt.x + 0.06 + jitterX, pt.y + 0.08 + jitterY, pt.z + jitterZ);
+          nodule.visible = C > 0.12;
+        } else if (i < 90) {
+          // 40 nodules along top vaulted ridge crest (thick cotton blanket)
+          const cIdx = i - 50;
+          if (crestPoints.length > 0) {
+            const ptIdx = Math.floor((cIdx / 40) * (crestPoints.length - 1));
+            const pt = crestPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
+            const jitterX = Math.sin(i * 1.7) * 0.18;
+            const jitterY = Math.cos(i * 2.5) * 0.18 + Math.sin(animTime * 2.6 + i) * 0.03;
+            const jitterZ = Math.sin(i * 2.9) * 0.15;
+            nodule.position.set(pt.x + jitterX, pt.y + 0.10 + jitterY, pt.z + jitterZ);
+            nodule.visible = C > 0.12;
+          }
+        } else if (i < 115) {
+          // 25 nodules along secondary rolling wave crest (Image 2)
+          const secIdx = i - 90;
+          if (secondaryLipPoints.length > 0) {
+            const ptIdx = Math.floor((secIdx / 25) * (secondaryLipPoints.length - 1));
+            const pt = secondaryLipPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
+            const jitterX = Math.sin(i * 1.8) * 0.14;
+            const jitterY = Math.cos(i * 2.2) * 0.14 + Math.sin(animTime * 3.2 + i) * 0.03;
+            const jitterZ = Math.sin(i * 2.7) * 0.14;
+            nodule.position.set(pt.x + jitterX, pt.y + 0.06 + jitterY, pt.z + jitterZ);
+            nodule.visible = C > 0.18;
+          }
+        } else {
+          // 15 nodules at impact plunge / seawall whitewater
+          const impIdx = i - 115;
+          if (impactLipPoints.length > 0) {
+            const ptIdx = Math.floor((impIdx / 15) * (impactLipPoints.length - 1));
+            const pt = impactLipPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
+            const jitterX = Math.sin(i * 2.5) * 0.24;
+            const jitterY = Math.abs(Math.sin(animTime * 4.0 + i)) * 0.14;
+            const jitterZ = Math.sin(i * 1.5) * 0.20;
+            nodule.position.set(pt.x + 0.25 + jitterX, pt.y + jitterY, pt.z + jitterZ);
+            nodule.visible = C > 0.22;
+          }
+        }
       }
     }
 
     // 5. Update Airborne Sea Spray Particles
-    if (lipPoints.length > 0) {
+    if (primaryLipPoints.length > 0) {
       const sPositions = sprayGeom.attributes.position as BufferAttribute;
       for (let i = 0; i < sprayCount; i++) {
         const vel = sprayVelocities[i];
@@ -1173,8 +1685,8 @@ export function createTsunamiSlice(): TsunamiSlice {
 
         if (vel.life > 1.0 || py <= -0.5 || C < 0.2) {
           // Respawn at curling lip or impact plunge
-          const ptIdx = Math.floor(Math.random() * lipPoints.length);
-          const pt = lipPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
+          const ptIdx = Math.floor(Math.random() * primaryLipPoints.length);
+          const pt = primaryLipPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
           px = pt.x + (Math.random() - 0.2) * 0.4;
           py = pt.y + Math.random() * 0.3;
           pz = pt.z + (Math.random() - 0.5) * 0.4;
@@ -1291,9 +1803,22 @@ export function createTsunamiSlice(): TsunamiSlice {
       beacon.intensity = 2.0 + Math.sin(animTime * 8) * 1.8;
     }
 
-    // Continuous wave progression
+    // Continuous wave progression in deep ocean cross-section
     if (currentChapter !== 'sea-floor' && currentChapter !== 'across-the-ocean' && currentChapter !== 'warnings') {
       waveProgress = (waveProgress + seconds * 0.02) % 0.8;
+    }
+
+    // Boat bobbing & inundation wash animation in diorama
+    if (dioramaBoxGroup.visible) {
+      if (boat1) {
+        boat1.position.y = -0.42 + Math.sin(animTime * 2.6) * 0.04;
+        boat1.rotation.z = 0.08 + Math.sin(animTime * 2.2) * 0.06;
+        boat1.rotation.x = Math.sin(animTime * 1.8) * 0.03;
+      }
+      if (washMesh) {
+        washMesh.position.x = 2.4 + Math.sin(animTime * 1.8) * 0.22;
+        washMesh.position.y = -0.22 + Math.sin(animTime * 1.8) * 0.03;
+      }
     }
 
     updateWaterProfile();

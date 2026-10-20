@@ -10,7 +10,6 @@ import {
   DirectionalLight,
   DoubleSide,
   Group,
-  LinearFilter,
   LineBasicMaterial,
   LineSegments,
   Mesh,
@@ -73,6 +72,8 @@ export interface TsunamiSlice {
   flow(seconds: number): void;
   /** Toggles between the close-up 3D Wave Breaker view and the wide Ocean Cross-Section view */
   toggleView(): void;
+  /** Whether the wave is shown breaking at the shore. */
+  viewToggled(): boolean;
   dispose(): void;
 }
 
@@ -184,7 +185,7 @@ function createCausticTexture(): CanvasTexture {
   return texture;
 }
 
-/** Warm terracotta / ochre diorama title plaque ("TSUNAMI!" as in User Image 1) */
+/** A plain warm ochre plate for the front of the diorama (no words: they could not be read in the view, nor be in the reader's language). */
 function createPlaqueTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
@@ -204,23 +205,6 @@ function createPlaqueTexture(): CanvasTexture {
     ctx.lineWidth = 6;
     ctx.stroke();
 
-    // Bold drop shadow for TSUNAMI!
-    ctx.font = '900 58px "Impact", "Arial Black", -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-
-    // Black outline / block shadow
-    ctx.strokeStyle = '#1a0d08';
-    ctx.lineWidth = 6;
-    ctx.strokeText('TSUNAMI!', 256, 74);
-
-    // Bright red face
-    ctx.fillStyle = '#d32f2f';
-    ctx.fillText('TSUNAMI!', 256, 74);
-
-    // Subtitle
-    ctx.fillStyle = '#261710';
-    ctx.font = '700 19px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('COASTAL SHOALING & INUNDATION', 256, 112);
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
@@ -1044,32 +1028,6 @@ export function createTsunamiSlice(): TsunamiSlice {
   jetGroup.add(jetTail);
 
   // Airliner speed comparison sign
-  const jetSignCanvas = document.createElement('canvas');
-  jetSignCanvas.width = 512;
-  jetSignCanvas.height = 128;
-  const jetSignCtx = jetSignCanvas.getContext('2d');
-  if (jetSignCtx) {
-    jetSignCtx.fillStyle = 'rgba(8, 14, 28, 0.90)';
-    jetSignCtx.fillRect(0, 0, 512, 128);
-    jetSignCtx.strokeStyle = '#ffd54f';
-    jetSignCtx.lineWidth = 4;
-    jetSignCtx.strokeRect(4, 4, 504, 120);
-    jetSignCtx.fillStyle = '#ffffff';
-    jetSignCtx.font = 'bold 34px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    jetSignCtx.textAlign = 'center';
-    jetSignCtx.fillText('✈ JET: ~800 km/h', 256, 50);
-    jetSignCtx.fillStyle = '#64b5f6';
-    jetSignCtx.font = '600 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    jetSignCtx.fillText('TSUNAMI SPEED MATCH', 256, 94);
-  }
-  const jetSignTexture = keep(new CanvasTexture(jetSignCanvas));
-  jetSignTexture.colorSpace = SRGBColorSpace;
-  const jetSign = new Mesh(
-    keep(new PlaneGeometry(3.8, 0.95)),
-    keep(new MeshBasicMaterial({ map: jetSignTexture, transparent: true, side: DoubleSide })),
-  );
-  jetSign.position.set(0, -0.85, 0.1);
-  jetGroup.add(jetSign);
 
   // --- 5. NOAA DART TSUNAMI BUOY (Chapter 4: Deep ocean gauges) ---
   const buoyGroup = new Group();
@@ -1159,76 +1117,8 @@ export function createTsunamiSlice(): TsunamiSlice {
   beaconMesh.position.set(0, 0.85, 0);
   coastStationGroup.add(beaconMesh);
 
-  // --- 7. FLOATING SKY BANNER & DEPTH LABELS ---
-  const bannerCanvas = document.createElement('canvas');
-  bannerCanvas.width = 2048;
-  bannerCanvas.height = 360;
-  const bannerCtx = bannerCanvas.getContext('2d');
-  const bannerTexture = keep(new CanvasTexture(bannerCanvas));
-  bannerTexture.colorSpace = SRGBColorSpace;
-  bannerTexture.minFilter = LinearFilter;
-
-  const bannerPlane = new Mesh(
-    keep(new PlaneGeometry(17, 3.0)),
-    keep(new MeshBasicMaterial({ map: bannerTexture, transparent: true, side: DoubleSide })),
-  );
-  bannerPlane.position.set(-1.0, 3.1, 0.2);
-  root.add(bannerPlane);
-
-  const depthCanvas = document.createElement('canvas');
-  depthCanvas.width = 2048;
-  depthCanvas.height = 200;
-  const depthCtx = depthCanvas.getContext('2d');
-  const depthTexture = keep(new CanvasTexture(depthCanvas));
-  depthTexture.colorSpace = SRGBColorSpace;
-  depthTexture.minFilter = LinearFilter;
-
-  const depthPlane = new Mesh(
-    keep(new PlaneGeometry(SLICE_WIDTH, 2.2)),
-    keep(new MeshBasicMaterial({ map: depthTexture, transparent: true, side: DoubleSide })),
-  );
-  depthPlane.position.set(0, -5.8, SLICE_DEPTH / 2 + 0.03);
-  root.add(depthPlane);
-
-  if (depthCtx) {
-    depthCtx.clearRect(0, 0, 2048, 200);
-    depthCtx.fillStyle = 'rgba(8, 12, 22, 0.90)';
-    depthCtx.fillRect(0, 0, 2048, 200);
-
-    depthCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    depthCtx.lineWidth = 3;
-    depthCtx.beginPath();
-    depthCtx.moveTo(0, 2);
-    depthCtx.lineTo(2048, 2);
-    depthCtx.stroke();
-
-    depthCtx.fillStyle = '#64b5f6';
-    depthCtx.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('SUBDUCTION TRENCH · 5,000 m', 50, 52);
-    depthCtx.fillStyle = '#b0bec5';
-    depthCtx.font = '400 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('Fault springs seaward, lifting water column', 50, 95);
-
-    depthCtx.fillStyle = '#ffd54f';
-    depthCtx.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('OPEN DEEP OCEAN · 4,000 m', 760, 52);
-    depthCtx.fillStyle = '#b0bec5';
-    depthCtx.font = '400 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('Speed ~800 km/h (Jet plane) · Height < 1 m', 760, 95);
-
-    depthCtx.fillStyle = '#ff8a65';
-    depthCtx.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('CONTINENTAL SHELF & SHORE · 10 m', 1440, 52);
-    depthCtx.fillStyle = '#b0bec5';
-    depthCtx.font = '400 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('Wave slows to ~40 km/h · Surges into giant breaker', 1440, 95);
-
-    depthTexture.needsUpdate = true;
-  }
-
   // --- STATE & CAMERA CONTROL ---
   let currentChapter = 'sea-floor';
-  let currentMinutes = 0;
   let animTime = 0;
   let upliftOffset = 0;
   let waveProgress = 0;
@@ -1254,8 +1144,6 @@ export function createTsunamiSlice(): TsunamiSlice {
     seabedMesh.visible = !showBreaker;
     waterMesh.visible = !showBreaker;
     waterFrontMesh.visible = !showBreaker;
-    depthPlane.visible = !showBreaker;
-    bannerPlane.visible = !showBreaker;
     coastStationGroup.visible = !showBreaker;
     faultBlockGroup.visible = !showBreaker;
     barrelLight.intensity = showBreaker ? 4.8 : 2.0;
@@ -1283,123 +1171,6 @@ export function createTsunamiSlice(): TsunamiSlice {
     }
   };
 
-  const renderCutAnnotations = () => {
-    if (!bannerCtx) return;
-    const { width, height } = bannerCanvas;
-    bannerCtx.clearRect(0, 0, width, height);
-
-    // Glassmorphism card container
-    bannerCtx.fillStyle = 'rgba(8, 14, 28, 0.92)';
-    bannerCtx.beginPath();
-    bannerCtx.roundRect(10, 10, width - 20, height - 20, 24);
-    bannerCtx.fill();
-
-    bannerCtx.strokeStyle = 'rgba(100, 200, 255, 0.45)';
-    bannerCtx.lineWidth = 3;
-    bannerCtx.stroke();
-
-    let stepBadge = '';
-    let headline = '';
-    let description = '';
-    let badgeColor = '#ffd54f';
-
-    if (currentChapter === 'sea-floor') {
-      stepBadge = 'PART 1 OF 6 · SUBDUCTION FAULT UPLIFT';
-      headline = 'The Seafloor Springs Upward, Displacing Ocean Water';
-      description =
-        'Tectonic plate snaps seaward, lifting thousands of tonnes of ocean water to begin the tsunami.';
-      badgeColor = '#ffd54f';
-    } else if (currentChapter === 'every-direction') {
-      stepBadge = 'PART 2 OF 6 · OMNIDIRECTIONAL PROPAGATION';
-      headline = 'Tsunami Radiates Outward Across the Entire Pacific Basin';
-      description =
-        'Gravity pulls the displaced mound of water down, radiating high-speed wavefronts in every direction.';
-      badgeColor = '#64b5f6';
-    } else if (currentChapter === 'fast-and-slow') {
-      stepBadge = 'PART 3 OF 6 · DEEP-WATER SPEED (v = √(g × depth))';
-      headline = 'Jetliner Cruising Speed in Deep Ocean: Over 800 km/h';
-      description =
-        'In 4,000 m deep water, wave speed reaches ~800 km/h (~500 mph) — crossing oceans in hours.';
-      badgeColor = '#ffd54f';
-    } else if (currentChapter === 'gauges') {
-      stepBadge = 'PART 4 OF 6 · OPEN OCEAN LOW AMPLITUDE';
-      headline = 'Deep Ocean Height Under 1 Metre — Measured by DART Buoys';
-      description =
-        'Wavelength spans 100+ km; mariners at sea pass directly over it without noticing the gentle surge.';
-      badgeColor = '#64b5f6';
-    } else if (currentChapter === 'across-the-ocean') {
-      stepBadge = 'PART 5 OF 6 · COASTAL SHOALING & SHORELINE RETREAT';
-      headline = 'Wave Slows to ~40 km/h and Surges into a Giant Breaker';
-      description =
-        'Entering shallow coastal water, friction slows the wave, wavelength compresses, and water surges high.';
-      badgeColor = '#ff8a65';
-    } else {
-      stepBadge = 'PART 6 OF 6 · NOAA EARLY WARNING & TELEMETRY';
-      headline = 'Sensors Alert Distant Coasts Hours Ahead of Arrival';
-      description =
-        'Deep-sea DART pressure recorders and tide gauges transmit data via satellite at light speed.';
-      badgeColor = '#64b5f6';
-    }
-
-    // Step badge & elapsed minutes
-    bannerCtx.fillStyle = badgeColor;
-    bannerCtx.font = '700 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText(stepBadge, 50, 72);
-
-    if (currentMinutes > 0) {
-      bannerCtx.fillStyle = '#90caf9';
-      bannerCtx.font = '600 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      bannerCtx.textAlign = 'right';
-      bannerCtx.fillText(`⏱ +${Math.round(currentMinutes)} min`, width - 50, 72);
-      bannerCtx.textAlign = 'left';
-    }
-
-    // Headline
-    bannerCtx.fillStyle = '#ffffff';
-    bannerCtx.font = 'bold 38px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText(headline, 50, 138);
-
-    // Description
-    bannerCtx.fillStyle = '#b0bec5';
-    bannerCtx.font = '400 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText(description, 50, 204);
-
-    // Interactive View Mode Selector Badges
-    const isBreakerActive =
-      viewMode === 'breaker' ||
-      (viewMode === 'auto' &&
-        (currentChapter === 'across-the-ocean' || currentChapter === 'warnings'));
-
-    // Breaker Tab
-    bannerCtx.fillStyle = isBreakerActive ? 'rgba(0, 180, 216, 0.35)' : 'rgba(255, 255, 255, 0.08)';
-    bannerCtx.strokeStyle = isBreakerActive ? '#00e5ff' : 'rgba(255, 255, 255, 0.2)';
-    bannerCtx.lineWidth = 2;
-    bannerCtx.beginPath();
-    bannerCtx.roundRect(50, 260, 340, 60, 12);
-    bannerCtx.fill();
-    bannerCtx.stroke();
-    bannerCtx.fillStyle = isBreakerActive ? '#ffffff' : '#90a4ae';
-    bannerCtx.font = '600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText('🌊 3D WAVE BREAKER', 85, 298);
-
-    // Cross-Section Tab
-    bannerCtx.fillStyle = !isBreakerActive
-      ? 'rgba(255, 213, 79, 0.35)'
-      : 'rgba(255, 255, 255, 0.08)';
-    bannerCtx.strokeStyle = !isBreakerActive ? '#ffd54f' : 'rgba(255, 255, 255, 0.2)';
-    bannerCtx.beginPath();
-    bannerCtx.roundRect(410, 260, 360, 60, 12);
-    bannerCtx.fill();
-    bannerCtx.stroke();
-    bannerCtx.fillStyle = !isBreakerActive ? '#ffffff' : '#90a4ae';
-    bannerCtx.fillText('📏 OCEAN CROSS-SECTION', 435, 298);
-
-    bannerCtx.fillStyle = '#78909c';
-    bannerCtx.font = '400 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText('Click pane to toggle close-up wave view', 810, 298);
-
-    bannerTexture.needsUpdate = true;
-  };
 
   // --- 8. REAL-TIME WAVE SURFACE & CURLING BREAKER DYNAMICS ---
   const updateWaterProfile = () => {
@@ -1708,12 +1479,11 @@ export function createTsunamiSlice(): TsunamiSlice {
     }
   };
 
-  const set = (chapterId: string, minutesAfter: number): void => {
+  const set = (chapterId: string, _minutesAfter: number): void => {
     if (chapterId !== currentChapter) {
       viewMode = 'auto';
     }
     currentChapter = chapterId;
-    currentMinutes = minutesAfter;
 
     if (chapterId === 'sea-floor') {
       upliftOffset = 0.55;
@@ -1763,7 +1533,6 @@ export function createTsunamiSlice(): TsunamiSlice {
     }
 
     updateCameraTarget();
-    renderCutAnnotations();
     updateWaterProfile();
   };
 
@@ -1824,43 +1593,15 @@ export function createTsunamiSlice(): TsunamiSlice {
     updateWaterProfile();
   };
 
+  /** Whether the wave is seen close, breaking at the shore, rather than the whole sea cut open. */
+  const breakerShown = (): boolean =>
+    viewMode === 'breaker' ||
+    (viewMode === 'auto' &&
+      (currentChapter === 'across-the-ocean' || currentChapter === 'warnings'));
   const toggleView = (): void => {
-    const isBreakerActive =
-      viewMode === 'breaker' ||
-      (viewMode === 'auto' &&
-        (currentChapter === 'across-the-ocean' || currentChapter === 'warnings'));
-    viewMode = isBreakerActive ? 'crossSection' : 'breaker';
+    viewMode = breakerShown() ? 'crossSection' : 'breaker';
     updateCameraTarget();
-    renderCutAnnotations();
   };
-
-  // Click listener on left pane to toggle between close-up wave breaker and wide bathymetry
-  let startX = 0;
-  let startY = 0;
-  const onPointerDown = (event: PointerEvent): void => {
-    startX = event.clientX;
-    startY = event.clientY;
-  };
-  const onPointerUp = (event: PointerEvent): void => {
-    const dx = event.clientX - startX;
-    const dy = event.clientY - startY;
-    if (
-      Math.hypot(dx, dy) < 8 &&
-      event.clientX < window.innerWidth / 2 &&
-      event.clientY > 80 &&
-      event.clientY < window.innerHeight - 80
-    ) {
-      toggleView();
-    }
-  };
-  window.addEventListener('pointerdown', onPointerDown);
-  window.addEventListener('pointerup', onPointerUp);
-  disposables.push({
-    dispose: () => {
-      window.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('pointerup', onPointerUp);
-    },
-  });
 
   // Initial setup
   set('sea-floor', 0);
@@ -1879,6 +1620,7 @@ export function createTsunamiSlice(): TsunamiSlice {
     set,
     flow,
     toggleView,
+    viewToggled: breakerShown,
     dispose() {
       for (const thing of disposables) thing.dispose();
     },

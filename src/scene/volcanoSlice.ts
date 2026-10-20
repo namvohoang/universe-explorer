@@ -62,6 +62,8 @@ export interface VolcanoSlice {
   flow(seconds: number): void;
   /** Toggles between the exterior island diorama and the anatomical geological cutaway */
   toggleView(): void;
+  /** Whether the mountain is shown cut open. */
+  viewToggled(): boolean;
   dispose(): void;
 }
 
@@ -205,7 +207,7 @@ function createStrataTexture(): CanvasTexture {
   return texture;
 }
 
-/** Generates brass nameplate plaque texture on wooden pedestal */
+/** Generates a plain brass nameplate for the wooden pedestal (no words: they could not be read in the view, nor be in the reader's language). */
 function createVolcanoPlaqueTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
@@ -229,17 +231,6 @@ function createVolcanoPlaqueTexture(): CanvasTexture {
     ctx.lineWidth = 3;
     ctx.strokeRect(10, 10, 492, 108);
 
-    // Title text
-    ctx.fillStyle = '#261904';
-    ctx.font = '900 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('RAIKOKE VOLCANO', 256, 48);
-
-    // Subtitle
-    ctx.fillStyle = '#4e341b';
-    ctx.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('STRATOVOLCANO & PLINIAN ERUPTION', 256, 88);
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
@@ -1143,38 +1134,6 @@ export function createVolcanoSlice(): VolcanoSlice {
   rulerLine.position.set(3.8, 0, 0);
   altitudeRulerGroup.add(rulerLine);
 
-  const rulerCanvas = document.createElement('canvas');
-  rulerCanvas.width = 512;
-  rulerCanvas.height = 160;
-  const rCtx = rulerCanvas.getContext('2d');
-  if (rCtx) {
-    rCtx.fillStyle = 'rgba(7, 11, 24, 0.88)';
-    rCtx.roundRect(4, 4, 504, 152, 16);
-    rCtx.fill();
-    rCtx.strokeStyle = '#4fc3f7';
-    rCtx.lineWidth = 3;
-    rCtx.stroke();
-
-    rCtx.fillStyle = '#ffffff';
-    rCtx.font = '900 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    rCtx.fillText('13–17 km ALTITUDE', 24, 54);
-
-    rCtx.fillStyle = '#4fc3f7';
-    rCtx.font = '700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    rCtx.fillText('STRATOSPHERE (CALIPSO LIDAR)', 24, 96);
-
-    rCtx.fillStyle = '#ffab00';
-    rCtx.font = '600 19px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    rCtx.fillText('High-altitude aviation hazard zone', 24, 134);
-  }
-  const rulerTexture = keep(new CanvasTexture(rulerCanvas));
-  rulerTexture.colorSpace = SRGBColorSpace;
-  const rulerSign = new Mesh(
-    keep(new PlaneGeometry(3.6, 1.1)),
-    keep(new MeshBasicMaterial({ map: rulerTexture, transparent: true, side: DoubleSide })),
-  );
-  rulerSign.position.set(5.7, 8.5, 0);
-  altitudeRulerGroup.add(rulerSign);
 
   // --- 9. STATE & SMOOTH TRANSITION INTERPOLATION ---
   let animTime = 0;
@@ -1224,35 +1183,6 @@ export function createVolcanoSlice(): VolcanoSlice {
   let desiredDistance = 13.0;
   const desiredDirection: MutableVec3 = { x: 0.52, y: 0.3, z: 0.8 };
 
-  // Floating Interactive View Mode Toggle Button
-  const toggleBtn = document.createElement('button');
-  toggleBtn.id = 'volcano-view-toggle';
-  toggleBtn.style.position = 'fixed';
-  toggleBtn.style.bottom = '84px';
-  toggleBtn.style.left = '24px';
-  toggleBtn.style.zIndex = '100';
-  toggleBtn.style.display = 'flex';
-  toggleBtn.style.alignItems = 'center';
-  toggleBtn.style.gap = '8px';
-  toggleBtn.style.padding = '8px 16px';
-  toggleBtn.style.borderRadius = '9999px';
-  toggleBtn.style.background = 'rgba(15, 23, 42, 0.88)';
-  toggleBtn.style.backdropFilter = 'blur(10px)';
-  toggleBtn.style.border = '1px solid rgba(255, 255, 255, 0.22)';
-  toggleBtn.style.color = '#f8fafc';
-  toggleBtn.style.fontSize = '13px';
-  toggleBtn.style.fontWeight = '600';
-  toggleBtn.style.cursor = 'pointer';
-  toggleBtn.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.45)';
-  toggleBtn.style.transition = 'all 0.2s ease';
-  toggleBtn.innerHTML = '🔬 <span>View: Cutaway Anatomy (click for full mountain)</span>';
-  document.body.appendChild(toggleBtn);
-  disposables.push({
-    dispose: () => {
-      toggleBtn.remove();
-    },
-  });
-
   const updateCameraTarget = () => {
     if (viewMode === 'cutaway') {
       // Angle looking directly into the open quadrant (+X, +Z) to inspect magma chamber & conduit
@@ -1264,7 +1194,6 @@ export function createVolcanoSlice(): VolcanoSlice {
       desiredDirection.y = 0.3;
       desiredDirection.z = 0.8;
       targetCutawayBlend = 1.0;
-      toggleBtn.innerHTML = '🔬 <span>View: Cutaway Anatomy (click for full mountain)</span>';
     } else {
       // Elevated 3/4 front view framing the complete volcano diorama, full mountain & ash column
       desiredTarget.x = 0.2;
@@ -1275,7 +1204,6 @@ export function createVolcanoSlice(): VolcanoSlice {
       desiredDirection.y = 0.32;
       desiredDirection.z = 0.92;
       targetCutawayBlend = 0.0;
-      toggleBtn.innerHTML = '🌋 <span>View: Full Mountain (click to cut open)</span>';
     }
   };
 
@@ -1283,10 +1211,6 @@ export function createVolcanoSlice(): VolcanoSlice {
     viewMode = viewMode === 'exterior' ? 'cutaway' : 'exterior';
     updateCameraTarget();
   };
-  toggleBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleView();
-  });
 
   updateCameraTarget();
 
@@ -1471,7 +1395,6 @@ export function createVolcanoSlice(): VolcanoSlice {
     // Smooth altitude ruler transition
     altitudeRulerGroup.visible = currentAltitudeRuler > 0.05;
     (rulerLine.material as LineBasicMaterial).opacity = currentAltitudeRuler * 0.75;
-    (rulerSign.material as MeshBasicMaterial).opacity = currentAltitudeRuler;
 
     // Smooth early smoke transition
     earlySmokeGroup.visible = earlySmokeWeight > 0.02;
@@ -1683,34 +1606,6 @@ export function createVolcanoSlice(): VolcanoSlice {
     }
   };
 
-  // Click listener on left pane to toggle view modes
-  let startX = 0;
-  let startY = 0;
-  const onPointerDown = (event: PointerEvent): void => {
-    startX = event.clientX;
-    startY = event.clientY;
-  };
-  const onPointerUp = (event: PointerEvent): void => {
-    const dx = event.clientX - startX;
-    const dy = event.clientY - startY;
-    if (
-      Math.hypot(dx, dy) < 8 &&
-      event.clientX < window.innerWidth / 2 &&
-      event.clientY > 80 &&
-      event.clientY < window.innerHeight - 120
-    ) {
-      toggleView();
-    }
-  };
-  window.addEventListener('pointerdown', onPointerDown);
-  window.addEventListener('pointerup', onPointerUp);
-  disposables.push({
-    dispose: () => {
-      window.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('pointerup', onPointerUp);
-    },
-  });
-
   // Initial chapter setup: Phase 1 'quiet' (dormant, no smoke, no flame)
   set('quiet', 0);
 
@@ -1728,6 +1623,7 @@ export function createVolcanoSlice(): VolcanoSlice {
     set,
     flow,
     toggleView,
+    viewToggled: () => viewMode === 'cutaway',
     dispose() {
       for (const thing of disposables) thing.dispose();
     },

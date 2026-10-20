@@ -31,7 +31,6 @@ import {
   MeshBasicMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
-  PlaneGeometry,
   Points,
   PointsMaterial,
   RingGeometry,
@@ -62,6 +61,8 @@ export interface TideSlice {
   flow(seconds: number): void;
   /** Toggles between Cinematic Island View (Image 1) and Scientific Tidal Mechanics View (Image 2) */
   toggleView(): void;
+  /** Whether the second look is on show. */
+  viewToggled(): boolean;
   dispose(): void;
 }
 
@@ -346,44 +347,6 @@ function createFoamParticleTexture(): CanvasTexture {
   return texture;
 }
 
-/** Generates billboard badge texture for educational callouts */
-function createCalloutTexture(
-  mainText: string,
-  subText: string,
-  highlightColor = '#38bdf8',
-): CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 140;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    // Glassmorphic translucent badge pill
-    ctx.fillStyle = 'rgba(10, 16, 32, 0.88)';
-    ctx.beginPath();
-    ctx.roundRect(10, 10, 492, 120, 24);
-    ctx.fill();
-
-    ctx.strokeStyle = highlightColor;
-    ctx.lineWidth = 3.5;
-    ctx.stroke();
-
-    // Main headline
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 36px Outfit, Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(mainText, 256, 58);
-
-    // Subtitle note
-    ctx.fillStyle = highlightColor;
-    ctx.font = '600 22px Outfit, Inter, sans-serif';
-    ctx.fillText(subText, 256, 98);
-  }
-
-  const texture = new CanvasTexture(canvas);
-  texture.colorSpace = SRGBColorSpace;
-  return texture;
-}
-
 export function createTideSlice(): TideSlice {
   const scene = new Scene();
   scene.background = new Color(BACKGROUND_COLOR);
@@ -635,89 +598,6 @@ export function createTideSlice(): TideSlice {
     forceLines.push({ line, points: curvePoints });
   }
 
-  // --- 7. EDUCATIONAL CALLOUT BADGES (Matching Reference Image 2) ---
-  const badgesGroup = new Group();
-  scene.add(badgesGroup);
-
-  function createBadgeMesh(
-    main: string,
-    sub: string,
-    pos: Vector3,
-    color = '#38bdf8',
-    width = 2.5,
-    height = 0.75,
-  ): { mesh: Mesh; updateText: (m: string, s: string) => void } {
-    let texture = keep(createCalloutTexture(main, sub, color));
-    const badgeMat = keep(
-      new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        side: DoubleSide,
-        depthTest: false,
-        depthWrite: false,
-      }),
-    );
-
-    // Flat billboard plane geometry facing camera
-    const badgePlane = keep(new PlaneGeometry(width, height));
-    const bMesh = new Mesh(badgePlane, badgeMat);
-    bMesh.renderOrder = 100;
-    bMesh.position.copy(pos);
-    bMesh.lookAt(new Vector3(pos.x, pos.y, pos.z + 10));
-    badgesGroup.add(bMesh);
-
-    return {
-      mesh: bMesh,
-      updateText(newMain: string, newSub: string) {
-        texture.dispose();
-        texture = keep(createCalloutTexture(newMain, newSub, color));
-        badgeMat.map = texture;
-      },
-    };
-  }
-
-  // High Tide (Moon Side) badge
-  createBadgeMesh(
-    'HIGH TIDE',
-    'Moon Side (Gravitational Pull)',
-    new Vector3(2.6, GLOBE_CENTER_Y + EARTH_RADIUS * 0.75, 3.5),
-    '#38bdf8',
-  );
-
-  // High Tide (Opposite Side) badge
-  createBadgeMesh(
-    'HIGH TIDE',
-    'Opposite Side (Inertial Bulge)',
-    new Vector3(-2.7, GLOBE_CENTER_Y - EARTH_RADIUS * 0.5, 3.5),
-    '#38bdf8',
-  );
-
-  // Low Tide badge at quadrature
-  createBadgeMesh(
-    'LOW TIDE',
-    'Right Angles (Quadrature)',
-    new Vector3(3.2, GLOBE_CENTER_Y, 3.5),
-    '#94a3b8',
-  );
-
-  // Moon Distance Callout badge
-  createBadgeMesh(
-    '384,400 KM',
-    "Moon's Mean Orbital Distance",
-    new Vector3(2.7, MOON_POS_Y + 0.3, 3.5),
-    '#facc15',
-  );
-
-  // Bottom Educational Status Banner (Positioned cleanly with ample clearance)
-  const statusBanner = createBadgeMesh(
-    'GRAVITATIONAL TIDES',
-    "The Moon's gravity pulls Earth's water into two opposing bulges",
-    new Vector3(0, GLOBE_CENTER_Y - EARTH_RADIUS - 0.7, 3.5),
-    '#60a5fa',
-    3.8,
-    0.72,
-  );
-
   // --- 8. SIMULATION STATE & BULGE DEFORMATION MATH ---
   let targetBulgeMagnitude = 0.24; // Base bulge factor
   let currentBulgeMagnitude = 0.24;
@@ -725,60 +605,9 @@ export function createTideSlice(): TideSlice {
   // By default, start with the pure Cinematic Island View (Image 1)
   let showScientificOverlay = false;
   forcesGroup.visible = false;
-  badgesGroup.visible = false;
 
   // View toggle button injected into UI
-  const existingBtn = document.getElementById('tide-view-toggle') as HTMLButtonElement | null;
-  const toggleBtn = existingBtn ?? document.createElement('button');
-  if (!existingBtn) {
-    toggleBtn.id = 'tide-view-toggle';
-    toggleBtn.type = 'button';
-    toggleBtn.className = 'tide-view-toggle-btn';
-    toggleBtn.innerHTML = `
-      <span class="icon">🌊</span>
-      <span class="label">Show Tidal Forces & Labels</span>
-    `;
-    Object.assign(toggleBtn.style, {
-      position: 'absolute',
-      bottom: '88px',
-      left: '24px',
-      zIndex: '100',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '8px 14px',
-      borderRadius: '20px',
-      border: '1px solid rgba(56, 189, 248, 0.45)',
-      background: 'rgba(10, 18, 36, 0.88)',
-      backdropFilter: 'blur(12px)',
-      color: '#f0f9ff',
-      fontFamily: 'Outfit, Inter, sans-serif',
-      fontSize: '13px',
-      fontWeight: '600',
-      cursor: 'pointer',
-      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5), 0 0 12px rgba(56, 189, 248, 0.25)',
-      transition: 'all 0.2s ease',
-    });
-
-    toggleBtn.addEventListener('mouseenter', () => {
-      toggleBtn.style.borderColor = 'rgba(56, 189, 248, 0.9)';
-      toggleBtn.style.background = 'rgba(14, 28, 56, 0.96)';
-    });
-    toggleBtn.addEventListener('mouseleave', () => {
-      toggleBtn.style.borderColor = 'rgba(56, 189, 248, 0.45)';
-      toggleBtn.style.background = 'rgba(10, 18, 36, 0.88)';
-    });
-    toggleBtn.addEventListener('click', () => {
-      showScientificOverlay = !showScientificOverlay;
-      forcesGroup.visible = showScientificOverlay;
-      badgesGroup.visible = showScientificOverlay;
-      toggleBtn.innerHTML = showScientificOverlay
-        ? `<span class="icon">🏝️</span><span class="label">Cinematic Island View</span>`
-        : `<span class="icon">🌊</span><span class="label">Show Tidal Forces & Labels</span>`;
-    });
-
-    document.body.appendChild(toggleBtn);
-  }
+  // The second look is switched from the story card.
 
   function applyTidalBulge(time: number, bulgeFactor: number): void {
     const count = oceanPositions.count;
@@ -822,44 +651,24 @@ export function createTideSlice(): TideSlice {
         case 'spring-tides':
           // Sun and Moon gravitational forces add together! Extra high tides!
           targetBulgeMagnitude = 0.38;
-          statusBanner.updateText(
-            'SPRING TIDES (Full & New Moon)',
-            'Sun and Moon align: Extra-high high tides & very low low tides',
-          );
           break;
 
         case 'neap-tides':
           // Sun and Moon are at 90° right angles; solar tide cancels lunar tide
           targetBulgeMagnitude = 0.14;
-          statusBanner.updateText(
-            'NEAP TIDES (Quarter Moons)',
-            'Sun and Moon at 90°: Solar tide partially cancels lunar tide',
-          );
           break;
 
         case 'two-a-day':
           targetBulgeMagnitude = 0.24;
-          statusBanner.updateText(
-            'EARTH’S ROTATION THROUGH BULGES',
-            'Continents pass through two high tides and two low tides every 24h 50m',
-          );
           break;
 
         case 'real-seas':
           targetBulgeMagnitude = 0.26;
-          statusBanner.updateText(
-            'REAL-WORLD SHORES & SHALLOWS',
-            'Continents, ocean depths, and local resonance shape shoreline tides',
-          );
           break;
 
         case 'two-bulges':
         default:
           targetBulgeMagnitude = 0.24;
-          statusBanner.updateText(
-            'GRAVITATIONAL TIDES',
-            "The Moon's gravity pulls Earth's water into two opposing bulges",
-          );
           break;
       }
     },
@@ -910,14 +719,14 @@ export function createTideSlice(): TideSlice {
       forceLineMat.opacity = linePulse;
     },
 
+    viewToggled: () => showScientificOverlay,
+
     toggleView() {
       showScientificOverlay = !showScientificOverlay;
       forcesGroup.visible = showScientificOverlay;
-      badgesGroup.visible = showScientificOverlay;
     },
 
     dispose() {
-      toggleBtn.remove();
       for (const item of disposables) {
         try {
           item.dispose();

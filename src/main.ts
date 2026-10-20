@@ -617,12 +617,11 @@ function start(): void {
       },
       {
         box: side,
+        // Every look up close at a story's drawing says it is a drawing.
         label: cut
-          ? cut === stormSlice || cut === watchTideSlice || cut === watchDustSlice || cut === tornadoDrawing?.scene
-            ? words.watchPaneClose
-            : cut === block
-              ? words.watchPaneQuakeBlock
-              : words.watchPaneTornado
+          ? cut === tornadoDrawing?.scene
+            ? words.watchPaneTornado
+            : words.watchPaneQuakeBlock
           : modelled
             ? words.watchPaneWhole
             : close
@@ -2144,10 +2143,7 @@ function start(): void {
   const moveTornado = (jd: number): void => {
     if (!tornadoDrawing) return;
     const { scene, fromJd, untilJd } = tornadoDrawing;
-    scene.set(
-      jd < fromJd ? null : (jd - fromJd) / (untilJd - fromJd),
-      paired?.chapter.id,
-    );
+    scene.set(jd < fromJd ? null : (jd - fromJd) / (untilJd - fromJd), paired?.chapter.id);
   };
   /** The storm of the story on show cut in half, as a drawing in a scene of its own. */
   let stormSlice: StormSlice | null = null;
@@ -2180,9 +2176,9 @@ function start(): void {
         storm.slice.wallReachKm.value,
         galeReachKm(record),
       );
-      stormSlice = createStormSlice(shares?.eye ?? 0.12, shares?.wall ?? 0.45, story.id);
+      stormSlice = createStormSlice(shares?.eye ?? 0.12, shares?.wall ?? 0.45);
     } else {
-      stormSlice = createStormSlice(0.12, 0.45, story.id);
+      stormSlice = createStormSlice(0.12, 0.45);
     }
     system.setStorm(storm.onId, points.map(stormPlace));
   };
@@ -2537,6 +2533,39 @@ function start(): void {
                   stage.lookAt(watchView(story, chapter));
                 }, DIP_DARK_MS);
               } else stage.flyTo(watchView(story, chapter));
+            },
+            viewSwitch() {
+              // Only while the drawing up close is on show.
+              if (paired?.chapter.slice !== true) return null;
+              const drawing: readonly [
+                { toggleView(): void; viewToggled(): boolean } | null | undefined,
+                string,
+                string,
+              ] = watchQuake?.block
+                ? [null, '', '']
+                : watchTsunamiSlice
+                  ? [watchTsunamiSlice, words.watchLookShore, words.watchLookWholeSea]
+                  : watchVolcanoSlice
+                    ? [watchVolcanoSlice, words.watchLookCutOpen, words.watchLookWholeMountain]
+                    : watchTideSlice
+                      ? [watchTideSlice, words.watchLookPull, words.watchLookArrowsOff]
+                      : watchDustSlice
+                        ? [watchDustSlice, words.watchLookAir, words.watchLookArrowsOff]
+                        : tornadoDrawing?.scene.slice
+                          ? [
+                              tornadoDrawing.scene.slice,
+                              words.watchLookAir,
+                              words.watchLookArrowsOff,
+                            ]
+                          : [stormSlice, words.watchLookAir, words.watchLookArrowsOff];
+              const [shown, toOther, back] = drawing;
+              if (!shown) return null;
+              return {
+                label: shown.viewToggled() ? back : toOther,
+                toggle: () => {
+                  shown.toggleView();
+                },
+              };
             },
             turnDays(story) {
               const world = catalogue.find((object) => object.id === story.actorIds[0]);

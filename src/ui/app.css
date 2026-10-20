@@ -1344,6 +1344,28 @@ body.watching .view-controls .turn {
   font-weight: 700;
 }
 
+/* The one button, the same in every story, that shows the drawing up close another way. */
+.watch-look {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 0 16px 0 12px;
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.watch-look .icon {
+  color: var(--sun);
+}
+
+/* While a story plays, the sentence under the title keeps the room of three lines, short or
+   long, so the looks below the bar do not jump from one story to the next. */
+body.watching .brand p {
+  min-height: calc(3 * 1.25em);
+}
+
 .watch-controls {
   box-sizing: border-box;
   display: flex;
@@ -2614,5 +2636,25 @@ body.watching .marker {
 
   .clock-date .date-short {
     display: inline;
+  }
+}
+
+/* A phone: the sentence under the title is as wide as the screen, so two lines are kept for it;
+   on its side there is no height to spare at all. The button sits closer to the words. */
+@media (max-width: 700px) {
+  body.watching .brand p {
+    min-height: calc(2 * 1.25em);
+  }
+
+  .watch-look {
+    margin-top: 6px;
+    min-height: 40px;
+    font-size: 14px;
+  }
+}
+
+@media (max-height: 500px) {
+  body.watching .brand p {
+    min-height: 0;
   }
 }

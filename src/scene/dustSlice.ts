@@ -48,6 +48,8 @@ export interface DustSlice {
   flow(seconds: number): void;
   /** Toggles between Cinematic Dune View and Scientific Overlay */
   toggleView(): void;
+  /** Whether the second look is on show. */
+  viewToggled(): boolean;
   dispose(): void;
 }
 
@@ -171,60 +173,6 @@ function createSkyTexture(): CanvasTexture {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 512, 512);
   }
-  const texture = new CanvasTexture(canvas);
-  texture.needsUpdate = true;
-  return texture;
-}
-
-/** Creates a rounded educational badge canvas texture */
-function createBadgeTexture(
-  title: string,
-  subtitle: string,
-  badgeColor: string,
-  width = 512,
-  height = 140,
-): CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    // Glassmorphic pill background
-    const r = 24;
-    ctx.beginPath();
-    ctx.moveTo(r, 0);
-    ctx.lineTo(width - r, 0);
-    ctx.quadraticCurveTo(width, 0, width, r);
-    ctx.lineTo(width, height - r);
-    ctx.quadraticCurveTo(width, height, width - r, height);
-    ctx.lineTo(r, height);
-    ctx.quadraticCurveTo(0, height, 0, height - r);
-    ctx.lineTo(0, r);
-    ctx.quadraticCurveTo(0, 0, r, 0);
-    ctx.closePath();
-
-    ctx.fillStyle = 'rgba(18, 12, 8, 0.9)';
-    ctx.fill();
-    ctx.strokeStyle = badgeColor;
-    ctx.lineWidth = 3.5;
-    ctx.stroke();
-
-    // Colored accent pill
-    ctx.fillStyle = badgeColor;
-    ctx.beginPath();
-    ctx.arc(36, height / 2, 10, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Typography
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 24px Outfit, Inter, sans-serif';
-    ctx.fillText(title, 60, 48);
-
-    ctx.fillStyle = '#ecd8be';
-    ctx.font = '500 18px Outfit, Inter, sans-serif';
-    ctx.fillText(subtitle, 60, 88);
-  }
-
   const texture = new CanvasTexture(canvas);
   texture.needsUpdate = true;
   return texture;
@@ -704,54 +652,6 @@ export function createDustSlice(): DustSlice {
   salZoneMesh.renderOrder = 45;
   salRulerGroup.add(salZoneMesh);
 
-  // 8B. Educational Callout Badges
-  const badgeMat = (tex: CanvasTexture) => {
-    disposables.push(tex);
-    const m = new MeshBasicMaterial({
-      map: tex,
-      transparent: true,
-      depthTest: false,
-    });
-    disposables.push(m);
-    return m;
-  };
-
-  const badgePlaneGeo = new PlaneGeometry(4.8, 1.3);
-  disposables.push(badgePlaneGeo);
-
-  // Badge 1: Saharan Air Layer Altitude
-  const salTex = createBadgeTexture(
-    'SAHARAN AIR LAYER (SAL)',
-    '1.5 – 5.5 km Altitude Plume',
-    '#38bdf8',
-  );
-  const salBadge = new Mesh(badgePlaneGeo, badgeMat(salTex));
-  salBadge.position.set(-8.5, 10.5, 3.5);
-  salBadge.renderOrder = 100;
-  overlayGroup.add(salBadge);
-
-  // Badge 2: Particle Fractionation (Heavy Coarse vs Fine Aerosols)
-  const partTex = createBadgeTexture(
-    'PARTICLE FRACTIONATION',
-    'Coarse sand (>20 µm) drops first; fine dust travels 8,000 km',
-    '#f59e0b',
-  );
-  const partBadge = new Mesh(badgePlaneGeo, badgeMat(partTex));
-  partBadge.position.set(4.5, 8.2, 0.5);
-  partBadge.renderOrder = 100;
-  overlayGroup.add(partBadge);
-
-  // Badge 3: Amazon Basin Nutrient Fertilization
-  const amazonTex = createBadgeTexture(
-    'AMAZON RAINFOREST FERTILIZER',
-    '28 million tons of dust fertilize soils & Caribbean beaches',
-    '#10b981',
-  );
-  const amazonBadge = new Mesh(badgePlaneGeo, badgeMat(amazonTex));
-  amazonBadge.position.set(-1.0, 3.8, 7.0);
-  amazonBadge.renderOrder = 100;
-  overlayGroup.add(amazonBadge);
-
   // 8C. Trans-Atlantic Wind Streamlines
   const streamlineMat = new LineBasicMaterial({
     color: 0x38bdf8,
@@ -782,56 +682,7 @@ export function createDustSlice(): DustSlice {
   // 9. View Toggle Button Injection (Glassmorphic Button)
   // --------------------------------------------------------------------------
   let showScientificOverlay = false;
-  const existingBtn = document.getElementById('dust-view-toggle') as HTMLButtonElement | null;
-  const toggleBtn = existingBtn ?? document.createElement('button');
-  if (!existingBtn) {
-    toggleBtn.id = 'dust-view-toggle';
-    toggleBtn.type = 'button';
-    toggleBtn.className = 'dust-view-toggle-btn';
-    toggleBtn.innerHTML = `
-      <span class="icon">🌪️</span>
-      <span class="label">Show Dust Layers & Winds</span>
-    `;
-    Object.assign(toggleBtn.style, {
-      position: 'absolute',
-      bottom: '88px',
-      left: '24px',
-      zIndex: '100',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '8px 14px',
-      borderRadius: '20px',
-      border: '1px solid rgba(245, 158, 11, 0.45)',
-      background: 'rgba(28, 18, 10, 0.88)',
-      backdropFilter: 'blur(12px)',
-      color: '#fef3c7',
-      fontFamily: 'Outfit, Inter, sans-serif',
-      fontSize: '13px',
-      fontWeight: '600',
-      cursor: 'pointer',
-      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5), 0 0 12px rgba(245, 158, 11, 0.25)',
-      transition: 'all 0.2s ease',
-    });
-
-    toggleBtn.addEventListener('mouseenter', () => {
-      toggleBtn.style.borderColor = 'rgba(245, 158, 11, 0.9)';
-      toggleBtn.style.background = 'rgba(40, 24, 12, 0.96)';
-    });
-    toggleBtn.addEventListener('mouseleave', () => {
-      toggleBtn.style.borderColor = 'rgba(245, 158, 11, 0.45)';
-      toggleBtn.style.background = 'rgba(28, 18, 10, 0.88)';
-    });
-    toggleBtn.addEventListener('click', () => {
-      showScientificOverlay = !showScientificOverlay;
-      overlayGroup.visible = showScientificOverlay;
-      toggleBtn.innerHTML = showScientificOverlay
-        ? `<span class="icon">🏜️</span><span class="label">Cinematic Dune View</span>`
-        : `<span class="icon">🌪️</span><span class="label">Show Dust Layers & Winds</span>`;
-    });
-
-    document.body.appendChild(toggleBtn);
-  }
+  // The second look is switched from the story card.
 
   // --------------------------------------------------------------------------
   // 10. Animation State & Flow
@@ -960,13 +811,14 @@ export function createDustSlice(): DustSlice {
       streamlineMat.opacity = linePulse;
     },
 
+    viewToggled: () => showScientificOverlay,
+
     toggleView() {
       showScientificOverlay = !showScientificOverlay;
       overlayGroup.visible = showScientificOverlay;
     },
 
     dispose() {
-      toggleBtn.remove();
       for (const item of disposables) {
         try {
           item.dispose();

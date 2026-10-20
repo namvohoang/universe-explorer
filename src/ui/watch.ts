@@ -80,6 +80,18 @@ export interface WatchHost {
   turnDays(story: Story): number;
   /** A story was picked; the address should follow it. */
   onStory(story: Story): void;
+  /**
+   * The second look the drawing on show has (cut open or whole, arrows on or off), with the words
+   * for the button that switches to it; `null` when the part on show has none.
+   */
+  viewSwitch?(): ViewSwitch | null;
+}
+
+/** One button beside the story's words that switches the drawing up close to its other look. */
+export interface ViewSwitch {
+  /** What pressing it will show, in the words of the screen. */
+  readonly label: string;
+  toggle(): void;
 }
 
 export interface Watch {
@@ -117,7 +129,26 @@ export function createWatch(host: WatchHost): Watch {
   const pathNote = create('p', 'watch-path');
   const head = create('div', 'watch-head');
   head.append(title, step);
-  caption.append(head, date, sentence, pathNote);
+  // The one way, for every story, to see the drawing up close another way.
+  const look = create('button', 'watch-look');
+  look.type = 'button';
+  const lookLabel = create('span', '');
+  look.append(icon('eye'), lookLabel);
+  look.hidden = true;
+  let shownLook: string | null = null;
+  /** Shows the button with the words for the look there is to switch to, or hides it. */
+  const showLook = (): void => {
+    const wanted = host.viewSwitch?.()?.label ?? null;
+    if (wanted === shownLook) return;
+    shownLook = wanted;
+    look.hidden = wanted === null;
+    lookLabel.textContent = wanted ?? '';
+  };
+  look.addEventListener('click', () => {
+    host.viewSwitch?.()?.toggle();
+    showLook();
+  });
+  caption.append(head, date, sentence, pathNote, look);
 
   // Getting about in it.
   const controls = create('div', 'watch-controls');
@@ -322,6 +353,7 @@ export function createWatch(host: WatchHost): Watch {
       aim = true;
     }
     if (aim) host.aim(story, chapter);
+    showLook();
     // A story over within a day is told to the second, one of a few days to the minute, a
     // longer one to the hour.
     // Counted over the time that is played, leaving out any that is skipped.
@@ -475,6 +507,8 @@ export function createWatch(host: WatchHost): Watch {
         }
         show(false);
       }
+      // A drawing may take its other look of its own as a part begins: the button follows it.
+      showLook();
       // In skipped time the story's world is drawn a whole turn at a time, not as a blur.
       return times && story ? steppedInGap(times, jd, host.turnDays(story)) : jd;
     },

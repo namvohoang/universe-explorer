@@ -66,6 +66,8 @@ export interface TornadoSlice {
   flow(seconds: number): void;
   /** Toggles between Cinematic View and Scientific Overlay */
   toggleView(): void;
+  /** Whether the second look is on show. */
+  viewToggled(): boolean;
   /** Sets active phase explicitly */
   setPhase(phase: TornadoPhase): void;
   dispose(): void;
@@ -184,38 +186,6 @@ function createMistTexture(): CanvasTexture {
 
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 256, 256);
-
-  return new CanvasTexture(canvas);
-}
-
-/** Generates text canvas badge for overlays */
-function createTextBadge(
-  title: string,
-  subtitle: string,
-  color: string,
-  bgColor: string,
-): CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 192;
-  const ctx = canvas.getContext('2d')!;
-
-  ctx.fillStyle = bgColor;
-  ctx.roundRect(8, 8, 496, 176, 24);
-  ctx.fill();
-
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = color;
-  ctx.stroke();
-
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 36px Outfit, Inter, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(title, 256, 75);
-
-  ctx.fillStyle = color;
-  ctx.font = '500 24px Outfit, Inter, sans-serif';
-  ctx.fillText(subtitle, 256, 128);
 
   return new CanvasTexture(canvas);
 }
@@ -854,25 +824,6 @@ export function createTornadoSlice(
   );
   shearArrowsGroup.add(upperArrow);
 
-  const badgeTexture = keep(
-    createTextBadge('EF-3 TORNADO', 'Vortex Width: 880 yd (805 m) • Wind: 220+ km/h', '#f59e0b', 'rgba(15, 23, 42, 0.92)'),
-  );
-  const badgeMesh = new Mesh(
-    keep(new PlaneGeometry(4.2, 1.5)),
-    keep(new MeshBasicMaterial({ map: badgeTexture, transparent: true, side: DoubleSide })),
-  );
-  badgeMesh.position.set(-4.8, 4.4, -8);
-  scientificOverlayGroup.add(badgeMesh);
-
-  const shearBadgeTexture = keep(
-    createTextBadge('VERTICAL WIND SHEAR', 'Speed & Direction gradient rolls air horizontally', '#38bdf8', 'rgba(15, 23, 42, 0.92)'),
-  );
-  const shearBadgeMesh = new Mesh(
-    keep(new PlaneGeometry(4.2, 1.5)),
-    keep(new MeshBasicMaterial({ map: shearBadgeTexture, transparent: true, side: DoubleSide })),
-  );
-  shearBadgeMesh.position.set(-4.8, 2.0, -8);
-  scientificOverlayGroup.add(shearBadgeMesh);
 
   // --------------------------------------------------------------------------
   // 11. State & Phase Controller
@@ -898,126 +849,10 @@ export function createTornadoSlice(
       descendingFunnelMesh.position.y = funnelHeight * 0.62;
     }
 
-    updateUiPillActive(phase);
   }
 
-  // --------------------------------------------------------------------------
-  // 12. Floating Glassmorphic Control Overlay (Positioned in Close Up Pane)
-  // --------------------------------------------------------------------------
+  // The second look (the arrows of how the air moves) is switched from the story card.
   let showScientificOverlay = false;
-  const overlayContainerId = 'tornado-simulator-controls';
-  let controlContainer = document.getElementById(overlayContainerId);
-  if (!controlContainer) {
-    controlContainer = document.createElement('div');
-    controlContainer.id = overlayContainerId;
-    Object.assign(controlContainer.style, {
-      position: 'absolute',
-      bottom: '124px',
-      left: '400px', // Inside Close Up pane, clear of sidebar and bottom bar
-      zIndex: '100',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      fontFamily: 'Outfit, Inter, sans-serif',
-      pointerEvents: 'auto',
-    });
-
-    const pillsRow = document.createElement('div');
-    pillsRow.id = 'tornado-phase-pills';
-    Object.assign(pillsRow.style, {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '5px',
-      padding: '5px 8px',
-      borderRadius: '24px',
-      background: 'rgba(15, 23, 42, 0.88)',
-      backdropFilter: 'blur(14px)',
-      border: '1px solid rgba(56, 189, 248, 0.4)',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
-    });
-
-    const phases: { id: TornadoPhase; label: string; icon: string }[] = [
-      { id: 'wind-shear', label: '1. Wind Shear', icon: '💨' },
-      { id: 'updraft-tilt', label: '2. Updraft Tilt', icon: '↗️' },
-      { id: 'touches-down', label: '3. Touchdown', icon: '⚡' },
-      { id: 'mature-wedge', label: '4. Mature Wedge', icon: '🌪️' },
-      { id: 'rope-out', label: '5. Rope-Out', icon: '〰️' },
-    ];
-
-    for (const p of phases) {
-      const pill = document.createElement('button');
-      pill.type = 'button';
-      pill.dataset.phase = p.id;
-      pill.innerHTML = `<span>${p.icon}</span> <span>${p.label}</span>`;
-      Object.assign(pill.style, {
-        padding: '5px 11px',
-        borderRadius: '16px',
-        border: '1px solid transparent',
-        background: 'transparent',
-        color: '#94a3b8',
-        fontSize: '11px',
-        fontWeight: '600',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        whiteSpace: 'nowrap',
-      });
-      pill.addEventListener('click', (e) => {
-        e.stopPropagation();
-        applyPhaseVisibility(p.id);
-      });
-      pillsRow.appendChild(pill);
-    }
-    controlContainer.appendChild(pillsRow);
-
-    const toggleBtn = document.createElement('button');
-    toggleBtn.id = 'tornado-view-toggle';
-    toggleBtn.type = 'button';
-    toggleBtn.innerHTML = `<span>⚡</span> <span>Show Vortex Dynamics & Shear Overlay</span>`;
-    Object.assign(toggleBtn.style, {
-      alignSelf: 'flex-start',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '6px',
-      padding: '6px 12px',
-      borderRadius: '20px',
-      border: '1px solid rgba(245, 158, 11, 0.55)',
-      background: 'rgba(28, 20, 10, 0.88)',
-      backdropFilter: 'blur(12px)',
-      color: '#fef3c7',
-      fontSize: '11px',
-      fontWeight: '600',
-      cursor: 'pointer',
-      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5)',
-      transition: 'all 0.2s ease',
-    });
-    toggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showScientificOverlay = !showScientificOverlay;
-      scientificOverlayGroup.visible = showScientificOverlay;
-      toggleBtn.innerHTML = showScientificOverlay
-        ? `<span>🌪️</span> <span>Cinematic Tornado View</span>`
-        : `<span>⚡</span> <span>Show Vortex Dynamics & Shear Overlay</span>`;
-    });
-    controlContainer.appendChild(toggleBtn);
-
-    document.body.appendChild(controlContainer);
-  }
-
-  function updateUiPillActive(phase: TornadoPhase): void {
-    const pills = document.querySelectorAll('#tornado-phase-pills button');
-    pills.forEach((el) => {
-      const btn = el as HTMLButtonElement;
-      if (btn.dataset.phase === phase) {
-        btn.style.background = 'rgba(56, 189, 248, 0.25)';
-        btn.style.borderColor = 'rgba(56, 189, 248, 0.7)';
-        btn.style.color = '#38bdf8';
-      } else {
-        btn.style.background = 'transparent';
-        btn.style.borderColor = 'transparent';
-        btn.style.color = '#94a3b8';
-      }
-    });
-  }
 
   applyPhaseVisibility('mature-wedge');
 
@@ -1066,6 +901,8 @@ export function createTornadoSlice(
     setPhase(phase: TornadoPhase) {
       applyPhaseVisibility(phase);
     },
+
+    viewToggled: () => showScientificOverlay,
 
     toggleView() {
       showScientificOverlay = !showScientificOverlay;
@@ -1167,9 +1004,6 @@ export function createTornadoSlice(
     },
 
     dispose() {
-      const ctrl = document.getElementById(overlayContainerId);
-      ctrl?.remove();
-
       for (const item of disposables) {
         try {
           item.dispose();

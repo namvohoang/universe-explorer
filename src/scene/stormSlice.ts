@@ -63,6 +63,8 @@ export interface StormSlice {
   flow(seconds: number): void;
   /** Toggles between 3D Cutaway View and Scientific Dynamics Overlay */
   toggleView(): void;
+  /** Whether the second look is on show. */
+  viewToggled(): boolean;
   /** Sets active phase explicitly */
   setPhase(phase: StormPhase): void;
   dispose(): void;
@@ -114,43 +116,9 @@ function createOceanTexture(): CanvasTexture {
   return texture;
 }
 
-/** Generates text canvas badge for meteorological callouts */
-function createTextBadge(
-  title: string,
-  subtitle: string,
-  color: string,
-  bgColor: string,
-): CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 192;
-  const ctx = canvas.getContext('2d')!;
-
-  ctx.fillStyle = bgColor;
-  ctx.roundRect(8, 8, 496, 176, 24);
-  ctx.fill();
-
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = color;
-  ctx.stroke();
-
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 34px Outfit, Inter, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(title, 256, 75);
-
-  ctx.fillStyle = color;
-  ctx.font = '500 24px Outfit, Inter, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(subtitle, 256, 128);
-
-  return new CanvasTexture(canvas);
-}
-
 export function createStormSlice(
   eyeRadiusShare = 0.12,
   wallReachShare = 0.45,
-  storyId = 'hurricane-sam',
 ): StormSlice {
   const scene = new Scene();
   const disposables: DisposableItem[] = [];
@@ -159,8 +127,6 @@ export function createStormSlice(
     return item;
   };
 
-  const isTyphoon = storyId === 'typhoon-noru';
-  const stormLabel = isTyphoon ? 'SUPER TYPHOON NORU' : 'HURRICANE SAM';
 
   // --------------------------------------------------------------------------
   // 1. Atmosphere, Fog & Lighting
@@ -662,156 +628,19 @@ export function createStormSlice(
   );
   scientificOverlayGroup.add(altitudeRuler);
 
-  // Meteorological Badges
-  const titleBadgeTexture = keep(
-    createTextBadge(stormLabel, 'Category 5 Intensity • Peak Wind: 135 kt (250 km/h)', '#f59e0b', 'rgba(15, 23, 42, 0.94)'),
-  );
-  const titleBadge = new Mesh(
-    keep(new PlaneGeometry(5.2, 1.8)),
-    keep(new MeshBasicMaterial({ map: titleBadgeTexture, transparent: true, side: DoubleSide })),
-  );
-  titleBadge.position.set(0, CLOUD_HEIGHT + 1.8, 0);
-  scientificOverlayGroup.add(titleBadge);
-
-  const pressureBadgeTexture = keep(
-    createTextBadge('SURFACE PRESSURE: 940 mb', 'Eye Diameter: 20–40 mi • Storm Surge: 12 ft', '#38bdf8', 'rgba(15, 23, 42, 0.94)'),
-  );
-  const pressureBadge = new Mesh(
-    keep(new PlaneGeometry(4.8, 1.6)),
-    keep(new MeshBasicMaterial({ map: pressureBadgeTexture, transparent: true, side: DoubleSide })),
-  );
-  pressureBadge.position.set(5.2, 2.2, 0);
-  scientificOverlayGroup.add(pressureBadge);
 
   // ==========================================================================
   // 6. Phase State Controller
   // ==========================================================================
   function applyPhaseVisibility(phase: StormPhase): void {
-
     formationGroup.visible = phase === 'formation';
     stormInflowGroup.visible = phase === 'tropical-storm';
     matureGroup.visible = phase === 'mature';
     decayGroup.visible = phase === 'decay';
-
-    updateUiPillActive(phase);
   }
 
-  // ==========================================================================
-  // 7. Floating Glassmorphic Control Overlay (Positioned in Close Up Pane)
-  // ==========================================================================
+  // The second look (the arrows of how the air moves) is switched from the story card.
   let showScientificOverlay = false;
-  const overlayContainerId = 'storm-simulator-controls';
-  let controlContainer = document.getElementById(overlayContainerId);
-  if (!controlContainer) {
-    controlContainer = document.createElement('div');
-    controlContainer.id = overlayContainerId;
-    Object.assign(controlContainer.style, {
-      position: 'absolute',
-      bottom: '124px',
-      left: '400px', // Inside Close Up pane, clear of sidebar and bottom bar
-      zIndex: '100',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      fontFamily: 'Outfit, Inter, sans-serif',
-      pointerEvents: 'auto',
-    });
-
-    const pillsRow = document.createElement('div');
-    pillsRow.id = 'storm-phase-pills';
-    Object.assign(pillsRow.style, {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '5px',
-      padding: '5px 8px',
-      borderRadius: '24px',
-      background: 'rgba(15, 23, 42, 0.88)',
-      backdropFilter: 'blur(14px)',
-      border: '1px solid rgba(56, 189, 248, 0.4)',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
-    });
-
-    const phases: { id: StormPhase; label: string; icon: string }[] = [
-      { id: 'formation', label: '1. Formation', icon: '🌧️' },
-      { id: 'tropical-storm', label: '2. Tropical Storm', icon: '🌀' },
-      { id: 'mature', label: isTyphoon ? '3. Super Typhoon' : '3. Mature Hurricane', icon: '🌪️' },
-      { id: 'decay', label: '4. Landfall & Decay', icon: '〰️' },
-    ];
-
-    for (const p of phases) {
-      const pill = document.createElement('button');
-      pill.type = 'button';
-      pill.dataset.phase = p.id;
-      pill.innerHTML = `<span>${p.icon}</span> <span>${p.label}</span>`;
-      Object.assign(pill.style, {
-        padding: '5px 11px',
-        borderRadius: '16px',
-        border: '1px solid transparent',
-        background: 'transparent',
-        color: '#94a3b8',
-        fontSize: '11px',
-        fontWeight: '600',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        whiteSpace: 'nowrap',
-      });
-      pill.addEventListener('click', (e) => {
-        e.stopPropagation();
-        applyPhaseVisibility(p.id);
-      });
-      pillsRow.appendChild(pill);
-    }
-    controlContainer.appendChild(pillsRow);
-
-    const toggleBtn = document.createElement('button');
-    toggleBtn.id = 'storm-view-toggle';
-    toggleBtn.type = 'button';
-    toggleBtn.innerHTML = `<span>📊</span> <span>Show Meteorological Dynamics & Flow Overlay</span>`;
-    Object.assign(toggleBtn.style, {
-      alignSelf: 'flex-start',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '6px',
-      padding: '6px 12px',
-      borderRadius: '20px',
-      border: '1px solid rgba(245, 158, 11, 0.55)',
-      background: 'rgba(28, 20, 10, 0.88)',
-      backdropFilter: 'blur(12px)',
-      color: '#fef3c7',
-      fontSize: '11px',
-      fontWeight: '600',
-      cursor: 'pointer',
-      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5)',
-      transition: 'all 0.2s ease',
-    });
-    toggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showScientificOverlay = !showScientificOverlay;
-      scientificOverlayGroup.visible = showScientificOverlay;
-      toggleBtn.innerHTML = showScientificOverlay
-        ? `<span>🌀</span> <span>3D Cyclone Cutaway View</span>`
-        : `<span>📊</span> <span>Show Meteorological Dynamics & Flow Overlay</span>`;
-    });
-    controlContainer.appendChild(toggleBtn);
-
-    document.body.appendChild(controlContainer);
-  }
-
-  function updateUiPillActive(phase: StormPhase): void {
-    const pills = document.querySelectorAll('#storm-phase-pills button');
-    pills.forEach((el) => {
-      const btn = el as HTMLButtonElement;
-      if (btn.dataset.phase === phase) {
-        btn.style.background = 'rgba(56, 189, 248, 0.25)';
-        btn.style.borderColor = 'rgba(56, 189, 248, 0.7)';
-        btn.style.color = '#38bdf8';
-      } else {
-        btn.style.background = 'transparent';
-        btn.style.borderColor = 'transparent';
-        btn.style.color = '#94a3b8';
-      }
-    });
-  }
 
   applyPhaseVisibility('mature');
 
@@ -868,6 +697,8 @@ export function createStormSlice(
     setPhase(phase: StormPhase) {
       applyPhaseVisibility(phase);
     },
+
+    viewToggled: () => showScientificOverlay,
 
     toggleView() {
       showScientificOverlay = !showScientificOverlay;
@@ -1011,9 +842,6 @@ export function createStormSlice(
     },
 
     dispose() {
-      const ctrl = document.getElementById(overlayContainerId);
-      ctrl?.remove();
-
       for (const item of disposables) {
         try {
           item.dispose();

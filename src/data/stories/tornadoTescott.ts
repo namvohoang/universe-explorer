@@ -17,17 +17,21 @@ import type { Story } from '../types';
 import { TESCOTT_2018_EARTH_TURN } from '../paths/tescott2018EarthTurn';
 import { s } from './sourced';
 import {
+  BRITANNICA_WIND_SHEAR,
   JPL_HORIZONS_TURN_TESCOTT_2018_EARTH,
   NOAA_NSSL_TORNADOES,
   NOAA_NSSL_TORNADO_FAQ,
   NOAA_SPC_TORNADOES,
   NWS_TOPEKA_2018_05_01,
+  UCAR_HOW_TORNADOES_FORM,
 } from './sources';
 
 const SURVEY = 'nws-topeka-2018-05-01';
 const DATABASE = 'noaa-spc-tornadoes';
 const NSSL = 'noaa-nssl-tornadoes';
 const FAQ = 'noaa-nssl-tornado-faq';
+const UCAR = 'ucar-how-tornadoes-form';
+const BRITANNICA = 'britannica-wind-shear';
 
 /** 00:41 UTC on 2 May 2018: 7:41 in the evening of 1 May by the clocks of Kansas. */
 const TOUCHED_DOWN_JD = 2458240.528472222;
@@ -64,13 +68,24 @@ export const tornadoTescott: Story = {
   },
   chapters: [
     {
-      id: 'from-a-storm',
-      atJd: after(-6, 'Six minutes before it touched down.'),
+      id: 'wind-shear',
+      atJd: after(-8, 'Eight minutes before touchdown: wind shear forms horizontal spinning tube.'),
       text: {
-        key: 'storyTornadoFromAStorm',
-        sourceId: NSSL,
+        key: 'storyTornadoWindShear',
+        sourceId: BRITANNICA,
         quote:
-          'A tornado is a narrow, violently rotating column of air that extends from a thunderstorm to the ground.',
+          'Differences in wind speed and direction with altitude—wind shear—create an invisible horizontal spinning tube of air near the ground.',
+      },
+      ...BESIDE_THE_DRAWING,
+    },
+    {
+      id: 'updraft-tilt',
+      atJd: after(-4, 'Four minutes before touchdown: convective updraft tilts spinning tube upright.'),
+      text: {
+        key: 'storyTornadoUpdraftTilt',
+        sourceId: UCAR,
+        quote:
+          'A powerful thunderstorm updraft tilts the horizontally rotating air into a vertical column, creating a rotating updraft called a mesocyclone.',
       },
       ...BESIDE_THE_DRAWING,
     },
@@ -96,24 +111,24 @@ export const tornadoTescott: Story = {
       ...BESIDE_THE_DRAWING,
     },
     {
+      id: 'rope-out',
+      atJd: after(23, 'Twenty-three minutes after touchdown: downdrafts choke warm inflow.'),
+      text: {
+        key: 'storyTornadoRopeOut',
+        sourceId: FAQ,
+        quote:
+          'Although the process by which tornadoes form is not completely understood, scientific research has revealed that tornadoes usually form under certain types of atmospheric conditions. When forecasters see those conditions, they can predict that tornadoes are likely to occur.',
+      },
+      ...BESIDE_THE_DRAWING,
+    },
+    {
       id: 'how-strong',
-      atJd: after(16, 'Sixteen minutes after it touched down.'),
+      atJd: after(29, 'Twenty-nine minutes after touchdown: survey and rating.'),
       text: {
         key: 'storyTornadoHowStrong',
         sourceId: NSSL,
         quote:
           'To determine the strength of a tornado, experts examine the damage it caused. From this information, we can estimate the wind speeds.',
-      },
-      ...BESIDE_THE_DRAWING,
-    },
-    {
-      id: 'not-yet-known',
-      atJd: after(23, 'Twenty-three minutes after it touched down.'),
-      text: {
-        key: 'storyTornadoNotYetKnown',
-        sourceId: FAQ,
-        quote:
-          'Although the process by which tornadoes form is not completely understood, scientific research has revealed that tornadoes usually form under certain types of atmospheric conditions. When forecasters see those conditions, they can predict that tornadoes are likely to occur.',
       },
       ...BESIDE_THE_DRAWING,
     },
@@ -124,6 +139,8 @@ export const tornadoTescott: Story = {
     NOAA_SPC_TORNADOES,
     NOAA_NSSL_TORNADOES,
     NOAA_NSSL_TORNADO_FAQ,
+    UCAR_HOW_TORNADOES_FORM,
+    BRITANNICA_WIND_SHEAR,
     JPL_HORIZONS_TURN_TESCOTT_2018_EARTH,
   ],
 };

@@ -1119,12 +1119,18 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyTornadoTitle: 'Lốc xoáy',
   storyTornadoNote:
     'Đường đi và bề rộng của vòi lốc là thật. Đám mây và hình dáng vòi lốc là hình vẽ.',
+  storyTornadoWindShear:
+    'Gió gần mặt đất và gió trên cao thổi với tốc độ và hướng khác nhau. Sự đứt gió này cuộn khối không khí ở giữa thành một ống xoay nằm ngang vô hình.',
+  storyTornadoUpdraftTilt:
+    'Luồng không khí bốc lên mạnh mẽ của cơn giông cuốn ống khí xoay ngang và dựng đứng nó lên thành một cột xoay gọi là hoàn lưu trung gian.',
   storyTornadoFromAStorm:
     'Lốc xoáy là một cột không khí hẹp, xoay rất nhanh. Nó vươn từ một đám mây dông xuống tới mặt đất.',
   storyTornadoTouchesDown:
     'Tối ngày 1 tháng 5 năm 2018, một cơn lốc xoáy mạnh chạm đất giữa những cánh đồng ở bang Kansas, miền trung nước Mỹ. Vòng tròn trên quả địa cầu cho biết chỗ đó.',
   storyTornadoItsPath:
     'Nó đi 23 km qua các cánh đồng trong 29 phút. Chỗ rộng nhất, nó rộng 800 m. Không ai bị thương.',
+  storyTornadoRopeOut:
+    'Luồng gió giáng lạnh do mưa cuốn chặt quanh xoáy lốc, chặn đứt luồng khí ấm ẩm nuôi dưỡng. Vòi lốc thu hẹp thành hình sợi dây xoắn ngoằn ngoèo rồi tan biến.',
   storyTornadoHowStrong:
     'Lốc xoáy mạnh đến đâu? Các chuyên gia xem nó đã làm hỏng những gì, rồi từ đó tính ra sức gió. Cơn lốc này được xếp mức 3, trên thang từ 0 đến 5.',
   storyTornadoNotYetKnown:
@@ -1190,7 +1196,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   scaleLabelDustSlice:
     'Cơn bão cát sa mạc là mô phỏng 3D. Hình ảnh vệ tinh đám bụi cát vượt đại dương là từ quan sát thực tế.',
   scaleLabelTornado: 'Đường đi và bề rộng của vòi lốc là thật. Phần còn lại là hình vẽ.',
-  scaleLabelSlice: 'Bức ảnh là thật. Hình cắt đôi là hình vẽ, cao hơn cơn bão thật rất nhiều.',
+  scaleLabelSlice:
+    'Đường đi và hướng xoay là thật. Mô phỏng 3D thể hiện cấu trúc và vòng đời cơn bão từ hình thành đến tan rã.',
   watchPlay: 'Chạy',
   watchPause: 'Tạm dừng',
   watchAgain: 'Xem lại',

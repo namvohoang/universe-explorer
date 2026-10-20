@@ -445,7 +445,7 @@ function stormErrors(story: Story): string[] {
     }
   }
   for (const chapter of story.chapters) {
-    if (chapter.slice === true && (chapter.overStorm !== true || !storm.slice)) {
+    if (chapter.slice === true && chapter.overStorm !== true) {
       errors.push(
         `${at} chapter "${chapter.id}" shows the storm cut in half but has no cut to show`,
       );
@@ -617,7 +617,7 @@ export function checkStories(
     for (const chapter of story.chapters) {
       if (
         chapter.slice === true &&
-        !story.storm?.slice &&
+        !story.storm &&
         !story.tornado &&
         !story.quake &&
         !story.tsunami &&

@@ -62,7 +62,7 @@ const picture = (
   untilJd: s(midnightJd + 0.25, TRACK, `06:00 UTC on ${date}.`),
 });
 
-const OVER_THE_STORM = { lookAtId: 'earth', closeUp: true, overStorm: true } as const;
+const OVER_THE_STORM = { lookAtId: 'earth', closeUp: true, overStorm: true, slice: true } as const;
 
 export const typhoonNoru: Story = {
   id: 'typhoon-noru',

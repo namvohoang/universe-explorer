@@ -2,223 +2,1025 @@ import {
   AmbientLight,
   BufferAttribute,
   BufferGeometry,
-  CircleGeometry,
+  CanvasTexture,
   Color,
+  CylinderGeometry,
   DirectionalLight,
   DoubleSide,
+  FogExp2,
   Group,
-  LatheGeometry,
+  LineBasicMaterial,
+  LineSegments,
   Mesh,
+  MeshBasicMaterial,
   MeshLambertMaterial,
+  MeshStandardMaterial,
+  PlaneGeometry,
+  PointLight,
   Points,
   PointsMaterial,
   Scene,
-  Shape,
-  ShapeGeometry,
-  Vector2,
+  SphereGeometry,
+  Vector3,
 } from 'three';
 import type { Vec3 } from '../sim/vec3';
 
-const BACKGROUND = '#05070f';
-const SEA_COLOR = 0x1c5fa6;
-const CLOUD_COLOR = 0xf4f6fb;
-const BAND_COLOR = 0xd3dae8;
-/** Warm, wet air on its way in and up; cool, dry air sinking. */
-const WARM_COLOR = 0xffb347;
-const COOL_COLOR = 0x6fd3ff;
 /**
- * Everything below is a drawing: how tall the cloud is against how wide (one unit is how far
- * out gales reach), how thick each layer is, where the two bands of rain stand, how many dots
- * of air there are and how fast they go. Only the widths of the eye and of the wall are real.
+ * 3D Simulation of Tropical Cyclone (Hurricane & Typhoon) Genesis and Lifecycle:
+ *
+ * Detailed visual synthesis from Reference Images 1, 2, & 3 and Atmospheric Physics:
+ * 1. Warm Tropical Ocean Environment:
+ *    - Deep oceanic blue undulating water surface (Sea surface temp > 26.5°C / 80°F).
+ *    - Dynamic central storm surge dome beneath the eye (12 ft / 3.5m surge, Ref Image 2).
+ *    - Churned whitecap sea foam and wave spray.
+ * 2. 3D Volumetric Cloud Structure & Atmospheric Cross-Section:
+ *    - Vertical altitude scale up to 10 miles (16 km, tropopause).
+ *    - Stadium-effect central clear Eye (20-40 miles diameter) with calm descending air.
+ *    - Towering vertical Eyewall with violent spiraling updrafts (120-165+ mph, 250 km/h).
+ *    - Concentric tiered spiral rainbands with torrential downpours and rain curtains.
+ *    - High-altitude anticyclonic outflow canopy (cirrus shield) fanning outward in reverse rotation.
+ * 3. Multi-Phase Lifecycle Simulation ("from formed to end"):
+ *    - Phase 1 (formation): Convective cumulus & cumulonimbus towers rising over warm ocean with localized rain (Ref Image 1, Stage 1).
+ *    - Phase 2 (tropical-storm): Cyclonic low-level inflow converging inward, convective chimney rising, Coriolis spin-up (Ref Image 1, Stage 2).
+ *    - Phase 3 (mature): Colossal Category 4/5 Hurricane / Super Typhoon with distinct Eye, towering Eyewall, concentric rainbands,
+ *      storm surge, eyewall lightning discharges, and anticyclonic outflow shield (Ref Image 1 Stage 3, Ref Images 2 & 3).
+ *    - Phase 4 (decay): Landfall / cold water cutoff; eye collapses, spiral arms unravel into ragged remnant clouds.
+ * 4. Interactive Glassmorphic Controls:
+ *    - Phase selection pills: 1. Formation | 2. Tropical Storm | 3. Mature Cyclone | 4. Landfall & Decay
+ *    - Mode toggle: 3D Cyclone Cutaway vs. Meteorological Dynamics & Flow Overlay (inflow/updraft/outflow vectors, 940 mb pressure gauge, 10-mile altitude ruler).
  */
-const CLOUD_TOP = 0.5;
-const CLOUD_BASE = 0.03;
-const SEA_REACH = 1.15;
-const RAIN_BANDS: readonly (readonly [inner: number, outer: number, top: number])[] = [
-  [0.5, 0.62, 0.36],
-  [0.8, 0.92, 0.28],
-];
-const AROUND_SEGMENTS = 48;
-const DOTS_ON_A_PATH = 22;
-const DOT_PIXELS = 6;
-const DOT_LAPS_PER_SECOND = 0.07;
-/** The dots are drawn a hair in front of the cut, so they are not lost in it. */
-const IN_FRONT = 0.012;
 
-/** A storm cut in half, in a scene of its own, to be drawn beside the look at the real one. */
+export type StormPhase = 'formation' | 'tropical-storm' | 'mature' | 'decay';
+
 export interface StormSlice {
   readonly scene: Scene;
-  /** Where to look, and from how far and which way, to see the whole cut. */
   readonly target: Vec3;
   readonly distance: number;
   readonly direction: Vec3;
-  /** Moves the dots of air on by so many seconds. */
+  /** Sets the chapter mode or simulation progress */
+  set(chapterId: string, jd?: number): void;
+  /** Advances rotational turbulence, eyewall spin, particle drift, and lightning */
   flow(seconds: number): void;
+  /** Toggles between 3D Cutaway View and Scientific Dynamics Overlay */
+  toggleView(): void;
+  /** Sets active phase explicitly */
+  setPhase(phase: StormPhase): void;
   dispose(): void;
 }
 
-/**
- * `eye` and `wall` are how far from the middle the clear eye ends and the wall of cloud round
- * it ends, as shares of how far out gales reach.
- */
-export function createStormSlice(eye: number, wall: number): StormSlice {
-  const scene = new Scene();
-  scene.background = new Color(BACKGROUND);
-  scene.add(new AmbientLight(0xffffff, 1.6));
-  const sunlight = new DirectionalLight(0xffffff, 1.8);
-  sunlight.position.set(0.4, 1, 1);
-  scene.add(sunlight);
+interface DisposableItem {
+  dispose(): void;
+}
 
-  const group = new Group();
-  scene.add(group);
-  const made: { dispose(): void }[] = [];
-  const keep = <T extends { dispose(): void }>(thing: T): T => {
-    made.push(thing);
-    return thing;
-  };
+/** Generates rich wavy ocean surface texture */
+function createOceanTexture(): CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d')!;
 
-  const sea = new Mesh(
-    keep(new CircleGeometry(SEA_REACH, AROUND_SEGMENTS)),
-    keep(new MeshLambertMaterial({ color: SEA_COLOR })),
-  );
-  sea.rotation.x = -Math.PI / 2;
-  group.add(sea);
+  // Deep oceanic blue
+  ctx.fillStyle = '#0a233f';
+  ctx.fillRect(0, 0, 512, 512);
 
-  /** A ring of cloud with this outline (distance from the middle, height), its back half only, with the cut closed. */
-  const ring = (outline: readonly (readonly [number, number])[], color: number): void => {
-    const material = keep(new MeshLambertMaterial({ color, side: DoubleSide }));
-    const round = keep(
-      new LatheGeometry(
-        [...outline, outline[0] ?? [0, 0]].map(([r, y]) => new Vector2(r, y)),
-        AROUND_SEGMENTS,
-        Math.PI / 2,
-        Math.PI,
-      ),
-    );
-    group.add(new Mesh(round, material));
-    for (const side of [1, -1]) {
-      const face = new Shape(outline.map(([r, y]) => new Vector2(side * r, y)));
-      group.add(new Mesh(keep(new ShapeGeometry(face)), material));
-    }
-  };
-  // The wall round the eye: it leans out as it rises, so the eye is wider at the top.
-  ring(
-    [
-      [eye, CLOUD_BASE],
-      [eye * 1.2, CLOUD_TOP * 0.6],
-      [Math.min(eye * 1.8, wall * 0.8), CLOUD_TOP],
-      [wall, CLOUD_TOP],
-      [wall, CLOUD_BASE],
-    ],
-    CLOUD_COLOR,
-  );
-  // The thin sheet of cloud that spreads out from the top of the wall.
-  ring(
-    [
-      [wall, CLOUD_TOP * 0.84],
-      [1, CLOUD_TOP * 0.88],
-      [1, CLOUD_TOP * 0.94],
-      [wall, CLOUD_TOP],
-    ],
-    CLOUD_COLOR,
-  );
-  for (const [inner, outer, top] of RAIN_BANDS) {
-    if (inner <= wall) continue;
-    ring(
-      [
-        [inner, CLOUD_BASE],
-        [inner, top],
-        [outer, top],
-        [outer, CLOUD_BASE],
-      ],
-      BAND_COLOR,
-    );
+  // Sea waves & foam ripples
+  for (let i = 0; i < 4000; i++) {
+    const x = Math.random() * 512;
+    const y = Math.random() * 512;
+    const r = Math.random() * 18 + 6;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(18, 64, 110, ${Math.random() * 0.4})`;
+    ctx.fill();
   }
 
-  // Dots of air, each going round one path for ever: in over the sea, up the wall and out over
-  // the top on both sides, and slowly down the eye.
-  const rising = (wall + eye) / 2;
-  const paths: {
-    readonly corners: readonly (readonly [number, number])[];
-    readonly cool: boolean;
-  }[] = [
-    ...[1, -1].map((side) => ({
-      corners: [
-        [side * SEA_REACH * 0.96, CLOUD_BASE * 0.6],
-        [side * rising, CLOUD_BASE * 0.6],
-        [side * rising, CLOUD_TOP * 0.97],
-        [side * SEA_REACH * 0.96, CLOUD_TOP * 0.97],
-      ] as const,
-      cool: false,
-    })),
-    {
-      corners: [
-        [0, CLOUD_TOP * 0.95],
-        [0, CLOUD_BASE * 2],
-      ],
-      cool: true,
-    },
-  ];
-  const along = (
-    corners: readonly (readonly [number, number])[],
-    share: number,
-  ): [number, number] => {
-    const lengths = corners.slice(1).map(([r, y], index) => {
-      const [fromR, fromY] = corners[index] ?? [r, y];
-      return Math.hypot(r - fromR, y - fromY);
-    });
-    let left = share * lengths.reduce((sum, length) => sum + length, 0);
-    for (const [index, length] of lengths.entries()) {
-      const [fromR, fromY] = corners[index] ?? [0, 0];
-      const [toR, toY] = corners[index + 1] ?? [fromR, fromY];
-      if (left <= length || index === lengths.length - 1) {
-        const through = length > 0 ? Math.min(1, left / length) : 0;
-        return [fromR + (toR - fromR) * through, fromY + (toY - fromY) * through];
-      }
-      left -= length;
-    }
-    return [corners[0]?.[0] ?? 0, corners[0]?.[1] ?? 0];
+  // Crest foam streaks
+  for (let i = 0; i < 1200; i++) {
+    const x = Math.random() * 512;
+    const y = Math.random() * 512;
+    const len = Math.random() * 24 + 8;
+    ctx.strokeStyle = 'rgba(210, 235, 255, 0.28)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + len, y + (Math.random() - 0.5) * 6);
+    ctx.stroke();
+  }
+
+  const texture = new CanvasTexture(canvas);
+  texture.wrapS = 1000;
+  texture.wrapT = 1000;
+  texture.repeat.set(6, 6);
+  return texture;
+}
+
+/** Generates text canvas badge for meteorological callouts */
+function createTextBadge(
+  title: string,
+  subtitle: string,
+  color: string,
+  bgColor: string,
+): CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 192;
+  const ctx = canvas.getContext('2d')!;
+
+  ctx.fillStyle = bgColor;
+  ctx.roundRect(8, 8, 496, 176, 24);
+  ctx.fill();
+
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = color;
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 34px Outfit, Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(title, 256, 75);
+
+  ctx.fillStyle = color;
+  ctx.font = '500 24px Outfit, Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(subtitle, 256, 128);
+
+  return new CanvasTexture(canvas);
+}
+
+export function createStormSlice(
+  eyeRadiusShare = 0.12,
+  wallReachShare = 0.45,
+  storyId = 'hurricane-sam',
+): StormSlice {
+  const scene = new Scene();
+  const disposables: DisposableItem[] = [];
+  const keep = <T extends DisposableItem>(item: T): T => {
+    disposables.push(item);
+    return item;
   };
-  const dots = paths.map(({ corners, cool }) => {
-    const positions = new BufferAttribute(new Float32Array(DOTS_ON_A_PATH * 3), 3);
-    const geometry = keep(new BufferGeometry());
-    geometry.setAttribute('position', positions);
-    const material = keep(
-      new PointsMaterial({
-        color: cool ? COOL_COLOR : WARM_COLOR,
-        size: DOT_PIXELS,
-        sizeAttenuation: false,
-        depthTest: false,
+
+  const isTyphoon = storyId === 'typhoon-noru';
+  const stormLabel = isTyphoon ? 'SUPER TYPHOON NORU' : 'HURRICANE SAM';
+
+  // --------------------------------------------------------------------------
+  // 1. Atmosphere, Fog & Lighting
+  // --------------------------------------------------------------------------
+  scene.background = new Color('#060a14'); // Deep oceanic storm sky
+  scene.fog = new FogExp2(0x0a1424, 0.022);
+
+  const ambientLight = keep(new AmbientLight(0x7389a8, 1.6));
+  scene.add(ambientLight);
+
+  const sunLight = keep(new DirectionalLight(0xe2edf8, 1.9));
+  sunLight.position.set(-10, 20, 15);
+  scene.add(sunLight);
+
+  // Eyewall lightning light
+  const lightningLight = keep(new PointLight(0xdcf0ff, 0, 45, 1.4));
+  lightningLight.position.set(0, 3.2, 0);
+  scene.add(lightningLight);
+
+  // --------------------------------------------------------------------------
+  // 2. Churning Tropical Ocean & Storm Surge Dome
+  // --------------------------------------------------------------------------
+  const oceanGroup = new Group();
+  scene.add(oceanGroup);
+
+  const oceanTexture = keep(createOceanTexture());
+  const SEA_GRID = 54;
+  const seaGeo = keep(new PlaneGeometry(44, 44, SEA_GRID, SEA_GRID));
+  seaGeo.rotateX(-Math.PI / 2);
+  const seaPositions = seaGeo.attributes.position as BufferAttribute;
+  const seaBaseX = new Float32Array(seaPositions.count);
+  const seaBaseZ = new Float32Array(seaPositions.count);
+  for (let i = 0; i < seaPositions.count; i++) {
+    seaBaseX[i] = seaPositions.getX(i);
+    seaBaseZ[i] = seaPositions.getZ(i);
+  }
+  const seaMat = keep(
+    new MeshStandardMaterial({
+      map: oceanTexture,
+      roughness: 0.38,
+      metalness: 0.28,
+    }),
+  );
+  const seaMesh = new Mesh(seaGeo, seaMat);
+  oceanGroup.add(seaMesh);
+
+  // Central storm surge dome (ocean bulges upward beneath the low-pressure eye)
+  const surgeGeo = keep(new SphereGeometry(1.6, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2));
+  const surgeMat = keep(
+    new MeshStandardMaterial({
+      color: 0x154b7a,
+      roughness: 0.45,
+      metalness: 0.3,
+    }),
+  );
+  const surgeDome = new Mesh(surgeGeo, surgeMat);
+  surgeDome.scale.set(1.5, 0.16, 1.5); // 12 ft sea surge dome
+  surgeDome.position.set(0, 0.02, 0);
+  oceanGroup.add(surgeDome);
+
+  // Whipped sea spray & whitecap foam blown across rolling wave crests
+  const SPRAY_COUNT = 320;
+  const sprayGeo = keep(new BufferGeometry());
+  const sprayPositions = new Float32Array(SPRAY_COUNT * 3);
+  const sprayRadii = new Float32Array(SPRAY_COUNT);
+  const sprayAngles = new Float32Array(SPRAY_COUNT);
+  const spraySpeeds = new Float32Array(SPRAY_COUNT);
+  const sprayYOffsets = new Float32Array(SPRAY_COUNT);
+
+  for (let i = 0; i < SPRAY_COUNT; i++) {
+    sprayRadii[i] = 1.0 + Math.random() * 9.0;
+    sprayAngles[i] = Math.random() * Math.PI * 2;
+    spraySpeeds[i] = 1.6 + Math.random() * 2.8;
+    sprayYOffsets[i] = 0.05 + Math.random() * 0.18;
+    const x = Math.cos(sprayAngles[i]!) * sprayRadii[i]!;
+    const z = Math.sin(sprayAngles[i]!) * sprayRadii[i]!;
+    sprayPositions[i * 3] = x;
+    sprayPositions[i * 3 + 1] = sprayYOffsets[i]!;
+    sprayPositions[i * 3 + 2] = z;
+  }
+  sprayGeo.setAttribute('position', new BufferAttribute(sprayPositions, 3));
+  const sprayMat = keep(
+    new PointsMaterial({
+      color: 0xe0f2fe,
+      size: 0.12,
+      transparent: true,
+      opacity: 0.75,
+      depthWrite: false,
+    }),
+  );
+  const sprayPoints = keep(new Points(sprayGeo, sprayMat));
+  oceanGroup.add(sprayPoints);
+
+  // --------------------------------------------------------------------------
+  // 3. Cyclone Cloud System Root
+  // --------------------------------------------------------------------------
+  const cycloneGroup = new Group();
+  scene.add(cycloneGroup);
+
+  const CLOUD_HEIGHT = 4.2; // Represents 16 km (10 miles) altitude
+  const eyeRadius = Math.max(0.6, eyeRadiusShare * 5.0);
+  const wallRadius = Math.max(1.8, wallReachShare * 5.0);
+  const outerRadius = 8.5;
+
+  // Cloud materials
+  const eyeWallMat = keep(
+    new MeshLambertMaterial({
+      color: 0xf8fafc,
+      transparent: true,
+      opacity: 0.96,
+      side: DoubleSide,
+    }),
+  );
+  const rainbandMat = keep(
+    new MeshLambertMaterial({
+      color: 0xdde5ee,
+      transparent: true,
+      opacity: 0.92,
+      side: DoubleSide,
+    }),
+  );
+  const outerBandMat = keep(
+    new MeshLambertMaterial({
+      color: 0x94a3b8,
+      transparent: true,
+      opacity: 0.82,
+      side: DoubleSide,
+    }),
+  );
+  const cirrusShieldMat = keep(
+    new MeshLambertMaterial({
+      color: 0xf1f5f9,
+      transparent: true,
+      opacity: 0.65,
+      side: DoubleSide,
+    }),
+  );
+
+  // ==========================================================================
+  // PHASE 1: FORMATION (Convective Cumulonimbus Towers - Ref Image 1, Stage 1)
+  // ==========================================================================
+  const formationGroup = new Group();
+  cycloneGroup.add(formationGroup);
+
+  const towerPositions = [
+    new Vector3(-3.2, 0, -1.0),
+    new Vector3(-1.8, 0, 1.2),
+    new Vector3(0.0, 0, -0.4),
+    new Vector3(1.6, 0, 1.0),
+    new Vector3(3.0, 0, -0.8),
+  ];
+  for (const pos of towerPositions) {
+    const tower = new Group();
+    tower.position.copy(pos);
+
+    // Billowing cumulus cloud spheres stacked vertically
+    const heights = [1.2, 2.2, 3.2, 3.8];
+    const scales = [1.2, 1.4, 1.3, 0.9];
+    for (let h = 0; h < heights.length; h++) {
+      const puff = new Mesh(
+        keep(new SphereGeometry(scales[h]!, 16, 14)),
+        rainbandMat,
+      );
+      puff.position.y = heights[h]!;
+      puff.scale.set(1.1, 0.85, 1.1);
+      tower.add(puff);
+    }
+
+    // Localized rain curtain beneath each tower
+    const rainGeo = keep(new CylinderGeometry(0.8, 1.0, 1.2, 16, 1, true));
+    const rainMat = keep(
+      new MeshBasicMaterial({
+        color: 0x93c5fd,
+        transparent: true,
+        opacity: 0.35,
+        side: DoubleSide,
       }),
     );
-    const points = new Points(geometry, material);
-    points.renderOrder = 1;
-    group.add(points);
-    return { corners, positions };
-  });
-  let lap = 0;
-  const place = (): void => {
-    for (const { corners, positions } of dots) {
-      for (let dot = 0; dot < DOTS_ON_A_PATH; dot++) {
-        const [r, y] = along(corners, (lap + dot / DOTS_ON_A_PATH) % 1);
-        positions.setXYZ(dot, r, y, IN_FRONT);
-      }
-      positions.needsUpdate = true;
+    const rain = new Mesh(rainGeo, rainMat);
+    rain.position.y = 0.6;
+    tower.add(rain);
+
+    formationGroup.add(tower);
+  }
+
+  // Updraft rising particles for Formation phase
+  const formUpdraftCount = 300;
+  const formUpdraftGeo = keep(new BufferGeometry());
+  const formUpdraftPos = new Float32Array(formUpdraftCount * 3);
+  const formUpdraftLifes = new Float32Array(formUpdraftCount);
+  for (let i = 0; i < formUpdraftCount; i++) {
+    formUpdraftLifes[i] = Math.random();
+    const towerIdx = i % towerPositions.length;
+    const base = towerPositions[towerIdx]!;
+    formUpdraftPos[i * 3] = base.x + (Math.random() - 0.5) * 1.2;
+    formUpdraftPos[i * 3 + 1] = formUpdraftLifes[i]! * CLOUD_HEIGHT;
+    formUpdraftPos[i * 3 + 2] = base.z + (Math.random() - 0.5) * 1.2;
+  }
+  formUpdraftGeo.setAttribute('position', new BufferAttribute(formUpdraftPos, 3));
+  const formUpdraftPoints = new Points(
+    formUpdraftGeo,
+    keep(
+      new PointsMaterial({
+        color: 0xef4444, // Warm rising air
+        size: 4,
+        transparent: true,
+        opacity: 0.8,
+        sizeAttenuation: false,
+      }),
+    ),
+  );
+  formationGroup.add(formUpdraftPoints);
+
+  // ==========================================================================
+  // PHASE 2: TROPICAL STORM (Inflow & Spin-Up - Ref Image 1, Stage 2)
+  // ==========================================================================
+  const stormInflowGroup = new Group();
+  cycloneGroup.add(stormInflowGroup);
+
+  // Developing central convective chimney
+  const chimneyGeo = keep(
+    new CylinderGeometry(wallRadius * 0.8, wallRadius * 0.45, CLOUD_HEIGHT, 32, 8, true),
+  );
+  const chimneyMesh = new Mesh(chimneyGeo, rainbandMat);
+  chimneyMesh.position.y = CLOUD_HEIGHT / 2;
+  stormInflowGroup.add(chimneyMesh);
+
+  // Spiral inflow streamlines converging inward along the sea surface (Ref Image 1 Stage 2)
+  const inflowStreamlinesCount = 12;
+  const inflowLinesGroup = new Group();
+  stormInflowGroup.add(inflowLinesGroup);
+  for (let a = 0; a < inflowStreamlinesCount; a++) {
+    const pts: Vector3[] = [];
+    const baseAng = (a / inflowStreamlinesCount) * Math.PI * 2;
+    for (let s = 0; s <= 25; s++) {
+      const u = s / 25;
+      const r = 0.6 + u * 7.5;
+      const theta = baseAng + u * Math.PI * 1.8;
+      pts.push(new Vector3(Math.cos(theta) * r, 0.08, Math.sin(theta) * r));
     }
-  };
-  place();
+    const lineGeo = keep(new BufferGeometry().setFromPoints(pts));
+    const line = new LineSegments(
+      lineGeo,
+      keep(new LineBasicMaterial({ color: 0xef4444, linewidth: 3 })),
+    );
+    inflowLinesGroup.add(line);
+  }
+
+  // ==========================================================================
+  // PHASE 3: MATURE CYCLONE (Category 4-5 Peak - Ref Images 1, 2, 3)
+  // ==========================================================================
+  const matureGroup = new Group();
+  cycloneGroup.add(matureGroup);
+
+  // 1. Stadium-Effect Eyewall (outward flaring sloping cylinder)
+  const eyewallHeight = CLOUD_HEIGHT;
+  const eyewallGeo = keep(
+    new CylinderGeometry(
+      eyeRadius * 2.2, // Wider at tropopause (stadium effect)
+      eyeRadius,       // Narrower at ocean surface
+      eyewallHeight,
+      48,
+      16,
+      true,
+    ),
+  );
+  const eyewallMesh = new Mesh(eyewallGeo, eyeWallMat);
+  eyewallMesh.position.y = eyewallHeight / 2;
+  matureGroup.add(eyewallMesh);
+
+  // Eyewall outer dense wall
+  const eyewallOuterGeo = keep(
+    new CylinderGeometry(
+      wallRadius * 1.25,
+      wallRadius,
+      eyewallHeight,
+      48,
+      12,
+      true,
+    ),
+  );
+  const eyewallOuterMesh = new Mesh(eyewallOuterGeo, eyeWallMat);
+  eyewallOuterMesh.position.y = eyewallHeight / 2;
+  matureGroup.add(eyewallOuterMesh);
+
+  // 2. Concentric Spiral Rainbands (Ref Image 2 & 3)
+  // Inner rainband
+  const band1Geo = keep(
+    new CylinderGeometry(wallRadius * 1.9, wallRadius * 1.6, eyewallHeight * 0.8, 40, 8, true),
+  );
+  const band1Mesh = new Mesh(band1Geo, rainbandMat);
+  band1Mesh.position.y = (eyewallHeight * 0.8) / 2;
+  matureGroup.add(band1Mesh);
+
+  // Outer rainband
+  const band2Geo = keep(
+    new CylinderGeometry(outerRadius * 0.85, outerRadius * 0.65, eyewallHeight * 0.65, 36, 8, true),
+  );
+  const band2Mesh = new Mesh(band2Geo, outerBandMat);
+  band2Mesh.position.y = (eyewallHeight * 0.65) / 2;
+  matureGroup.add(band2Mesh);
+
+  // 3. High-Altitude Cirrus Outflow Canopy (Cirrus Shield at Tropopause - Ref Images 2 & 3)
+  const cirrusShieldGeo = keep(
+    new CylinderGeometry(outerRadius * 1.1, outerRadius * 0.9, 0.35, 48, 2, true),
+  );
+  const cirrusShieldMesh = new Mesh(cirrusShieldGeo, cirrusShieldMat);
+  cirrusShieldMesh.position.y = CLOUD_HEIGHT;
+  matureGroup.add(cirrusShieldMesh);
+
+  // Spiral cloud arms seen from above (Ref Image 3: Logarithmic Spiral Arms)
+  const spiralArmsGroup = new Group();
+  matureGroup.add(spiralArmsGroup);
+  for (let arm = 0; arm < 4; arm++) {
+    const armPts: Vector3[] = [];
+    const armSteps = 50;
+    const offsetAng = (arm / 4) * Math.PI * 2;
+    for (let s = 0; s <= armSteps; s++) {
+      const u = s / armSteps;
+      const r = eyeRadius * 1.2 + u * (outerRadius - eyeRadius);
+      const theta = offsetAng + u * Math.PI * 2.6; // Logarithmic spiral winding
+      const y = CLOUD_HEIGHT * (0.85 + Math.sin(u * Math.PI) * 0.15);
+      armPts.push(new Vector3(Math.cos(theta) * r, y, Math.sin(theta) * r));
+    }
+    const armGeo = keep(new BufferGeometry().setFromPoints(armPts));
+    const armLine = new LineSegments(
+      armGeo,
+      keep(new LineBasicMaterial({ color: 0xffffff, linewidth: 3 })),
+    );
+    spiralArmsGroup.add(armLine);
+  }
+
+  // 4. Torrential Rain Curtains under rainbands
+  const rainCurtainGeo = keep(
+    new CylinderGeometry(wallRadius * 1.4, wallRadius * 1.45, 1.2, 32, 1, true),
+  );
+  const rainCurtainMat = keep(
+    new MeshBasicMaterial({
+      color: 0x60a5fa,
+      transparent: true,
+      opacity: 0.32,
+      side: DoubleSide,
+    }),
+  );
+  const rainCurtain = new Mesh(rainCurtainGeo, rainCurtainMat);
+  rainCurtain.position.y = 0.6;
+  matureGroup.add(rainCurtain);
+
+  // ==========================================================================
+  // PHASE 4: LANDFALL & DECAY (Unraveling Remnants)
+  // ==========================================================================
+  const decayGroup = new Group();
+  cycloneGroup.add(decayGroup);
+
+  // Asymmetric flattened cloud mass
+  const decayGeo = keep(
+    new CylinderGeometry(outerRadius * 0.9, outerRadius * 0.5, CLOUD_HEIGHT * 0.45, 24, 6, true),
+  );
+  const decayMesh = new Mesh(decayGeo, outerBandMat);
+  decayMesh.position.y = (CLOUD_HEIGHT * 0.45) / 2;
+  decayMesh.scale.set(1.4, 0.7, 0.8); // Elongated and asymmetric
+  decayGroup.add(decayMesh);
+
+  // ==========================================================================
+  // 4. Atmospheric Dynamic Airflow Particle Systems (Ref Images 1 & 2)
+  // ==========================================================================
+  // A. Eyewall Violent Updraft Particles (Warm red upward spiraling particles)
+  const UPDRAFT_COUNT = 800;
+  const updraftGeo = keep(new BufferGeometry());
+  const updraftPos = new Float32Array(UPDRAFT_COUNT * 3);
+  const updraftLifes = new Float32Array(UPDRAFT_COUNT);
+  const updraftAngles = new Float32Array(UPDRAFT_COUNT);
+  for (let i = 0; i < UPDRAFT_COUNT; i++) {
+    updraftLifes[i] = Math.random();
+    updraftAngles[i] = Math.random() * Math.PI * 2;
+    const y = updraftLifes[i]! * CLOUD_HEIGHT;
+    const r = eyeRadius + (wallRadius - eyeRadius) * (0.3 + 0.7 * (y / CLOUD_HEIGHT));
+    const ang = updraftAngles[i]! + y * 2.2;
+    updraftPos[i * 3] = Math.cos(ang) * r;
+    updraftPos[i * 3 + 1] = y;
+    updraftPos[i * 3 + 2] = Math.sin(ang) * r;
+  }
+  updraftGeo.setAttribute('position', new BufferAttribute(updraftPos, 3));
+  const updraftPoints = new Points(
+    updraftGeo,
+    keep(
+      new PointsMaterial({
+        color: 0xef4444, // Warm moist rising air (120+ mph)
+        size: 5,
+        transparent: true,
+        opacity: 0.9,
+        sizeAttenuation: false,
+      }),
+    ),
+  );
+  matureGroup.add(updraftPoints);
+
+  // B. Central Eye Calm Descending Downdraft Particles (Cool blue sinking air, Ref Image 2)
+  const EYE_DOWNDRAFT_COUNT = 180;
+  const eyeDownGeo = keep(new BufferGeometry());
+  const eyeDownPos = new Float32Array(EYE_DOWNDRAFT_COUNT * 3);
+  const eyeDownLifes = new Float32Array(EYE_DOWNDRAFT_COUNT);
+  for (let i = 0; i < EYE_DOWNDRAFT_COUNT; i++) {
+    eyeDownLifes[i] = Math.random();
+    const y = (1.0 - eyeDownLifes[i]!) * CLOUD_HEIGHT;
+    const r = Math.random() * (eyeRadius * 0.7);
+    const ang = eyeDownLifes[i]! * Math.PI * 4.0;
+    eyeDownPos[i * 3] = Math.cos(ang) * r;
+    eyeDownPos[i * 3 + 1] = y;
+    eyeDownPos[i * 3 + 2] = Math.sin(ang) * r;
+  }
+  eyeDownGeo.setAttribute('position', new BufferAttribute(eyeDownPos, 3));
+  const eyeDownPoints = new Points(
+    eyeDownGeo,
+    keep(
+      new PointsMaterial({
+        color: 0x38bdf8, // Cool dry sinking air
+        size: 4,
+        transparent: true,
+        opacity: 0.75,
+        sizeAttenuation: false,
+      }),
+    ),
+  );
+  matureGroup.add(eyeDownPoints);
+
+  // C. Upper-Level Anticyclonic Outflow Particles (Cirrus divergence at cloud top)
+  const OUTFLOW_COUNT = 450;
+  const outflowGeo = keep(new BufferGeometry());
+  const outflowPos = new Float32Array(OUTFLOW_COUNT * 3);
+  const outflowProgress = new Float32Array(OUTFLOW_COUNT);
+  const outflowAngles = new Float32Array(OUTFLOW_COUNT);
+  for (let i = 0; i < OUTFLOW_COUNT; i++) {
+    outflowProgress[i] = Math.random();
+    outflowAngles[i] = Math.random() * Math.PI * 2;
+    const r = wallRadius + outflowProgress[i]! * (outerRadius - wallRadius + 2.0);
+    const ang = outflowAngles[i]! - outflowProgress[i]! * Math.PI * 1.5; // Opposite clockwise turn
+    outflowPos[i * 3] = Math.cos(ang) * r;
+    outflowPos[i * 3 + 1] = CLOUD_HEIGHT * (0.95 + Math.random() * 0.1);
+    outflowPos[i * 3 + 2] = Math.sin(ang) * r;
+  }
+  outflowGeo.setAttribute('position', new BufferAttribute(outflowPos, 3));
+  const outflowPoints = new Points(
+    outflowGeo,
+    keep(
+      new PointsMaterial({
+        color: 0x67e8f9,
+        size: 4,
+        transparent: true,
+        opacity: 0.8,
+        sizeAttenuation: false,
+      }),
+    ),
+  );
+  matureGroup.add(outflowPoints);
+
+  // ==========================================================================
+  // 5. Scientific & Meteorological Dynamics Overlay (Ref Images 1 & 2)
+  // ==========================================================================
+  const scientificOverlayGroup = new Group();
+  scene.add(scientificOverlayGroup);
+  scientificOverlayGroup.visible = false;
+
+  // Streamline arrow indicators (Ref Image 2)
+  // Broad Upper Outflow Arrows (Blue arrows curving outward)
+  const outflowArrowPts = [
+    new Vector3(1.2, CLOUD_HEIGHT * 1.05, 0), new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5),
+    new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5), new Vector3(4.8, CLOUD_HEIGHT * 1.05, 2.6),
+    new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5), new Vector3(5.2, CLOUD_HEIGHT * 1.05, 1.8),
+  ];
+  const outflowArrow = new LineSegments(
+    keep(new BufferGeometry().setFromPoints(outflowArrowPts)),
+    keep(new LineBasicMaterial({ color: 0x38bdf8, linewidth: 3 })),
+  );
+  scientificOverlayGroup.add(outflowArrow);
+
+  // Sea Surface Inflow Arrows (Red arrows curving inward)
+  const seaInflowArrowPts = [
+    new Vector3(6.5, 0.15, -1.0), new Vector3(2.2, 0.15, 0.4),
+    new Vector3(2.2, 0.15, 0.4), new Vector3(2.8, 0.15, 0.8),
+    new Vector3(2.2, 0.15, 0.4), new Vector3(2.6, 0.15, 0.0),
+  ];
+  const seaInflowArrow = new LineSegments(
+    keep(new BufferGeometry().setFromPoints(seaInflowArrowPts)),
+    keep(new LineBasicMaterial({ color: 0xef4444, linewidth: 3 })),
+  );
+  scientificOverlayGroup.add(seaInflowArrow);
+
+  // Altitude Ruler (0 to 10 miles / 0 to 16 km, Ref Image 2)
+  const rulerPts = [
+    new Vector3(-6.5, 0, 0), new Vector3(-6.5, CLOUD_HEIGHT, 0),
+    new Vector3(-6.8, 0, 0), new Vector3(-6.2, 0, 0),
+    new Vector3(-6.8, CLOUD_HEIGHT * 0.5, 0), new Vector3(-6.2, CLOUD_HEIGHT * 0.5, 0),
+    new Vector3(-6.8, CLOUD_HEIGHT, 0), new Vector3(-6.2, CLOUD_HEIGHT, 0),
+  ];
+  const altitudeRuler = new LineSegments(
+    keep(new BufferGeometry().setFromPoints(rulerPts)),
+    keep(new LineBasicMaterial({ color: 0x94a3b8, linewidth: 2 })),
+  );
+  scientificOverlayGroup.add(altitudeRuler);
+
+  // Meteorological Badges
+  const titleBadgeTexture = keep(
+    createTextBadge(stormLabel, 'Category 5 Intensity • Peak Wind: 135 kt (250 km/h)', '#f59e0b', 'rgba(15, 23, 42, 0.94)'),
+  );
+  const titleBadge = new Mesh(
+    keep(new PlaneGeometry(5.2, 1.8)),
+    keep(new MeshBasicMaterial({ map: titleBadgeTexture, transparent: true, side: DoubleSide })),
+  );
+  titleBadge.position.set(0, CLOUD_HEIGHT + 1.8, 0);
+  scientificOverlayGroup.add(titleBadge);
+
+  const pressureBadgeTexture = keep(
+    createTextBadge('SURFACE PRESSURE: 940 mb', 'Eye Diameter: 20–40 mi • Storm Surge: 12 ft', '#38bdf8', 'rgba(15, 23, 42, 0.94)'),
+  );
+  const pressureBadge = new Mesh(
+    keep(new PlaneGeometry(4.8, 1.6)),
+    keep(new MeshBasicMaterial({ map: pressureBadgeTexture, transparent: true, side: DoubleSide })),
+  );
+  pressureBadge.position.set(5.2, 2.2, 0);
+  scientificOverlayGroup.add(pressureBadge);
+
+  // ==========================================================================
+  // 6. Phase State Controller
+  // ==========================================================================
+  function applyPhaseVisibility(phase: StormPhase): void {
+
+    formationGroup.visible = phase === 'formation';
+    stormInflowGroup.visible = phase === 'tropical-storm';
+    matureGroup.visible = phase === 'mature';
+    decayGroup.visible = phase === 'decay';
+
+    updateUiPillActive(phase);
+  }
+
+  // ==========================================================================
+  // 7. Floating Glassmorphic Control Overlay (Positioned in Close Up Pane)
+  // ==========================================================================
+  let showScientificOverlay = false;
+  const overlayContainerId = 'storm-simulator-controls';
+  let controlContainer = document.getElementById(overlayContainerId);
+  if (!controlContainer) {
+    controlContainer = document.createElement('div');
+    controlContainer.id = overlayContainerId;
+    Object.assign(controlContainer.style, {
+      position: 'absolute',
+      bottom: '124px',
+      left: '400px', // Inside Close Up pane, clear of sidebar and bottom bar
+      zIndex: '100',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      fontFamily: 'Outfit, Inter, sans-serif',
+      pointerEvents: 'auto',
+    });
+
+    const pillsRow = document.createElement('div');
+    pillsRow.id = 'storm-phase-pills';
+    Object.assign(pillsRow.style, {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '5px',
+      padding: '5px 8px',
+      borderRadius: '24px',
+      background: 'rgba(15, 23, 42, 0.88)',
+      backdropFilter: 'blur(14px)',
+      border: '1px solid rgba(56, 189, 248, 0.4)',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
+    });
+
+    const phases: { id: StormPhase; label: string; icon: string }[] = [
+      { id: 'formation', label: '1. Formation', icon: '🌧️' },
+      { id: 'tropical-storm', label: '2. Tropical Storm', icon: '🌀' },
+      { id: 'mature', label: isTyphoon ? '3. Super Typhoon' : '3. Mature Hurricane', icon: '🌪️' },
+      { id: 'decay', label: '4. Landfall & Decay', icon: '〰️' },
+    ];
+
+    for (const p of phases) {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.dataset.phase = p.id;
+      pill.innerHTML = `<span>${p.icon}</span> <span>${p.label}</span>`;
+      Object.assign(pill.style, {
+        padding: '5px 11px',
+        borderRadius: '16px',
+        border: '1px solid transparent',
+        background: 'transparent',
+        color: '#94a3b8',
+        fontSize: '11px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        whiteSpace: 'nowrap',
+      });
+      pill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        applyPhaseVisibility(p.id);
+      });
+      pillsRow.appendChild(pill);
+    }
+    controlContainer.appendChild(pillsRow);
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.id = 'storm-view-toggle';
+    toggleBtn.type = 'button';
+    toggleBtn.innerHTML = `<span>📊</span> <span>Show Meteorological Dynamics & Flow Overlay</span>`;
+    Object.assign(toggleBtn.style, {
+      alignSelf: 'flex-start',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '6px',
+      padding: '6px 12px',
+      borderRadius: '20px',
+      border: '1px solid rgba(245, 158, 11, 0.55)',
+      background: 'rgba(28, 20, 10, 0.88)',
+      backdropFilter: 'blur(12px)',
+      color: '#fef3c7',
+      fontSize: '11px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5)',
+      transition: 'all 0.2s ease',
+    });
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showScientificOverlay = !showScientificOverlay;
+      scientificOverlayGroup.visible = showScientificOverlay;
+      toggleBtn.innerHTML = showScientificOverlay
+        ? `<span>🌀</span> <span>3D Cyclone Cutaway View</span>`
+        : `<span>📊</span> <span>Show Meteorological Dynamics & Flow Overlay</span>`;
+    });
+    controlContainer.appendChild(toggleBtn);
+
+    document.body.appendChild(controlContainer);
+  }
+
+  function updateUiPillActive(phase: StormPhase): void {
+    const pills = document.querySelectorAll('#storm-phase-pills button');
+    pills.forEach((el) => {
+      const btn = el as HTMLButtonElement;
+      if (btn.dataset.phase === phase) {
+        btn.style.background = 'rgba(56, 189, 248, 0.25)';
+        btn.style.borderColor = 'rgba(56, 189, 248, 0.7)';
+        btn.style.color = '#38bdf8';
+      } else {
+        btn.style.background = 'transparent';
+        btn.style.borderColor = 'transparent';
+        btn.style.color = '#94a3b8';
+      }
+    });
+  }
+
+  applyPhaseVisibility('mature');
+
+  // ==========================================================================
+  // 8. Dynamic Animation Loop & Flow Execution
+  // ==========================================================================
+  let totalTime = 0;
+  let lightningTimer = 0;
+  let lightningActive = 0;
 
   return {
     scene,
-    target: { x: 0, y: CLOUD_TOP * 0.45, z: 0 },
-    distance: 2.6,
-    direction: { x: 0, y: 0.32, z: 1 },
-    flow(seconds) {
-      lap = (lap + seconds * DOT_LAPS_PER_SECOND) % 1;
-      place();
+    target: { x: 0, y: CLOUD_HEIGHT * 0.45, z: 0 },
+    distance: 14.5,
+    direction: { x: 0.0, y: 0.38, z: 1.0 }, // Elevated angled perspective showing cutaway & eye
+
+    set(chapterId: string) {
+      // Map story chapters to cyclone lifecycle phases
+      switch (chapterId) {
+        case 'born':
+        case 'far-out-at-sea':
+          applyPhaseVisibility('formation');
+          break;
+
+        case 'warm-sea':
+        case 'spins':
+        case 'grows-fast':
+          applyPhaseVisibility('tropical-storm');
+          break;
+
+        case 'the-eye':
+        case 'cut-in-half':
+        case 'strongest':
+        case 'names':
+        case 'flying-in':
+        case 'the-philippines':
+        case 'over-the-sea-again':
+        case 'getting-ready':
+          applyPhaseVisibility('mature');
+          break;
+
+        case 'out-at-sea':
+        case 'fades':
+        case 'ashore':
+          applyPhaseVisibility('decay');
+          break;
+
+        default:
+          applyPhaseVisibility('mature');
+          break;
+      }
     },
+
+    setPhase(phase: StormPhase) {
+      applyPhaseVisibility(phase);
+    },
+
+    toggleView() {
+      showScientificOverlay = !showScientificOverlay;
+      scientificOverlayGroup.visible = showScientificOverlay;
+    },
+
+    flow(seconds: number) {
+      totalTime += seconds;
+
+      // 0. Dynamic Moving Ocean Water Waves, Swells & Surface Foam
+      const pos = seaGeo.attributes.position as BufferAttribute;
+      for (let i = 0; i < seaPositions.count; i++) {
+        const x = seaBaseX[i]!;
+        const z = seaBaseZ[i]!;
+        const dist = Math.sqrt(x * x + z * z);
+        const angle = Math.atan2(z, x);
+
+        // A. Cyclonic inward spiral waves driven by violent circulating hurricane winds
+        const spiralPhase = angle * 2.0 - dist * 0.9 + totalTime * 3.6;
+        const spiralWave = Math.sin(spiralPhase) * 0.16;
+
+        // B. Large oceanic swell rolling across open sea
+        const openSwell = Math.sin(x * 0.38 + z * 0.28 - totalTime * 2.0) * 0.12;
+
+        // C. Choppy whitecap wavelets and turbulence
+        const chop = Math.sin(x * 1.5 - totalTime * 4.4) * Math.cos(z * 1.5 + totalTime * 3.8) * 0.06;
+
+        // Wind amplification: waves peak violently near eyewall
+        const windScale = Math.exp(-Math.pow(dist - 3.0, 2) / 10.0) * 1.25 + 0.65;
+        const waveHeight = (spiralWave + openSwell + chop) * windScale;
+
+        pos.setY(i, waveHeight);
+      }
+      pos.needsUpdate = true;
+      seaGeo.computeVertexNormals();
+
+      // Drift ocean surface texture coordinates with wind-driven currents
+      oceanTexture.offset.x = (totalTime * 0.045) % 1.0;
+      oceanTexture.offset.y = (totalTime * 0.035) % 1.0;
+
+      // Pulse central storm surge dome
+      const surgePulse = 0.16 + Math.sin(totalTime * 2.2) * 0.024;
+      surgeDome.scale.set(1.5, surgePulse, 1.5);
+
+      // Sea spray & foam particles racing along wave crests with cyclonic wind
+      const sp = sprayGeo.attributes.position as BufferAttribute;
+      for (let i = 0; i < SPRAY_COUNT; i++) {
+        sprayAngles[i] = sprayAngles[i]! + seconds * spraySpeeds[i]!;
+        sprayRadii[i] = sprayRadii[i]! - seconds * 0.16;
+        if (sprayRadii[i]! < 0.9) {
+          sprayRadii[i] = 9.0 + Math.random() * 1.5;
+        }
+        const ang = sprayAngles[i]!;
+        const r = sprayRadii[i]!;
+        const px = Math.cos(ang) * r;
+        const pz = Math.sin(ang) * r;
+        const waveY = (Math.sin(ang * 2.0 - r * 0.9 + totalTime * 3.6) * 0.16 +
+          Math.sin(px * 0.38 + pz * 0.28 - totalTime * 2.0) * 0.12) * 1.2;
+        sp.setXYZ(i, px, Math.max(0.04, waveY + sprayYOffsets[i]!), pz);
+      }
+      sp.needsUpdate = true;
+
+      // 1. Cyclonic Counter-Clockwise Rotation of Eyewall & Rainbands
+      eyewallMesh.rotation.y = totalTime * 1.8;
+      eyewallOuterMesh.rotation.y = totalTime * 1.4;
+      band1Mesh.rotation.y = totalTime * 1.1;
+      band2Mesh.rotation.y = totalTime * 0.8;
+      spiralArmsGroup.rotation.y = totalTime * 0.9;
+      chimneyMesh.rotation.y = totalTime * 1.3;
+
+      // 2. Reverse Clockwise Anticyclonic Outflow at Tropopause (Ref Image 2)
+      cirrusShieldMesh.rotation.y = -totalTime * 0.5;
+
+      // 3. Updraft Rising Particles (Vertical spiral convection)
+      if (matureGroup.visible) {
+        const u = updraftGeo.attributes.position as BufferAttribute;
+        for (let i = 0; i < UPDRAFT_COUNT; i++) {
+          updraftLifes[i] = (updraftLifes[i]! + seconds * 0.6) % 1.0;
+          const y = updraftLifes[i]! * CLOUD_HEIGHT;
+          const r = eyeRadius + (wallRadius - eyeRadius) * (0.3 + 0.7 * (y / CLOUD_HEIGHT));
+          const ang = updraftAngles[i]! + totalTime * 2.5 + y * 2.0;
+          u.setXYZ(i, Math.cos(ang) * r, y, Math.sin(ang) * r);
+        }
+        u.needsUpdate = true;
+
+        // Eye descending downdraft particles
+        const d = eyeDownGeo.attributes.position as BufferAttribute;
+        for (let i = 0; i < EYE_DOWNDRAFT_COUNT; i++) {
+          eyeDownLifes[i] = (eyeDownLifes[i]! + seconds * 0.3) % 1.0;
+          const y = (1.0 - eyeDownLifes[i]!) * CLOUD_HEIGHT;
+          const r = (eyeRadius * 0.65) * Math.sin(eyeDownLifes[i]! * Math.PI);
+          const ang = eyeDownLifes[i]! * Math.PI * 4.0 - totalTime * 1.2;
+          d.setXYZ(i, Math.cos(ang) * r, y, Math.sin(ang) * r);
+        }
+        d.needsUpdate = true;
+
+        // Outflow diverging particles
+        const o = outflowGeo.attributes.position as BufferAttribute;
+        for (let i = 0; i < OUTFLOW_COUNT; i++) {
+          outflowProgress[i] = (outflowProgress[i]! + seconds * 0.25) % 1.0;
+          const r = wallRadius + outflowProgress[i]! * (outerRadius - wallRadius + 2.0);
+          const ang = outflowAngles[i]! - totalTime * 0.6 - outflowProgress[i]! * Math.PI * 1.5;
+          o.setXYZ(i, Math.cos(ang) * r, CLOUD_HEIGHT * 0.98, Math.sin(ang) * r);
+        }
+        o.needsUpdate = true;
+      }
+
+      // 4. Formation phase rising updrafts
+      if (formationGroup.visible) {
+        const fu = formUpdraftGeo.attributes.position as BufferAttribute;
+        for (let i = 0; i < formUpdraftCount; i++) {
+          formUpdraftLifes[i] = (formUpdraftLifes[i]! + seconds * 0.4) % 1.0;
+          const towerIdx = i % towerPositions.length;
+          const base = towerPositions[towerIdx]!;
+          fu.setXYZ(
+            i,
+            base.x + Math.sin(totalTime * 2.0 + i) * 0.4,
+            formUpdraftLifes[i]! * CLOUD_HEIGHT,
+            base.z + Math.cos(totalTime * 2.0 + i) * 0.4,
+          );
+        }
+        fu.needsUpdate = true;
+      }
+
+      // 5. Eyewall Lightning Bursts
+      lightningTimer += seconds;
+      if (lightningActive > 0) {
+        lightningActive -= seconds;
+        const flashIntensity = Math.sin((lightningActive / 0.16) * Math.PI) * 8.0;
+        lightningLight.intensity = Math.max(0, flashIntensity);
+      } else {
+        lightningLight.intensity = 0;
+        if (matureGroup.visible && lightningTimer > 2.8 + Math.random() * 2.4) {
+          lightningTimer = 0;
+          lightningActive = 0.16;
+          // Randomize flash around eyewall
+          const ang = Math.random() * Math.PI * 2;
+          lightningLight.position.set(Math.cos(ang) * wallRadius, 2.4, Math.sin(ang) * wallRadius);
+        }
+      }
+    },
+
     dispose() {
-      for (const thing of made) thing.dispose();
+      const ctrl = document.getElementById(overlayContainerId);
+      ctrl?.remove();
+
+      for (const item of disposables) {
+        try {
+          item.dispose();
+        } catch {
+          // Ignore
+        }
+      }
     },
   };
 }

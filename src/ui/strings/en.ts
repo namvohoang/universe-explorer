@@ -1145,7 +1145,8 @@ export const en = {
   scaleLabelDustSlice:
     'The desert dust storm is a 3D simulation. The satellite view of the dust plume crossing the ocean is from real observations.',
   scaleLabelTornado: 'The path and the width of the funnel are real. The rest is a drawing.',
-  scaleLabelSlice: 'The picture is real. The cut is a drawing, far taller than a real storm.',
+  scaleLabelSlice:
+    'The track and rotation of the storm are real. The 3D cyclone simulation is a drawing, showing its structure from formation to decay.',
   watchPlay: 'Play',
   watchPause: 'Pause',
   watchAgain: 'Play again',
@@ -1447,12 +1448,18 @@ export const en = {
   storyTornadoTitle: 'A tornado',
   storyTornadoNote:
     'The path and the width of the funnel are real. The cloud and the shape of the funnel are a drawing.',
+  storyTornadoWindShear:
+    'Winds near the ground and winds aloft blow at different speeds and directions. This wind shear rolls the air between them into an invisible spinning horizontal tube.',
+  storyTornadoUpdraftTilt:
+    'A powerful thunderstorm updraft rises through the warm air, lifting the horizontal spinning tube and tilting it upright into a rotating column called a mesocyclone.',
   storyTornadoFromAStorm:
     'A tornado is a narrow, spinning tube of air. It reaches from a thunderstorm down to the ground.',
   storyTornadoTouchesDown:
     'On the evening of 1 May 2018, a strong tornado touched down among the fields of Kansas, in the middle of the United States. The ring on the globe shows where.',
   storyTornadoItsPath:
     'It went 23 km across the fields in 29 minutes. At its widest it was 800 m across. Nobody was hurt.',
+  storyTornadoRopeOut:
+    'Rain-cooled downdrafts wrap completely around the vortex, cutting off its inflow of warm moist air. The funnel narrows into a contorted rope and fades away.',
   storyTornadoHowStrong:
     'How strong is a tornado? Experts look at what it broke, and work out the wind from that. This one was rated 3, on a scale from 0 to 5.',
   storyTornadoNotYetKnown:

@@ -647,6 +647,20 @@ export const NOAA_NSSL_TORNADO_FAQ: Source = {
   retrieved: '2026-10-12',
 };
 
+export const UCAR_HOW_TORNADOES_FORM: Source = {
+  id: 'ucar-how-tornadoes-form',
+  title: 'UCAR Center for Science Education — How Tornadoes Form',
+  url: 'https://scied.ucar.edu/learning-zone/storms/how-tornadoes-form',
+  retrieved: '2026-10-20',
+};
+
+export const BRITANNICA_WIND_SHEAR: Source = {
+  id: 'britannica-wind-shear',
+  title: 'Encyclopaedia Britannica — Wind shear',
+  url: 'https://www.britannica.com/science/wind-shear',
+  retrieved: '2026-10-20',
+};
+
 export const JPL_HORIZONS_TURN_TESCOTT_2018_EARTH: Source = {
   id: 'jpl-horizons-turn-tescott2018earthturn',
   title:

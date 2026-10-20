@@ -540,6 +540,8 @@ function start(): void {
           watchVolcanoSlice ??
           watchTideSlice ??
           watchDustSlice ??
+          tornadoDrawing?.scene ??
+          stormSlice ??
           null)
         : null;
     // The ground or sea cut open is the close look: it takes the first place, and the world the second.
@@ -612,13 +614,11 @@ function start(): void {
       {
         box: side,
         label: cut
-          ? cut === stormSlice
-            ? words.watchPaneSlice
-            : cut === watchTideSlice || cut === watchDustSlice
-              ? words.watchPaneClose
-              : cut === block
-                ? words.watchPaneQuakeBlock
-                : words.watchPaneTornado
+          ? cut === stormSlice || cut === watchTideSlice || cut === watchDustSlice || cut === tornadoDrawing?.scene
+            ? words.watchPaneClose
+            : cut === block
+              ? words.watchPaneQuakeBlock
+              : words.watchPaneTornado
           : modelled
             ? words.watchPaneWhole
             : close
@@ -1917,8 +1917,8 @@ function start(): void {
     if (story.id === 'sahara-dust') {
       watchDustSlice = createDustSlice();
     }
-    const onId = story.storm?.onId ?? story.groundPictures?.onId ?? null;
-    const pictures = story.storm?.pictures ?? story.groundPictures?.pictures ?? [];
+    const onId = story.storm ? null : (story.groundPictures?.onId ?? null);
+    const pictures = story.storm ? [] : (story.groundPictures?.pictures ?? []);
     watchPictured = pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]);
     system.setGroundPictures(
       pictures.length === 0 ? null : onId,
@@ -2139,7 +2139,10 @@ function start(): void {
   const moveTornado = (jd: number): void => {
     if (!tornadoDrawing) return;
     const { scene, fromJd, untilJd } = tornadoDrawing;
-    scene.set(jd < fromJd ? null : (jd - fromJd) / (untilJd - fromJd));
+    scene.set(
+      jd < fromJd ? null : (jd - fromJd) / (untilJd - fromJd),
+      paired?.chapter.id,
+    );
   };
   /** The storm of the story on show cut in half, as a drawing in a scene of its own. */
   let stormSlice: StormSlice | null = null;
@@ -2172,7 +2175,9 @@ function start(): void {
         storm.slice.wallReachKm.value,
         galeReachKm(record),
       );
-      if (shares) stormSlice = createStormSlice(shares.eye, shares.wall);
+      stormSlice = createStormSlice(shares?.eye ?? 0.12, shares?.wall ?? 0.45, story.id);
+    } else {
+      stormSlice = createStormSlice(0.12, 0.45, story.id);
     }
     system.setStorm(storm.onId, points.map(stormPlace));
   };
@@ -2192,6 +2197,9 @@ function start(): void {
           }
         : null,
     );
+    if (stormSlice) {
+      stormSlice.set(paired?.chapter.id ?? 'mature', jd);
+    }
   };
   onRoomChanged = () => {
     if (watchWanted) watchPanel?.reframe();
@@ -2918,6 +2926,12 @@ function start(): void {
       steppingBack = false;
       return;
     }
+    const [, linkedScreen, linkedStory] =
+      /^#(watch|earth)\/([a-z0-9-]+)$/.exec(window.location.hash) ?? [];
+    if (linkedStory !== undefined) {
+      watch.open(linkedStory, linkedScreen === 'earth' && EARTH_SCREEN_SHOWN ? 'earth' : 'watch');
+      return;
+    }
     // Forward again to a place, or an address typed by hand.
     const typed = parseLink('', window.location.hash).place;
     const place = placeInHistory() ?? (isPlace(typed) ? typed : null);
@@ -2930,6 +2944,13 @@ function start(): void {
     const up = backTarget();
     if (up !== null) history.pushState({ place: up }, '', addressOf(up));
     goTo(up, true);
+  });
+  window.addEventListener('hashchange', () => {
+    const [, linkedScreen, linkedStory] =
+      /^#(watch|earth)\/([a-z0-9-]+)$/.exec(window.location.hash) ?? [];
+    if (linkedStory !== undefined) {
+      watch.open(linkedStory, linkedScreen === 'earth' && EARTH_SCREEN_SHOWN ? 'earth' : 'watch');
+    }
   });
   stage.lookAt(wholeView());
   if (focus !== null && !isDeep(focus)) {

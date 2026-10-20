@@ -1921,8 +1921,9 @@ function start(): void {
     if (story.id === 'sahara-dust') {
       watchDustSlice = createDustSlice();
     }
-    const onId = story.storm ? null : (story.groundPictures?.onId ?? null);
-    const pictures = story.storm ? [] : (story.groundPictures?.pictures ?? []);
+    // A storm's real pictures from space lie on the world in the whole picture, as the story says.
+    const onId = story.storm?.onId ?? story.groundPictures?.onId ?? null;
+    const pictures = story.storm?.pictures ?? story.groundPictures?.pictures ?? [];
     watchPictured = pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]);
     system.setGroundPictures(
       pictures.length === 0 ? null : onId,

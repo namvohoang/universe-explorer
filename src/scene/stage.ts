@@ -93,6 +93,8 @@ export interface Panes {
   readonly direction: () => Vec3;
   /** What the second camera draws, when it is not the scene the first one draws. */
   readonly scene?: Scene;
+  /** What the first camera draws, when it is not the stage's own scene. */
+  readonly mainScene?: Scene;
 }
 
 /** Where a point of the scene lands on screen. */
@@ -359,7 +361,7 @@ export function createStage(canvas: HTMLCanvasElement, options: StageOptions): S
     renderer.setViewport(0, 0, viewWidth, viewHeight);
     renderer.clear();
     renderer.setScissorTest(true);
-    drawIn(panes.main, camera, otherScene ?? scene);
+    drawIn(panes.main, camera, panes.mainScene ?? otherScene ?? scene);
     if (!panes.side) return;
     moveSideCamera(panes, dt);
     for (const callback of sideCallbacks) callback(toVec3(sideCamera.position));

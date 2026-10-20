@@ -1140,6 +1140,8 @@ export const en = {
     'The sea cut open is a drawing, stretched tall. How the wave slows and rises near the shore is real.',
   scaleLabelVolcanoSlice:
     'The volcano cut open is a drawing. The ash cloud rising into the stratosphere is from real observations.',
+  scaleLabelTideSlice:
+    "The oceanic tidal simulation is a drawing, exaggerated for visibility. The Moon's gravitational pull and orbital alignment are real.",
   scaleLabelTornado: 'The path and the width of the funnel are real. The rest is a drawing.',
   scaleLabelSlice: 'The picture is real. The cut is a drawing, far taller than a real storm.',
   watchPlay: 'Play',

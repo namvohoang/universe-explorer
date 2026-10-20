@@ -53,6 +53,7 @@ import { moonPhases } from '../src/data/stories/moonPhases';
 import { saturnRings } from '../src/data/stories/saturnRings';
 import { seasons } from '../src/data/stories/seasons';
 import { shuttleDocking } from '../src/data/stories/shuttleDocking';
+import { tides } from '../src/data/stories/tides';
 
 /**
  * How far the lit share of the Moon the app draws may be from the phase the almanac names, at
@@ -685,7 +686,7 @@ describe('the shooting stars of the meteor shower', () => {
 
 describe('a story drawn as a diagram', () => {
   const diagram = createScale('diagram');
-  const drawn = [moonPhases, supermoon, solarEclipse, lunarEclipse, seasons, saturnRings];
+  const drawn = [moonPhases, supermoon, solarEclipse, lunarEclipse, seasons, saturnRings, tides];
   /** How far a body reaches in the diagram, rings and all. */
   const reach = (id: string): number => {
     const body = catalogue.find((object) => object.id === id) ?? fail();

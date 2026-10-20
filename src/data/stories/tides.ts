@@ -23,8 +23,12 @@ const NOAA = 'noaa-tides-variations';
 const FIRST_QUARTER = 2461332.175;
 const FULL_MOON = 2461339.675;
 const LAST_QUARTER = 2461346.3527777777;
-/** Seen from over the north pole, where the swelling towards the Moon shows whatever its phase. */
-const FROM_OVER_THE_POLE = { lookAtId: 'earth', closeUp: true, over: 'north' } as const;
+/** Seen with the 3D ocean tides and island simulation beside the enlarged Earth-Moon orbit picture. */
+const TIDE_VIEW = {
+  lookAtId: 'earth',
+  closeUp: true,
+  slice: true,
+} as const;
 
 export const tides: Story = {
   id: 'tides',
@@ -33,6 +37,7 @@ export const tides: Story = {
   titleKey: 'storyTidesTitle',
   noteKey: 'storyTidesNote',
   actorIds: ['earth', 'moon', 'sun'],
+  diagram: 'earth-moon',
   tide: { onId: 'earth', raiserIds: ['moon', 'sun'] },
   chapters: [
     {
@@ -44,7 +49,7 @@ export const tides: Story = {
         quote:
           'On Earth, the Moon’s gravitational pull causes the oceans to bulge out on both the side closest to the Moon and the side farthest from the Moon.',
       },
-      ...FROM_OVER_THE_POLE,
+      ...TIDE_VIEW,
     },
     {
       id: 'two-a-day',
@@ -56,7 +61,7 @@ export const tides: Story = {
         quote:
           'As Earth rotates within this layer of water, its landmasses pass through the two bulges. These bulges are Earth’s high tides. Most shorelines experience two high and low tides per day.',
       },
-      ...FROM_OVER_THE_POLE,
+      ...TIDE_VIEW,
     },
     {
       id: 'spring-tides',
@@ -68,7 +73,7 @@ export const tides: Story = {
         quote:
           'When the sun, moon, and Earth are in alignment (at the time of the new or full moon), the solar tide has an additive effect on the lunar tide, creating extra-high high tides, and very low, low tides—both commonly called spring tides.',
       },
-      ...FROM_OVER_THE_POLE,
+      ...TIDE_VIEW,
     },
     {
       id: 'neap-tides',
@@ -79,7 +84,7 @@ export const tides: Story = {
         quote:
           'One week later, when the sun and moon are at right angles to each other, the solar tide partially cancels out the lunar tide and produces moderate tides known as neap tides.',
       },
-      ...FROM_OVER_THE_POLE,
+      ...TIDE_VIEW,
     },
     {
       id: 'real-seas',
@@ -90,7 +95,7 @@ export const tides: Story = {
         quote:
           'Of course, in reality the Earth isn’t a smooth ball, so tides are also affected by the presence of continents, the shape of the Earth, the depth of the ocean in different locations, and more.',
       },
-      ...FROM_OVER_THE_POLE,
+      ...TIDE_VIEW,
     },
   ],
   endJd: s(LAST_QUARTER + 1, USNO, 'One day after Last Quarter.'),

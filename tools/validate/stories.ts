@@ -621,6 +621,7 @@ export function checkStories(
         !story.tornado &&
         !story.quake &&
         !story.tsunami &&
+        !story.tide &&
         story.id !== 'volcano-raikoke'
       ) {
         errors.push(

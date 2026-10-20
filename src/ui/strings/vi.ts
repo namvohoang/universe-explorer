@@ -1185,6 +1185,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Hình cắt biển là hình vẽ phóng đại chiều cao. Cách sóng chậm lại và dâng cao gần bờ là thật.',
   scaleLabelVolcanoSlice:
     'Mô hình cắt lớp núi lửa là hình vẽ. Cột tro bụi bốc lên tầng bình lưu là từ quan sát thực tế.',
+  scaleLabelTideSlice:
+    'Mô phỏng thủy triều đại dương là hình vẽ minh họa được phóng đại để dễ quan sát. Lực hấp dẫn của Mặt Trăng và vị trí quỹ đạo là có thật.',
   scaleLabelTornado: 'Đường đi và bề rộng của vòi lốc là thật. Phần còn lại là hình vẽ.',
   scaleLabelSlice: 'Bức ảnh là thật. Hình cắt đôi là hình vẽ, cao hơn cơn bão thật rất nhiều.',
   watchPlay: 'Chạy',

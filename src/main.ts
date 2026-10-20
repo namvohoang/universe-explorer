@@ -21,6 +21,7 @@ import { createStormSlice, type StormSlice } from './scene/stormSlice';
 import { createQuakeBlock, type QuakeBlock } from './scene/quakeBlock';
 import { createTsunamiSlice, type TsunamiSlice } from './scene/tsunamiSlice';
 import { createVolcanoSlice, type VolcanoSlice } from './scene/volcanoSlice';
+import { createTideSlice, type TideSlice } from './scene/tideSlice';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
@@ -95,7 +96,7 @@ import {
   subtract,
   type Vec3,
 } from './sim/vec3';
-import { SCALE_MODES, createScale, type ScaleMode } from './sim/scale';
+import { SCALE_MODES, createScale, type Scale, type ScaleMode } from './sim/scale';
 import {
   DEFAULT_SPEED,
   SPEEDS,
@@ -142,6 +143,16 @@ const STAGE_FRAMING = 2.6;
 /** A story's whole picture drawn as a diagram: its scale, and the room left round it. */
 const DIAGRAM_SCALE = createScale('diagram');
 const MOON_PATH_SCALE = createScale('moon-path');
+/** An enlarged Earth-Moon scale for the tides whole picture diagram, making Earth & Moon prominently visible. */
+const EARTH_MOON_SCALE: Scale = {
+  ...DIAGRAM_SCALE,
+  sizeToScene(radiusKm: number) {
+    return DIAGRAM_SCALE.sizeToScene(radiusKm) * 1.55;
+  },
+  distanceToScene(distanceKm: number, parentRadiusKm: number) {
+    return DIAGRAM_SCALE.distanceToScene(distanceKm, parentRadiusKm) * 1.15;
+  },
+};
 const DIAGRAM_MARGIN = 1.2;
 /** Room left round a star and one actor kept in view together, and round whole orbits. */
 const PAIR_MARGIN = 1.5;
@@ -523,7 +534,7 @@ function start(): void {
     const halves = roomHalves();
     const block =
       chapter.slice === true
-        ? (watchQuake?.block ?? watchTsunamiSlice ?? watchVolcanoSlice ?? null)
+        ? (watchQuake?.block ?? watchTsunamiSlice ?? watchVolcanoSlice ?? watchTideSlice ?? null)
         : null;
     // The ground or sea cut open is the close look: it takes the first place, and the world the second.
     const { main, side } = block ? { main: halves.side, side: halves.main } : halves;
@@ -557,6 +568,7 @@ function start(): void {
             distance: () => cut.distance * sideFit,
             direction: () => cut.direction,
             scene: cut.scene,
+            ...(diagram ? { mainScene: diagram.scene } : {}),
           }
         : {
             main,
@@ -596,9 +608,11 @@ function start(): void {
         label: cut
           ? cut === stormSlice
             ? words.watchPaneSlice
-            : cut === block
-              ? words.watchPaneQuakeBlock
-              : words.watchPaneTornado
+            : cut === watchTideSlice
+              ? words.watchPaneClose
+              : cut === block
+                ? words.watchPaneQuakeBlock
+                : words.watchPaneTornado
           : modelled
             ? words.watchPaneWhole
             : close
@@ -1332,6 +1346,8 @@ function start(): void {
       chapter.slice === true && story.quake ? STORM_WIDE_RADII * squeeze : STORM_CLOSE_RADII,
     );
     if (overStorm) return overStorm;
+    // Beside the ocean tides slice simulation, the other pane is the whole picture diagram.
+    if (chapter.slice === true && story.tide) return null;
     if (chapter.closeUp === true) {
       const seen = chapter.lookAtId;
       // Something with a glow that grows (a comet near the Sun) is stood back from as it grows.
@@ -1522,7 +1538,12 @@ function start(): void {
       };
     }
     const orbits = !diagram && story.whole === 'orbits' && star !== undefined;
-    const middle = (diagram || orbits) && star !== undefined ? star : first;
+    const middle =
+      story.diagram === 'earth-moon'
+        ? first
+        : (diagram || orbits) && star !== undefined
+          ? star
+          : first;
     if (orbits) {
       // With a far sky drawn, the picture holds the paths and the track on it, off to one side.
       const reach = Math.max(...story.actorIds.map((id) => from(id, middle))) * ORBITS_MARGIN;
@@ -1542,7 +1563,9 @@ function start(): void {
       shown.radiusOf(middle),
       ...(story.craft ?? []).map((craft) => shown.reachOf(craft.id)),
       ...story.actorIds
-        .filter((id) => diagram !== null || id !== star)
+        .filter((id) =>
+          story.diagram === 'earth-moon' ? id !== star : diagram !== null || id !== star,
+        )
         .map(
           (id) =>
             from(id, middle) +
@@ -1556,7 +1579,7 @@ function start(): void {
     const distance =
       (diagram
         ? distanceToFit(reach, low ? reach * DIAGRAM_SIDE_TALL : reach, aspect, FIELD_OF_VIEW_DEG) *
-          DIAGRAM_MARGIN
+          (story.diagram === 'earth-moon' ? 0.7 : DIAGRAM_MARGIN)
         : distanceForAspect(reach * STAGE_FRAMING, aspect)) * squeeze;
     return {
       target: () => shown.positionOf(middle),
@@ -1585,6 +1608,10 @@ function start(): void {
       const flat = Math.hypot(pole.x, pole.z) || 1;
       const bearing = { x: pole.z / flat, y: DIAGRAM_LOW_LIFT, z: -pole.x / flat };
       return () => bearing;
+    }
+    if (drawing && story.diagram === 'earth-moon' && first !== undefined) {
+      // A top-down planar view over Earth and the Moon's orbit, showing both tidal bulges clearly
+      return () => ({ x: 0, y: 1, z: 0.05 });
     }
     if (!drawing || story.diagram !== 'in-line' || star === undefined || first === undefined) {
       return () => STAGE_DIRECTION;
@@ -1951,7 +1978,11 @@ function start(): void {
     const secondsAfter = (jd - watchQuake.originJd) * SECONDS_PER_DAY;
     system.showQuake(secondsAfter, watchQuake.front.reachDeg(secondsAfter));
     const { block, front, depthKm, kmPerDeg } = watchQuake;
-    block?.set(waveReachKm(front, depthKm, kmPerDeg, secondsAfter), secondsAfter >= 0, secondsAfter);
+    block?.set(
+      waveReachKm(front, depthKm, kmPerDeg, secondsAfter),
+      secondsAfter >= 0,
+      secondsAfter,
+    );
   };
   /** When the tsunami of the story on show began. */
   let watchTsunamiJd: number | null = null;
@@ -2001,8 +2032,14 @@ function start(): void {
     readonly world: CelestialObject;
     readonly raisers: readonly { readonly object: CelestialObject; readonly massKg: number }[];
   } | null = null;
+  let watchTideSlice: TideSlice | null = null;
   /** Draws a story's tides: the sea of its world, and a line towards each thing that pulls on it. */
   const showTide = (story: Story): void => {
+    watchTideSlice?.dispose();
+    watchTideSlice = null;
+    if (story.id === 'tides') {
+      watchTideSlice = createTideSlice();
+    }
     const world = catalogue.find((object) => object.id === story.tide?.onId);
     const raisers = (story.tide?.raiserIds ?? []).flatMap((id) => {
       const object = catalogue.find((candidate) => candidate.id === id);
@@ -2013,14 +2050,16 @@ function start(): void {
     if (!story.tide || !world || raisers.length === 0) {
       watchTide = null;
       system.setTide(null, null);
+      diagram?.system.setTide(null, null);
       return;
     }
     watchTide = { world, raisers };
     // The line towards a star is the colour of sunlight; towards a moon, pale.
-    system.setTide(
-      world.id,
-      raisers.map(({ object }) => (object.kind === 'star' ? TIDE_STAR_LINE : TIDE_MOON_LINE)),
+    const lineColors = raisers.map(({ object }) =>
+      object.kind === 'star' ? TIDE_STAR_LINE : TIDE_MOON_LINE,
     );
+    system.setTide(world.id, lineColors);
+    diagram?.system.setTide(world.id, lineColors);
   };
   /** Shapes the sea for a date, from where the catalogue puts what pulls on it. */
   const moveTide = (jd: number): void => {
@@ -2038,10 +2077,15 @@ function start(): void {
       }
       return [];
     });
-    system.showTide(
-      tideHeights(pulls),
-      pulls.map((pull) => pull.offsetKm),
-    );
+    const heights = tideHeights(pulls);
+    const offsets = pulls.map((pull) => pull.offsetKm);
+    system.showTide(heights, offsets);
+    if (diagram) {
+      diagram.system.showTide(heights, offsets);
+    }
+    if (watchTideSlice) {
+      watchTideSlice.set(paired?.chapter.id ?? 'two-bulges', jd);
+    }
   };
   /** The tornado of the story on show, as a drawing in a scene of its own, and when it was on the ground. */
   let tornadoDrawing: {
@@ -2410,7 +2454,9 @@ function start(): void {
                         ? words.scaleLabelTsunamiSlice
                         : chapter.slice === true && watchVolcanoSlice
                           ? words.scaleLabelVolcanoSlice
-                          : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+                          : chapter.slice === true && watchTideSlice
+                            ? words.scaleLabelTideSlice
+                            : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -2582,7 +2628,11 @@ function start(): void {
                       ids.has(object.id) ||
                       (object.kind === 'ring-system' && ids.has(object.parentId)),
                   ),
-                  story.diagramPaths === 'true-shape' ? MOON_PATH_SCALE : DIAGRAM_SCALE,
+                  story.diagram === 'earth-moon'
+                    ? EARTH_MOON_SCALE
+                    : story.diagramPaths === 'true-shape'
+                      ? MOON_PATH_SCALE
+                      : DIAGRAM_SCALE,
                   story.shadows ?? [],
                   tracks.bodies,
                   story.seasonsOf === undefined ? [] : [story.seasonsOf],
@@ -2591,6 +2641,14 @@ function start(): void {
                 // A story that runs through months between its parts holds its star's turning.
                 if (heldStar !== undefined) diagram.system.holdSpin(heldStar, firstJd);
                 for (const id of story.actorIds) diagram.system.showDetail(id);
+                if (watchTide) {
+                  diagram.system.setTide(
+                    watchTide.world.id,
+                    watchTide.raisers.map(({ object }) =>
+                      object.kind === 'star' ? TIDE_STAR_LINE : TIDE_MOON_LINE,
+                    ),
+                  );
+                }
                 diagram.setDate(story.chapters[0]?.atJd.value ?? clock.jd);
               }
               tagCraft(craft.map(({ id, nameKey }) => ({ id, name: nameOfCraft(nameKey) })));
@@ -2648,6 +2706,8 @@ function start(): void {
       system.setAurora(null, null);
       watchTide = null;
       system.setTide(null, null);
+      watchTideSlice?.dispose();
+      watchTideSlice = null;
       watchQuake?.block?.dispose();
       watchQuake = null;
       system.setQuake(null, null, []);
@@ -2911,6 +2971,7 @@ function start(): void {
       if (!reducedMotion) watchQuake?.block?.flow(dt);
       if (!reducedMotion) watchTsunamiSlice?.flow(dt);
       watchVolcanoSlice?.flow(reducedMotion ? 0 : dt);
+      watchTideSlice?.flow(reducedMotion ? 0 : dt);
       if (!reducedMotion) system.flowQuake?.(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
@@ -3009,7 +3070,8 @@ function start(): void {
         tornadoDrawing !== null ||
         (watchQuake?.block ?? null) !== null ||
         watchTsunamiSlice !== null ||
-        watchVolcanoSlice !== null);
+        watchVolcanoSlice !== null ||
+        watchTideSlice !== null);
     sideTags.update((id) => {
       if (besideADrawing) {
         return { point: { ...stage.toSideScreen(ORIGIN), visible: false }, radiusPixels: 0 };

@@ -6,6 +6,7 @@ import {
   type Chapter,
   type Story,
   type StoryGroup,
+  type StoryKind,
   STORY_SCREENS,
   type StoryScreen,
 } from '../data/types';
@@ -52,6 +53,12 @@ const GROUP_LABELS: Readonly<Record<StoryGroup, string>> = {
   'sky-events': words.watchGroupSkyEvents,
   'space-flights': words.watchGroupSpaceFlights,
   'earth-at-work': words.watchGroupEarthAtWork,
+};
+/** The name over each kind of Earth story in the row. */
+const KIND_LABELS: Readonly<Record<StoryKind, string>> = {
+  'inside-earth': words.watchKindInsideEarth,
+  weather: words.watchKindWeather,
+  'sea-and-moon': words.watchKindSeaAndMoon,
 };
 const GROUP_ICONS: Readonly<Record<StoryGroup, IconName>> = {
   'sky-events': 'moon',
@@ -307,10 +314,18 @@ export function createWatch(host: WatchHost): Watch {
   let shownProgress = -1;
 
   function showChips(): void {
+    let kindShown: StoryKind | undefined;
     chips.replaceChildren(
       ...stories
         .filter((candidate) => candidate.group === group)
-        .map((candidate) => {
+        .flatMap((candidate) => {
+          // Stories of one kind stand together under its name.
+          const kind = candidate.kind;
+          const heading: HTMLElement[] = [];
+          if (kind !== undefined && kind !== kindShown) {
+            kindShown = kind;
+            heading.push(create('span', 'chip-kind', KIND_LABELS[kind]));
+          }
           const chip = create('button', '');
           chip.type = 'button';
           const dot = create('span', 'dot');
@@ -322,7 +337,7 @@ export function createWatch(host: WatchHost): Watch {
           chip.addEventListener('click', () => {
             start(candidate);
           });
-          return chip;
+          return [...heading, chip];
         }),
     );
     // A long row scrolls sideways: the story on show is brought into sight.

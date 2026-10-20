@@ -46,10 +46,10 @@ export const stories: readonly Story[] = [
   shuttleDocking,
   earthquakeFiji,
   tsunamiKermadec,
+  volcanoRaikoke,
   hurricaneSam,
   typhoonNoru,
   tornadoTescott,
-  volcanoRaikoke,
-  tides,
   saharaDust,
+  tides,
 ];

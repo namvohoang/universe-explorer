@@ -68,6 +68,7 @@ const over = (lonDegEast: number, latDegNorth: number) =>
 export const saharaDust: Story = {
   id: 'sahara-dust',
   group: 'earth-at-work',
+  kind: 'weather',
   path: 'tracked',
   titleKey: 'storyDustTitle',
   noteKey: 'storyDustNote',

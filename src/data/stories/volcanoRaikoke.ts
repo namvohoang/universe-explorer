@@ -82,6 +82,7 @@ const CUT_OPEN = {
 export const volcanoRaikoke: Story = {
   id: 'volcano-raikoke',
   group: 'earth-at-work',
+  kind: 'inside-earth',
   path: 'tracked',
   titleKey: 'storyVolcanoTitle',
   noteKey: 'storyVolcanoNote',

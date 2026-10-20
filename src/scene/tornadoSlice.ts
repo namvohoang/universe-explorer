@@ -53,7 +53,8 @@ import type { Vec3 } from '../sim/vec3';
  *    - Mode toggle: Cinematic Storm View vs. Scientific & Vortex Dynamics Overlay (wind shear vectors, pressure profile, EF-3 badge).
  */
 
-export type TornadoPhase = 'wind-shear' | 'updraft-tilt' | 'touches-down' | 'mature-wedge' | 'rope-out';
+export type TornadoPhase =
+  'wind-shear' | 'updraft-tilt' | 'touches-down' | 'mature-wedge' | 'rope-out';
 
 export interface TornadoSlice {
   readonly scene: Scene;
@@ -82,7 +83,8 @@ function createRoadTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 1024;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return new CanvasTexture(canvas);
 
   // Dark weathered asphalt base
   ctx.fillStyle = '#1c1f24';
@@ -93,7 +95,7 @@ function createRoadTexture(): CanvasTexture {
     const x = Math.random() * 512;
     const y = Math.random() * 1024;
     const bright = Math.random() * 35 + 20;
-    ctx.fillStyle = `rgb(${bright}, ${bright + 2}, ${bright + 5})`;
+    ctx.fillStyle = `rgb(${String(bright)}, ${String(bright + 2)}, ${String(bright + 5)})`;
     ctx.fillRect(x, y, 2, 2);
   }
 
@@ -119,7 +121,8 @@ function createKansasFieldsTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 512;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return new CanvasTexture(canvas);
 
   ctx.fillStyle = '#3f4f34'; // Default pasture green
   ctx.fillRect(0, 0, 512, 512);
@@ -155,7 +158,8 @@ function createLicensePlateTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 256;
   canvas.height = 64;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return new CanvasTexture(canvas);
 
   ctx.fillStyle = '#f8fafc';
   ctx.fillRect(0, 0, 256, 64);
@@ -177,7 +181,8 @@ function createMistTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 256;
   canvas.height = 256;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return new CanvasTexture(canvas);
 
   const grad = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
   grad.addColorStop(0, 'rgba(160, 178, 196, 0.45)');
@@ -283,7 +288,9 @@ export function createTornadoSlice(
   const carBodyMat = keep(new MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.4 }));
   const carCabinMat = keep(new MeshStandardMaterial({ color: 0x1e293b, roughness: 0.2 }));
   const carTireMat = keep(new MeshStandardMaterial({ color: 0x181818, roughness: 0.9 }));
-  const carBumperMat = keep(new MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.7, roughness: 0.3 }));
+  const carBumperMat = keep(
+    new MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.7, roughness: 0.3 }),
+  );
   const carTaillightMat = keep(new MeshBasicMaterial({ color: 0xef4444 }));
 
   // Main chassis
@@ -343,14 +350,22 @@ export function createTornadoSlice(
     const wTop = 0.12;
 
     const towerPts = [
-      new Vector3(-wBase, 0, -wBase), new Vector3(-wTop, h, -wTop),
-      new Vector3(wBase, 0, -wBase), new Vector3(wTop, h, -wTop),
-      new Vector3(wBase, 0, wBase), new Vector3(wTop, h, wTop),
-      new Vector3(-wBase, 0, wBase), new Vector3(-wTop, h, wTop),
-      new Vector3(-wTop * 1.8, h * 0.4, 0), new Vector3(wTop * 1.8, h * 0.4, 0),
-      new Vector3(-wTop * 1.5, h * 0.7, 0), new Vector3(wTop * 1.5, h * 0.7, 0),
-      new Vector3(-1.0, h * 0.88, 0), new Vector3(1.0, h * 0.88, 0),
-      new Vector3(-0.7, h * 0.98, 0), new Vector3(0.7, h * 0.98, 0),
+      new Vector3(-wBase, 0, -wBase),
+      new Vector3(-wTop, h, -wTop),
+      new Vector3(wBase, 0, -wBase),
+      new Vector3(wTop, h, -wTop),
+      new Vector3(wBase, 0, wBase),
+      new Vector3(wTop, h, wTop),
+      new Vector3(-wBase, 0, wBase),
+      new Vector3(-wTop, h, wTop),
+      new Vector3(-wTop * 1.8, h * 0.4, 0),
+      new Vector3(wTop * 1.8, h * 0.4, 0),
+      new Vector3(-wTop * 1.5, h * 0.7, 0),
+      new Vector3(wTop * 1.5, h * 0.7, 0),
+      new Vector3(-1.0, h * 0.88, 0),
+      new Vector3(1.0, h * 0.88, 0),
+      new Vector3(-0.7, h * 0.98, 0),
+      new Vector3(0.7, h * 0.98, 0),
     ];
     const towerGeo = keep(new BufferGeometry().setFromPoints(towerPts));
     const towerLines = new LineSegments(towerGeo, metalMat);
@@ -374,8 +389,9 @@ export function createTornadoSlice(
     new Vector3(-3.6, 2.1, -22),
   ];
   for (let i = 0; i < towerPositions.length - 1; i++) {
-    const p1 = towerPositions[i]!;
-    const p2 = towerPositions[i + 1]!;
+    const p1 = towerPositions[i];
+    const p2 = towerPositions[i + 1];
+    if (!p1 || !p2) continue;
     const mid = new Vector3()
       .addVectors(p1, p2)
       .multiplyScalar(0.5)
@@ -393,10 +409,14 @@ export function createTornadoSlice(
     const tree = new Group();
     tree.position.set(x, 0, z);
     const branchPts = [
-      new Vector3(0, 0, 0), new Vector3(0, 0.7 * scale, 0),
-      new Vector3(0, 0.7 * scale, 0), new Vector3(-0.3 * scale, 1.2 * scale, 0.1 * scale),
-      new Vector3(0, 0.7 * scale, 0), new Vector3(0.35 * scale, 1.15 * scale, -0.1 * scale),
-      new Vector3(0, 0.7 * scale, 0), new Vector3(0.05 * scale, 1.35 * scale, 0.2 * scale),
+      new Vector3(0, 0, 0),
+      new Vector3(0, 0.7 * scale, 0),
+      new Vector3(0, 0.7 * scale, 0),
+      new Vector3(-0.3 * scale, 1.2 * scale, 0.1 * scale),
+      new Vector3(0, 0.7 * scale, 0),
+      new Vector3(0.35 * scale, 1.15 * scale, -0.1 * scale),
+      new Vector3(0, 0.7 * scale, 0),
+      new Vector3(0.05 * scale, 1.35 * scale, 0.2 * scale),
     ];
     const treeGeo = keep(new BufferGeometry().setFromPoints(branchPts));
     tree.add(new LineSegments(treeGeo, treeMat));
@@ -453,7 +473,9 @@ export function createTornadoSlice(
       opacity: 0.9,
     }),
   );
-  const mammatusGeo = keep(new SphereGeometry(0.8, 12, 10, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2));
+  const mammatusGeo = keep(
+    new SphereGeometry(0.8, 12, 10, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2),
+  );
   for (let i = 0; i < 28; i++) {
     const pouch = new Mesh(mammatusGeo, mammatusMat);
     const rad = 3.5 + Math.random() * 12;
@@ -501,9 +523,9 @@ export function createTornadoSlice(
     rollSpeeds[i] = 1.5 + Math.random() * 2.0;
     rollOffsets[i] = (Math.random() - 0.5) * 9.5;
     const r = 0.5 + Math.random() * 0.55;
-    rollPos[i * 3] = rollOffsets[i]!;
-    rollPos[i * 3 + 1] = 1.4 + Math.sin(rollAngles[i]!) * r;
-    rollPos[i * 3 + 2] = Math.cos(rollAngles[i]!) * r;
+    rollPos[i * 3] = rollOffsets[i] ?? 0;
+    rollPos[i * 3 + 1] = 1.4 + Math.sin(rollAngles[i] ?? 0) * r;
+    rollPos[i * 3 + 2] = Math.cos(rollAngles[i] ?? 0) * r;
   }
   rollGeo.setAttribute('position', new BufferAttribute(rollPos, 3));
   const rollParticles = new Points(
@@ -533,7 +555,7 @@ export function createTornadoSlice(
     const ang = Math.random() * Math.PI * 2;
     const r = Math.random() * 2.5;
     updraftPos[i * 3] = Math.cos(ang) * r;
-    updraftPos[i * 3 + 1] = updraftLifes[i]! * CLOUD_CEILING_Y;
+    updraftPos[i * 3 + 1] = (updraftLifes[i] ?? 0) * CLOUD_CEILING_Y;
     updraftPos[i * 3 + 2] = Math.sin(ang) * r;
   }
   updraftGeo.setAttribute('position', new BufferAttribute(updraftPos, 3));
@@ -598,7 +620,7 @@ export function createTornadoSlice(
     }),
   );
   const matureBottomRadius = (widthKm / 2) * 4.2; // Monumental wedge footprint at ground
-  const matureTopRadius = (widthKm / 2) * 14.4;   // Expands beneath supercell wall cloud
+  const matureTopRadius = (widthKm / 2) * 14.4; // Expands beneath supercell wall cloud
   const innerCoreGeo = keep(
     new CylinderGeometry(matureTopRadius, matureBottomRadius, funnelHeight, 48, 16, true),
   );
@@ -616,7 +638,14 @@ export function createTornadoSlice(
     }),
   );
   const outerSheathGeo = keep(
-    new CylinderGeometry(matureTopRadius * 1.15, matureBottomRadius * 1.25, funnelHeight, 40, 24, true),
+    new CylinderGeometry(
+      matureTopRadius * 1.15,
+      matureBottomRadius * 1.25,
+      funnelHeight,
+      40,
+      24,
+      true,
+    ),
   );
   // Helical wave pattern wrapping around outer sheath
   const sheathPos = outerSheathGeo.attributes.position as BufferAttribute;
@@ -669,9 +698,7 @@ export function createTornadoSlice(
       side: DoubleSide,
     }),
   );
-  const ropeGeo = keep(
-    new CylinderGeometry(1.6, 0.35, funnelHeight, 28, 32, true),
-  );
+  const ropeGeo = keep(new CylinderGeometry(1.6, 0.35, funnelHeight, 28, 32, true));
   const ropePos = ropeGeo.attributes.position as BufferAttribute;
   for (let i = 0; i < ropePos.count; i++) {
     const y = ropePos.getY(i);
@@ -703,12 +730,12 @@ export function createTornadoSlice(
     // Dual zone: dense fast inner core + billowing outer dust shroud
     const isInner = i < 1200;
     const rBase = isInner ? 1.6 : 2.5;
-    debrisRadii[i] = rBase + debrisHeights[i]! * 0.8 + Math.random() * (isInner ? 0.8 : 1.6);
-    debrisSpeeds[i] = (7.0 - debrisHeights[i]! * 1.2) * (isInner ? 1.0 : 0.7);
+    debrisRadii[i] = rBase + (debrisHeights[i] ?? 0) * 0.8 + Math.random() * (isInner ? 0.8 : 1.6);
+    debrisSpeeds[i] = (7.0 - (debrisHeights[i] ?? 0) * 1.2) * (isInner ? 1.0 : 0.7);
 
-    debrisPos[i * 3] = Math.cos(debrisAngles[i]!) * debrisRadii[i]!;
-    debrisPos[i * 3 + 1] = debrisHeights[i]!;
-    debrisPos[i * 3 + 2] = Math.sin(debrisAngles[i]!) * debrisRadii[i]!;
+    debrisPos[i * 3] = Math.cos(debrisAngles[i] ?? 0) * (debrisRadii[i] ?? 0);
+    debrisPos[i * 3 + 1] = debrisHeights[i] ?? 0;
+    debrisPos[i * 3 + 2] = Math.sin(debrisAngles[i] ?? 0) * (debrisRadii[i] ?? 0);
   }
   debrisGeo.setAttribute('position', new BufferAttribute(debrisPos, 3));
   const debrisMat = keep(
@@ -732,10 +759,10 @@ export function createTornadoSlice(
   for (let i = 0; i < INFLOW_COUNT; i++) {
     inflowProgress[i] = Math.random();
     inflowAngles[i] = Math.random() * Math.PI * 2;
-    const r = 1.4 + inflowProgress[i]! * 8.5;
-    inflowPos[i * 3] = Math.cos(inflowAngles[i]!) * r;
+    const r = 1.4 + (inflowProgress[i] ?? 0) * 8.5;
+    inflowPos[i * 3] = Math.cos(inflowAngles[i] ?? 0) * r;
     inflowPos[i * 3 + 1] = 0.04 + Math.random() * 0.25;
-    inflowPos[i * 3 + 2] = Math.sin(inflowAngles[i]!) * r;
+    inflowPos[i * 3 + 2] = Math.sin(inflowAngles[i] ?? 0) * r;
   }
   inflowGeo.setAttribute('position', new BufferAttribute(inflowPos, 3));
   const inflowMat = keep(
@@ -783,7 +810,9 @@ export function createTornadoSlice(
       pts.push(cur.clone(), next.clone());
 
       if (Math.random() < 0.45) {
-        const bNext = next.clone().add(new Vector3((Math.random() - 0.6) * 1.4, -0.6, (Math.random() - 0.5) * 0.8));
+        const bNext = next
+          .clone()
+          .add(new Vector3((Math.random() - 0.6) * 1.4, -0.6, (Math.random() - 0.5) * 0.8));
         pts.push(next.clone(), bNext);
       }
       cur = next;
@@ -803,9 +832,12 @@ export function createTornadoSlice(
   scientificOverlayGroup.add(shearArrowsGroup);
 
   const lowArrowPts = [
-    new Vector3(0, 0.4, 0), new Vector3(1.6, 0.4, 1.2),
-    new Vector3(1.6, 0.4, 1.2), new Vector3(1.2, 0.4, 1.1),
-    new Vector3(1.6, 0.4, 1.2), new Vector3(1.4, 0.4, 0.8),
+    new Vector3(0, 0.4, 0),
+    new Vector3(1.6, 0.4, 1.2),
+    new Vector3(1.6, 0.4, 1.2),
+    new Vector3(1.2, 0.4, 1.1),
+    new Vector3(1.6, 0.4, 1.2),
+    new Vector3(1.4, 0.4, 0.8),
   ];
   const lowArrow = new LineSegments(
     keep(new BufferGeometry().setFromPoints(lowArrowPts)),
@@ -814,16 +846,18 @@ export function createTornadoSlice(
   shearArrowsGroup.add(lowArrow);
 
   const upperArrowPts = [
-    new Vector3(0, 2.8, 0), new Vector3(-3.4, 2.8, -1.0),
-    new Vector3(-3.4, 2.8, -1.0), new Vector3(-2.8, 2.8, -0.7),
-    new Vector3(-3.4, 2.8, -1.0), new Vector3(-3.0, 2.8, -1.4),
+    new Vector3(0, 2.8, 0),
+    new Vector3(-3.4, 2.8, -1.0),
+    new Vector3(-3.4, 2.8, -1.0),
+    new Vector3(-2.8, 2.8, -0.7),
+    new Vector3(-3.4, 2.8, -1.0),
+    new Vector3(-3.0, 2.8, -1.4),
   ];
   const upperArrow = new LineSegments(
     keep(new BufferGeometry().setFromPoints(upperArrowPts)),
     keep(new LineBasicMaterial({ color: 0xef4444, linewidth: 3 })),
   );
   shearArrowsGroup.add(upperArrow);
-
 
   // --------------------------------------------------------------------------
   // 11. State & Phase Controller
@@ -841,14 +875,14 @@ export function createTornadoSlice(
     matureFunnelGroup.visible = phase === 'mature-wedge';
     ropeGroup.visible = phase === 'rope-out';
 
-    debrisPoints.visible = phase === 'touches-down' || phase === 'mature-wedge' || phase === 'rope-out';
+    debrisPoints.visible =
+      phase === 'touches-down' || phase === 'mature-wedge' || phase === 'rope-out';
     inflowPoints.visible = phase === 'touches-down' || phase === 'mature-wedge';
 
     if (phase === 'touches-down') {
       descendingFunnelMesh.scale.set(1, 0.78, 1);
       descendingFunnelMesh.position.y = funnelHeight * 0.62;
     }
-
   }
 
   // The second look (the arrows of how the air moves) is switched from the story card.
@@ -932,10 +966,10 @@ export function createTornadoSlice(
         rollCylinder.rotation.x = totalTime * 2.5;
         const p = rollGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < rollCount; i++) {
-          rollAngles[i] = (rollAngles[i]! + seconds * rollSpeeds[i]!) % (Math.PI * 2);
+          rollAngles[i] = ((rollAngles[i] ?? 0) + seconds * (rollSpeeds[i] ?? 0)) % (Math.PI * 2);
           const r = 0.5 + (i % 5) * 0.08;
-          p.setY(i, 1.4 + Math.sin(rollAngles[i]!) * r);
-          p.setZ(i, Math.cos(rollAngles[i]!) * r);
+          p.setY(i, 1.4 + Math.sin(rollAngles[i] ?? 0) * r);
+          p.setZ(i, Math.cos(rollAngles[i] ?? 0) * r);
         }
         p.needsUpdate = true;
       }
@@ -944,8 +978,8 @@ export function createTornadoSlice(
       if (currentPhase === 'updraft-tilt') {
         const u = updraftGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < updraftCount; i++) {
-          updraftLifes[i] = (updraftLifes[i]! + seconds * 0.45) % 1.0;
-          const y = updraftLifes[i]! * CLOUD_CEILING_Y;
+          updraftLifes[i] = ((updraftLifes[i] ?? 0) + seconds * 0.45) % 1.0;
+          const y = (updraftLifes[i] ?? 0) * CLOUD_CEILING_Y;
           const swirl = y * 1.5 + totalTime * 2.0;
           const r = 0.5 + y * 0.25;
           u.setXYZ(i, Math.cos(swirl) * r, y, Math.sin(swirl) * r);
@@ -963,9 +997,10 @@ export function createTornadoSlice(
       if (debrisPoints.visible) {
         const d = debrisGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < DEBRIS_COUNT; i++) {
-          debrisAngles[i] = (debrisAngles[i]! + seconds * debrisSpeeds[i]!) % (Math.PI * 2);
-          const ang = debrisAngles[i]!;
-          const rad = debrisRadii[i]!;
+          debrisAngles[i] =
+            ((debrisAngles[i] ?? 0) + seconds * (debrisSpeeds[i] ?? 0)) % (Math.PI * 2);
+          const ang = debrisAngles[i] ?? 0;
+          const rad = debrisRadii[i] ?? 0;
           d.setX(i, Math.cos(ang) * rad);
           d.setZ(i, Math.sin(ang) * rad);
         }
@@ -976,9 +1011,9 @@ export function createTornadoSlice(
       if (inflowPoints.visible) {
         const inf = inflowGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < INFLOW_COUNT; i++) {
-          inflowProgress[i] = (inflowProgress[i]! - seconds * 0.65 + 1.0) % 1.0;
-          const r = 1.2 + inflowProgress[i]! * 8.0;
-          const ang = inflowAngles[i]! + totalTime * 0.4;
+          inflowProgress[i] = ((inflowProgress[i] ?? 0) - seconds * 0.65 + 1.0) % 1.0;
+          const r = 1.2 + (inflowProgress[i] ?? 0) * 8.0;
+          const ang = (inflowAngles[i] ?? 0) + totalTime * 0.4;
           inf.setX(i, Math.cos(ang) * r);
           inf.setZ(i, Math.sin(ang) * r);
         }

@@ -288,7 +288,9 @@ export function createQuakeWaves(start: Vec3, stations: readonly QuakeStation[])
         if (!st) continue;
         const active = secondsAfter >= st.secondsAfter;
         const col = active
-          ? (st.throughCore ? THROUGH_CORE_COLOR : STRAIGHT_COLOR)
+          ? st.throughCore
+            ? THROUGH_CORE_COLOR
+            : STRAIGHT_COLOR
           : new Color(0, 0, 0);
         const alpha = active ? (st.throughCore ? 0.35 : 0.28) : 0;
 

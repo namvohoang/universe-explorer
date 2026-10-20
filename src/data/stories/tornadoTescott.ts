@@ -80,7 +80,10 @@ export const tornadoTescott: Story = {
     },
     {
       id: 'updraft-tilt',
-      atJd: after(-4, 'Four minutes before touchdown: convective updraft tilts spinning tube upright.'),
+      atJd: after(
+        -4,
+        'Four minutes before touchdown: convective updraft tilts spinning tube upright.',
+      ),
       text: {
         key: 'storyTornadoUpdraftTilt',
         sourceId: UCAR,

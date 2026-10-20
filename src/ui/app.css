@@ -1051,6 +1051,20 @@ button.primary {
   scrollbar-width: none;
 }
 
+/* The name over a kind of story, before its first chip. */
+.chip-kind {
+  flex: none;
+  margin-left: 8px;
+  color: var(--ink-dim);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.chip-kind:first-child {
+  margin-left: 0;
+}
+
 .chips button {
   flex: none;
   display: flex;
@@ -1342,6 +1356,28 @@ body.watching .view-controls .turn {
   color: var(--sky);
   font-size: 14px;
   font-weight: 700;
+}
+
+/* The one button, the same in every story, that shows the drawing up close another way. */
+.watch-drawing-look {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 0 16px 0 12px;
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.watch-drawing-look .icon {
+  color: var(--sun);
+}
+
+/* While a story plays, the sentence under the title keeps the room of three lines, short or
+   long, so the looks below the bar do not jump from one story to the next. */
+body.watching .brand p {
+  min-height: calc(3 * 1.25em);
 }
 
 .watch-controls {
@@ -2614,5 +2650,69 @@ body.watching .marker {
 
   .clock-date .date-short {
     display: inline;
+  }
+}
+
+/* A phone: the sentence under the title is as wide as the screen, so two lines are kept for it;
+   on its side there is no height to spare at all. The button sits closer to the words. */
+@media (max-width: 700px) {
+  body.watching .brand p {
+    min-height: calc(2 * 1.25em);
+  }
+
+  .watch-drawing-look {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+}
+
+@media (max-height: 500px) {
+  body.watching .brand p {
+    min-height: 0;
+  }
+
+  /* A phone on its side has no height to spare: the button is its picture alone, in the
+     corner of the words, which keep clear of it. Its name is still read out. */
+  .watch-caption {
+    position: relative;
+  }
+
+  .watch-path {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .watch-caption:has(.watch-drawing-look:not([hidden])) {
+    padding-right: 60px;
+  }
+
+  .watch-drawing-look {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    width: 44px;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .watch-drawing-look span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* A wide screen with two looks: the zoom buttons stand in the corner of the look they move. */
+@media (min-width: 1000px) and (min-height: 501px) {
+  body.watching.two-looks .view-controls {
+    top: auto;
+    transform: none;
+    right: calc(var(--look-right, 16px) + 12px);
+    bottom: calc(var(--look-bottom, 120px) + 12px);
   }
 }

@@ -75,7 +75,7 @@ const FACE_PIXELS = 1024;
 
 /** Viewing angle & distance for optimal isometric 3D perspective */
 const VIEW_WIDTHS = 1.36;
-const VIEW_DIRECTION: Vec3 = { x: 0.22, y: 0.50, z: 0.98 };
+const VIEW_DIRECTION: Vec3 = { x: 0.22, y: 0.5, z: 0.98 };
 
 /** A building representation for animated tremors */
 interface SwayBuilding {
@@ -248,7 +248,7 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
   const grassToothGeo = keep(new BoxGeometry(0.22, 0.17, 0.36));
   for (let i = 0; i < 8; i++) {
     const tz = -back * 0.42 + (i / 7) * back * 0.84;
-    const tx = (i % 2 === 0 ? 0.08 : -0.08);
+    const tx = i % 2 === 0 ? 0.08 : -0.08;
     const tooth = new Mesh(grassToothGeo, grassMaterial);
     tooth.position.set(tx, 0.085, tz);
     tooth.rotation.y = (i % 3) * 0.3;
@@ -290,7 +290,10 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       depthWrite: false,
     }),
   );
-  const pWaveMesh = new Mesh(keep(new SphereGeometry(1, 36, 18, 0, Math.PI * 2, 0, Math.PI)), pWaveMaterial);
+  const pWaveMesh = new Mesh(
+    keep(new SphereGeometry(1, 36, 18, 0, Math.PI * 2, 0, Math.PI)),
+    pWaveMaterial,
+  );
   pWaveMesh.visible = false;
   waveGroup.add(pWaveMesh);
 
@@ -305,7 +308,10 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       depthWrite: false,
     }),
   );
-  const sWaveMesh = new Mesh(keep(new SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI)), sWaveMaterial);
+  const sWaveMesh = new Mesh(
+    keep(new SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI)),
+    sWaveMaterial,
+  );
   sWaveMesh.visible = false;
   waveGroup.add(sWaveMesh);
 
@@ -332,12 +338,18 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
   const roadThickness = 0.04;
 
   // Left road segment (on footwall)
-  const leftRoadMesh = new Mesh(keep(new BoxGeometry(halfAcross - 0.05, roadThickness, roadWidth)), asphaltMaterial);
+  const leftRoadMesh = new Mesh(
+    keep(new BoxGeometry(halfAcross - 0.05, roadThickness, roadWidth)),
+    asphaltMaterial,
+  );
   leftRoadMesh.position.set(-0.025, 0.18, roadZ);
   leftGroup.add(leftRoadMesh);
 
   // Right road segment (on hanging wall)
-  const rightRoadMesh = new Mesh(keep(new BoxGeometry(halfAcross - 0.05, roadThickness, roadWidth)), asphaltMaterial);
+  const rightRoadMesh = new Mesh(
+    keep(new BoxGeometry(halfAcross - 0.05, roadThickness, roadWidth)),
+    asphaltMaterial,
+  );
   rightRoadMesh.position.set(0.025, 0.18, roadZ);
   rightGroup.add(rightRoadMesh);
 
@@ -376,19 +388,19 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
   const fissureMaterial = keep(new MeshBasicMaterial({ color: 0x111215 }));
   const crackGeo = keep(new BoxGeometry(0.7, 0.06, 0.07));
   const crack1 = new Mesh(crackGeo, fissureMaterial);
-  crack1.position.set(halfAcross * 0.35, 0.20, roadZ - 0.2);
+  crack1.position.set(halfAcross * 0.35, 0.2, roadZ - 0.2);
   crack1.rotation.y = 0.5;
   crack1.visible = false;
   leftGroup.add(crack1);
 
   const crack2 = new Mesh(crackGeo, fissureMaterial);
-  crack2.position.set(halfAcross * 0.42, 0.20, roadZ + 0.25);
+  crack2.position.set(halfAcross * 0.42, 0.2, roadZ + 0.25);
   crack2.rotation.y = -0.4;
   crack2.visible = false;
   leftGroup.add(crack2);
 
   const crack3 = new Mesh(crackGeo, fissureMaterial);
-  crack3.position.set(-halfAcross * 0.38, 0.20, roadZ - 0.15);
+  crack3.position.set(-halfAcross * 0.38, 0.2, roadZ - 0.15);
   crack3.rotation.y = -0.6;
   crack3.visible = false;
   rightGroup.add(crack3);
@@ -530,7 +542,10 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
     doorCanopy.position.set(0, 0.65, depth / 2 + 0.12);
     bldgGroup.add(doorCanopy);
 
-    const mainDoor = new Mesh(keep(new BoxGeometry(winWidth * 1.2, 0.55, 0.04)), keep(new MeshLambertMaterial({ color: 0x1f2328 })));
+    const mainDoor = new Mesh(
+      keep(new BoxGeometry(winWidth * 1.2, 0.55, 0.04)),
+      keep(new MeshLambertMaterial({ color: 0x1f2328 })),
+    );
     mainDoor.position.set(0, 0.28, depth / 2 + 0.02);
     bldgGroup.add(mainDoor);
 
@@ -570,12 +585,7 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
   };
 
   // Helper to build a suburban residential house with pitched red roof and chimney (Ref Image 1 & 2)
-  const createHouse = (
-    parent: Group,
-    posX: number,
-    posZ: number,
-    rotY: number,
-  ): JitterHouse => {
+  const createHouse = (parent: Group, posX: number, posZ: number, rotY: number): JitterHouse => {
     const houseGroup = new Group();
     houseGroup.position.set(posX, 0.16, posZ);
     houseGroup.rotation.y = rotY;
@@ -608,7 +618,10 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
     houseGroup.add(chimney);
 
     // Front door
-    const door = new Mesh(keep(new BoxGeometry(0.26, 0.52, 0.04)), keep(new MeshLambertMaterial({ color: 0x753b1b })));
+    const door = new Mesh(
+      keep(new BoxGeometry(0.26, 0.52, 0.04)),
+      keep(new MeshLambertMaterial({ color: 0x753b1b })),
+    );
     door.position.set(0, 0.26, houseD / 2 + 0.02);
     houseGroup.add(door);
 
@@ -803,7 +816,7 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
   for (let i = 0; i < 12; i++) {
     const isBrick = i % 2 === 0;
     const rubble = new Mesh(rubbleGeo, isBrick ? brickRubbleMat : concreteRubbleMat);
-    const rx = -halfAcross * 0.38 + (i % 4) * 0.16 + (Math.sin(i) * 0.08);
+    const rx = -halfAcross * 0.38 + (i % 4) * 0.16 + Math.sin(i) * 0.08;
     const rz = -back * 0.2 + Math.floor(i / 4) * 0.14;
     rubble.position.set(rx, 0.2, rz);
     rubble.rotation.set(i * 0.4, i * 0.7, i * 0.3);
@@ -922,15 +935,12 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       rock.lineTo(slabTopX - Math.cos(slabAngle) * height * 1.3, height);
       rock.stroke();
 
-      // Plate motion indicator
-      rock.fillStyle = 'rgba(215, 235, 255, 0.95)';
-      rock.font = 'bold 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      rock.fillText('SUBDUCTING PACIFIC SLAB (~7 cm/yr)', slabTopX - 440, 160);
       rock.restore();
     }
 
-    // Discontinuity lines & labels
-    const drawDiscontinuity = (km: number, name: string) => {
+    // Lines where the mantle changes, with no words: words painted on the rock could not be
+    // read in the view, nor be in the reader's language.
+    const drawDiscontinuity = (km: number) => {
       const y = km * pixelsPerKm;
       if (y > height) return;
       rock.strokeStyle = DISCONTINUITY_LINE;
@@ -941,16 +951,10 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       rock.lineTo(width, y);
       rock.stroke();
       rock.setLineDash([]);
-
-      if (!isRight) {
-        rock.fillStyle = '#ffebb8';
-        rock.font = 'bold 25px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        rock.fillText(`── ${km} km ── ${name}`, 220, y - 10);
-      }
     };
 
-    drawDiscontinuity(TRANSITION_ZONE_TOP_KM, 'TRANSITION ZONE (410 km)');
-    drawDiscontinuity(TRANSITION_ZONE_BOTTOM_KM, 'LOWER MANTLE (660 km)');
+    drawDiscontinuity(TRANSITION_ZONE_TOP_KM);
+    drawDiscontinuity(TRANSITION_ZONE_BOTTOM_KM);
 
     // Depth ruler on the left edge of LEFT block
     if (!isRight) {
@@ -963,10 +967,6 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       rock.lineTo(190, height);
       rock.stroke();
 
-      rock.fillStyle = '#ffffff';
-      rock.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      rock.textAlign = 'right';
-
       for (let km = 0; km <= downKm; km += 50) {
         const y = km * pixelsPerKm;
         const isMajor = km % 100 === 0 || km === depthKm || km === 410 || km === 660;
@@ -976,12 +976,7 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
         rock.moveTo(isMajor ? 145 : 165, y);
         rock.lineTo(190, y);
         rock.stroke();
-
-        if (isMajor) {
-          rock.fillText(`${km} km`, 135, y + 8);
-        }
       }
-      rock.textAlign = 'left';
     }
 
     // Hypocenter wave radiation from the fault line at the interface
@@ -996,23 +991,17 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       flare.addColorStop(0.4, `rgba(${BREAK_GLOW}, 0.55)`);
       flare.addColorStop(1, 'rgba(0, 0, 0, 0)');
       rock.fillStyle = flare;
-      rock.fillRect(originX - flareRadius, focusYPx - flareRadius, flareRadius * 2, flareRadius * 2);
+      rock.fillRect(
+        originX - flareRadius,
+        focusYPx - flareRadius,
+        flareRadius * 2,
+        flareRadius * 2,
+      );
     }
 
     // Draw wave arcs
     if (reachKm !== null) {
       drawWaveArcs(rock, originX, focusYPx, (behindKm) => reachKm - behindKm);
-    }
-
-    // Hypocenter badge text (on the right face)
-    if (isRight) {
-      rock.fillStyle = broken ? `rgb(${BREAK_GLOW})` : 'rgba(255, 215, 120, 0.95)';
-      rock.font = 'bold 25px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      rock.fillText(
-        `HYPOCENTER (${depthKm} km) ${broken ? '• NORMAL FAULT SLIP (M8.2)' : '• STRESS LOAD'}`,
-        35,
-        focusYPx + 10,
-      );
     }
 
     cutFace.texture.needsUpdate = true;
@@ -1130,8 +1119,16 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
 
     // Dynamic building swaying & tilt (stands 100% straight when faultSlip === 0)
     for (const bldg of swayBuildings) {
-      const swayZ = Math.sin(animTime * bldg.freq * 2 * Math.PI + bldg.phase) * currentTremor * bldg.heightFactor * 1.8;
-      const swayX = Math.cos(animTime * (bldg.freq * 0.8) * 2 * Math.PI + bldg.phase) * currentTremor * bldg.heightFactor * 1.1;
+      const swayZ =
+        Math.sin(animTime * bldg.freq * 2 * Math.PI + bldg.phase) *
+        currentTremor *
+        bldg.heightFactor *
+        1.8;
+      const swayX =
+        Math.cos(animTime * (bldg.freq * 0.8) * 2 * Math.PI + bldg.phase) *
+        currentTremor *
+        bldg.heightFactor *
+        1.1;
       bldg.group.rotation.z = bldg.targetTiltZ * faultSlip + swayZ;
       bldg.group.rotation.x = bldg.targetTiltX * faultSlip + swayX;
       for (const crack of bldg.cracks) {
@@ -1178,7 +1175,10 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
 
     // Subtle wave shell phase pulse
     if (pWaveMesh.visible) {
-      pWaveMaterial.opacity = Math.min(0.55, pWaveMaterial.opacity * (0.95 + 0.08 * Math.sin(animTime * 8)));
+      pWaveMaterial.opacity = Math.min(
+        0.55,
+        pWaveMaterial.opacity * (0.95 + 0.08 * Math.sin(animTime * 8)),
+      );
     }
   };
 

@@ -1120,9 +1120,9 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyTornadoNote:
     'Đường đi và bề rộng của vòi lốc là thật. Đám mây và hình dáng vòi lốc là hình vẽ.',
   storyTornadoWindShear:
-    'Gió gần mặt đất và gió trên cao thổi với tốc độ và hướng khác nhau. Sự đứt gió này cuộn khối không khí ở giữa thành một ống xoay nằm ngang vô hình.',
+    'Gần mặt đất, gió thổi theo một hướng. Trên cao, gió thổi nhanh hơn và theo hướng khác. Ở giữa, không khí bắt đầu cuộn tròn, giống như cây bút chì lăn giữa hai bàn tay.',
   storyTornadoUpdraftTilt:
-    'Luồng không khí bốc lên mạnh mẽ của cơn giông cuốn ống khí xoay ngang và dựng đứng nó lên thành một cột xoay gọi là hoàn lưu trung gian.',
+    'Một cơn dông lớn kéo không khí ấm bay lên. Luồng khí bốc lên nâng khối khí đang cuộn và dựng đứng nó lên. Giờ có một cột không khí cao đang xoay bên trong cơn dông.',
   storyTornadoFromAStorm:
     'Lốc xoáy là một cột không khí hẹp, xoay rất nhanh. Nó vươn từ một đám mây dông xuống tới mặt đất.',
   storyTornadoTouchesDown:
@@ -1130,7 +1130,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyTornadoItsPath:
     'Nó đi 23 km qua các cánh đồng trong 29 phút. Chỗ rộng nhất, nó rộng 800 m. Không ai bị thương.',
   storyTornadoRopeOut:
-    'Luồng gió giáng lạnh do mưa cuốn chặt quanh xoáy lốc, chặn đứt luồng khí ấm ẩm nuôi dưỡng. Vòi lốc thu hẹp thành hình sợi dây xoắn ngoằn ngoèo rồi tan biến.',
+    'Không khí mát từ cơn mưa quấn quanh lốc xoáy và chặn mất luồng khí ấm nó cần. Vòi lốc teo lại như một sợi dây xoắn, rồi biến mất.',
   storyTornadoHowStrong:
     'Lốc xoáy mạnh đến đâu? Các chuyên gia xem nó đã làm hỏng những gì, rồi từ đó tính ra sức gió. Cơn lốc này được xếp mức 3, trên thang từ 0 đến 5.',
   storyTornadoNotYetKnown:
@@ -1181,23 +1181,20 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchGroupSkyEvents: 'Chuyện trên trời',
   watchGroupSpaceFlights: 'Chuyến bay vũ trụ',
   watchGroupEarthAtWork: 'Trái Đất chuyển động',
+  watchKindInsideEarth: 'Lòng đất',
+  watchKindWeather: 'Thời tiết',
+  watchKindSeaAndMoon: 'Biển và Mặt Trăng',
   watchStormWind: 'Gió: {n} km mỗi giờ',
   watchPaneSlice: 'Cắt đôi (hình vẽ)',
   watchPaneTornado: 'Lốc xoáy (hình vẽ)',
   watchPaneQuakeBlock: 'Cận cảnh (hình vẽ)',
-  scaleLabelQuakeBlock:
-    'Khối đất cắt ra là hình vẽ. Độ sâu của chỗ nứt vỡ và lúc sóng lên tới mặt đất là thật.',
-  scaleLabelTsunamiSlice:
-    'Hình cắt biển là hình vẽ phóng đại chiều cao. Cách sóng chậm lại và dâng cao gần bờ là thật.',
-  scaleLabelVolcanoSlice:
-    'Mô hình cắt lớp núi lửa là hình vẽ. Cột tro bụi bốc lên tầng bình lưu là từ quan sát thực tế.',
-  scaleLabelTideSlice:
-    'Mô phỏng thủy triều đại dương là hình vẽ minh họa được phóng đại để dễ quan sát. Lực hấp dẫn của Mặt Trăng và vị trí quỹ đạo là có thật.',
-  scaleLabelDustSlice:
-    'Cơn bão cát sa mạc là mô phỏng 3D. Hình ảnh vệ tinh đám bụi cát vượt đại dương là từ quan sát thực tế.',
+  scaleLabelQuakeBlock: 'Khối đất cắt ra là hình vẽ. Độ sâu và thời điểm là thật.',
+  scaleLabelTsunamiSlice: 'Hình cắt biển là hình vẽ, được kéo cao. Cách sóng chậm lại là thật.',
+  scaleLabelVolcanoSlice: 'Núi lửa cắt ra là hình vẽ. Độ cao tro bụi bốc lên là thật.',
+  scaleLabelTideSlice: 'Biển phồng lên là hình vẽ, phóng to nhiều. Sức kéo của Mặt Trăng là thật.',
+  scaleLabelDustSlice: 'Bão bụi nhìn gần là hình vẽ. Ảnh chụp từ vũ trụ là thật.',
   scaleLabelTornado: 'Đường đi và bề rộng của vòi lốc là thật. Phần còn lại là hình vẽ.',
-  scaleLabelSlice:
-    'Đường đi và hướng xoay là thật. Mô phỏng 3D thể hiện cấu trúc và vòng đời cơn bão từ hình thành đến tan rã.',
+  scaleLabelSlice: 'Cơn bão nhìn gần là hình vẽ. Đường đi và hướng xoay là thật.',
   watchPlay: 'Chạy',
   watchPause: 'Tạm dừng',
   watchAgain: 'Xem lại',
@@ -1208,6 +1205,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPaneFrom: 'Nhìn từ: {name}',
   watchPaneClose: 'Nhìn gần',
   watchPaneWhole: 'Toàn cảnh',
+  watchLookAir: 'Xem không khí chuyển động',
+  watchLookPull: 'Xem Mặt Trăng kéo thế nào',
+  watchLookArrowsOff: 'Ẩn các mũi tên',
+  watchLookCutOpen: 'Cắt đôi ngọn núi',
+  watchLookWholeMountain: 'Xem cả ngọn núi',
+  watchLookShore: 'Xem sóng vào bờ',
+  watchLookWholeSea: 'Xem cả vùng biển',
   watchSeenInSky: 'Thấy ở đây trên bầu trời',
   watchYou: 'Bạn',
   watchPhotoBigger: 'Ảnh thật. Phóng to',

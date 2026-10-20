@@ -1130,23 +1130,21 @@ export const en = {
   watchGroupSkyEvents: 'Sky events',
   watchGroupSpaceFlights: 'Space flights',
   watchGroupEarthAtWork: 'Earth at work',
+  watchKindInsideEarth: 'Inside Earth',
+  watchKindWeather: 'Weather',
+  watchKindSeaAndMoon: 'Sea and Moon',
   watchStormWind: 'Wind: {n} km an hour',
   watchPaneSlice: 'Cut in half (a drawing)',
   watchPaneTornado: 'The tornado (a drawing)',
   watchPaneQuakeBlock: 'Close up (a drawing)',
-  scaleLabelQuakeBlock:
-    'The ground cut open is a drawing. How deep the break is, and when the wave comes up, are real.',
-  scaleLabelTsunamiSlice:
-    'The sea cut open is a drawing, stretched tall. How the wave slows and rises near the shore is real.',
-  scaleLabelVolcanoSlice:
-    'The volcano cut open is a drawing. The ash cloud rising into the stratosphere is from real observations.',
+  scaleLabelQuakeBlock: 'The ground cut open is a drawing. How deep and when are real.',
+  scaleLabelTsunamiSlice: 'The sea cut open is a drawing, made taller. How the wave slows is real.',
+  scaleLabelVolcanoSlice: 'The volcano cut open is a drawing. How high the ash rose is real.',
   scaleLabelTideSlice:
-    "The oceanic tidal simulation is a drawing, exaggerated for visibility. The Moon's gravitational pull and orbital alignment are real.",
-  scaleLabelDustSlice:
-    'The desert dust storm is a 3D simulation. The satellite view of the dust plume crossing the ocean is from real observations.',
+    'The sea’s swelling is a drawing, made much bigger. The Moon’s pull is real.',
+  scaleLabelDustSlice: 'The dust storm up close is a drawing. The view from space is real.',
   scaleLabelTornado: 'The path and the width of the funnel are real. The rest is a drawing.',
-  scaleLabelSlice:
-    'The track and rotation of the storm are real. The 3D cyclone simulation is a drawing, showing its structure from formation to decay.',
+  scaleLabelSlice: 'The storm up close is a drawing. Its path and spin are real.',
   watchPlay: 'Play',
   watchPause: 'Pause',
   watchAgain: 'Play again',
@@ -1157,6 +1155,13 @@ export const en = {
   watchPaneFrom: 'Seen from: {name}',
   watchPaneClose: 'Close up',
   watchPaneWhole: 'The whole picture',
+  watchLookAir: 'Show how the air moves',
+  watchLookPull: 'Show how the Moon pulls',
+  watchLookArrowsOff: 'Hide the arrows',
+  watchLookCutOpen: 'Cut the mountain open',
+  watchLookWholeMountain: 'See the whole mountain',
+  watchLookShore: 'See the wave at the shore',
+  watchLookWholeSea: 'See the whole sea',
   watchSeenInSky: 'Seen here in the sky',
   watchYou: 'You',
   watchPhotoBigger: 'A real photo. Make it bigger',
@@ -1449,9 +1454,9 @@ export const en = {
   storyTornadoNote:
     'The path and the width of the funnel are real. The cloud and the shape of the funnel are a drawing.',
   storyTornadoWindShear:
-    'Winds near the ground and winds aloft blow at different speeds and directions. This wind shear rolls the air between them into an invisible spinning horizontal tube.',
+    'Near the ground the wind blows one way. Higher up it blows faster, and another way. In between, the air starts to roll over and over, like a pencil rolled between your hands.',
   storyTornadoUpdraftTilt:
-    'A powerful thunderstorm updraft rises through the warm air, lifting the horizontal spinning tube and tilting it upright into a rotating column called a mesocyclone.',
+    'A big thunderstorm pulls warm air up into it. The rising air lifts the rolling air and tips it up on its end. Now a tall column of air is spinning inside the storm.',
   storyTornadoFromAStorm:
     'A tornado is a narrow, spinning tube of air. It reaches from a thunderstorm down to the ground.',
   storyTornadoTouchesDown:
@@ -1459,7 +1464,7 @@ export const en = {
   storyTornadoItsPath:
     'It went 23 km across the fields in 29 minutes. At its widest it was 800 m across. Nobody was hurt.',
   storyTornadoRopeOut:
-    'Rain-cooled downdrafts wrap completely around the vortex, cutting off its inflow of warm moist air. The funnel narrows into a contorted rope and fades away.',
+    'Cool air from the rain wraps round the tornado and cuts off the warm air it needs. The funnel gets thin, like a twisted rope, and then it is gone.',
   storyTornadoHowStrong:
     'How strong is a tornado? Experts look at what it broke, and work out the wind from that. This one was rated 3, on a scale from 0 to 5.',
   storyTornadoNotYetKnown:

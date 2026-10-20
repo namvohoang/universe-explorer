@@ -95,22 +95,42 @@ test.describe('the Earth screen', () => {
     await expect(page.locator('.watch-date')).toContainText('23 September 2021');
     // The wind is the record's, between its 12:00 and 18:00 that day, to the nearest 10 km/h.
     await expect(page.locator('.watch-date')).toContainText('Wind: 90 km an hour');
-    await expect(page.locator('#scale-label, .scale-label').first()).toContainText('Real sizes');
+    await expect(page.locator('#scale-label')).toHaveText(
+      'The storm up close is a drawing. Its path and spin are real.',
+    );
   });
 
-  test('shows the storm cut in half as a drawing, and says it is one', async ({ page }) => {
+  test('shows the storm up close as a drawing, and says it is one', async ({ page }) => {
     await page.goto('/#earth/hurricane-sam');
     const next = page.locator('.watch-step-button').nth(1);
     for (let part = 1; part < 5; part++) await next.click();
     await expect(page.locator('.watch-step')).toHaveText('Part 5 of 10');
-    await expect(page.locator('.pane:visible').last()).toContainText('Cut in half (a drawing)');
-    await expect(page.locator('#scale-label')).toHaveText(
-      'The picture is real. The cut is a drawing, far taller than a real storm.',
-    );
-    // The part after it has the whole picture back, and the usual sentence about scale.
-    await next.click();
+    await expect(page.locator('.pane:visible').first()).toContainText('Close up (a drawing)');
     await expect(page.locator('.pane:visible').last()).toContainText('The whole picture');
-    await expect(page.locator('#scale-label')).toContainText('Real sizes');
+    await expect(page.locator('#scale-label')).toHaveText(
+      'The storm up close is a drawing. Its path and spin are real.',
+    );
+  });
+
+  test('has one button, in the story’s words, for the other look at the drawing', async ({
+    page,
+  }) => {
+    await page.goto('/#earth/hurricane-sam');
+    const look = page.locator('.watch-caption .watch-drawing-look');
+    await expect(look).toHaveText('Show how the air moves');
+    await look.click();
+    await expect(look).toHaveText('Hide the arrows');
+    await look.click();
+    await expect(look).toHaveText('Show how the air moves');
+    // The drawing puts no controls of its own on the page.
+    await expect(page.locator('#storm-simulator-controls, #storm-phase-pills')).toHaveCount(0);
+    // A drawing with no other look has no button.
+    await page.goto('/#earth/earthquake-fiji');
+    await expect(page.locator('.watch-caption h2')).toHaveText('An earthquake');
+    await expect(look).toBeHidden();
+    await page.goto('/#earth/volcano-raikoke');
+    await expect(look).toHaveText('See the whole mountain');
+    await expect(page.locator('#volcano-view-toggle')).toHaveCount(0);
   });
 
   test('tells of a typhoon that reached Vietnam, with no wind where its record has none', async ({
@@ -203,11 +223,12 @@ test.describe('the Earth screen', () => {
       (worldBox?.x ?? 0) + (worldBox?.y ?? 0),
     );
     await expect(page.locator('#scale-label')).toContainText('The ground cut open is a drawing.');
-    // Once the wave is crossing the world, both looks are at the world again.
+    // While the wave crosses the world, the ground cut open stays beside it.
     await page.locator('.watch-step-button').nth(1).click();
     await page.locator('.watch-step-button').nth(1).click();
     await expect(page.locator('.watch-step')).toHaveText('Part 3 of 5');
-    await expect(page.locator('.pane:visible', { hasText: 'a drawing' })).toHaveCount(0);
+    await expect(drawing).toHaveCount(1);
+    await expect(world).toHaveCount(1);
   });
 
   test('tells a tsunami from its gauges and from the depth of the sea, and says they may differ', async ({
@@ -234,8 +255,8 @@ test.describe('the Earth screen', () => {
   }) => {
     await page.goto('/#earth/tornado-tescott');
     await expect(page.locator('.watch-caption h2')).toHaveText('A tornado');
-    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 5');
-    await expect(page.locator('.pane:visible').last()).toContainText('The tornado (a drawing)');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 6');
+    await expect(page.locator('.pane:visible').first()).toContainText('The tornado (a drawing)');
     await expect(page.locator('#scale-label')).toHaveText(
       'The path and the width of the funnel are real. The rest is a drawing.',
     );
@@ -256,6 +277,9 @@ test.describe('the Earth screen', () => {
     await page.goto('/?lang=vi#earth/hurricane-sam');
     await expect(page.locator('.watch-caption h2')).toHaveText('Một cơn bão');
     await expect(page.locator(mainTab('Trái Đất'))).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('.watch-caption .watch-drawing-look')).toHaveText(
+      'Xem không khí chuyển động',
+    );
   });
 });
 

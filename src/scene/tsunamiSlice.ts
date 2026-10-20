@@ -10,7 +10,6 @@ import {
   DirectionalLight,
   DoubleSide,
   Group,
-  LinearFilter,
   LineBasicMaterial,
   LineSegments,
   Mesh,
@@ -73,6 +72,8 @@ export interface TsunamiSlice {
   flow(seconds: number): void;
   /** Toggles between the close-up 3D Wave Breaker view and the wide Ocean Cross-Section view */
   toggleView(): void;
+  /** Whether the wave is shown breaking at the shore. */
+  viewToggled(): boolean;
   dispose(): void;
 }
 
@@ -184,7 +185,7 @@ function createCausticTexture(): CanvasTexture {
   return texture;
 }
 
-/** Warm terracotta / ochre diorama title plaque ("TSUNAMI!" as in User Image 1) */
+/** A plain warm ochre plate for the front of the diorama (no words: they could not be read in the view, nor be in the reader's language). */
 function createPlaqueTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
@@ -203,24 +204,6 @@ function createPlaqueTexture(): CanvasTexture {
     ctx.strokeStyle = '#2d1e18';
     ctx.lineWidth = 6;
     ctx.stroke();
-
-    // Bold drop shadow for TSUNAMI!
-    ctx.font = '900 58px "Impact", "Arial Black", -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-
-    // Black outline / block shadow
-    ctx.strokeStyle = '#1a0d08';
-    ctx.lineWidth = 6;
-    ctx.strokeText('TSUNAMI!', 256, 74);
-
-    // Bright red face
-    ctx.fillStyle = '#d32f2f';
-    ctx.fillText('TSUNAMI!', 256, 74);
-
-    // Subtitle
-    ctx.fillStyle = '#261710';
-    ctx.font = '700 19px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('COASTAL SHOALING & INUNDATION', 256, 112);
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
@@ -270,21 +253,23 @@ function createBoatMesh(keep: <T extends { dispose(): void }>(t: T) => T): Group
   const hullGeom = keep(new BufferGeometry());
   const hullPos = [
     // Bottom
-    -0.45, -0.12, -0.14,  0.45, -0.08, 0.0,   -0.45, -0.12, 0.14,
+    -0.45, -0.12, -0.14, 0.45, -0.08, 0.0, -0.45, -0.12, 0.14,
     // Port side
-    -0.45, -0.12, 0.14,   0.45, -0.08, 0.0,    0.42, 0.10, 0.0,
-    -0.45, -0.12, 0.14,   0.42, 0.10, 0.0,    -0.45, 0.12, 0.20,
+    -0.45, -0.12, 0.14, 0.45, -0.08, 0.0, 0.42, 0.1, 0.0, -0.45, -0.12, 0.14, 0.42, 0.1, 0.0, -0.45,
+    0.12, 0.2,
     // Starboard side
-    -0.45, -0.12, -0.14, -0.45, 0.12, -0.20,  0.42, 0.10, 0.0,
-    -0.45, -0.12, -0.14,  0.42, 0.10, 0.0,    0.45, -0.08, 0.0,
+    -0.45, -0.12, -0.14, -0.45, 0.12, -0.2, 0.42, 0.1, 0.0, -0.45, -0.12, -0.14, 0.42, 0.1, 0.0,
+    0.45, -0.08, 0.0,
     // Transom (stern)
-    -0.45, -0.12, -0.14, -0.45, -0.12, 0.14,  -0.45, 0.12, 0.20,
-    -0.45, -0.12, -0.14, -0.45, 0.12, 0.20,  -0.45, 0.12, -0.20,
+    -0.45, -0.12, -0.14, -0.45, -0.12, 0.14, -0.45, 0.12, 0.2, -0.45, -0.12, -0.14, -0.45, 0.12,
+    0.2, -0.45, 0.12, -0.2,
   ];
   hullGeom.setAttribute('position', new BufferAttribute(new Float32Array(hullPos), 3));
   hullGeom.computeVertexNormals();
 
-  const boatMat = keep(new MeshStandardMaterial({ color: 0x795548, roughness: 0.85, side: DoubleSide }));
+  const boatMat = keep(
+    new MeshStandardMaterial({ color: 0x795548, roughness: 0.85, side: DoubleSide }),
+  );
   boat.add(new Mesh(hullGeom, boatMat));
 
   const seatGeom = keep(new BoxGeometry(0.12, 0.03, 0.32));
@@ -300,7 +285,9 @@ function createBoatMesh(keep: <T extends { dispose(): void }>(t: T) => T): Group
 function createPalmTree(keep: <T extends { dispose(): void }>(t: T) => T, height = 1.6): Group {
   const palm = new Group();
   const trunkMat = keep(new MeshStandardMaterial({ color: 0x5d4037, roughness: 0.9 }));
-  const frondMat = keep(new MeshStandardMaterial({ color: 0x2e7d32, roughness: 0.85, side: DoubleSide }));
+  const frondMat = keep(
+    new MeshStandardMaterial({ color: 0x2e7d32, roughness: 0.85, side: DoubleSide }),
+  );
 
   const segHeight = height / 3;
   for (let i = 0; i < 3; i++) {
@@ -341,7 +328,7 @@ function createHut(
   const darkMat = keep(new MeshBasicMaterial({ color: 0x2d1e18 }));
 
   const stiltMat = keep(new MeshStandardMaterial({ color: 0x5d4037, roughness: 0.9 }));
-  const stiltH = 0.20;
+  const stiltH = 0.2;
   const dx = width * 0.42;
   const dz = depth * 0.42;
   const stiltCorners: [number, number][] = [
@@ -365,7 +352,11 @@ function createHut(
   roofGeom.rotateY(Math.PI / 4);
   const roof = new Mesh(roofGeom, roofMat);
   roof.position.set(0, stiltH + height + roofH / 2, 0);
-  roof.scale.set((width / Math.max(width, depth)) * 1.15, 1, (depth / Math.max(width, depth)) * 1.15);
+  roof.scale.set(
+    (width / Math.max(width, depth)) * 1.15,
+    1,
+    (depth / Math.max(width, depth)) * 1.15,
+  );
   hut.add(roof);
 
   const door = new Mesh(keep(new PlaneGeometry(width * 0.26, height * 0.6)), darkMat);
@@ -380,7 +371,9 @@ function createLifeguardTower(keep: <T extends { dispose(): void }>(t: T) => T):
   const tower = new Group();
   const whiteMat = keep(new MeshStandardMaterial({ color: 0xf5f5f5, roughness: 0.6 }));
   const blueMat = keep(new MeshStandardMaterial({ color: 0x81d4fa, roughness: 0.7 }));
-  const glassMat = keep(new MeshStandardMaterial({ color: 0xe0f7fa, roughness: 0.2, metalness: 0.3 }));
+  const glassMat = keep(
+    new MeshStandardMaterial({ color: 0xe0f7fa, roughness: 0.2, metalness: 0.3 }),
+  );
 
   const stiltH = 0.65;
   const legCorners: [number, number][] = [
@@ -399,7 +392,7 @@ function createLifeguardTower(keep: <T extends { dispose(): void }>(t: T) => T):
   deck.position.set(0, stiltH, 0);
   tower.add(deck);
 
-  const cabin = new Mesh(keep(new BoxGeometry(0.70, 0.55, 0.60)), blueMat);
+  const cabin = new Mesh(keep(new BoxGeometry(0.7, 0.55, 0.6)), blueMat);
   cabin.position.set(0, stiltH + 0.28, 0);
   tower.add(cabin);
 
@@ -422,8 +415,12 @@ function createSnowPeak(
   snowRatio = 0.38,
 ): Group {
   const mountain = new Group();
-  const mountainMat = keep(new MeshStandardMaterial({ color: 0x795548, roughness: 0.9, flatShading: true }));
-  const snowMat = keep(new MeshStandardMaterial({ color: 0xffffff, roughness: 0.7, flatShading: true }));
+  const mountainMat = keep(
+    new MeshStandardMaterial({ color: 0x795548, roughness: 0.9, flatShading: true }),
+  );
+  const snowMat = keep(
+    new MeshStandardMaterial({ color: 0xffffff, roughness: 0.7, flatShading: true }),
+  );
 
   const body = new Mesh(keep(new ConeGeometry(radius, height, 6)), mountainMat);
   body.position.set(0, height / 2, 0);
@@ -559,17 +556,7 @@ export function createTsunamiSlice(): TsunamiSlice {
 
     // Front cut face
     seabedPositions.push(x0, y0, zFront, x0, bottomY, zFront, x1, bottomY, zFront);
-    seabedColors.push(
-      col0.r * 0.7,
-      col0.g * 0.7,
-      col0.b * 0.7,
-      0.1,
-      0.12,
-      0.15,
-      0.1,
-      0.12,
-      0.15,
-    );
+    seabedColors.push(col0.r * 0.7, col0.g * 0.7, col0.b * 0.7, 0.1, 0.12, 0.15, 0.1, 0.12, 0.15);
     seabedPositions.push(x0, y0, zFront, x1, bottomY, zFront, x1, y1, zFront);
     seabedColors.push(
       col0.r * 0.7,
@@ -781,7 +768,7 @@ export function createTsunamiSlice(): TsunamiSlice {
 
   // 1. Kraft cardboard diorama tray / base box (Image 1 & 2 aesthetic)
   const boxWidth = 10.4; // X: -5.1 to +5.3
-  const boxDepth = 5.6;  // Z: -2.8 to +2.8
+  const boxDepth = 5.6; // Z: -2.8 to +2.8
   const boxHeight = 0.75; // Y: -1.30 to -0.55
   const boxMat = keep(new MeshStandardMaterial({ color: 0x9e826b, roughness: 0.88 }));
   const boxTrimMat = keep(new MeshStandardMaterial({ color: 0x6d4c41, roughness: 0.85 }));
@@ -794,19 +781,19 @@ export function createTsunamiSlice(): TsunamiSlice {
   const rimH = 0.14;
   const rimThick = 0.12;
   const frontRim = new Mesh(keep(new BoxGeometry(boxWidth + 0.02, rimH, rimThick)), boxTrimMat);
-  frontRim.position.set(0.1, -0.50, boxDepth / 2);
+  frontRim.position.set(0.1, -0.5, boxDepth / 2);
   dioramaBoxGroup.add(frontRim);
 
   const backRim = new Mesh(keep(new BoxGeometry(boxWidth + 0.02, rimH, rimThick)), boxTrimMat);
-  backRim.position.set(0.1, -0.50, -boxDepth / 2);
+  backRim.position.set(0.1, -0.5, -boxDepth / 2);
   dioramaBoxGroup.add(backRim);
 
   const leftRim = new Mesh(keep(new BoxGeometry(rimThick, rimH, boxDepth)), boxTrimMat);
-  leftRim.position.set(-5.1, -0.50, 0);
+  leftRim.position.set(-5.1, -0.5, 0);
   dioramaBoxGroup.add(leftRim);
 
   const rightRim = new Mesh(keep(new BoxGeometry(rimThick, rimH, boxDepth)), boxTrimMat);
-  rightRim.position.set(5.3, -0.50, 0);
+  rightRim.position.set(5.3, -0.5, 0);
   dioramaBoxGroup.add(rightRim);
 
   // Front Plaque: "TSUNAMI!" (Image 1 signature bold plaque)
@@ -850,12 +837,30 @@ export function createTsunamiSlice(): TsunamiSlice {
   const pedZ = Z_SPAN / 2;
   const rearCutGeom = keep(new BufferGeometry());
   const rearCutPositions = [
-    -5.0, -0.65, -pedZ,  0.8, -0.65, -pedZ,  0.8, 0.1, -pedZ,
-    -5.0, -0.65, -pedZ,  0.8, 0.1, -pedZ,   -5.0, 0.1, -pedZ,
+    -5.0,
+    -0.65,
+    -pedZ,
+    0.8,
+    -0.65,
+    -pedZ,
+    0.8,
+    0.1,
+    -pedZ,
+    -5.0,
+    -0.65,
+    -pedZ,
+    0.8,
+    0.1,
+    -pedZ,
+    -5.0,
+    0.1,
+    -pedZ,
   ];
   rearCutGeom.setAttribute('position', new BufferAttribute(new Float32Array(rearCutPositions), 3));
   rearCutGeom.computeVertexNormals();
-  const rearCutMat = keep(new MeshStandardMaterial({ color: 0x243342, roughness: 0.88, side: DoubleSide }));
+  const rearCutMat = keep(
+    new MeshStandardMaterial({ color: 0x243342, roughness: 0.88, side: DoubleSide }),
+  );
   dioramaBoxGroup.add(new Mesh(rearCutGeom, rearCutMat));
 
   // 2. Beach Sand Terrain (Sloping up from water to village terrace)
@@ -906,30 +911,30 @@ export function createTsunamiSlice(): TsunamiSlice {
 
   // 5. Faceted Origami Mountains along back panel (Image 1)
   const mnt1 = createFacetedHill(keep, 1.3, 2.4, 0x2e7d32);
-  mnt1.position.set(1.4, -0.50, -2.1);
+  mnt1.position.set(1.4, -0.5, -2.1);
   dioramaBoxGroup.add(mnt1);
 
   const mnt2 = createSnowPeak(keep, 1.5, 3.2, 0.36);
-  mnt2.position.set(2.9, -0.50, -2.2);
+  mnt2.position.set(2.9, -0.5, -2.2);
   dioramaBoxGroup.add(mnt2);
 
   const mnt3 = createSnowPeak(keep, 1.2, 2.7, 0.34);
-  mnt3.position.set(4.3, -0.50, -2.1);
+  mnt3.position.set(4.3, -0.5, -2.1);
   dioramaBoxGroup.add(mnt3);
 
   const mnt4 = createFacetedHill(keep, 1.0, 1.8, 0x388e3c);
-  mnt4.position.set(0.4, -0.50, -2.1);
+  mnt4.position.set(0.4, -0.5, -2.1);
   dioramaBoxGroup.add(mnt4);
 
   // 6. Coastal Village Huts & Houses
-  const hut1 = createHut(keep, 0.95, 0.80, 0.60, 0xa1887f);
+  const hut1 = createHut(keep, 0.95, 0.8, 0.6, 0xa1887f);
   hut1.position.set(3.8, 0.05, -1.5);
   hut1.rotation.y = 0.15;
   dioramaBoxGroup.add(hut1);
 
   const hut2 = createHut(keep, 0.88, 0.75, 0.55, 0x8d6e63);
   hut2.position.set(4.2, 0.08, -0.6);
-  hut2.rotation.y = -0.20;
+  hut2.rotation.y = -0.2;
   dioramaBoxGroup.add(hut2);
 
   // Two small barrels outside Hut 2 (Image 1 detail)
@@ -944,7 +949,7 @@ export function createTsunamiSlice(): TsunamiSlice {
 
   const hut3 = createHut(keep, 1.05, 0.85, 0.65, 0x6d4c41);
   hut3.position.set(4.0, 0.08, 0.5);
-  hut3.rotation.y = 0.10;
+  hut3.rotation.y = 0.1;
   dioramaBoxGroup.add(hut3);
 
   // 7. Coastal Lifeguard Stilt Cabin (Image 2 signature tower)
@@ -963,7 +968,7 @@ export function createTsunamiSlice(): TsunamiSlice {
   dioramaBoxGroup.add(palm2);
 
   const palm3 = createPalmTree(keep, 1.8);
-  palm3.position.set(4.6, 0.10, 0.0);
+  palm3.position.set(4.6, 0.1, 0.0);
   dioramaBoxGroup.add(palm3);
 
   const palm4 = createPalmTree(keep, 1.6);
@@ -1044,32 +1049,6 @@ export function createTsunamiSlice(): TsunamiSlice {
   jetGroup.add(jetTail);
 
   // Airliner speed comparison sign
-  const jetSignCanvas = document.createElement('canvas');
-  jetSignCanvas.width = 512;
-  jetSignCanvas.height = 128;
-  const jetSignCtx = jetSignCanvas.getContext('2d');
-  if (jetSignCtx) {
-    jetSignCtx.fillStyle = 'rgba(8, 14, 28, 0.90)';
-    jetSignCtx.fillRect(0, 0, 512, 128);
-    jetSignCtx.strokeStyle = '#ffd54f';
-    jetSignCtx.lineWidth = 4;
-    jetSignCtx.strokeRect(4, 4, 504, 120);
-    jetSignCtx.fillStyle = '#ffffff';
-    jetSignCtx.font = 'bold 34px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    jetSignCtx.textAlign = 'center';
-    jetSignCtx.fillText('✈ JET: ~800 km/h', 256, 50);
-    jetSignCtx.fillStyle = '#64b5f6';
-    jetSignCtx.font = '600 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    jetSignCtx.fillText('TSUNAMI SPEED MATCH', 256, 94);
-  }
-  const jetSignTexture = keep(new CanvasTexture(jetSignCanvas));
-  jetSignTexture.colorSpace = SRGBColorSpace;
-  const jetSign = new Mesh(
-    keep(new PlaneGeometry(3.8, 0.95)),
-    keep(new MeshBasicMaterial({ map: jetSignTexture, transparent: true, side: DoubleSide })),
-  );
-  jetSign.position.set(0, -0.85, 0.1);
-  jetGroup.add(jetSign);
 
   // --- 5. NOAA DART TSUNAMI BUOY (Chapter 4: Deep ocean gauges) ---
   const buoyGroup = new Group();
@@ -1159,76 +1138,8 @@ export function createTsunamiSlice(): TsunamiSlice {
   beaconMesh.position.set(0, 0.85, 0);
   coastStationGroup.add(beaconMesh);
 
-  // --- 7. FLOATING SKY BANNER & DEPTH LABELS ---
-  const bannerCanvas = document.createElement('canvas');
-  bannerCanvas.width = 2048;
-  bannerCanvas.height = 360;
-  const bannerCtx = bannerCanvas.getContext('2d');
-  const bannerTexture = keep(new CanvasTexture(bannerCanvas));
-  bannerTexture.colorSpace = SRGBColorSpace;
-  bannerTexture.minFilter = LinearFilter;
-
-  const bannerPlane = new Mesh(
-    keep(new PlaneGeometry(17, 3.0)),
-    keep(new MeshBasicMaterial({ map: bannerTexture, transparent: true, side: DoubleSide })),
-  );
-  bannerPlane.position.set(-1.0, 3.1, 0.2);
-  root.add(bannerPlane);
-
-  const depthCanvas = document.createElement('canvas');
-  depthCanvas.width = 2048;
-  depthCanvas.height = 200;
-  const depthCtx = depthCanvas.getContext('2d');
-  const depthTexture = keep(new CanvasTexture(depthCanvas));
-  depthTexture.colorSpace = SRGBColorSpace;
-  depthTexture.minFilter = LinearFilter;
-
-  const depthPlane = new Mesh(
-    keep(new PlaneGeometry(SLICE_WIDTH, 2.2)),
-    keep(new MeshBasicMaterial({ map: depthTexture, transparent: true, side: DoubleSide })),
-  );
-  depthPlane.position.set(0, -5.8, SLICE_DEPTH / 2 + 0.03);
-  root.add(depthPlane);
-
-  if (depthCtx) {
-    depthCtx.clearRect(0, 0, 2048, 200);
-    depthCtx.fillStyle = 'rgba(8, 12, 22, 0.90)';
-    depthCtx.fillRect(0, 0, 2048, 200);
-
-    depthCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    depthCtx.lineWidth = 3;
-    depthCtx.beginPath();
-    depthCtx.moveTo(0, 2);
-    depthCtx.lineTo(2048, 2);
-    depthCtx.stroke();
-
-    depthCtx.fillStyle = '#64b5f6';
-    depthCtx.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('SUBDUCTION TRENCH · 5,000 m', 50, 52);
-    depthCtx.fillStyle = '#b0bec5';
-    depthCtx.font = '400 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('Fault springs seaward, lifting water column', 50, 95);
-
-    depthCtx.fillStyle = '#ffd54f';
-    depthCtx.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('OPEN DEEP OCEAN · 4,000 m', 760, 52);
-    depthCtx.fillStyle = '#b0bec5';
-    depthCtx.font = '400 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('Speed ~800 km/h (Jet plane) · Height < 1 m', 760, 95);
-
-    depthCtx.fillStyle = '#ff8a65';
-    depthCtx.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('CONTINENTAL SHELF & SHORE · 10 m', 1440, 52);
-    depthCtx.fillStyle = '#b0bec5';
-    depthCtx.font = '400 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    depthCtx.fillText('Wave slows to ~40 km/h · Surges into giant breaker', 1440, 95);
-
-    depthTexture.needsUpdate = true;
-  }
-
   // --- STATE & CAMERA CONTROL ---
   let currentChapter = 'sea-floor';
-  let currentMinutes = 0;
   let animTime = 0;
   let upliftOffset = 0;
   let waveProgress = 0;
@@ -1247,15 +1158,14 @@ export function createTsunamiSlice(): TsunamiSlice {
   const desiredDirection: MutableVec3 = { x: 0.12, y: 0.28, z: 1.0 };
 
   const updateCameraTarget = () => {
-    const isShoalingChapter = currentChapter === 'across-the-ocean' || currentChapter === 'warnings';
+    const isShoalingChapter =
+      currentChapter === 'across-the-ocean' || currentChapter === 'warnings';
     const showBreaker = viewMode === 'breaker' || (viewMode === 'auto' && isShoalingChapter);
 
     // In 3D Diorama mode, display the complete Coastal Tsunami Diorama Box
     seabedMesh.visible = !showBreaker;
     waterMesh.visible = !showBreaker;
     waterFrontMesh.visible = !showBreaker;
-    depthPlane.visible = !showBreaker;
-    bannerPlane.visible = !showBreaker;
     coastStationGroup.visible = !showBreaker;
     faultBlockGroup.visible = !showBreaker;
     barrelLight.intensity = showBreaker ? 4.8 : 2.0;
@@ -1265,7 +1175,7 @@ export function createTsunamiSlice(): TsunamiSlice {
     if (showBreaker) {
       // Elevated 3/4 front perspective framing the complete 3D Coastal Tsunami Diorama Box
       desiredTarget.x = 8.1;
-      desiredTarget.y = 0.60;
+      desiredTarget.y = 0.6;
       desiredTarget.z = 0.0;
       desiredDistance = 11.2;
       desiredDirection.x = -0.16;
@@ -1283,124 +1193,6 @@ export function createTsunamiSlice(): TsunamiSlice {
     }
   };
 
-  const renderCutAnnotations = () => {
-    if (!bannerCtx) return;
-    const { width, height } = bannerCanvas;
-    bannerCtx.clearRect(0, 0, width, height);
-
-    // Glassmorphism card container
-    bannerCtx.fillStyle = 'rgba(8, 14, 28, 0.92)';
-    bannerCtx.beginPath();
-    bannerCtx.roundRect(10, 10, width - 20, height - 20, 24);
-    bannerCtx.fill();
-
-    bannerCtx.strokeStyle = 'rgba(100, 200, 255, 0.45)';
-    bannerCtx.lineWidth = 3;
-    bannerCtx.stroke();
-
-    let stepBadge = '';
-    let headline = '';
-    let description = '';
-    let badgeColor = '#ffd54f';
-
-    if (currentChapter === 'sea-floor') {
-      stepBadge = 'PART 1 OF 6 · SUBDUCTION FAULT UPLIFT';
-      headline = 'The Seafloor Springs Upward, Displacing Ocean Water';
-      description =
-        'Tectonic plate snaps seaward, lifting thousands of tonnes of ocean water to begin the tsunami.';
-      badgeColor = '#ffd54f';
-    } else if (currentChapter === 'every-direction') {
-      stepBadge = 'PART 2 OF 6 · OMNIDIRECTIONAL PROPAGATION';
-      headline = 'Tsunami Radiates Outward Across the Entire Pacific Basin';
-      description =
-        'Gravity pulls the displaced mound of water down, radiating high-speed wavefronts in every direction.';
-      badgeColor = '#64b5f6';
-    } else if (currentChapter === 'fast-and-slow') {
-      stepBadge = 'PART 3 OF 6 · DEEP-WATER SPEED (v = √(g × depth))';
-      headline = 'Jetliner Cruising Speed in Deep Ocean: Over 800 km/h';
-      description =
-        'In 4,000 m deep water, wave speed reaches ~800 km/h (~500 mph) — crossing oceans in hours.';
-      badgeColor = '#ffd54f';
-    } else if (currentChapter === 'gauges') {
-      stepBadge = 'PART 4 OF 6 · OPEN OCEAN LOW AMPLITUDE';
-      headline = 'Deep Ocean Height Under 1 Metre — Measured by DART Buoys';
-      description =
-        'Wavelength spans 100+ km; mariners at sea pass directly over it without noticing the gentle surge.';
-      badgeColor = '#64b5f6';
-    } else if (currentChapter === 'across-the-ocean') {
-      stepBadge = 'PART 5 OF 6 · COASTAL SHOALING & SHORELINE RETREAT';
-      headline = 'Wave Slows to ~40 km/h and Surges into a Giant Breaker';
-      description =
-        'Entering shallow coastal water, friction slows the wave, wavelength compresses, and water surges high.';
-      badgeColor = '#ff8a65';
-    } else {
-      stepBadge = 'PART 6 OF 6 · NOAA EARLY WARNING & TELEMETRY';
-      headline = 'Sensors Alert Distant Coasts Hours Ahead of Arrival';
-      description =
-        'Deep-sea DART pressure recorders and tide gauges transmit data via satellite at light speed.';
-      badgeColor = '#64b5f6';
-    }
-
-    // Step badge & elapsed minutes
-    bannerCtx.fillStyle = badgeColor;
-    bannerCtx.font = '700 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText(stepBadge, 50, 72);
-
-    if (currentMinutes > 0) {
-      bannerCtx.fillStyle = '#90caf9';
-      bannerCtx.font = '600 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      bannerCtx.textAlign = 'right';
-      bannerCtx.fillText(`⏱ +${Math.round(currentMinutes)} min`, width - 50, 72);
-      bannerCtx.textAlign = 'left';
-    }
-
-    // Headline
-    bannerCtx.fillStyle = '#ffffff';
-    bannerCtx.font = 'bold 38px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText(headline, 50, 138);
-
-    // Description
-    bannerCtx.fillStyle = '#b0bec5';
-    bannerCtx.font = '400 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText(description, 50, 204);
-
-    // Interactive View Mode Selector Badges
-    const isBreakerActive =
-      viewMode === 'breaker' ||
-      (viewMode === 'auto' &&
-        (currentChapter === 'across-the-ocean' || currentChapter === 'warnings'));
-
-    // Breaker Tab
-    bannerCtx.fillStyle = isBreakerActive ? 'rgba(0, 180, 216, 0.35)' : 'rgba(255, 255, 255, 0.08)';
-    bannerCtx.strokeStyle = isBreakerActive ? '#00e5ff' : 'rgba(255, 255, 255, 0.2)';
-    bannerCtx.lineWidth = 2;
-    bannerCtx.beginPath();
-    bannerCtx.roundRect(50, 260, 340, 60, 12);
-    bannerCtx.fill();
-    bannerCtx.stroke();
-    bannerCtx.fillStyle = isBreakerActive ? '#ffffff' : '#90a4ae';
-    bannerCtx.font = '600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText('🌊 3D WAVE BREAKER', 85, 298);
-
-    // Cross-Section Tab
-    bannerCtx.fillStyle = !isBreakerActive
-      ? 'rgba(255, 213, 79, 0.35)'
-      : 'rgba(255, 255, 255, 0.08)';
-    bannerCtx.strokeStyle = !isBreakerActive ? '#ffd54f' : 'rgba(255, 255, 255, 0.2)';
-    bannerCtx.beginPath();
-    bannerCtx.roundRect(410, 260, 360, 60, 12);
-    bannerCtx.fill();
-    bannerCtx.stroke();
-    bannerCtx.fillStyle = !isBreakerActive ? '#ffffff' : '#90a4ae';
-    bannerCtx.fillText('📏 OCEAN CROSS-SECTION', 435, 298);
-
-    bannerCtx.fillStyle = '#78909c';
-    bannerCtx.font = '400 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    bannerCtx.fillText('Click pane to toggle close-up wave view', 810, 298);
-
-    bannerTexture.needsUpdate = true;
-  };
-
   // --- 8. REAL-TIME WAVE SURFACE & CURLING BREAKER DYNAMICS ---
   const updateWaterProfile = () => {
     // 1. Deep ocean plane profile
@@ -1414,7 +1206,7 @@ export function createTsunamiSlice(): TsunamiSlice {
       const seabedY = seabedDepthAt(x);
       const dist = x - waveCenter;
 
-      let waveY = 0;
+      let waveY: number;
       if (currentChapter === 'sea-floor') {
         const upliftDist = x - -10.5;
         waveY = Math.exp(-(upliftDist * upliftDist) / 4) * upliftOffset * 0.8;
@@ -1435,7 +1227,7 @@ export function createTsunamiSlice(): TsunamiSlice {
         const nextX = -13.0 + ((ix + 1) / waterGridX) * 18.0;
         const nextSeabedY = seabedDepthAt(nextX);
         const nextDist = nextX - waveCenter;
-        let nextWaveY = 0;
+        let nextWaveY: number;
         if (currentChapter === 'sea-floor') {
           const nextUplift = nextX - -10.5;
           nextWaveY = Math.exp(-(nextUplift * nextUplift) / 4) * upliftOffset * 0.8;
@@ -1489,12 +1281,10 @@ export function createTsunamiSlice(): TsunamiSlice {
 
         // Natural width profile variation across the crest
         const spanWarp =
-          1.0 -
-          0.2 * Math.pow(2 * v - 1, 2) +
-          0.06 * Math.sin(v * Math.PI * 2 + animTime * 0.8);
+          1.0 - 0.2 * Math.pow(2 * v - 1, 2) + 0.06 * Math.sin(v * Math.PI * 2 + animTime * 0.8);
         const localH = H * spanWarp;
-        let x = 0;
-        let y = 0;
+        let x: number;
+        let y: number;
 
         if (u < 0.32) {
           // Back swell slope rising from the pedestal top to the wave crest
@@ -1520,7 +1310,7 @@ export function createTsunamiSlice(): TsunamiSlice {
           }
         } else if (u < 0.76) {
           // Plunging lip waterfall crashing into impact trough
-          const t = (u - 0.66) / 0.10;
+          const t = (u - 0.66) / 0.1;
           const angleMax = 0.6 + 2.1 * C;
           const rx = (0.55 + 1.45 * C) * (1.0 + 0.12 * Math.sin(v * Math.PI));
           const ry = 0.48 + 1.25 * C;
@@ -1529,7 +1319,7 @@ export function createTsunamiSlice(): TsunamiSlice {
           const yLip = localH - ry * (1.0 - Math.cos(angleMax));
 
           x = xLip + t * (0.65 + 0.35 * C);
-          y = yLip - t * (yLip - (-0.45));
+          y = yLip - t * (yLip - -0.45);
 
           if (iu === Math.round(Nu * 0.74)) {
             impactLipPoints.push({ x, y, z });
@@ -1627,7 +1417,7 @@ export function createTsunamiSlice(): TsunamiSlice {
           const ptIdx = Math.floor((i / 50) * (primaryLipPoints.length - 1));
           const pt = primaryLipPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
           const jitterX = Math.sin(i * 2.1) * 0.22;
-          const jitterY = Math.cos(i * 1.9) * 0.20 + Math.sin(animTime * 3.0 + i) * 0.04;
+          const jitterY = Math.cos(i * 1.9) * 0.2 + Math.sin(animTime * 3.0 + i) * 0.04;
           const jitterZ = Math.sin(i * 3.3) * 0.16;
           nodule.position.set(pt.x + 0.06 + jitterX, pt.y + 0.08 + jitterY, pt.z + jitterZ);
           nodule.visible = C > 0.12;
@@ -1640,7 +1430,7 @@ export function createTsunamiSlice(): TsunamiSlice {
             const jitterX = Math.sin(i * 1.7) * 0.18;
             const jitterY = Math.cos(i * 2.5) * 0.18 + Math.sin(animTime * 2.6 + i) * 0.03;
             const jitterZ = Math.sin(i * 2.9) * 0.15;
-            nodule.position.set(pt.x + jitterX, pt.y + 0.10 + jitterY, pt.z + jitterZ);
+            nodule.position.set(pt.x + jitterX, pt.y + 0.1 + jitterY, pt.z + jitterZ);
             nodule.visible = C > 0.12;
           }
         } else if (i < 115) {
@@ -1663,7 +1453,7 @@ export function createTsunamiSlice(): TsunamiSlice {
             const pt = impactLipPoints[ptIdx] ?? { x: 0, y: 0, z: 0 };
             const jitterX = Math.sin(i * 2.5) * 0.24;
             const jitterY = Math.abs(Math.sin(animTime * 4.0 + i)) * 0.14;
-            const jitterZ = Math.sin(i * 1.5) * 0.20;
+            const jitterZ = Math.sin(i * 1.5) * 0.2;
             nodule.position.set(pt.x + 0.25 + jitterX, pt.y + jitterY, pt.z + jitterZ);
             nodule.visible = C > 0.22;
           }
@@ -1708,12 +1498,11 @@ export function createTsunamiSlice(): TsunamiSlice {
     }
   };
 
-  const set = (chapterId: string, minutesAfter: number): void => {
+  const set = (chapterId: string): void => {
     if (chapterId !== currentChapter) {
       viewMode = 'auto';
     }
     currentChapter = chapterId;
-    currentMinutes = minutesAfter;
 
     if (chapterId === 'sea-floor') {
       upliftOffset = 0.55;
@@ -1763,7 +1552,6 @@ export function createTsunamiSlice(): TsunamiSlice {
     }
 
     updateCameraTarget();
-    renderCutAnnotations();
     updateWaterProfile();
   };
 
@@ -1787,7 +1575,7 @@ export function createTsunamiSlice(): TsunamiSlice {
       for (const [i, r] of acousticRings.entries()) {
         const p = (animTime * 0.8 + i * 0.5) % 1;
         r.position.y = DEEP_FLOOR_Y + p * (0 - DEEP_FLOOR_Y);
-        const m = r.material as MeshBasicMaterial;
+        const m = r.material;
         m.opacity = (1 - p) * 0.7;
       }
     }
@@ -1804,66 +1592,38 @@ export function createTsunamiSlice(): TsunamiSlice {
     }
 
     // Continuous wave progression in deep ocean cross-section
-    if (currentChapter !== 'sea-floor' && currentChapter !== 'across-the-ocean' && currentChapter !== 'warnings') {
+    if (
+      currentChapter !== 'sea-floor' &&
+      currentChapter !== 'across-the-ocean' &&
+      currentChapter !== 'warnings'
+    ) {
       waveProgress = (waveProgress + seconds * 0.02) % 0.8;
     }
 
     // Boat bobbing & inundation wash animation in diorama
     if (dioramaBoxGroup.visible) {
-      if (boat1) {
-        boat1.position.y = -0.42 + Math.sin(animTime * 2.6) * 0.04;
-        boat1.rotation.z = 0.08 + Math.sin(animTime * 2.2) * 0.06;
-        boat1.rotation.x = Math.sin(animTime * 1.8) * 0.03;
-      }
-      if (washMesh) {
-        washMesh.position.x = 2.4 + Math.sin(animTime * 1.8) * 0.22;
-        washMesh.position.y = -0.22 + Math.sin(animTime * 1.8) * 0.03;
-      }
+      boat1.position.y = -0.42 + Math.sin(animTime * 2.6) * 0.04;
+      boat1.rotation.z = 0.08 + Math.sin(animTime * 2.2) * 0.06;
+      boat1.rotation.x = Math.sin(animTime * 1.8) * 0.03;
+      washMesh.position.x = 2.4 + Math.sin(animTime * 1.8) * 0.22;
+      washMesh.position.y = -0.22 + Math.sin(animTime * 1.8) * 0.03;
     }
 
     updateWaterProfile();
   };
 
+  /** Whether the wave is seen close, breaking at the shore, rather than the whole sea cut open. */
+  const breakerShown = (): boolean =>
+    viewMode === 'breaker' ||
+    (viewMode === 'auto' &&
+      (currentChapter === 'across-the-ocean' || currentChapter === 'warnings'));
   const toggleView = (): void => {
-    const isBreakerActive =
-      viewMode === 'breaker' ||
-      (viewMode === 'auto' &&
-        (currentChapter === 'across-the-ocean' || currentChapter === 'warnings'));
-    viewMode = isBreakerActive ? 'crossSection' : 'breaker';
+    viewMode = breakerShown() ? 'crossSection' : 'breaker';
     updateCameraTarget();
-    renderCutAnnotations();
   };
-
-  // Click listener on left pane to toggle between close-up wave breaker and wide bathymetry
-  let startX = 0;
-  let startY = 0;
-  const onPointerDown = (event: PointerEvent): void => {
-    startX = event.clientX;
-    startY = event.clientY;
-  };
-  const onPointerUp = (event: PointerEvent): void => {
-    const dx = event.clientX - startX;
-    const dy = event.clientY - startY;
-    if (
-      Math.hypot(dx, dy) < 8 &&
-      event.clientX < window.innerWidth / 2 &&
-      event.clientY > 80 &&
-      event.clientY < window.innerHeight - 80
-    ) {
-      toggleView();
-    }
-  };
-  window.addEventListener('pointerdown', onPointerDown);
-  window.addEventListener('pointerup', onPointerUp);
-  disposables.push({
-    dispose: () => {
-      window.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('pointerup', onPointerUp);
-    },
-  });
 
   // Initial setup
-  set('sea-floor', 0);
+  set('sea-floor');
 
   return {
     scene,
@@ -1879,6 +1639,7 @@ export function createTsunamiSlice(): TsunamiSlice {
     set,
     flow,
     toggleView,
+    viewToggled: breakerShown,
     dispose() {
       for (const thing of disposables) thing.dispose();
     },

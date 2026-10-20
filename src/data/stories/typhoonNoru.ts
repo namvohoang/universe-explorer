@@ -67,6 +67,7 @@ const OVER_THE_STORM = { lookAtId: 'earth', closeUp: true, overStorm: true, slic
 export const typhoonNoru: Story = {
   id: 'typhoon-noru',
   group: 'earth-at-work',
+  kind: 'weather',
   path: 'tracked',
   titleKey: 'storyTyphoonTitle',
   noteKey: 'storyTyphoonNote',

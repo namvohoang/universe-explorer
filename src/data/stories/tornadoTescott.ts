@@ -50,6 +50,7 @@ const BESIDE_THE_DRAWING = {
 export const tornadoTescott: Story = {
   id: 'tornado-tescott',
   group: 'earth-at-work',
+  kind: 'weather',
   path: 'staged',
   titleKey: 'storyTornadoTitle',
   noteKey: 'storyTornadoNote',
@@ -80,7 +81,10 @@ export const tornadoTescott: Story = {
     },
     {
       id: 'updraft-tilt',
-      atJd: after(-4, 'Four minutes before touchdown: convective updraft tilts spinning tube upright.'),
+      atJd: after(
+        -4,
+        'Four minutes before touchdown: convective updraft tilts spinning tube upright.',
+      ),
       text: {
         key: 'storyTornadoUpdraftTilt',
         sourceId: UCAR,

@@ -62,6 +62,8 @@ export interface VolcanoSlice {
   flow(seconds: number): void;
   /** Toggles between the exterior island diorama and the anatomical geological cutaway */
   toggleView(): void;
+  /** Whether the mountain is shown cut open. */
+  viewToggled(): boolean;
   dispose(): void;
 }
 
@@ -205,7 +207,7 @@ function createStrataTexture(): CanvasTexture {
   return texture;
 }
 
-/** Generates brass nameplate plaque texture on wooden pedestal */
+/** Generates a plain brass nameplate for the wooden pedestal (no words: they could not be read in the view, nor be in the reader's language). */
 function createVolcanoPlaqueTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
@@ -228,18 +230,6 @@ function createVolcanoPlaqueTexture(): CanvasTexture {
     ctx.strokeStyle = '#423202';
     ctx.lineWidth = 3;
     ctx.strokeRect(10, 10, 492, 108);
-
-    // Title text
-    ctx.fillStyle = '#261904';
-    ctx.font = '900 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('RAIKOKE VOLCANO', 256, 48);
-
-    // Subtitle
-    ctx.fillStyle = '#4e341b';
-    ctx.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('STRATOVOLCANO & PLINIAN ERUPTION', 256, 88);
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
@@ -449,7 +439,7 @@ export function createVolcanoSlice(): VolcanoSlice {
   craterRim.position.set(0, 3.1, 0);
   exteriorConeGroup.add(craterRim);
 
-  const lavaLake = new Mesh(keep(new CylinderGeometry(0.70, 0.70, 0.08, 24)), dormantCraterMat);
+  const lavaLake = new Mesh(keep(new CylinderGeometry(0.7, 0.7, 0.08, 24)), dormantCraterMat);
   lavaLake.position.set(0, 3.02, 0);
   exteriorConeGroup.add(lavaLake);
 
@@ -487,49 +477,390 @@ export function createVolcanoSlice(): VolcanoSlice {
 
   const lavaBranches: LavaBranchDef[] = [
     // --- SYSTEM 1: FRONT-CENTER MAIN ARTERY & BRANCHES ---
-    { startY: 3.02, endY: 2.15, startAngle: 1.30, endAngle: 1.32, startWidth: 0.22, endWidth: 0.26, meanderFreq: 2.5, meanderAmp: 0.08, meanderPhase: 0.0, segments: 15 },
-    { startY: 2.15, endY: 1.15, startAngle: 1.32, endAngle: 1.48, startWidth: 0.22, endWidth: 0.28, meanderFreq: 3.0, meanderAmp: 0.12, meanderPhase: 0.8, segments: 16 },
-    { startY: 1.15, endY: 0.06, startAngle: 1.48, endAngle: 1.42, startWidth: 0.24, endWidth: 0.38, meanderFreq: 2.0, meanderAmp: 0.10, meanderPhase: 1.4, segments: 18 },
-    { startY: 1.15, endY: 0.06, startAngle: 1.48, endAngle: 1.66, startWidth: 0.18, endWidth: 0.28, meanderFreq: 2.8, meanderAmp: 0.14, meanderPhase: 2.2, segments: 18 },
-    { startY: 2.15, endY: 1.10, startAngle: 1.32, endAngle: 1.16, startWidth: 0.22, endWidth: 0.28, meanderFreq: 3.2, meanderAmp: 0.11, meanderPhase: 1.1, segments: 16 },
-    { startY: 1.10, endY: 0.06, startAngle: 1.16, endAngle: 1.22, startWidth: 0.24, endWidth: 0.40, meanderFreq: 2.2, meanderAmp: 0.12, meanderPhase: 0.4, segments: 18 },
-    { startY: 1.10, endY: 0.06, startAngle: 1.16, endAngle: 0.98, startWidth: 0.18, endWidth: 0.28, meanderFreq: 3.0, meanderAmp: 0.13, meanderPhase: 1.9, segments: 18 },
+    {
+      startY: 3.02,
+      endY: 2.15,
+      startAngle: 1.3,
+      endAngle: 1.32,
+      startWidth: 0.22,
+      endWidth: 0.26,
+      meanderFreq: 2.5,
+      meanderAmp: 0.08,
+      meanderPhase: 0.0,
+      segments: 15,
+    },
+    {
+      startY: 2.15,
+      endY: 1.15,
+      startAngle: 1.32,
+      endAngle: 1.48,
+      startWidth: 0.22,
+      endWidth: 0.28,
+      meanderFreq: 3.0,
+      meanderAmp: 0.12,
+      meanderPhase: 0.8,
+      segments: 16,
+    },
+    {
+      startY: 1.15,
+      endY: 0.06,
+      startAngle: 1.48,
+      endAngle: 1.42,
+      startWidth: 0.24,
+      endWidth: 0.38,
+      meanderFreq: 2.0,
+      meanderAmp: 0.1,
+      meanderPhase: 1.4,
+      segments: 18,
+    },
+    {
+      startY: 1.15,
+      endY: 0.06,
+      startAngle: 1.48,
+      endAngle: 1.66,
+      startWidth: 0.18,
+      endWidth: 0.28,
+      meanderFreq: 2.8,
+      meanderAmp: 0.14,
+      meanderPhase: 2.2,
+      segments: 18,
+    },
+    {
+      startY: 2.15,
+      endY: 1.1,
+      startAngle: 1.32,
+      endAngle: 1.16,
+      startWidth: 0.22,
+      endWidth: 0.28,
+      meanderFreq: 3.2,
+      meanderAmp: 0.11,
+      meanderPhase: 1.1,
+      segments: 16,
+    },
+    {
+      startY: 1.1,
+      endY: 0.06,
+      startAngle: 1.16,
+      endAngle: 1.22,
+      startWidth: 0.24,
+      endWidth: 0.4,
+      meanderFreq: 2.2,
+      meanderAmp: 0.12,
+      meanderPhase: 0.4,
+      segments: 18,
+    },
+    {
+      startY: 1.1,
+      endY: 0.06,
+      startAngle: 1.16,
+      endAngle: 0.98,
+      startWidth: 0.18,
+      endWidth: 0.28,
+      meanderFreq: 3.0,
+      meanderAmp: 0.13,
+      meanderPhase: 1.9,
+      segments: 18,
+    },
 
     // --- SYSTEM 2: FRONT-LEFT ARTERY & BRANCHES ---
-    { startY: 3.02, endY: 2.05, startAngle: 1.85, endAngle: 1.88, startWidth: 0.20, endWidth: 0.24, meanderFreq: 2.2, meanderAmp: 0.09, meanderPhase: 0.5, segments: 15 },
-    { startY: 2.05, endY: 0.06, startAngle: 1.88, endAngle: 1.76, startWidth: 0.20, endWidth: 0.32, meanderFreq: 3.0, meanderAmp: 0.13, meanderPhase: 1.7, segments: 24 },
-    { startY: 2.05, endY: 1.15, startAngle: 1.88, endAngle: 2.12, startWidth: 0.20, endWidth: 0.25, meanderFreq: 2.6, meanderAmp: 0.10, meanderPhase: 0.9, segments: 15 },
-    { startY: 1.15, endY: 0.06, startAngle: 2.12, endAngle: 2.05, startWidth: 0.18, endWidth: 0.28, meanderFreq: 2.5, meanderAmp: 0.11, meanderPhase: 0.3, segments: 16 },
-    { startY: 1.15, endY: 0.06, startAngle: 2.12, endAngle: 2.30, startWidth: 0.18, endWidth: 0.30, meanderFreq: 2.8, meanderAmp: 0.12, meanderPhase: 1.5, segments: 16 },
+    {
+      startY: 3.02,
+      endY: 2.05,
+      startAngle: 1.85,
+      endAngle: 1.88,
+      startWidth: 0.2,
+      endWidth: 0.24,
+      meanderFreq: 2.2,
+      meanderAmp: 0.09,
+      meanderPhase: 0.5,
+      segments: 15,
+    },
+    {
+      startY: 2.05,
+      endY: 0.06,
+      startAngle: 1.88,
+      endAngle: 1.76,
+      startWidth: 0.2,
+      endWidth: 0.32,
+      meanderFreq: 3.0,
+      meanderAmp: 0.13,
+      meanderPhase: 1.7,
+      segments: 24,
+    },
+    {
+      startY: 2.05,
+      endY: 1.15,
+      startAngle: 1.88,
+      endAngle: 2.12,
+      startWidth: 0.2,
+      endWidth: 0.25,
+      meanderFreq: 2.6,
+      meanderAmp: 0.1,
+      meanderPhase: 0.9,
+      segments: 15,
+    },
+    {
+      startY: 1.15,
+      endY: 0.06,
+      startAngle: 2.12,
+      endAngle: 2.05,
+      startWidth: 0.18,
+      endWidth: 0.28,
+      meanderFreq: 2.5,
+      meanderAmp: 0.11,
+      meanderPhase: 0.3,
+      segments: 16,
+    },
+    {
+      startY: 1.15,
+      endY: 0.06,
+      startAngle: 2.12,
+      endAngle: 2.3,
+      startWidth: 0.18,
+      endWidth: 0.3,
+      meanderFreq: 2.8,
+      meanderAmp: 0.12,
+      meanderPhase: 1.5,
+      segments: 16,
+    },
 
     // --- SYSTEM 3: FRONT-RIGHT ARTERY & BRANCHES ---
-    { startY: 3.02, endY: 2.00, startAngle: 0.72, endAngle: 0.70, startWidth: 0.20, endWidth: 0.24, meanderFreq: 2.4, meanderAmp: 0.08, meanderPhase: 0.2, segments: 15 },
-    { startY: 2.00, endY: 0.06, startAngle: 0.70, endAngle: 0.82, startWidth: 0.20, endWidth: 0.32, meanderFreq: 3.1, meanderAmp: 0.12, meanderPhase: 1.2, segments: 24 },
-    { startY: 2.00, endY: 1.10, startAngle: 0.70, endAngle: 0.52, startWidth: 0.18, endWidth: 0.24, meanderFreq: 2.8, meanderAmp: 0.11, meanderPhase: 0.7, segments: 15 },
-    { startY: 1.10, endY: 0.06, startAngle: 0.52, endAngle: 0.58, startWidth: 0.18, endWidth: 0.28, meanderFreq: 2.4, meanderAmp: 0.10, meanderPhase: 0.6, segments: 16 },
-    { startY: 1.10, endY: 0.06, startAngle: 0.52, endAngle: 0.36, startWidth: 0.16, endWidth: 0.26, meanderFreq: 2.7, meanderAmp: 0.12, meanderPhase: 1.8, segments: 16 },
+    {
+      startY: 3.02,
+      endY: 2.0,
+      startAngle: 0.72,
+      endAngle: 0.7,
+      startWidth: 0.2,
+      endWidth: 0.24,
+      meanderFreq: 2.4,
+      meanderAmp: 0.08,
+      meanderPhase: 0.2,
+      segments: 15,
+    },
+    {
+      startY: 2.0,
+      endY: 0.06,
+      startAngle: 0.7,
+      endAngle: 0.82,
+      startWidth: 0.2,
+      endWidth: 0.32,
+      meanderFreq: 3.1,
+      meanderAmp: 0.12,
+      meanderPhase: 1.2,
+      segments: 24,
+    },
+    {
+      startY: 2.0,
+      endY: 1.1,
+      startAngle: 0.7,
+      endAngle: 0.52,
+      startWidth: 0.18,
+      endWidth: 0.24,
+      meanderFreq: 2.8,
+      meanderAmp: 0.11,
+      meanderPhase: 0.7,
+      segments: 15,
+    },
+    {
+      startY: 1.1,
+      endY: 0.06,
+      startAngle: 0.52,
+      endAngle: 0.58,
+      startWidth: 0.18,
+      endWidth: 0.28,
+      meanderFreq: 2.4,
+      meanderAmp: 0.1,
+      meanderPhase: 0.6,
+      segments: 16,
+    },
+    {
+      startY: 1.1,
+      endY: 0.06,
+      startAngle: 0.52,
+      endAngle: 0.36,
+      startWidth: 0.16,
+      endWidth: 0.26,
+      meanderFreq: 2.7,
+      meanderAmp: 0.12,
+      meanderPhase: 1.8,
+      segments: 16,
+    },
 
     // --- SYSTEM 4: FAR-LEFT FLANK ---
-    { startY: 3.02, endY: 1.75, startAngle: 2.50, endAngle: 2.54, startWidth: 0.18, endWidth: 0.22, meanderFreq: 2.1, meanderAmp: 0.09, meanderPhase: 0.4, segments: 15 },
-    { startY: 1.75, endY: 0.06, startAngle: 2.54, endAngle: 2.45, startWidth: 0.16, endWidth: 0.28, meanderFreq: 2.5, meanderAmp: 0.11, meanderPhase: 1.1, segments: 20 },
-    { startY: 1.75, endY: 0.06, startAngle: 2.54, endAngle: 2.75, startWidth: 0.16, endWidth: 0.26, meanderFreq: 2.8, meanderAmp: 0.12, meanderPhase: 0.6, segments: 20 },
+    {
+      startY: 3.02,
+      endY: 1.75,
+      startAngle: 2.5,
+      endAngle: 2.54,
+      startWidth: 0.18,
+      endWidth: 0.22,
+      meanderFreq: 2.1,
+      meanderAmp: 0.09,
+      meanderPhase: 0.4,
+      segments: 15,
+    },
+    {
+      startY: 1.75,
+      endY: 0.06,
+      startAngle: 2.54,
+      endAngle: 2.45,
+      startWidth: 0.16,
+      endWidth: 0.28,
+      meanderFreq: 2.5,
+      meanderAmp: 0.11,
+      meanderPhase: 1.1,
+      segments: 20,
+    },
+    {
+      startY: 1.75,
+      endY: 0.06,
+      startAngle: 2.54,
+      endAngle: 2.75,
+      startWidth: 0.16,
+      endWidth: 0.26,
+      meanderFreq: 2.8,
+      meanderAmp: 0.12,
+      meanderPhase: 0.6,
+      segments: 20,
+    },
 
     // --- SYSTEM 5: FAR-RIGHT FLANK ---
-    { startY: 3.02, endY: 1.70, startAngle: 0.15, endAngle: 0.12, startWidth: 0.18, endWidth: 0.22, meanderFreq: 2.2, meanderAmp: 0.08, meanderPhase: 0.3, segments: 15 },
-    { startY: 1.70, endY: 0.06, startAngle: 0.12, endAngle: 0.24, startWidth: 0.16, endWidth: 0.28, meanderFreq: 2.6, meanderAmp: 0.11, meanderPhase: 1.0, segments: 20 },
-    { startY: 1.70, endY: 0.06, startAngle: 0.12, endAngle: -0.08, startWidth: 0.16, endWidth: 0.26, meanderFreq: 2.9, meanderAmp: 0.12, meanderPhase: 0.5, segments: 20 },
+    {
+      startY: 3.02,
+      endY: 1.7,
+      startAngle: 0.15,
+      endAngle: 0.12,
+      startWidth: 0.18,
+      endWidth: 0.22,
+      meanderFreq: 2.2,
+      meanderAmp: 0.08,
+      meanderPhase: 0.3,
+      segments: 15,
+    },
+    {
+      startY: 1.7,
+      endY: 0.06,
+      startAngle: 0.12,
+      endAngle: 0.24,
+      startWidth: 0.16,
+      endWidth: 0.28,
+      meanderFreq: 2.6,
+      meanderAmp: 0.11,
+      meanderPhase: 1.0,
+      segments: 20,
+    },
+    {
+      startY: 1.7,
+      endY: 0.06,
+      startAngle: 0.12,
+      endAngle: -0.08,
+      startWidth: 0.16,
+      endWidth: 0.26,
+      meanderFreq: 2.9,
+      meanderAmp: 0.12,
+      meanderPhase: 0.5,
+      segments: 20,
+    },
 
     // --- SYSTEM 6, 7, 8: REAR & PERIMETER SLOPES ---
-    { startY: 3.02, endY: 0.06, startAngle: 3.25, endAngle: 3.35, startWidth: 0.18, endWidth: 0.30, meanderFreq: 3.0, meanderAmp: 0.12, meanderPhase: 0.7, segments: 26 },
-    { startY: 3.02, endY: 0.06, startAngle: 4.20, endAngle: 4.30, startWidth: 0.18, endWidth: 0.30, meanderFreq: 2.8, meanderAmp: 0.11, meanderPhase: 1.3, segments: 26 },
-    { startY: 3.02, endY: 0.06, startAngle: 5.20, endAngle: 5.10, startWidth: 0.18, endWidth: 0.30, meanderFreq: 2.9, meanderAmp: 0.13, meanderPhase: 0.9, segments: 26 },
+    {
+      startY: 3.02,
+      endY: 0.06,
+      startAngle: 3.25,
+      endAngle: 3.35,
+      startWidth: 0.18,
+      endWidth: 0.3,
+      meanderFreq: 3.0,
+      meanderAmp: 0.12,
+      meanderPhase: 0.7,
+      segments: 26,
+    },
+    {
+      startY: 3.02,
+      endY: 0.06,
+      startAngle: 4.2,
+      endAngle: 4.3,
+      startWidth: 0.18,
+      endWidth: 0.3,
+      meanderFreq: 2.8,
+      meanderAmp: 0.11,
+      meanderPhase: 1.3,
+      segments: 26,
+    },
+    {
+      startY: 3.02,
+      endY: 0.06,
+      startAngle: 5.2,
+      endAngle: 5.1,
+      startWidth: 0.18,
+      endWidth: 0.3,
+      meanderFreq: 2.9,
+      meanderAmp: 0.13,
+      meanderPhase: 0.9,
+      segments: 26,
+    },
 
     // --- LATERAL CONNECTING FISSURES / GLOWING VEINS ---
-    { startY: 1.85, endY: 1.62, startAngle: 1.25, endAngle: 1.45, startWidth: 0.11, endWidth: 0.13, meanderFreq: 1.5, meanderAmp: 0.04, meanderPhase: 0.0, segments: 8 },
-    { startY: 1.60, endY: 1.38, startAngle: 1.05, endAngle: 1.25, startWidth: 0.10, endWidth: 0.12, meanderFreq: 1.5, meanderAmp: 0.04, meanderPhase: 0.2, segments: 8 },
-    { startY: 1.45, endY: 1.22, startAngle: 1.65, endAngle: 1.85, startWidth: 0.11, endWidth: 0.13, meanderFreq: 1.5, meanderAmp: 0.04, meanderPhase: 0.4, segments: 8 },
-    { startY: 1.35, endY: 1.12, startAngle: 0.70, endAngle: 0.90, startWidth: 0.10, endWidth: 0.12, meanderFreq: 1.5, meanderAmp: 0.04, meanderPhase: 0.6, segments: 8 },
-    { startY: 1.70, endY: 1.48, startAngle: 2.10, endAngle: 2.30, startWidth: 0.10, endWidth: 0.12, meanderFreq: 1.5, meanderAmp: 0.04, meanderPhase: 0.8, segments: 8 },
+    {
+      startY: 1.85,
+      endY: 1.62,
+      startAngle: 1.25,
+      endAngle: 1.45,
+      startWidth: 0.11,
+      endWidth: 0.13,
+      meanderFreq: 1.5,
+      meanderAmp: 0.04,
+      meanderPhase: 0.0,
+      segments: 8,
+    },
+    {
+      startY: 1.6,
+      endY: 1.38,
+      startAngle: 1.05,
+      endAngle: 1.25,
+      startWidth: 0.1,
+      endWidth: 0.12,
+      meanderFreq: 1.5,
+      meanderAmp: 0.04,
+      meanderPhase: 0.2,
+      segments: 8,
+    },
+    {
+      startY: 1.45,
+      endY: 1.22,
+      startAngle: 1.65,
+      endAngle: 1.85,
+      startWidth: 0.11,
+      endWidth: 0.13,
+      meanderFreq: 1.5,
+      meanderAmp: 0.04,
+      meanderPhase: 0.4,
+      segments: 8,
+    },
+    {
+      startY: 1.35,
+      endY: 1.12,
+      startAngle: 0.7,
+      endAngle: 0.9,
+      startWidth: 0.1,
+      endWidth: 0.12,
+      meanderFreq: 1.5,
+      meanderAmp: 0.04,
+      meanderPhase: 0.6,
+      segments: 8,
+    },
+    {
+      startY: 1.7,
+      endY: 1.48,
+      startAngle: 2.1,
+      endAngle: 2.3,
+      startWidth: 0.1,
+      endWidth: 0.12,
+      meanderFreq: 1.5,
+      meanderAmp: 0.04,
+      meanderPhase: 0.8,
+      segments: 8,
+    },
   ];
 
   const getBranchCoords = (
@@ -537,7 +868,8 @@ export function createVolcanoSlice(): VolcanoSlice {
     t: number,
   ): { x: number; y: number; z: number; angle: number; r: number } => {
     const y = branch.startY + (branch.endY - branch.startY) * t;
-    const meander = Math.sin(t * Math.PI * branch.meanderFreq + branch.meanderPhase) * branch.meanderAmp;
+    const meander =
+      Math.sin(t * Math.PI * branch.meanderFreq + branch.meanderPhase) * branch.meanderAmp;
     const angle = branch.startAngle + (branch.endAngle - branch.startAngle) * t + meander;
     const r = getMountainRadius(y, angle) + 0.048;
     const x = Math.cos(angle) * r;
@@ -637,7 +969,15 @@ export function createVolcanoSlice(): VolcanoSlice {
   const spatterCount = 65;
   const spatterGeom = keep(new BufferGeometry());
   const spatterPositions = new Float32Array(spatterCount * 3);
-  const spatters: { x: number; y: number; z: number; vx: number; vy: number; vz: number; life: number }[] = [];
+  const spatters: {
+    x: number;
+    y: number;
+    z: number;
+    vx: number;
+    vy: number;
+    vz: number;
+    life: number;
+  }[] = [];
 
   for (let i = 0; i < spatterCount; i++) {
     spatters.push({
@@ -666,10 +1006,18 @@ export function createVolcanoSlice(): VolcanoSlice {
   const oceanSteamCount = 40;
   const oceanSteamGeom = keep(new BufferGeometry());
   const oceanSteamPositions = new Float32Array(oceanSteamCount * 3);
-  const oceanSteamData: { x: number; y: number; z: number; vy: number; baseAngle: number; r: number }[] = [];
+  const oceanSteamData: {
+    x: number;
+    y: number;
+    z: number;
+    vy: number;
+    baseAngle: number;
+    r: number;
+  }[] = [];
 
   const oceanEntryAngles = [
-    1.42, 1.66, 1.22, 0.98, 1.76, 2.05, 2.30, 0.82, 0.58, 0.36, 2.45, 2.75, 0.24, -0.08, 3.35, 4.30, 5.10,
+    1.42, 1.66, 1.22, 0.98, 1.76, 2.05, 2.3, 0.82, 0.58, 0.36, 2.45, 2.75, 0.24, -0.08, 3.35, 4.3,
+    5.1,
   ];
   for (let i = 0; i < oceanSteamCount; i++) {
     const angle = oceanEntryAngles[i % oceanEntryAngles.length] ?? 1.3;
@@ -689,7 +1037,7 @@ export function createVolcanoSlice(): VolcanoSlice {
       color: 0xffe0b2,
       size: 0.32,
       transparent: true,
-      opacity: 0.50,
+      opacity: 0.5,
     }),
   );
   const oceanSteamPoints = new Points(oceanSteamGeom, oceanSteamMat);
@@ -725,7 +1073,7 @@ export function createVolcanoSlice(): VolcanoSlice {
   flameOuter.position.set(-0.04, 0.44, 0.04);
   flameGroup.add(flameOuter);
 
-  const flameSide = new Mesh(keep(new ConeGeometry(0.22, 0.50, 6)), flameMidMat);
+  const flameSide = new Mesh(keep(new ConeGeometry(0.22, 0.5, 6)), flameMidMat);
   flameSide.position.set(0.16, 0.25, 0.1);
   flameGroup.add(flameSide);
 
@@ -768,7 +1116,7 @@ export function createVolcanoSlice(): VolcanoSlice {
 
   // 270-degree crater lake
   const cutLavaLake = new Mesh(
-    keep(new CylinderGeometry(0.70, 0.70, 0.08, 20, 1, false, 0.5 * Math.PI, 1.5 * Math.PI)),
+    keep(new CylinderGeometry(0.7, 0.7, 0.08, 20, 1, false, 0.5 * Math.PI, 1.5 * Math.PI)),
     dormantCraterMat,
   );
   cutLavaLake.position.set(0, 3.02, 0);
@@ -904,9 +1252,9 @@ export function createVolcanoSlice(): VolcanoSlice {
   // Shared polyhedral faceted geometries with flat shading
   const dodecaGeom = keep(new DodecahedronGeometry(0.38, 0));
   const icosaGeom = keep(new IcosahedronGeometry(0.35, 0));
-  const octaGeom = keep(new OctahedronGeometry(0.40, 0));
+  const octaGeom = keep(new OctahedronGeometry(0.4, 0));
   const tetraGeom = keep(new TetrahedronGeometry(0.36, 0));
-  const facetedPuffGeom = keep(new IcosahedronGeometry(0.30, 1));
+  const facetedPuffGeom = keep(new IcosahedronGeometry(0.3, 1));
   const facetedCylGeom = keep(new CylinderGeometry(0.22, 0.32, 0.55, 6));
 
   const smokeGeoms = [dodecaGeom, icosaGeom, octaGeom, tetraGeom, facetedPuffGeom, facetedCylGeom];
@@ -925,7 +1273,7 @@ export function createVolcanoSlice(): VolcanoSlice {
     new MeshStandardMaterial({ color: 0x37474f, flatShading: true, roughness: 0.92 }),
   );
   const midAshFacetedMat = keep(
-    new MeshStandardMaterial({ color: 0x455a64, flatShading: true, roughness: 0.90 }),
+    new MeshStandardMaterial({ color: 0x455a64, flatShading: true, roughness: 0.9 }),
   );
   const slateAshFacetedMat = keep(
     new MeshStandardMaterial({ color: 0x546e7a, flatShading: true, roughness: 0.88 }),
@@ -1067,7 +1415,7 @@ export function createVolcanoSlice(): VolcanoSlice {
 
     const scale = (0.55 + t * 1.35) * (0.85 + Math.random() * 0.35);
     const geom = smokeGeoms[i % smokeGeoms.length] ?? dodecaGeom;
-    const mat = t < 0.12 ? tephraBaseMat : ashMats[i % ashMats.length] ?? darkAshFacetedMat;
+    const mat = t < 0.12 ? tephraBaseMat : (ashMats[i % ashMats.length] ?? darkAshFacetedMat);
 
     const puffMesh = new Mesh(geom, mat);
     puffMesh.position.set(px, py, pz);
@@ -1143,39 +1491,6 @@ export function createVolcanoSlice(): VolcanoSlice {
   rulerLine.position.set(3.8, 0, 0);
   altitudeRulerGroup.add(rulerLine);
 
-  const rulerCanvas = document.createElement('canvas');
-  rulerCanvas.width = 512;
-  rulerCanvas.height = 160;
-  const rCtx = rulerCanvas.getContext('2d');
-  if (rCtx) {
-    rCtx.fillStyle = 'rgba(7, 11, 24, 0.88)';
-    rCtx.roundRect(4, 4, 504, 152, 16);
-    rCtx.fill();
-    rCtx.strokeStyle = '#4fc3f7';
-    rCtx.lineWidth = 3;
-    rCtx.stroke();
-
-    rCtx.fillStyle = '#ffffff';
-    rCtx.font = '900 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    rCtx.fillText('13–17 km ALTITUDE', 24, 54);
-
-    rCtx.fillStyle = '#4fc3f7';
-    rCtx.font = '700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    rCtx.fillText('STRATOSPHERE (CALIPSO LIDAR)', 24, 96);
-
-    rCtx.fillStyle = '#ffab00';
-    rCtx.font = '600 19px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    rCtx.fillText('High-altitude aviation hazard zone', 24, 134);
-  }
-  const rulerTexture = keep(new CanvasTexture(rulerCanvas));
-  rulerTexture.colorSpace = SRGBColorSpace;
-  const rulerSign = new Mesh(
-    keep(new PlaneGeometry(3.6, 1.1)),
-    keep(new MeshBasicMaterial({ map: rulerTexture, transparent: true, side: DoubleSide })),
-  );
-  rulerSign.position.set(5.7, 8.5, 0);
-  altitudeRulerGroup.add(rulerSign);
-
   // --- 9. STATE & SMOOTH TRANSITION INTERPOLATION ---
   let animTime = 0;
 
@@ -1224,35 +1539,6 @@ export function createVolcanoSlice(): VolcanoSlice {
   let desiredDistance = 13.0;
   const desiredDirection: MutableVec3 = { x: 0.52, y: 0.3, z: 0.8 };
 
-  // Floating Interactive View Mode Toggle Button
-  const toggleBtn = document.createElement('button');
-  toggleBtn.id = 'volcano-view-toggle';
-  toggleBtn.style.position = 'fixed';
-  toggleBtn.style.bottom = '84px';
-  toggleBtn.style.left = '24px';
-  toggleBtn.style.zIndex = '100';
-  toggleBtn.style.display = 'flex';
-  toggleBtn.style.alignItems = 'center';
-  toggleBtn.style.gap = '8px';
-  toggleBtn.style.padding = '8px 16px';
-  toggleBtn.style.borderRadius = '9999px';
-  toggleBtn.style.background = 'rgba(15, 23, 42, 0.88)';
-  toggleBtn.style.backdropFilter = 'blur(10px)';
-  toggleBtn.style.border = '1px solid rgba(255, 255, 255, 0.22)';
-  toggleBtn.style.color = '#f8fafc';
-  toggleBtn.style.fontSize = '13px';
-  toggleBtn.style.fontWeight = '600';
-  toggleBtn.style.cursor = 'pointer';
-  toggleBtn.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.45)';
-  toggleBtn.style.transition = 'all 0.2s ease';
-  toggleBtn.innerHTML = '🔬 <span>View: Cutaway Anatomy (click for full mountain)</span>';
-  document.body.appendChild(toggleBtn);
-  disposables.push({
-    dispose: () => {
-      toggleBtn.remove();
-    },
-  });
-
   const updateCameraTarget = () => {
     if (viewMode === 'cutaway') {
       // Angle looking directly into the open quadrant (+X, +Z) to inspect magma chamber & conduit
@@ -1264,7 +1550,6 @@ export function createVolcanoSlice(): VolcanoSlice {
       desiredDirection.y = 0.3;
       desiredDirection.z = 0.8;
       targetCutawayBlend = 1.0;
-      toggleBtn.innerHTML = '🔬 <span>View: Cutaway Anatomy (click for full mountain)</span>';
     } else {
       // Elevated 3/4 front view framing the complete volcano diorama, full mountain & ash column
       desiredTarget.x = 0.2;
@@ -1275,7 +1560,6 @@ export function createVolcanoSlice(): VolcanoSlice {
       desiredDirection.y = 0.32;
       desiredDirection.z = 0.92;
       targetCutawayBlend = 0.0;
-      toggleBtn.innerHTML = '🌋 <span>View: Full Mountain (click to cut open)</span>';
     }
   };
 
@@ -1283,17 +1567,11 @@ export function createVolcanoSlice(): VolcanoSlice {
     viewMode = viewMode === 'exterior' ? 'cutaway' : 'exterior';
     updateCameraTarget();
   };
-  toggleBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleView();
-  });
 
   updateCameraTarget();
 
   let lastChapterId = '';
-  const set = (chapterId: string, hoursAfter: number): void => {
-    void hoursAfter;
-
+  const set = (chapterId: string): void => {
     if (lastChapterId !== chapterId) {
       lastChapterId = chapterId;
       // The mountain is cut in first 2 phases (quiet, erupts), rest of phases full mountain with lava flows!
@@ -1470,8 +1748,7 @@ export function createVolcanoSlice(): VolcanoSlice {
 
     // Smooth altitude ruler transition
     altitudeRulerGroup.visible = currentAltitudeRuler > 0.05;
-    (rulerLine.material as LineBasicMaterial).opacity = currentAltitudeRuler * 0.75;
-    (rulerSign.material as MeshBasicMaterial).opacity = currentAltitudeRuler;
+    rulerLine.material.opacity = currentAltitudeRuler * 0.75;
 
     // Smooth early smoke transition
     earlySmokeGroup.visible = earlySmokeWeight > 0.02;
@@ -1594,7 +1871,11 @@ export function createVolcanoSlice(): VolcanoSlice {
         1 + Math.sin(animTime * 27) * 0.24,
         1 + Math.cos(animTime * 25) * 0.14,
       );
-      flameSide.scale.set(1 + flicker1 * 0.8, 1 + Math.sin(animTime * 33) * 0.28, 1 + flicker1 * 0.8);
+      flameSide.scale.set(
+        1 + flicker1 * 0.8,
+        1 + Math.sin(animTime * 33) * 0.28,
+        1 + flicker1 * 0.8,
+      );
       flameGroup.rotation.y += seconds * 1.5;
 
       // Realistic fire flicker for crater point light
@@ -1605,10 +1886,7 @@ export function createVolcanoSlice(): VolcanoSlice {
 
     // 3. PHASE 2 EARLY RISING SMOKE ("smoke more shapes")
     if (earlySmokeGroup.visible) {
-      for (let i = 0; i < earlyPuffs.length; i++) {
-        const puff = earlyPuffs[i];
-        if (!puff) continue;
-
+      for (const puff of earlyPuffs) {
         // Smoke billows upward continuously
         puff.currentY += seconds * puff.riseSpeed;
         if (puff.currentY > 7.0) {
@@ -1634,9 +1912,7 @@ export function createVolcanoSlice(): VolcanoSlice {
 
     // 4. FULL PLINIAN ASH PLUME CONVECTIVE TURBULENCE (Phases 3+)
     if (plumeGroup.visible) {
-      for (let i = 0; i < ashPuffs.length; i++) {
-        const puff = ashPuffs[i];
-        if (!puff) continue;
+      for (const puff of ashPuffs) {
         const breath = Math.sin(animTime * 1.8 + puff.phase) * 0.08 * currentEruptionIntensity;
         puff.mesh.scale.setScalar(puff.baseScale * (1 + breath));
         puff.mesh.position.y =
@@ -1683,36 +1959,8 @@ export function createVolcanoSlice(): VolcanoSlice {
     }
   };
 
-  // Click listener on left pane to toggle view modes
-  let startX = 0;
-  let startY = 0;
-  const onPointerDown = (event: PointerEvent): void => {
-    startX = event.clientX;
-    startY = event.clientY;
-  };
-  const onPointerUp = (event: PointerEvent): void => {
-    const dx = event.clientX - startX;
-    const dy = event.clientY - startY;
-    if (
-      Math.hypot(dx, dy) < 8 &&
-      event.clientX < window.innerWidth / 2 &&
-      event.clientY > 80 &&
-      event.clientY < window.innerHeight - 120
-    ) {
-      toggleView();
-    }
-  };
-  window.addEventListener('pointerdown', onPointerDown);
-  window.addEventListener('pointerup', onPointerUp);
-  disposables.push({
-    dispose: () => {
-      window.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('pointerup', onPointerUp);
-    },
-  });
-
   // Initial chapter setup: Phase 1 'quiet' (dormant, no smoke, no flame)
-  set('quiet', 0);
+  set('quiet');
 
   return {
     scene,
@@ -1728,6 +1976,7 @@ export function createVolcanoSlice(): VolcanoSlice {
     set,
     flow,
     toggleView,
+    viewToggled: () => viewMode === 'cutaway',
     dispose() {
       for (const thing of disposables) thing.dispose();
     },

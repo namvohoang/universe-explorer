@@ -54,6 +54,7 @@ const CUT_OPEN = (lonDegEast: number, latDegNorth: number, why: string) =>
 export const tsunamiKermadec: Story = {
   id: 'tsunami-kermadec',
   group: 'earth-at-work',
+  kind: 'inside-earth',
   path: 'tracked',
   titleKey: 'storyTsunamiTitle',
   noteKey: 'storyTsunamiNote',

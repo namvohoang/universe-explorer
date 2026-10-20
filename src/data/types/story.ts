@@ -4,6 +4,9 @@ import type { Source, Sourced } from './source';
 
 /** The rows the Watch screen sorts its stories into, in the order shown. */
 export const STORY_GROUPS = ['sky-events', 'space-flights', 'earth-at-work'] as const;
+/** Kinds of story within Earth at work, shown together in its row: what the ground, the air and the sea do. */
+export const STORY_KINDS = ['inside-earth', 'weather', 'sea-and-moon'] as const;
+export type StoryKind = (typeof STORY_KINDS)[number];
 export type StoryGroup = (typeof STORY_GROUPS)[number];
 
 /** The screens that play stories: Watch for the sky and for space flights, Earth for what happens on Earth itself. */
@@ -544,6 +547,8 @@ export interface StoryCraft {
 export interface Story {
   readonly id: string;
   readonly group: StoryGroup;
+  /** Which kind of Earth story it is, for the stories of Earth at work. */
+  readonly kind?: StoryKind;
   readonly path: StoryPath;
   /** Key of the story's name in the UI strings. */
   readonly titleKey: string;

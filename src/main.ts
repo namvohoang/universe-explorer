@@ -134,6 +134,10 @@ import { formatVisited, parseVisited } from './ui/passport';
 import { forget, recall, remember } from './ui/storage';
 import { LANGUAGES, LANGUAGE_KEY, language, words, type Language } from './ui/strings';
 
+/** The wide layout of app.css, where a story's words stand in a card at the left. */
+const WIDE_SCREEN = window.matchMedia('(min-width: 1000px) and (min-height: 501px)');
+/** Room kept at the right of the screen when the zoom buttons stand inside a look. */
+const LOOKS_RIGHT_GAP_PX = 16;
 /** Whole-view camera: looking down on the system from the prototype's angle. */
 const HOME_DIRECTION = { x: 0, y: 0.5, z: 1 };
 /** A story's whole stage is seen from well above, so the paths on it show as open loops. */
@@ -273,6 +277,8 @@ const STORM_CLOSE_RADII = 1.35;
 const QUAKE_CLOSE_RADII = 1.9;
 /** The whole-picture view over an earthquake stands closer so the regional ground fills the view, not the whole earth. */
 const QUAKE_WHOLE_RADII = 1.38;
+/** How near, in degrees of longitude and of latitude, a look is to stand over where an earthquake began. A choice. */
+const QUAKE_START_NEAR_DEG = 1;
 /** The close look over a named place stands this many times further off: what it shows is wider than a storm. */
 const PLACE_VIEW_WIDER = 1.15;
 const STORM_WIDE_RADII = 3;
@@ -436,10 +442,14 @@ function start(): void {
   /** The room cut in two: side by side where it is wide, one above the other where it is tall. */
   const roomHalves = (): { main: PaneBox; side: PaneBox } => {
     const { top, bottom, left } = roomAbovePanel();
-    // The zoom buttons stand at the right of a wide screen; the looks keep clear of them.
+    // The zoom buttons stand at the right of a wide screen; the looks keep clear of them. With
+    // two looks they stand inside the one they move instead, so the looks have the width.
     const buttons = mustFind('#view-controls').getBoundingClientRect();
+    const inLook = paired !== null && WIDE_SCREEN.matches;
     const right =
-      buttons.width > 0 && buttons.left > window.innerWidth / 2 ? buttons.left : window.innerWidth;
+      !inLook && buttons.width > 0 && buttons.left > window.innerWidth / 2
+        ? buttons.left
+        : window.innerWidth - (inLook ? LOOKS_RIGHT_GAP_PX : 0);
     const width = Math.max(2, Math.round(right - left));
     const height = Math.max(2, Math.round(bottom - top));
     const x = Math.round(left);
@@ -519,11 +529,26 @@ function start(): void {
       };
     };
   };
+  /**
+   * Whether a part of an earthquake's story looks down over where it began: there the whole
+   * picture is the region round it. Over anywhere else the wave is crossing the world, and the
+   * whole picture is the whole world, with the stations that felt it.
+   */
+  const overQuakeStart = (story: Story, chapter: Chapter): boolean => {
+    const began = story.quake?.record.place.value;
+    const over = chapter.overPlace?.value;
+    if (!began || !over) return false;
+    return (
+      Math.abs(over[0] - began[0]) <= QUAKE_START_NEAR_DEG &&
+      Math.abs(over[1] - began[1]) <= QUAKE_START_NEAR_DEG
+    );
+  };
   /** Draws the two looks in the two halves of the room, or one look in all of it. */
   const layPanes = (): void => {
     sight.line.removeFromParent();
     sightOf = paired ? sightFor(paired.story, paired.chapter) : null;
     if (!paired) {
+      document.body.classList.remove('two-looks');
       stage.setPanes(null);
       sideTags.frame(null);
       return;
@@ -535,6 +560,7 @@ function start(): void {
     }
     const { story, chapter } = paired;
     const halves = roomHalves();
+    document.body.classList.toggle('two-looks', WIDE_SCREEN.matches);
     const block =
       chapter.slice === true
         ? (watchQuake?.block ??
@@ -548,6 +574,10 @@ function start(): void {
         : null;
     // The ground or sea cut open is the close look: it takes the first place, and the world the second.
     const { main, side } = block ? { main: halves.side, side: halves.main } : halves;
+    // The zoom buttons move the first camera: they stand in the corner of its look.
+    const root = document.documentElement.style;
+    root.setProperty('--look-right', `${String(window.innerWidth - (main.x + main.width))}px`);
+    root.setProperty('--look-bottom', `${String(window.innerHeight - (main.y + main.height))}px`);
     const sideAspect = side.width / side.height;
     // Beside a look from a world: the close look, where the part asks for both, or the whole stage.
     const fromAWorld = chapter.standAtId !== undefined || chapter.viewFromId !== undefined;
@@ -617,12 +647,11 @@ function start(): void {
       },
       {
         box: side,
+        // Every look up close at a story's drawing says it is a drawing.
         label: cut
-          ? cut === stormSlice || cut === watchTideSlice || cut === watchDustSlice || cut === tornadoDrawing?.scene
-            ? words.watchPaneClose
-            : cut === block
-              ? words.watchPaneQuakeBlock
-              : words.watchPaneTornado
+          ? cut === tornadoDrawing?.scene
+            ? words.watchPaneTornado
+            : words.watchPaneQuakeBlock
           : modelled
             ? words.watchPaneWhole
             : close
@@ -1350,11 +1379,14 @@ function start(): void {
     const modelled = modelledCraft(story, chapter);
     if (modelled) return besideCraft(modelled, squeeze);
     if (chapter.closeUp === true && flown) return overCraft(flown, squeeze);
-    // Beside the ground cut open over an earthquake, the look at the world is closer to the region, not whole earth.
+    // Beside the ground cut open over where an earthquake began, the look at the world is of the
+    // region round it; over anywhere else the wave is crossing the world, so it is the whole world.
     const overStorm = stormView(
       story,
       chapter,
-      chapter.slice === true && story.quake ? QUAKE_WHOLE_RADII * squeeze : STORM_CLOSE_RADII,
+      chapter.slice === true && story.quake
+        ? (overQuakeStart(story, chapter) ? QUAKE_WHOLE_RADII : STORM_WIDE_RADII) * squeeze
+        : STORM_CLOSE_RADII,
     );
     if (overStorm) return overStorm;
     // Beside the ocean tides slice simulation, the other pane is the whole picture diagram.
@@ -1922,8 +1954,9 @@ function start(): void {
     if (story.id === 'sahara-dust') {
       watchDustSlice = createDustSlice();
     }
-    const onId = story.storm ? null : (story.groundPictures?.onId ?? null);
-    const pictures = story.storm ? [] : (story.groundPictures?.pictures ?? []);
+    // A storm's real pictures from space lie on the world in the whole picture, as the story says.
+    const onId = story.storm?.onId ?? story.groundPictures?.onId ?? null;
+    const pictures = story.storm?.pictures ?? story.groundPictures?.pictures ?? [];
     watchPictured = pictures.map((picture) => [picture.fromJd.value, picture.untilJd.value]);
     system.setGroundPictures(
       pictures.length === 0 ? null : onId,
@@ -2144,10 +2177,7 @@ function start(): void {
   const moveTornado = (jd: number): void => {
     if (!tornadoDrawing) return;
     const { scene, fromJd, untilJd } = tornadoDrawing;
-    scene.set(
-      jd < fromJd ? null : (jd - fromJd) / (untilJd - fromJd),
-      paired?.chapter.id,
-    );
+    scene.set(jd < fromJd ? null : (jd - fromJd) / (untilJd - fromJd), paired?.chapter.id);
   };
   /** The storm of the story on show cut in half, as a drawing in a scene of its own. */
   let stormSlice: StormSlice | null = null;
@@ -2180,9 +2210,9 @@ function start(): void {
         storm.slice.wallReachKm.value,
         galeReachKm(record),
       );
-      stormSlice = createStormSlice(shares?.eye ?? 0.12, shares?.wall ?? 0.45, story.id);
+      stormSlice = createStormSlice(shares?.eye ?? 0.12, shares?.wall ?? 0.45);
     } else {
-      stormSlice = createStormSlice(0.12, 0.45, story.id);
+      stormSlice = createStormSlice(0.12, 0.45);
     }
     system.setStorm(storm.onId, points.map(stormPlace));
   };
@@ -2537,6 +2567,39 @@ function start(): void {
                   stage.lookAt(watchView(story, chapter));
                 }, DIP_DARK_MS);
               } else stage.flyTo(watchView(story, chapter));
+            },
+            viewSwitch() {
+              // Only while the drawing up close is on show.
+              if (paired?.chapter.slice !== true) return null;
+              const drawing: readonly [
+                { toggleView(): void; viewToggled(): boolean } | null | undefined,
+                string,
+                string,
+              ] = watchQuake?.block
+                ? [null, '', '']
+                : watchTsunamiSlice
+                  ? [watchTsunamiSlice, words.watchLookShore, words.watchLookWholeSea]
+                  : watchVolcanoSlice
+                    ? [watchVolcanoSlice, words.watchLookCutOpen, words.watchLookWholeMountain]
+                    : watchTideSlice
+                      ? [watchTideSlice, words.watchLookPull, words.watchLookArrowsOff]
+                      : watchDustSlice
+                        ? [watchDustSlice, words.watchLookAir, words.watchLookArrowsOff]
+                        : tornadoDrawing?.scene.slice
+                          ? [
+                              tornadoDrawing.scene.slice,
+                              words.watchLookAir,
+                              words.watchLookArrowsOff,
+                            ]
+                          : [stormSlice, words.watchLookAir, words.watchLookArrowsOff];
+              const [shown, toOther, back] = drawing;
+              if (!shown) return null;
+              return {
+                label: shown.viewToggled() ? back : toOther,
+                toggle: () => {
+                  shown.toggleView();
+                },
+              };
             },
             turnDays(story) {
               const world = catalogue.find((object) => object.id === story.actorIds[0]);

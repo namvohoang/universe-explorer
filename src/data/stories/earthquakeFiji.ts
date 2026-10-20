@@ -63,6 +63,7 @@ const CUT_START = CUT_OPEN();
 export const earthquakeFiji: Story = {
   id: 'earthquake-fiji',
   group: 'earth-at-work',
+  kind: 'inside-earth',
   path: 'tracked',
   titleKey: 'storyQuakeTitle',
   noteKey: 'storyQuakeNote',
@@ -101,7 +102,11 @@ export const earthquakeFiji: Story = {
         quote:
           'In the process of breaking, vibrations called "seismic waves" are generated. These waves travel outward from the source of the earthquake along the surface and through the Earth at varying speeds depending on the material through which they move.',
       },
-      ...CUT_OPEN(-170, 20, 'Over the middle of the Pacific, where the front passes in these minutes.'),
+      ...CUT_OPEN(
+        -170,
+        20,
+        'Over the middle of the Pacific, where the front passes in these minutes.',
+      ),
     },
     {
       id: 'the-core',

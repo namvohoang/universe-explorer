@@ -271,6 +271,8 @@ const EARTH_SCREEN_SHOWN = ['localhost', '127.0.0.1', '[::1]'].includes(window.l
 const STORM_CLOSE_RADII = 1.35;
 /** How far from a world's middle the close look at an earthquake's wave stands, in radii. A choice of framing. */
 const QUAKE_CLOSE_RADII = 1.9;
+/** The whole-picture view over an earthquake stands closer so the regional ground fills the view, not the whole earth. */
+const QUAKE_WHOLE_RADII = 1.38;
 /** The close look over a named place stands this many times further off: what it shows is wider than a storm. */
 const PLACE_VIEW_WIDER = 1.15;
 const STORM_WIDE_RADII = 3;
@@ -559,9 +561,11 @@ function start(): void {
       : modelled && story.path !== 'tracked'
         ? overCraft(modelled, sideFit)
         : null;
-    // Beside the close look at a storm: the same look from further off, where the whole world
-    // shows, with the sea the storm crosses and the line of where it has been.
-    const overStorm = stormView(story, chapter, STORM_WIDE_RADII * sideFit);
+    const overStorm = stormView(
+      story,
+      chapter,
+      (story.quake ? QUAKE_WHOLE_RADII : STORM_WIDE_RADII) * sideFit,
+    );
     const whole = overStorm ?? close ?? stageView(story, chapter, sideAspect, 1);
     const heldBearing = close?.direction ?? STAGE_DIRECTION;
     // A part that shows the storm cut in half has that drawing beside the close look.
@@ -1212,7 +1216,8 @@ function start(): void {
           system.radiusOf(world) *
           ((story.quake ?? story.tsunami) && radii === STORM_CLOSE_RADII
             ? QUAKE_CLOSE_RADII
-            : (pictureCloseRadii(story, chapter, radii) ?? radii * PLACE_VIEW_WIDER)),
+            : (pictureCloseRadii(story, chapter, radii) ??
+              (story.quake && chapter.slice === true ? radii : radii * PLACE_VIEW_WIDER))),
         direction: over(),
         bearing: over,
         minDistance: system.radiusOf(world) * STORM_CLOSEST_RADII,
@@ -1345,11 +1350,11 @@ function start(): void {
     const modelled = modelledCraft(story, chapter);
     if (modelled) return besideCraft(modelled, squeeze);
     if (chapter.closeUp === true && flown) return overCraft(flown, squeeze);
-    // Beside the ground cut open over an earthquake, the look at the world is the whole picture.
+    // Beside the ground cut open over an earthquake, the look at the world is closer to the region, not whole earth.
     const overStorm = stormView(
       story,
       chapter,
-      chapter.slice === true && story.quake ? STORM_WIDE_RADII * squeeze : STORM_CLOSE_RADII,
+      chapter.slice === true && story.quake ? QUAKE_WHOLE_RADII * squeeze : STORM_CLOSE_RADII,
     );
     if (overStorm) return overStorm;
     // Beside the ocean tides slice simulation, the other pane is the whole picture diagram.
@@ -2456,7 +2461,10 @@ function start(): void {
               const own =
                 chapter.viewFromId !== undefined ||
                 chapter.standAtId !== undefined ||
-                chapter.closeUp === true;
+                chapter.slice === true ||
+                (chapter.closeUp === true &&
+                  (modelledCraft(story, chapter) !== null ||
+                    (story.craft ?? []).some((craft) => craft.id === chapter.lookAtId)));
               paired = own ? { story, chapter } : null;
               meteorSky =
                 story.dustAlongId !== undefined && chapter.standAtId !== undefined

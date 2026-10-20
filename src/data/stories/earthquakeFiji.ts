@@ -52,9 +52,13 @@ const over = (lonDegEast: number, latDegNorth: number, why: string) =>
     closeUp: true,
     overPlace: s([lonDegEast, latDegNorth] as const, EVENT, why),
   }) as const;
-const OVER_THE_START = over(-178.153, -18.1125, 'The place on the ground over where it began.');
-/** With the ground cut open over where it began as the close look, and the world beside it. */
-const CUT_OPEN = { ...OVER_THE_START, slice: true } as const;
+/** With the ground cut open as the close look, and the world beside it. */
+const CUT_OPEN = (
+  lonDegEast = -178.153,
+  latDegNorth = -18.1125,
+  why = 'The place on the ground over where it began.',
+) => ({ ...over(lonDegEast, latDegNorth, why), slice: true }) as const;
+const CUT_START = CUT_OPEN();
 
 export const earthquakeFiji: Story = {
   id: 'earthquake-fiji',
@@ -75,7 +79,7 @@ export const earthquakeFiji: Story = {
         quote:
           'they move over a hot, yielding upper mantle zone at very slow rates of a few centimeters per year, slower than the rate at which fingernails grow.',
       },
-      ...CUT_OPEN,
+      ...CUT_START,
     },
     {
       id: 'it-breaks',
@@ -86,7 +90,7 @@ export const earthquakeFiji: Story = {
         quote:
           'occurred as the result of deep, normal faulting approximately 560 km beneath the South Pacific Ocean',
       },
-      ...CUT_OPEN,
+      ...CUT_START,
     },
     {
       id: 'the-waves',
@@ -97,7 +101,7 @@ export const earthquakeFiji: Story = {
         quote:
           'In the process of breaking, vibrations called "seismic waves" are generated. These waves travel outward from the source of the earthquake along the surface and through the Earth at varying speeds depending on the material through which they move.',
       },
-      ...over(-170, 20, 'Over the middle of the Pacific, where the front passes in these minutes.'),
+      ...CUT_OPEN(-170, 20, 'Over the middle of the Pacific, where the front passes in these minutes.'),
     },
     {
       id: 'the-core',
@@ -108,7 +112,7 @@ export const earthquakeFiji: Story = {
         quote:
           'The core was the first internal structural element to be identified. It was discovered in 1906 by R.D. Oldham, from his study of earthquake records',
       },
-      ...over(5, 25, 'Over the far side of the world from the earthquake.'),
+      ...CUT_OPEN(5, 25, 'Over the far side of the world from the earthquake.'),
     },
     {
       id: 'so-deep',
@@ -119,7 +123,7 @@ export const earthquakeFiji: Story = {
         quote:
           'Deep-focus earthquakes cause less damage on the ground surface above their foci than similar-magnitude shallow-focus earthquakes',
       },
-      ...CUT_OPEN,
+      ...CUT_START,
     },
   ],
   endJd: after(1260, 'Twenty-one minutes after it began.'),

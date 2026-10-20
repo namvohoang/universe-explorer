@@ -137,7 +137,7 @@ export function createWatch(host: WatchHost): Watch {
   const head = create('div', 'watch-head');
   head.append(title, step);
   // The one way, for every story, to see the drawing up close another way.
-  const look = create('button', 'watch-look');
+  const look = create('button', 'watch-drawing-look');
   look.type = 'button';
   const lookLabel = create('span', '');
   look.append(icon('eye'), lookLabel);
@@ -150,6 +150,8 @@ export function createWatch(host: WatchHost): Watch {
     shownLook = wanted;
     look.hidden = wanted === null;
     lookLabel.textContent = wanted ?? '';
+    // Where the words cannot be shown beside the picture, they are its tooltip.
+    look.title = wanted ?? '';
   };
   look.addEventListener('click', () => {
     host.viewSwitch?.()?.toggle();

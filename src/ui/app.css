@@ -1359,7 +1359,7 @@ body.watching .view-controls .turn {
 }
 
 /* The one button, the same in every story, that shows the drawing up close another way. */
-.watch-look {
+.watch-drawing-look {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1370,7 +1370,7 @@ body.watching .view-controls .turn {
   text-align: left;
 }
 
-.watch-look .icon {
+.watch-drawing-look .icon {
   color: var(--sun);
 }
 
@@ -2660,9 +2660,8 @@ body.watching .marker {
     min-height: calc(2 * 1.25em);
   }
 
-  .watch-look {
+  .watch-drawing-look {
     margin-top: 6px;
-    min-height: 40px;
     font-size: 14px;
   }
 }
@@ -2670,6 +2669,41 @@ body.watching .marker {
 @media (max-height: 500px) {
   body.watching .brand p {
     min-height: 0;
+  }
+
+  /* A phone on its side has no height to spare: the button is its picture alone, in the
+     corner of the words, which keep clear of it. Its name is still read out. */
+  .watch-caption {
+    position: relative;
+  }
+
+  .watch-path {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .watch-caption:has(.watch-drawing-look:not([hidden])) {
+    padding-right: 60px;
+  }
+
+  .watch-drawing-look {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    width: 44px;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .watch-drawing-look span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 

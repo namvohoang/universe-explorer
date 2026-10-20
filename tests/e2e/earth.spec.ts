@@ -116,7 +116,7 @@ test.describe('the Earth screen', () => {
     page,
   }) => {
     await page.goto('/#earth/hurricane-sam');
-    const look = page.locator('.watch-caption .watch-look');
+    const look = page.locator('.watch-caption .watch-drawing-look');
     await expect(look).toHaveText('Show how the air moves');
     await look.click();
     await expect(look).toHaveText('Hide the arrows');
@@ -277,7 +277,7 @@ test.describe('the Earth screen', () => {
     await page.goto('/?lang=vi#earth/hurricane-sam');
     await expect(page.locator('.watch-caption h2')).toHaveText('Một cơn bão');
     await expect(page.locator(mainTab('Trái Đất'))).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('.watch-caption .watch-look')).toHaveText(
+    await expect(page.locator('.watch-caption .watch-drawing-look')).toHaveText(
       'Xem không khí chuyển động',
     );
   });

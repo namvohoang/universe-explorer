@@ -1187,6 +1187,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Mô hình cắt lớp núi lửa là hình vẽ. Cột tro bụi bốc lên tầng bình lưu là từ quan sát thực tế.',
   scaleLabelTideSlice:
     'Mô phỏng thủy triều đại dương là hình vẽ minh họa được phóng đại để dễ quan sát. Lực hấp dẫn của Mặt Trăng và vị trí quỹ đạo là có thật.',
+  scaleLabelDustSlice:
+    'Cơn bão cát sa mạc là mô phỏng 3D. Hình ảnh vệ tinh đám bụi cát vượt đại dương là từ quan sát thực tế.',
   scaleLabelTornado: 'Đường đi và bề rộng của vòi lốc là thật. Phần còn lại là hình vẽ.',
   scaleLabelSlice: 'Bức ảnh là thật. Hình cắt đôi là hình vẽ, cao hơn cơn bão thật rất nhiều.',
   watchPlay: 'Chạy',

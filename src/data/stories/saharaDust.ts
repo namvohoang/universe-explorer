@@ -52,11 +52,12 @@ const picture = (
   untilJd: s(untilJd, WORLDVIEW, 'When the next picture takes its place, or the story ends.'),
 });
 
-/** Looking straight down on the middle of that day's picture. */
+/** Looking straight down on the middle of that day's picture, with dynamic 3D close up simulation beside it. */
 const over = (lonDegEast: number, latDegNorth: number) =>
   ({
     lookAtId: 'earth',
     closeUp: true,
+    slice: true,
     overPlace: s(
       [lonDegEast, latDegNorth] as const,
       WORLDVIEW,

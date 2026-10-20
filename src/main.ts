@@ -22,6 +22,7 @@ import { createQuakeBlock, type QuakeBlock } from './scene/quakeBlock';
 import { createTsunamiSlice, type TsunamiSlice } from './scene/tsunamiSlice';
 import { createVolcanoSlice, type VolcanoSlice } from './scene/volcanoSlice';
 import { createTideSlice, type TideSlice } from './scene/tideSlice';
+import { createDustSlice, type DustSlice } from './scene/dustSlice';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
@@ -534,7 +535,12 @@ function start(): void {
     const halves = roomHalves();
     const block =
       chapter.slice === true
-        ? (watchQuake?.block ?? watchTsunamiSlice ?? watchVolcanoSlice ?? watchTideSlice ?? null)
+        ? (watchQuake?.block ??
+          watchTsunamiSlice ??
+          watchVolcanoSlice ??
+          watchTideSlice ??
+          watchDustSlice ??
+          null)
         : null;
     // The ground or sea cut open is the close look: it takes the first place, and the world the second.
     const { main, side } = block ? { main: halves.side, side: halves.main } : halves;
@@ -608,7 +614,7 @@ function start(): void {
         label: cut
           ? cut === stormSlice
             ? words.watchPaneSlice
-            : cut === watchTideSlice
+            : cut === watchTideSlice || cut === watchDustSlice
               ? words.watchPaneClose
               : cut === block
                 ? words.watchPaneQuakeBlock
@@ -1898,12 +1904,18 @@ function start(): void {
   /** When each real picture of the story's ground is shown, in the order the scene was given them. */
   let watchPictured: readonly (readonly [fromJd: number, untilJd: number])[] = [];
   let watchVolcanoSlice: VolcanoSlice | null = null;
+  let watchDustSlice: DustSlice | null = null;
   /** Lays a story's real pictures of the ground, of its storm or of anything else, ready to show. */
   const showPictures = (story: Story): void => {
     watchVolcanoSlice?.dispose();
     watchVolcanoSlice = null;
     if (story.id === 'volcano-raikoke') {
       watchVolcanoSlice = createVolcanoSlice();
+    }
+    watchDustSlice?.dispose();
+    watchDustSlice = null;
+    if (story.id === 'sahara-dust') {
+      watchDustSlice = createDustSlice();
     }
     const onId = story.storm?.onId ?? story.groundPictures?.onId ?? null;
     const pictures = story.storm?.pictures ?? story.groundPictures?.pictures ?? [];
@@ -1928,6 +1940,9 @@ function start(): void {
       // 21 June 2019 noon UTC is 2458656; 22 June 00:00 UTC eruption onset is 2458656.5
       const hoursAfter = (jd - 2458656.5) * 24;
       watchVolcanoSlice.set(paired?.chapter.id ?? 'quiet', hoursAfter);
+    }
+    if (watchDustSlice) {
+      watchDustSlice.set(paired?.chapter.id ?? 'lifts-off', jd);
     }
   };
   /** The earthquake of the story on show: when it began, and how far its wave had got when. */
@@ -2456,7 +2471,9 @@ function start(): void {
                           ? words.scaleLabelVolcanoSlice
                           : chapter.slice === true && watchTideSlice
                             ? words.scaleLabelTideSlice
-                            : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+                            : chapter.slice === true && watchDustSlice
+                              ? words.scaleLabelDustSlice
+                              : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -2719,6 +2736,8 @@ function start(): void {
       system.setTsunami(null, null);
       watchVolcanoSlice?.dispose();
       watchVolcanoSlice = null;
+      watchDustSlice?.dispose();
+      watchDustSlice = null;
       watchStorm = null;
       stormSlice?.dispose();
       stormSlice = null;
@@ -2972,6 +2991,7 @@ function start(): void {
       if (!reducedMotion) watchTsunamiSlice?.flow(dt);
       watchVolcanoSlice?.flow(reducedMotion ? 0 : dt);
       watchTideSlice?.flow(reducedMotion ? 0 : dt);
+      watchDustSlice?.flow(reducedMotion ? 0 : dt);
       if (!reducedMotion) system.flowQuake?.(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
@@ -3071,7 +3091,8 @@ function start(): void {
         (watchQuake?.block ?? null) !== null ||
         watchTsunamiSlice !== null ||
         watchVolcanoSlice !== null ||
-        watchTideSlice !== null);
+        watchTideSlice !== null ||
+        watchDustSlice !== null);
     sideTags.update((id) => {
       if (besideADrawing) {
         return { point: { ...stage.toSideScreen(ORIGIN), visible: false }, radiusPixels: 0 };

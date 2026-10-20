@@ -935,15 +935,12 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       rock.lineTo(slabTopX - Math.cos(slabAngle) * height * 1.3, height);
       rock.stroke();
 
-      // Plate motion indicator
-      rock.fillStyle = 'rgba(215, 235, 255, 0.95)';
-      rock.font = 'bold 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      rock.fillText('SUBDUCTING PACIFIC SLAB (~7 cm/yr)', slabTopX - 440, 160);
       rock.restore();
     }
 
-    // Discontinuity lines & labels
-    const drawDiscontinuity = (km: number, name: string) => {
+    // Lines where the mantle changes, with no words: words painted on the rock could not be
+    // read in the view, nor be in the reader's language.
+    const drawDiscontinuity = (km: number) => {
       const y = km * pixelsPerKm;
       if (y > height) return;
       rock.strokeStyle = DISCONTINUITY_LINE;
@@ -954,16 +951,10 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       rock.lineTo(width, y);
       rock.stroke();
       rock.setLineDash([]);
-
-      if (!isRight) {
-        rock.fillStyle = '#ffebb8';
-        rock.font = 'bold 25px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        rock.fillText(`── ${String(km)} km ── ${name}`, 220, y - 10);
-      }
     };
 
-    drawDiscontinuity(TRANSITION_ZONE_TOP_KM, 'TRANSITION ZONE (410 km)');
-    drawDiscontinuity(TRANSITION_ZONE_BOTTOM_KM, 'LOWER MANTLE (660 km)');
+    drawDiscontinuity(TRANSITION_ZONE_TOP_KM);
+    drawDiscontinuity(TRANSITION_ZONE_BOTTOM_KM);
 
     // Depth ruler on the left edge of LEFT block
     if (!isRight) {
@@ -976,10 +967,6 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
       rock.lineTo(190, height);
       rock.stroke();
 
-      rock.fillStyle = '#ffffff';
-      rock.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      rock.textAlign = 'right';
-
       for (let km = 0; km <= downKm; km += 50) {
         const y = km * pixelsPerKm;
         const isMajor = km % 100 === 0 || km === depthKm || km === 410 || km === 660;
@@ -989,12 +976,7 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
         rock.moveTo(isMajor ? 145 : 165, y);
         rock.lineTo(190, y);
         rock.stroke();
-
-        if (isMajor) {
-          rock.fillText(`${String(km)} km`, 135, y + 8);
-        }
       }
-      rock.textAlign = 'left';
     }
 
     // Hypocenter wave radiation from the fault line at the interface
@@ -1020,17 +1002,6 @@ export function createQuakeBlock(depthKm: number): QuakeBlock {
     // Draw wave arcs
     if (reachKm !== null) {
       drawWaveArcs(rock, originX, focusYPx, (behindKm) => reachKm - behindKm);
-    }
-
-    // Hypocenter badge text (on the right face)
-    if (isRight) {
-      rock.fillStyle = broken ? `rgb(${BREAK_GLOW})` : 'rgba(255, 215, 120, 0.95)';
-      rock.font = 'bold 25px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      rock.fillText(
-        `HYPOCENTER (${String(depthKm)} km) ${broken ? '• NORMAL FAULT SLIP (M8.2)' : '• STRESS LOAD'}`,
-        35,
-        focusYPx + 10,
-      );
     }
 
     cutFace.texture.needsUpdate = true;

@@ -63,6 +63,7 @@ const CUT_START = CUT_OPEN();
 export const earthquakeFiji: Story = {
   id: 'earthquake-fiji',
   group: 'earth-at-work',
+  kind: 'inside-earth',
   path: 'tracked',
   titleKey: 'storyQuakeTitle',
   noteKey: 'storyQuakeNote',

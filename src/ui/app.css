@@ -1051,6 +1051,20 @@ button.primary {
   scrollbar-width: none;
 }
 
+/* The name over a kind of story, before its first chip. */
+.chip-kind {
+  flex: none;
+  margin-left: 8px;
+  color: var(--ink-dim);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.chip-kind:first-child {
+  margin-left: 0;
+}
+
 .chips button {
   flex: none;
   display: flex;
@@ -2656,5 +2670,15 @@ body.watching .marker {
 @media (max-height: 500px) {
   body.watching .brand p {
     min-height: 0;
+  }
+}
+
+/* A wide screen with two looks: the zoom buttons stand in the corner of the look they move. */
+@media (min-width: 1000px) and (min-height: 501px) {
+  body.watching.two-looks .view-controls {
+    top: auto;
+    transform: none;
+    right: calc(var(--look-right, 16px) + 12px);
+    bottom: calc(var(--look-bottom, 120px) + 12px);
   }
 }

@@ -33,6 +33,7 @@ const TIDE_VIEW = {
 export const tides: Story = {
   id: 'tides',
   group: 'earth-at-work',
+  kind: 'sea-and-moon',
   path: 'orbits',
   titleKey: 'storyTidesTitle',
   noteKey: 'storyTidesNote',

@@ -69,6 +69,7 @@ const OVER_THE_STORM = { lookAtId: 'earth', closeUp: true, overStorm: true, slic
 export const hurricaneSam: Story = {
   id: 'hurricane-sam',
   group: 'earth-at-work',
+  kind: 'weather',
   path: 'tracked',
   titleKey: 'storyHurricaneTitle',
   noteKey: 'storyHurricaneNote',

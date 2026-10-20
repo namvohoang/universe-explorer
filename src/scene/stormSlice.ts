@@ -79,7 +79,8 @@ function createOceanTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 512;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return new CanvasTexture(canvas);
 
   // Deep oceanic blue
   ctx.fillStyle = '#0a233f';
@@ -92,7 +93,7 @@ function createOceanTexture(): CanvasTexture {
     const r = Math.random() * 18 + 6;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(18, 64, 110, ${Math.random() * 0.4})`;
+    ctx.fillStyle = `rgba(18, 64, 110, ${String(Math.random() * 0.4)})`;
     ctx.fill();
   }
 
@@ -116,17 +117,13 @@ function createOceanTexture(): CanvasTexture {
   return texture;
 }
 
-export function createStormSlice(
-  eyeRadiusShare = 0.12,
-  wallReachShare = 0.45,
-): StormSlice {
+export function createStormSlice(eyeRadiusShare = 0.12, wallReachShare = 0.45): StormSlice {
   const scene = new Scene();
   const disposables: DisposableItem[] = [];
   const keep = <T extends DisposableItem>(item: T): T => {
     disposables.push(item);
     return item;
   };
-
 
   // --------------------------------------------------------------------------
   // 1. Atmosphere, Fog & Lighting
@@ -201,10 +198,10 @@ export function createStormSlice(
     sprayAngles[i] = Math.random() * Math.PI * 2;
     spraySpeeds[i] = 1.6 + Math.random() * 2.8;
     sprayYOffsets[i] = 0.05 + Math.random() * 0.18;
-    const x = Math.cos(sprayAngles[i]!) * sprayRadii[i]!;
-    const z = Math.sin(sprayAngles[i]!) * sprayRadii[i]!;
+    const x = Math.cos(sprayAngles[i] ?? 0) * (sprayRadii[i] ?? 0);
+    const z = Math.sin(sprayAngles[i] ?? 0) * (sprayRadii[i] ?? 0);
     sprayPositions[i * 3] = x;
-    sprayPositions[i * 3 + 1] = sprayYOffsets[i]!;
+    sprayPositions[i * 3 + 1] = sprayYOffsets[i] ?? 0;
     sprayPositions[i * 3 + 2] = z;
   }
   sprayGeo.setAttribute('position', new BufferAttribute(sprayPositions, 3));
@@ -286,11 +283,8 @@ export function createStormSlice(
     const heights = [1.2, 2.2, 3.2, 3.8];
     const scales = [1.2, 1.4, 1.3, 0.9];
     for (let h = 0; h < heights.length; h++) {
-      const puff = new Mesh(
-        keep(new SphereGeometry(scales[h]!, 16, 14)),
-        rainbandMat,
-      );
-      puff.position.y = heights[h]!;
+      const puff = new Mesh(keep(new SphereGeometry(scales[h], 16, 14)), rainbandMat);
+      puff.position.y = heights[h] ?? 0;
       puff.scale.set(1.1, 0.85, 1.1);
       tower.add(puff);
     }
@@ -320,9 +314,10 @@ export function createStormSlice(
   for (let i = 0; i < formUpdraftCount; i++) {
     formUpdraftLifes[i] = Math.random();
     const towerIdx = i % towerPositions.length;
-    const base = towerPositions[towerIdx]!;
+    const base = towerPositions[towerIdx];
+    if (!base) continue;
     formUpdraftPos[i * 3] = base.x + (Math.random() - 0.5) * 1.2;
-    formUpdraftPos[i * 3 + 1] = formUpdraftLifes[i]! * CLOUD_HEIGHT;
+    formUpdraftPos[i * 3 + 1] = (formUpdraftLifes[i] ?? 0) * CLOUD_HEIGHT;
     formUpdraftPos[i * 3 + 2] = base.z + (Math.random() - 0.5) * 1.2;
   }
   formUpdraftGeo.setAttribute('position', new BufferAttribute(formUpdraftPos, 3));
@@ -386,7 +381,7 @@ export function createStormSlice(
   const eyewallGeo = keep(
     new CylinderGeometry(
       eyeRadius * 2.2, // Wider at tropopause (stadium effect)
-      eyeRadius,       // Narrower at ocean surface
+      eyeRadius, // Narrower at ocean surface
       eyewallHeight,
       48,
       16,
@@ -399,14 +394,7 @@ export function createStormSlice(
 
   // Eyewall outer dense wall
   const eyewallOuterGeo = keep(
-    new CylinderGeometry(
-      wallRadius * 1.25,
-      wallRadius,
-      eyewallHeight,
-      48,
-      12,
-      true,
-    ),
+    new CylinderGeometry(wallRadius * 1.25, wallRadius, eyewallHeight, 48, 12, true),
   );
   const eyewallOuterMesh = new Mesh(eyewallOuterGeo, eyeWallMat);
   eyewallOuterMesh.position.y = eyewallHeight / 2;
@@ -502,9 +490,9 @@ export function createStormSlice(
   for (let i = 0; i < UPDRAFT_COUNT; i++) {
     updraftLifes[i] = Math.random();
     updraftAngles[i] = Math.random() * Math.PI * 2;
-    const y = updraftLifes[i]! * CLOUD_HEIGHT;
+    const y = (updraftLifes[i] ?? 0) * CLOUD_HEIGHT;
     const r = eyeRadius + (wallRadius - eyeRadius) * (0.3 + 0.7 * (y / CLOUD_HEIGHT));
-    const ang = updraftAngles[i]! + y * 2.2;
+    const ang = (updraftAngles[i] ?? 0) + y * 2.2;
     updraftPos[i * 3] = Math.cos(ang) * r;
     updraftPos[i * 3 + 1] = y;
     updraftPos[i * 3 + 2] = Math.sin(ang) * r;
@@ -531,9 +519,9 @@ export function createStormSlice(
   const eyeDownLifes = new Float32Array(EYE_DOWNDRAFT_COUNT);
   for (let i = 0; i < EYE_DOWNDRAFT_COUNT; i++) {
     eyeDownLifes[i] = Math.random();
-    const y = (1.0 - eyeDownLifes[i]!) * CLOUD_HEIGHT;
+    const y = (1.0 - (eyeDownLifes[i] ?? 0)) * CLOUD_HEIGHT;
     const r = Math.random() * (eyeRadius * 0.7);
-    const ang = eyeDownLifes[i]! * Math.PI * 4.0;
+    const ang = (eyeDownLifes[i] ?? 0) * Math.PI * 4.0;
     eyeDownPos[i * 3] = Math.cos(ang) * r;
     eyeDownPos[i * 3 + 1] = y;
     eyeDownPos[i * 3 + 2] = Math.sin(ang) * r;
@@ -562,8 +550,8 @@ export function createStormSlice(
   for (let i = 0; i < OUTFLOW_COUNT; i++) {
     outflowProgress[i] = Math.random();
     outflowAngles[i] = Math.random() * Math.PI * 2;
-    const r = wallRadius + outflowProgress[i]! * (outerRadius - wallRadius + 2.0);
-    const ang = outflowAngles[i]! - outflowProgress[i]! * Math.PI * 1.5; // Opposite clockwise turn
+    const r = wallRadius + (outflowProgress[i] ?? 0) * (outerRadius - wallRadius + 2.0);
+    const ang = (outflowAngles[i] ?? 0) - (outflowProgress[i] ?? 0) * Math.PI * 1.5; // Opposite clockwise turn
     outflowPos[i * 3] = Math.cos(ang) * r;
     outflowPos[i * 3 + 1] = CLOUD_HEIGHT * (0.95 + Math.random() * 0.1);
     outflowPos[i * 3 + 2] = Math.sin(ang) * r;
@@ -593,9 +581,12 @@ export function createStormSlice(
   // Streamline arrow indicators (Ref Image 2)
   // Broad Upper Outflow Arrows (Blue arrows curving outward)
   const outflowArrowPts = [
-    new Vector3(1.2, CLOUD_HEIGHT * 1.05, 0), new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5),
-    new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5), new Vector3(4.8, CLOUD_HEIGHT * 1.05, 2.6),
-    new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5), new Vector3(5.2, CLOUD_HEIGHT * 1.05, 1.8),
+    new Vector3(1.2, CLOUD_HEIGHT * 1.05, 0),
+    new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5),
+    new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5),
+    new Vector3(4.8, CLOUD_HEIGHT * 1.05, 2.6),
+    new Vector3(5.5, CLOUD_HEIGHT * 1.05, 2.5),
+    new Vector3(5.2, CLOUD_HEIGHT * 1.05, 1.8),
   ];
   const outflowArrow = new LineSegments(
     keep(new BufferGeometry().setFromPoints(outflowArrowPts)),
@@ -605,9 +596,12 @@ export function createStormSlice(
 
   // Sea Surface Inflow Arrows (Red arrows curving inward)
   const seaInflowArrowPts = [
-    new Vector3(6.5, 0.15, -1.0), new Vector3(2.2, 0.15, 0.4),
-    new Vector3(2.2, 0.15, 0.4), new Vector3(2.8, 0.15, 0.8),
-    new Vector3(2.2, 0.15, 0.4), new Vector3(2.6, 0.15, 0.0),
+    new Vector3(6.5, 0.15, -1.0),
+    new Vector3(2.2, 0.15, 0.4),
+    new Vector3(2.2, 0.15, 0.4),
+    new Vector3(2.8, 0.15, 0.8),
+    new Vector3(2.2, 0.15, 0.4),
+    new Vector3(2.6, 0.15, 0.0),
   ];
   const seaInflowArrow = new LineSegments(
     keep(new BufferGeometry().setFromPoints(seaInflowArrowPts)),
@@ -617,17 +611,20 @@ export function createStormSlice(
 
   // Altitude Ruler (0 to 10 miles / 0 to 16 km, Ref Image 2)
   const rulerPts = [
-    new Vector3(-6.5, 0, 0), new Vector3(-6.5, CLOUD_HEIGHT, 0),
-    new Vector3(-6.8, 0, 0), new Vector3(-6.2, 0, 0),
-    new Vector3(-6.8, CLOUD_HEIGHT * 0.5, 0), new Vector3(-6.2, CLOUD_HEIGHT * 0.5, 0),
-    new Vector3(-6.8, CLOUD_HEIGHT, 0), new Vector3(-6.2, CLOUD_HEIGHT, 0),
+    new Vector3(-6.5, 0, 0),
+    new Vector3(-6.5, CLOUD_HEIGHT, 0),
+    new Vector3(-6.8, 0, 0),
+    new Vector3(-6.2, 0, 0),
+    new Vector3(-6.8, CLOUD_HEIGHT * 0.5, 0),
+    new Vector3(-6.2, CLOUD_HEIGHT * 0.5, 0),
+    new Vector3(-6.8, CLOUD_HEIGHT, 0),
+    new Vector3(-6.2, CLOUD_HEIGHT, 0),
   ];
   const altitudeRuler = new LineSegments(
     keep(new BufferGeometry().setFromPoints(rulerPts)),
     keep(new LineBasicMaterial({ color: 0x94a3b8, linewidth: 2 })),
   );
   scientificOverlayGroup.add(altitudeRuler);
-
 
   // ==========================================================================
   // 6. Phase State Controller
@@ -711,8 +708,8 @@ export function createStormSlice(
       // 0. Dynamic Moving Ocean Water Waves, Swells & Surface Foam
       const pos = seaGeo.attributes.position as BufferAttribute;
       for (let i = 0; i < seaPositions.count; i++) {
-        const x = seaBaseX[i]!;
-        const z = seaBaseZ[i]!;
+        const x = seaBaseX[i] ?? 0;
+        const z = seaBaseZ[i] ?? 0;
         const dist = Math.sqrt(x * x + z * z);
         const angle = Math.atan2(z, x);
 
@@ -724,7 +721,8 @@ export function createStormSlice(
         const openSwell = Math.sin(x * 0.38 + z * 0.28 - totalTime * 2.0) * 0.12;
 
         // C. Choppy whitecap wavelets and turbulence
-        const chop = Math.sin(x * 1.5 - totalTime * 4.4) * Math.cos(z * 1.5 + totalTime * 3.8) * 0.06;
+        const chop =
+          Math.sin(x * 1.5 - totalTime * 4.4) * Math.cos(z * 1.5 + totalTime * 3.8) * 0.06;
 
         // Wind amplification: waves peak violently near eyewall
         const windScale = Math.exp(-Math.pow(dist - 3.0, 2) / 10.0) * 1.25 + 0.65;
@@ -746,18 +744,20 @@ export function createStormSlice(
       // Sea spray & foam particles racing along wave crests with cyclonic wind
       const sp = sprayGeo.attributes.position as BufferAttribute;
       for (let i = 0; i < SPRAY_COUNT; i++) {
-        sprayAngles[i] = sprayAngles[i]! + seconds * spraySpeeds[i]!;
-        sprayRadii[i] = sprayRadii[i]! - seconds * 0.16;
-        if (sprayRadii[i]! < 0.9) {
+        sprayAngles[i] = (sprayAngles[i] ?? 0) + seconds * (spraySpeeds[i] ?? 0);
+        sprayRadii[i] = (sprayRadii[i] ?? 0) - seconds * 0.16;
+        if ((sprayRadii[i] ?? 0) < 0.9) {
           sprayRadii[i] = 9.0 + Math.random() * 1.5;
         }
-        const ang = sprayAngles[i]!;
-        const r = sprayRadii[i]!;
+        const ang = sprayAngles[i] ?? 0;
+        const r = sprayRadii[i] ?? 0;
         const px = Math.cos(ang) * r;
         const pz = Math.sin(ang) * r;
-        const waveY = (Math.sin(ang * 2.0 - r * 0.9 + totalTime * 3.6) * 0.16 +
-          Math.sin(px * 0.38 + pz * 0.28 - totalTime * 2.0) * 0.12) * 1.2;
-        sp.setXYZ(i, px, Math.max(0.04, waveY + sprayYOffsets[i]!), pz);
+        const waveY =
+          (Math.sin(ang * 2.0 - r * 0.9 + totalTime * 3.6) * 0.16 +
+            Math.sin(px * 0.38 + pz * 0.28 - totalTime * 2.0) * 0.12) *
+          1.2;
+        sp.setXYZ(i, px, Math.max(0.04, waveY + (sprayYOffsets[i] ?? 0)), pz);
       }
       sp.needsUpdate = true;
 
@@ -776,10 +776,10 @@ export function createStormSlice(
       if (matureGroup.visible) {
         const u = updraftGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < UPDRAFT_COUNT; i++) {
-          updraftLifes[i] = (updraftLifes[i]! + seconds * 0.6) % 1.0;
-          const y = updraftLifes[i]! * CLOUD_HEIGHT;
+          updraftLifes[i] = ((updraftLifes[i] ?? 0) + seconds * 0.6) % 1.0;
+          const y = (updraftLifes[i] ?? 0) * CLOUD_HEIGHT;
           const r = eyeRadius + (wallRadius - eyeRadius) * (0.3 + 0.7 * (y / CLOUD_HEIGHT));
-          const ang = updraftAngles[i]! + totalTime * 2.5 + y * 2.0;
+          const ang = (updraftAngles[i] ?? 0) + totalTime * 2.5 + y * 2.0;
           u.setXYZ(i, Math.cos(ang) * r, y, Math.sin(ang) * r);
         }
         u.needsUpdate = true;
@@ -787,10 +787,10 @@ export function createStormSlice(
         // Eye descending downdraft particles
         const d = eyeDownGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < EYE_DOWNDRAFT_COUNT; i++) {
-          eyeDownLifes[i] = (eyeDownLifes[i]! + seconds * 0.3) % 1.0;
-          const y = (1.0 - eyeDownLifes[i]!) * CLOUD_HEIGHT;
-          const r = (eyeRadius * 0.65) * Math.sin(eyeDownLifes[i]! * Math.PI);
-          const ang = eyeDownLifes[i]! * Math.PI * 4.0 - totalTime * 1.2;
+          eyeDownLifes[i] = ((eyeDownLifes[i] ?? 0) + seconds * 0.3) % 1.0;
+          const y = (1.0 - (eyeDownLifes[i] ?? 0)) * CLOUD_HEIGHT;
+          const r = eyeRadius * 0.65 * Math.sin((eyeDownLifes[i] ?? 0) * Math.PI);
+          const ang = (eyeDownLifes[i] ?? 0) * Math.PI * 4.0 - totalTime * 1.2;
           d.setXYZ(i, Math.cos(ang) * r, y, Math.sin(ang) * r);
         }
         d.needsUpdate = true;
@@ -798,9 +798,10 @@ export function createStormSlice(
         // Outflow diverging particles
         const o = outflowGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < OUTFLOW_COUNT; i++) {
-          outflowProgress[i] = (outflowProgress[i]! + seconds * 0.25) % 1.0;
-          const r = wallRadius + outflowProgress[i]! * (outerRadius - wallRadius + 2.0);
-          const ang = outflowAngles[i]! - totalTime * 0.6 - outflowProgress[i]! * Math.PI * 1.5;
+          outflowProgress[i] = ((outflowProgress[i] ?? 0) + seconds * 0.25) % 1.0;
+          const r = wallRadius + (outflowProgress[i] ?? 0) * (outerRadius - wallRadius + 2.0);
+          const ang =
+            (outflowAngles[i] ?? 0) - totalTime * 0.6 - (outflowProgress[i] ?? 0) * Math.PI * 1.5;
           o.setXYZ(i, Math.cos(ang) * r, CLOUD_HEIGHT * 0.98, Math.sin(ang) * r);
         }
         o.needsUpdate = true;
@@ -810,13 +811,14 @@ export function createStormSlice(
       if (formationGroup.visible) {
         const fu = formUpdraftGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < formUpdraftCount; i++) {
-          formUpdraftLifes[i] = (formUpdraftLifes[i]! + seconds * 0.4) % 1.0;
+          formUpdraftLifes[i] = ((formUpdraftLifes[i] ?? 0) + seconds * 0.4) % 1.0;
           const towerIdx = i % towerPositions.length;
-          const base = towerPositions[towerIdx]!;
+          const base = towerPositions[towerIdx];
+          if (!base) continue;
           fu.setXYZ(
             i,
             base.x + Math.sin(totalTime * 2.0 + i) * 0.4,
-            formUpdraftLifes[i]! * CLOUD_HEIGHT,
+            (formUpdraftLifes[i] ?? 0) * CLOUD_HEIGHT,
             base.z + Math.cos(totalTime * 2.0 + i) * 0.4,
           );
         }

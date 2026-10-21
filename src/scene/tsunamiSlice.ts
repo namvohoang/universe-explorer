@@ -10,8 +10,6 @@ import {
   DirectionalLight,
   DoubleSide,
   Group,
-  LineBasicMaterial,
-  LineSegments,
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
@@ -22,7 +20,6 @@ import {
   Points,
   PointsMaterial,
   RepeatWrapping,
-  RingGeometry,
   Scene,
   SphereGeometry,
   SRGBColorSpace,
@@ -32,9 +29,11 @@ import { tsunamiPace } from './tsunamiPace';
 
 /**
  * A 3D close-up simulation of a tsunami:
- * 1. Deep ocean generation and propagation across the subduction trench and abyssal plain.
- * 2. The dramatic transformation during shoaling near the shore: a towering, curling 3D wave
- *    breaker with a hollow barrel, overhanging crest, and churning white sea foam.
+ * 1. The sea cut open from over the trench to the beach, with one wave that goes on with the
+ *    story's clock: lifted over the trench, low and long across the deep sea, then slower,
+ *    taller and shorter near land, the sea drawing back off the beach before it runs up it.
+ * 2. Asked for with its button: a towering, curling 3D wave breaker at the shore with a hollow
+ *    barrel, overhanging crest, and churning white sea foam.
  *
  * Everything below is a drawing, stretched tall: how deep the sea is against how wide,
  * the shape of the seabed, the wave rising near the shore, and the jet plane.
@@ -46,7 +45,6 @@ const SEABED_COLOR = 0x242d38;
 const SHORE_SAND = 0xd9ba82;
 const COAST_GREEN = 0x3e5e34;
 const WATER_COLOR = 0x00a8cc; // Luminous ocean turquoise (matching reference wave sculpture)
-const BUOY_YELLOW = 0xffc400;
 const JET_COLOR = 0xe0e6ed;
 
 /** 3D scene dimensions */
@@ -55,6 +53,11 @@ const SLICE_DEPTH = 3.6; // Z axis: -1.8 to +1.8
 const DEEP_FLOOR_Y = -4.8; // Deep ocean floor (~4,500 m)
 const SHELF_FLOOR_Y = -0.7; // Continental shelf (~200 m)
 const SHORE_Y = 0.0; // Sea level at coast
+/** The sea cut open runs from over the trench to up the beach. */
+const WATER_WEST = -13;
+const WATER_EAST = 13;
+/** Where the boat out at sea floats. */
+const SEA_BOAT_X = -3;
 
 interface MutableVec3 {
   x: number;
@@ -583,9 +586,11 @@ export function createTsunamiSlice(): TsunamiSlice {
   root.add(seabedMesh);
 
   // --- 2. DEEP OCEAN WATER SURFACE (FLUID BASIN) ---
-  const waterGridX = 70;
+  const waterGridX = 180;
   const waterGridZ = 16;
-  const waterGeom = keep(new PlaneGeometry(18, SLICE_DEPTH, waterGridX, waterGridZ));
+  const waterGeom = keep(
+    new PlaneGeometry(WATER_EAST - WATER_WEST, SLICE_DEPTH, waterGridX, waterGridZ),
+  );
   waterGeom.rotateX(-Math.PI / 2);
 
   const waterMaterial = keep(
@@ -603,7 +608,7 @@ export function createTsunamiSlice(): TsunamiSlice {
     }),
   );
   const waterMesh = new Mesh(waterGeom, waterMaterial);
-  waterMesh.position.set(-4.0, 0, 0); // covers x in [-13, 5]
+  waterMesh.position.set((WATER_WEST + WATER_EAST) / 2, 0, 0);
   root.add(waterMesh);
 
   // Water front cut face in deep ocean
@@ -1051,71 +1056,11 @@ export function createTsunamiSlice(): TsunamiSlice {
 
   // Airliner speed comparison sign
 
-  // --- 5. NOAA DART TSUNAMI BUOY (Chapter 4: Deep ocean gauges) ---
-  const buoyGroup = new Group();
-  buoyGroup.position.set(-3.0, 0, 0.6);
-  root.add(buoyGroup);
-
-  const buoyBody = new Mesh(
-    keep(new CylinderGeometry(0.38, 0.32, 0.28, 16)),
-    keep(new MeshLambertMaterial({ color: BUOY_YELLOW })),
-  );
-  buoyGroup.add(buoyBody);
-
-  const buoyMast = new Mesh(
-    keep(new CylinderGeometry(0.03, 0.03, 0.7, 8)),
-    keep(new MeshLambertMaterial({ color: 0xffffff })),
-  );
-  buoyMast.position.y = 0.42;
-  buoyGroup.add(buoyMast);
-
-  const cableGeom = keep(new BufferGeometry());
-  cableGeom.setAttribute(
-    'position',
-    new BufferAttribute(new Float32Array([0, 0, 0, 0, DEEP_FLOOR_Y, 0]), 3),
-  );
-  const cableLine = new LineSegments(
-    cableGeom,
-    keep(new LineBasicMaterial({ color: 0xffd54f, transparent: true, opacity: 0.65 })),
-  );
-  buoyGroup.add(cableLine);
-
-  const bprBox = new Mesh(
-    keep(new BoxGeometry(0.5, 0.35, 0.5)),
-    keep(new MeshLambertMaterial({ color: 0xd32f2f })),
-  );
-  bprBox.position.set(0, DEEP_FLOOR_Y + 0.18, 0);
-  buoyGroup.add(bprBox);
-
-  const acousticRings = [
-    new Mesh(
-      keep(new RingGeometry(0.2, 0.28, 24)),
-      keep(
-        new MeshBasicMaterial({
-          color: 0x64b5f6,
-          transparent: true,
-          opacity: 0.6,
-          side: DoubleSide,
-        }),
-      ),
-    ),
-    new Mesh(
-      keep(new RingGeometry(0.4, 0.48, 24)),
-      keep(
-        new MeshBasicMaterial({
-          color: 0x64b5f6,
-          transparent: true,
-          opacity: 0.4,
-          side: DoubleSide,
-        }),
-      ),
-    ),
-  ];
-  for (const r of acousticRings) {
-    r.rotation.x = Math.PI / 2;
-    r.position.set(0, DEEP_FLOOR_Y * 0.5, 0);
-    buoyGroup.add(r);
-  }
+  // --- 5. A BOAT OUT AT SEA (rides over the wave without noticing it) ---
+  const seaBoat = createBoatMesh(keep);
+  seaBoat.scale.setScalar(1.8);
+  seaBoat.position.set(SEA_BOAT_X, 0, 0.4);
+  root.add(seaBoat);
 
   // --- 6. COASTAL WARNING LIGHTHOUSE & BEACON ---
   const coastStationGroup = new Group();
@@ -1168,9 +1113,12 @@ export function createTsunamiSlice(): TsunamiSlice {
     waterFrontMesh.visible = !showBreaker;
     coastStationGroup.visible = !showBreaker;
     faultBlockGroup.visible = !showBreaker;
-    barrelLight.intensity = showBreaker ? 4.8 : 2.0;
+    barrelLight.intensity = showBreaker ? 4.8 : 0;
 
     dioramaBoxGroup.visible = showBreaker;
+    // The sea cut open draws the whole wave itself; the breaker is for the look at the shore.
+    waveBreakerGroup.visible = showBreaker;
+    seaBoat.visible = !showBreaker && currentChapter !== 'sea-floor';
 
     if (showBreaker) {
       // Elevated 3/4 front perspective framing the complete 3D Coastal Tsunami Diorama Box
@@ -1184,7 +1132,7 @@ export function createTsunamiSlice(): TsunamiSlice {
     } else {
       // The whole sea cut open, drawing nearer the shore as the wave grows there.
       const near = Math.min(1, Math.max(0, (shoalingFactor - 0.25) / 0.75));
-      desiredTarget.x = -0.5 + near * 7.5;
+      desiredTarget.x = -0.5 + near * 7;
       desiredTarget.y = -0.9 + near * 1.3;
       desiredTarget.z = 0;
       desiredDistance = 24 - near * 11;
@@ -1199,26 +1147,40 @@ export function createTsunamiSlice(): TsunamiSlice {
     // 1. Deep ocean plane profile
     const pos = waterGeom.attributes.position as BufferAttribute;
     const wfPos = waterFrontGeom.attributes.position as BufferAttribute;
-    const waveCenter = -12 + waveProgress * 17; // travels up to shelf
-    // As the sea gets shallow the wave slows, grows taller and gets shorter from crest to crest.
-    const crestHeight = 0.45 + 1.5 * shoalingFactor;
-    const crestWidth = 25 * (1 - 0.6 * shoalingFactor);
+    // One wave, from over the trench to the beach. As the sea gets shallow it slows, grows taller
+    // and gets shorter from crest to crest (NOAA JetStream, Tsunami Propagation). Ahead of it the
+    // sea draws back, and near the shore drains away from the sea floor before the wave comes:
+    // "it could drain away suddenly, showing the ocean floor, reefs, and fish like a very low,
+    // low tide" (NOAA JetStream, "Tsunami Preparedness and Mitigation: Individuals (You!)", read
+    // 2026-10-21). How tall and how far is drawn.
+    const waveCenter = -11 + waveProgress * 21.5;
+    const depthAtCrest = Math.max(0.2, -seabedDepthAt(waveCenter));
+    const shallow = Math.sqrt(depthAtCrest / -DEEP_FLOOR_Y);
+    const crestHeight = Math.min(2.2, 0.55 / shallow);
+    const backWidth = 22 * shallow + 1.5;
+    const frontWidth = backWidth * (0.4 + 0.6 * shallow);
+    const troughAhead = 1.3 * Math.sqrt(frontWidth);
     const surfaceAt = (x: number): number => {
       const dist = x - waveCenter;
-      const crest = Math.exp(-(dist * dist) / crestWidth) * crestHeight;
-      const trough = -Math.exp(-((dist - 6) * (dist - 6)) / 36) * 0.16;
+      const crest = Math.exp(-(dist * dist) / (dist > 0 ? frontWidth : backWidth)) * crestHeight;
+      const ahead = dist - troughAhead;
+      const trough = -Math.exp(-(ahead * ahead) / frontWidth) * crestHeight * 0.6;
       const upliftDist = x - -10.5;
       const lifted = Math.exp(-(upliftDist * upliftDist) / 4) * upliftOffset * 0.8;
       return lifted * upliftShare + (crest + trough) * (1 - upliftShare);
     };
+    /** The top of the water at x, or just under the ground where the water has drained away. */
+    const waterTopAt = (x: number): number => {
+      const ground = seabedDepthAt(x);
+      const top = surfaceAt(x) + Math.sin(x * 1.8 + animTime * 3) * 0.035;
+      return top > ground + 0.02 ? top : ground - 0.08;
+    };
 
     let wfIdx = 0;
+    const step = (WATER_EAST - WATER_WEST) / waterGridX;
     for (let ix = 0; ix <= waterGridX; ix++) {
-      const x = -13.0 + (ix / waterGridX) * 18.0;
-      const seabedY = seabedDepthAt(x);
-      const waveY = surfaceAt(x);
-      const ripple = Math.sin(x * 1.8 + animTime * 3) * 0.035;
-      const surfaceY = Math.max(seabedY + 0.05, waveY + ripple);
+      const x = WATER_WEST + ix * step;
+      const surfaceY = waterTopAt(x);
 
       for (let iz = 0; iz <= waterGridZ; iz++) {
         const vIdx = iz * (waterGridX + 1) + ix;
@@ -1226,21 +1188,27 @@ export function createTsunamiSlice(): TsunamiSlice {
       }
 
       if (ix < waterGridX) {
-        const nextX = -13.0 + ((ix + 1) / waterGridX) * 18.0;
+        const nextX = x + step;
+        const seabedY = seabedDepthAt(x);
         const nextSeabedY = seabedDepthAt(nextX);
-        const nextWaveY = surfaceAt(nextX);
-        const nextSurfaceY = Math.max(nextSeabedY + 0.05, nextWaveY + ripple);
+        // The cut face of the water, nothing where it has drained away.
+        const top = Math.max(seabedY, surfaceY);
+        const nextTop = Math.max(nextSeabedY, waterTopAt(nextX));
         const zFront = SLICE_DEPTH / 2;
 
-        wfPos.setXYZ(wfIdx++, x, surfaceY, zFront);
+        wfPos.setXYZ(wfIdx++, x, top, zFront);
         wfPos.setXYZ(wfIdx++, x, seabedY, zFront);
         wfPos.setXYZ(wfIdx++, nextX, nextSeabedY, zFront);
 
-        wfPos.setXYZ(wfIdx++, x, surfaceY, zFront);
+        wfPos.setXYZ(wfIdx++, x, top, zFront);
         wfPos.setXYZ(wfIdx++, nextX, nextSeabedY, zFront);
-        wfPos.setXYZ(wfIdx++, nextX, nextSurfaceY, zFront);
+        wfPos.setXYZ(wfIdx++, nextX, nextTop, zFront);
       }
     }
+
+    // The boat rides up and over the wave, tilting with the water.
+    seaBoat.position.y = surfaceAt(SEA_BOAT_X) + 0.05;
+    seaBoat.rotation.z = Math.atan(surfaceAt(SEA_BOAT_X + 0.3) - surfaceAt(SEA_BOAT_X - 0.3));
     pos.needsUpdate = true;
     wfPos.needsUpdate = true;
     waterGeom.computeVertexNormals();
@@ -1507,7 +1475,6 @@ export function createTsunamiSlice(): TsunamiSlice {
     faultBlockGroup.position.y = 0.4 * pace.uplift;
 
     jetGroup.visible = chapterId === 'fast-and-slow';
-    buoyGroup.visible = chapterId !== 'sea-floor';
     beacon.intensity = chapterId === 'warnings' ? 3.0 : chapterId === 'across-the-ocean' ? 1.5 : 0;
 
     updateCameraTarget();
@@ -1526,18 +1493,6 @@ export function createTsunamiSlice(): TsunamiSlice {
     currentDirection.x += (desiredDirection.x - currentDirection.x) * tCam;
     currentDirection.y += (desiredDirection.y - currentDirection.y) * tCam;
     currentDirection.z += (desiredDirection.z - currentDirection.z) * tCam;
-
-    // Buoy bobbing
-    if (buoyGroup.visible) {
-      buoyGroup.position.y = Math.sin(animTime * 2.5) * 0.06;
-      buoyGroup.rotation.z = Math.sin(animTime * 1.8) * 0.05;
-      for (const [i, r] of acousticRings.entries()) {
-        const p = (animTime * 0.8 + i * 0.5) % 1;
-        r.position.y = DEEP_FLOOR_Y + p * (0 - DEEP_FLOOR_Y);
-        const m = r.material;
-        m.opacity = (1 - p) * 0.7;
-      }
-    }
 
     // Jet flying
     if (jetGroup.visible) {

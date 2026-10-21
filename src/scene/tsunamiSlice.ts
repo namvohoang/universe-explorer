@@ -59,6 +59,18 @@ const WATER_EAST = 13;
 /** Where the boat out at sea floats. */
 const SEA_BOAT_X = -3;
 
+/** In the look at the shore: where the beach begins, how wide it is, and where the sea stands. */
+const BEACH_WEST = 0.4;
+const BEACH_WIDTH = 4.8;
+const SHORE_SEA_Y = -0.52;
+const SHORE_FLOOR_Y = -0.548;
+
+/** How high the beach is at x in the look at the shore; the sea floor out to sea. */
+function beachAt(x: number): number {
+  const t = Math.min(1, Math.max(0, (x - BEACH_WEST) / BEACH_WIDTH));
+  return -0.55 + 0.35 * Math.pow(t, 0.8) + 0.32 * Math.pow(t, 2.5);
+}
+
 interface MutableVec3 {
   x: number;
   y: number;
@@ -281,6 +293,15 @@ function createBoatMesh(keep: <T extends { dispose(): void }>(t: T) => T): Group
   const seat = new Mesh(seatGeom, seatMat);
   seat.position.set(-0.05, 0.02, 0);
   boat.add(seat);
+
+  // A little white wheelhouse and a mast, so it reads as a boat from far off.
+  const whiteMat = keep(new MeshStandardMaterial({ color: 0xf5f5f0, roughness: 0.7 }));
+  const cabin = new Mesh(keep(new BoxGeometry(0.22, 0.16, 0.24)), whiteMat);
+  cabin.position.set(-0.2, 0.18, 0);
+  boat.add(cabin);
+  const mast = new Mesh(keep(new CylinderGeometry(0.012, 0.012, 0.42, 6)), whiteMat);
+  mast.position.set(0.12, 0.31, 0);
+  boat.add(mast);
 
   return boat;
 }
@@ -820,8 +841,12 @@ export function createTsunamiSlice(): TsunamiSlice {
   skyPanel.position.set(0.1, 1.85, -boxDepth / 2 - 0.01);
   dioramaBoxGroup.add(skyPanel);
 
+  const BASIN_WEST = -5.0;
+  const BASIN_WIDTH = 6.4;
+  /** How far the water's edge moves out to sea when the shore is drained right back. */
+  const DRAWN_BACK = 3.2;
   // 1B. Ocean Water Basin Floor (Open front, translucent marine blue floor under wave & boats)
-  const oceanBasinGeom = keep(new PlaneGeometry(6.4, boxDepth - 0.3, 16, 12));
+  const oceanBasinGeom = keep(new PlaneGeometry(BASIN_WIDTH, boxDepth - 0.3, 64, 24));
   oceanBasinGeom.rotateX(-Math.PI / 2);
   const oceanBasinMat = keep(
     new MeshPhysicalMaterial({
@@ -836,8 +861,64 @@ export function createTsunamiSlice(): TsunamiSlice {
     }),
   );
   const oceanBasinMesh = new Mesh(oceanBasinGeom, oceanBasinMat);
-  oceanBasinMesh.position.set(-1.8, -0.52, 0);
+  oceanBasinMesh.position.set(BASIN_WEST + BASIN_WIDTH / 2, SHORE_SEA_Y, 0);
   dioramaBoxGroup.add(oceanBasinMesh);
+
+  // The sea floor under the shore water, wet sand darkening out to sea, with rocks and a little
+  // reef on it: seen through the water, and left bare when the sea draws back before the wave.
+  const seaFloorGeom = keep(new PlaneGeometry(BASIN_WIDTH, boxDepth - 0.3, 16, 1));
+  seaFloorGeom.rotateX(-Math.PI / 2);
+  const floorPos = seaFloorGeom.attributes.position as BufferAttribute;
+  const floorColors: number[] = [];
+  const deepFloor = new Color(0x5f5c4a);
+  const wetSand = new Color(0xb09562);
+  for (let i = 0; i < floorPos.count; i++) {
+    const t = (floorPos.getX(i) + BASIN_WIDTH / 2) / BASIN_WIDTH;
+    const c = deepFloor.clone().lerp(wetSand, t * t);
+    floorColors.push(c.r, c.g, c.b);
+  }
+  seaFloorGeom.setAttribute('color', new BufferAttribute(new Float32Array(floorColors), 3));
+  const seaFloorMesh = new Mesh(
+    seaFloorGeom,
+    keep(new MeshStandardMaterial({ vertexColors: true, roughness: 0.55 })),
+  );
+  seaFloorMesh.position.set(BASIN_WEST + BASIN_WIDTH / 2, SHORE_FLOOR_Y, 0);
+  dioramaBoxGroup.add(seaFloorMesh);
+
+  const rockGeom = keep(new SphereGeometry(1, 6, 4));
+  const rockMat = keep(new MeshStandardMaterial({ color: 0x6d6a66, roughness: 0.9 }));
+  for (const [x, z, r] of [
+    [-1.3, -1.6, 0.16],
+    [-0.6, 0.9, 0.12],
+    [0.1, -0.4, 0.1],
+    [0.6, 1.7, 0.13],
+    [-1.0, 2.1, 0.09],
+    [0.9, -1.9, 0.11],
+  ] as const) {
+    const rock = new Mesh(rockGeom, rockMat);
+    rock.scale.set(r * 1.3, r * 0.55, r);
+    rock.position.set(x, SHORE_FLOOR_Y, z);
+    dioramaBoxGroup.add(rock);
+  }
+  const coralGeom = keep(new ConeGeometry(0.05, 0.16, 5));
+  const coralMats = [
+    keep(new MeshStandardMaterial({ color: 0xff8a70, roughness: 0.8 })),
+    keep(new MeshStandardMaterial({ color: 0xffb74d, roughness: 0.8 })),
+  ];
+  for (const [i, [x, z]] of (
+    [
+      [-1.2, -1.3],
+      [-1.1, -1.45],
+      [-0.4, 1.1],
+      [0.3, 1.5],
+      [0.45, 1.62],
+      [-0.2, -2.2],
+    ] as const
+  ).entries()) {
+    const coral = new Mesh(coralGeom, coralMats[i % 2]);
+    coral.position.set(x, SHORE_FLOOR_Y + 0.07, z);
+    dioramaBoxGroup.add(coral);
+  }
 
   // Rear vertical bedrock slice against sky panel
   const pedZ = Z_SPAN / 2;
@@ -870,21 +951,18 @@ export function createTsunamiSlice(): TsunamiSlice {
   dioramaBoxGroup.add(new Mesh(rearCutGeom, rearCutMat));
 
   // 2. Beach Sand Terrain (Sloping up from water to village terrace)
-  const sandWidth = 4.8;
+  const sandWidth = BEACH_WIDTH;
   const sandDepth = 5.4;
   const sandGeom = keep(new PlaneGeometry(sandWidth, sandDepth, 18, 12));
   sandGeom.rotateX(-Math.PI / 2);
   const sandPosAttr = sandGeom.attributes.position as BufferAttribute;
   for (let i = 0; i < sandPosAttr.count; i++) {
-    const localX = sandPosAttr.getX(i);
-    const t = (localX + sandWidth / 2) / sandWidth;
-    const elev = -0.55 + 0.35 * Math.pow(t, 0.8) + 0.32 * Math.pow(t, 2.5);
-    sandPosAttr.setY(i, elev);
+    sandPosAttr.setY(i, beachAt(sandPosAttr.getX(i) + BEACH_WEST + sandWidth / 2));
   }
   sandGeom.computeVertexNormals();
   const sandMat = keep(new MeshStandardMaterial({ color: 0xd9ba82, roughness: 0.95 }));
   const sandMesh = new Mesh(sandGeom, sandMat);
-  sandMesh.position.set(2.8, 0, 0);
+  sandMesh.position.set(BEACH_WEST + sandWidth / 2, 0, 0);
   dioramaBoxGroup.add(sandMesh);
 
   // 3. Concrete Seawall Breakwater Blocks (Image 1 row of concrete cubes)
@@ -985,25 +1063,12 @@ export function createTsunamiSlice(): TsunamiSlice {
   palm5.position.set(4.6, 0.05, -2.1);
   dioramaBoxGroup.add(palm5);
 
-  // 9. Small Wooden Fishing Boats (Image 1)
+  // 9. A small wooden fishing boat out on the water (Image 1)
   const boat1 = createBoatMesh(keep);
   boat1.scale.set(1.4, 1.4, 1.4);
-  boat1.position.set(0.3, -0.46, 0.6);
+  boat1.position.set(-3.0, -0.46, 1.2);
   boat1.rotation.y = 0.35;
   dioramaBoxGroup.add(boat1);
-
-  const boat2 = createBoatMesh(keep);
-  boat2.scale.set(1.4, 1.4, 1.4);
-  boat2.position.set(1.7, -0.28, -0.8);
-  boat2.rotation.y = -0.45;
-  boat2.rotation.z = 0.12;
-  dioramaBoxGroup.add(boat2);
-
-  const boat3 = createBoatMesh(keep);
-  boat3.scale.set(1.4, 1.4, 1.4);
-  boat3.position.set(3.0, -0.05, 0.9);
-  boat3.rotation.y = 0.2;
-  dioramaBoxGroup.add(boat3);
 
   // --- 3F. REAR PROFILE DIORAMA CAP ---
   const sideCapGeom = keep(new BufferGeometry());
@@ -1089,6 +1154,8 @@ export function createTsunamiSlice(): TsunamiSlice {
   let animTime = 0;
   let upliftOffset = 0;
   let upliftShare = 1;
+  let drawdown = 0;
+  let shownDrawdown = -1;
   let waveProgress = 0;
   let shoalingFactor = 0.15; // 0 in deep water, 1 at full shoaling breaker
 
@@ -1221,15 +1288,40 @@ export function createTsunamiSlice(): TsunamiSlice {
 
     // At the shore the wave is as tall as it has grown; the breaker on its own is always full.
     // The wave reaches the shore with the story's clock: until it comes the shore is calm.
-    const arrived = Math.min(1, Math.max(0, (shoalingFactor - 0.3) / 0.7));
+    const arrived = Math.min(1, Math.max(0, (shoalingFactor - 0.45) / 0.55));
     const coming = arrived > 0.05;
     breakerMesh.visible = coming;
     foamMesh.visible = coming;
     foamClumpsGroup.visible = coming;
     sideCapMesh.visible = coming;
     barrelLight.intensity = coming && viewMode === 'breaker' ? 4.8 : 0;
+    // The water's edge moves slowly out to sea ahead of the wave, leaving the sand bare, and the
+    // wave brings it back; only once the wave runs up does water wash over the beach.
+    if (drawdown !== shownDrawdown) {
+      shownDrawdown = drawdown;
+      const basinPos = oceanBasinGeom.attributes.position as BufferAttribute;
+      const wobble = Math.min(1, drawdown * 4);
+      for (let i = 0; i < basinPos.count; i++) {
+        const x = basinPos.getX(i) + BASIN_WEST + BASIN_WIDTH / 2;
+        const z = basinPos.getZ(i);
+        const edge =
+          BASIN_WEST +
+          BASIN_WIDTH -
+          DRAWN_BACK * drawdown +
+          wobble * (0.22 * Math.sin(z * 2.3) + 0.1 * Math.sin(z * 5.7 + 1.3));
+        // Where the sea has gone, the water sinks under the sea floor, sloping down at its edge.
+        const gone = Math.min(1, Math.max(0, (x - edge + 0.15) / 0.3));
+        basinPos.setY(i, gone * (SHORE_FLOOR_Y - SHORE_SEA_Y - 0.03));
+      }
+      basinPos.needsUpdate = true;
+      oceanBasinGeom.computeVertexNormals();
+    }
+    washMesh.visible = arrived > 0.75;
     const H = Math.max(0.15, arrived * 4.4);
-    const C = Math.max(0, Math.min(1.0, (shoalingFactor - 0.25) / 0.75)); // curl factor
+    // How far the broken wave has run up the beach: not at all until it breaks.
+    const runUp = Math.min(1, Math.max(0, (arrived - 0.55) / 0.4));
+    // Curl factor: it only curls over and foams once it has grown.
+    const C = Math.max(0, Math.min(1.0, (arrived - 0.15) / 0.85));
 
     // Store profile curve at the two lateral boundaries for side caps
     const leftProfile: { x: number; y: number }[] = [];
@@ -1306,8 +1398,11 @@ export function createTsunamiSlice(): TsunamiSlice {
           const rx = (0.55 + 1.45 * C) * (1.0 + 0.12 * Math.sin(v * Math.PI));
           const xLip = -1.2 + rx * Math.sin(angleMax) + 0.38 * C;
 
-          x = xLip + 0.8 + t * 1.8 + r2x * Math.sin(theta2);
-          y = -0.45 + H2 * t2 - r2y * (1.0 - Math.cos(theta2));
+          x = xLip + 0.8 + t * 1.8 * runUp + r2x * Math.sin(theta2) * runUp;
+          y = Math.max(
+            beachAt(x) + 0.03,
+            -0.45 + (H2 * t2 - r2y * (1.0 - Math.cos(theta2))) * runUp,
+          );
 
           if (iu === Math.round(Nu * 0.84)) {
             secondaryLipPoints.push({ x, y, z });
@@ -1319,8 +1414,8 @@ export function createTsunamiSlice(): TsunamiSlice {
           const rx = (0.55 + 1.45 * C) * (1.0 + 0.12 * Math.sin(v * Math.PI));
           const xLip = -1.2 + rx * Math.sin(angleMax) + 0.38 * C;
 
-          x = xLip + 2.8 + t * 2.4;
-          y = -0.45 + 0.08 * Math.sin(t * 12 - animTime * 4.0);
+          x = xLip + 0.8 + (2.0 + t * 2.4) * runUp;
+          y = Math.max(-0.45, beachAt(x) + 0.04) + 0.04 * runUp * Math.sin(t * 12 - animTime * 4.0);
         }
 
         // Animated surface capillary ripples pulled up into the curl
@@ -1476,6 +1571,7 @@ export function createTsunamiSlice(): TsunamiSlice {
     waveProgress = pace.progress;
     shoalingFactor = pace.shoaling;
     upliftShare = pace.uplift;
+    drawdown = pace.drawdown;
     upliftOffset = 0.55 * pace.uplift;
     faultBlockGroup.position.y = 0.4 * pace.uplift;
 

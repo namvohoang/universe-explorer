@@ -10,6 +10,11 @@ export interface TsunamiPace {
   readonly shoaling: number;
   /** How far the sea floor is still lifted, 1 at the start and 0 once it has settled. */
   readonly uplift: number;
+  /**
+   * How far the sea has drawn back off the shore ahead of the wave: 0 at its usual level, 1
+   * drained right back. It goes slowly over hours, then the wave brings the water back.
+   */
+  readonly drawdown: number;
 }
 
 /** [minutes after it began, progress, shoaling], in order of minutes. */
@@ -24,12 +29,25 @@ const STEPS: readonly (readonly [number, number, number])[] = [
 
 /** Minutes the lifted sea floor takes to settle. */
 const UPLIFT_MINUTES = 20;
+/** Minutes over which the shore drains, and over which the coming wave fills it again. */
+const DRAIN_FROM = 60;
+const DRAINED_BY = 200;
+const REFILL_FROM = 290;
+const REFILLED_BY = 350;
+
+/** 0 before `from`, 1 after `to`, easing in and out between. */
+function ease(minutes: number, from: number, to: number): number {
+  const t = Math.min(1, Math.max(0, (minutes - from) / (to - from)));
+  return t * t * (3 - 2 * t);
+}
 
 export function tsunamiPace(minutesAfter: number): TsunamiPace {
   const uplift = Math.min(1, Math.max(0, 1 - minutesAfter / UPLIFT_MINUTES));
+  const drawdown =
+    ease(minutesAfter, DRAIN_FROM, DRAINED_BY) * (1 - ease(minutesAfter, REFILL_FROM, REFILLED_BY));
   const first = STEPS[0];
   if (!first || !(minutesAfter > first[0])) {
-    return { progress: first?.[1] ?? 0, shoaling: first?.[2] ?? 0, uplift };
+    return { progress: first?.[1] ?? 0, shoaling: first?.[2] ?? 0, uplift, drawdown };
   }
   for (let i = 1; i < STEPS.length; i++) {
     const from = STEPS[i - 1];
@@ -40,8 +58,9 @@ export function tsunamiPace(minutesAfter: number): TsunamiPace {
       progress: from[1] + (to[1] - from[1]) * t,
       shoaling: from[2] + (to[2] - from[2]) * t,
       uplift,
+      drawdown,
     };
   }
   const last = STEPS[STEPS.length - 1];
-  return { progress: last?.[1] ?? 1, shoaling: last?.[2] ?? 1, uplift };
+  return { progress: last?.[1] ?? 1, shoaling: last?.[2] ?? 1, uplift, drawdown };
 }

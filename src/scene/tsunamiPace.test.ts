@@ -3,7 +3,7 @@ import { tsunamiPace } from './tsunamiPace';
 
 describe('tsunamiPace', () => {
   it('begins over the trench, low, with the sea floor lifted', () => {
-    expect(tsunamiPace(0)).toEqual({ progress: 0, shoaling: 0.08, uplift: 1 });
+    expect(tsunamiPace(0)).toEqual({ progress: 0, shoaling: 0.08, uplift: 1, drawdown: 0 });
     expect(tsunamiPace(-5).progress).toBe(0);
   });
 
@@ -32,7 +32,20 @@ describe('tsunamiPace', () => {
   });
 
   it('breaks at the shore by twelve hours and stays there', () => {
-    expect(tsunamiPace(720)).toEqual({ progress: 1, shoaling: 1, uplift: 0 });
-    expect(tsunamiPace(975)).toEqual({ progress: 1, shoaling: 1, uplift: 0 });
+    expect(tsunamiPace(720)).toEqual({ progress: 1, shoaling: 1, uplift: 0, drawdown: 0 });
+    expect(tsunamiPace(975)).toEqual({ progress: 1, shoaling: 1, uplift: 0, drawdown: 0 });
+  });
+
+  it('drains the shore slowly before the wave, then fills it again as the wave comes', () => {
+    expect(tsunamiPace(30).drawdown).toBe(0);
+    let before = 0;
+    for (let minutes = 60; minutes <= 200; minutes++) {
+      const now = tsunamiPace(minutes).drawdown;
+      expect(now).toBeGreaterThanOrEqual(before);
+      expect(now - before).toBeLessThan(0.02);
+      before = now;
+    }
+    expect(tsunamiPace(250).drawdown).toBe(1);
+    expect(tsunamiPace(360).drawdown).toBe(0);
   });
 });

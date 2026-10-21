@@ -112,6 +112,24 @@ describe('flight', () => {
     expectVec(view.target, moved);
     expect(length(subtract(view.camera, moved))).toBeCloseTo(5, 10);
   });
+
+  it('swings round what it looks at to reach its other side, never through it', () => {
+    const near: View = { camera: { x: 13, y: 0, z: 0 }, target: TARGET };
+    const flight = startFlight(near, TARGET, 3, { x: -1, y: 0.01, z: 0 }, false);
+    for (let t = 0; t <= FLIGHT_SECONDS; t += FLIGHT_SECONDS / 20) {
+      const { view } = stepFlight(flight, t, TARGET);
+      expect(length(subtract(view.camera, TARGET))).toBeCloseTo(3, 10);
+    }
+  });
+
+  it('keeps looking at a target that jumps far as the move begins', () => {
+    const near: View = { camera: { x: 13, y: 0, z: 0 }, target: TARGET };
+    const flight = startFlight(near, TARGET, 3, { x: -1, y: 0.01, z: 0 }, false);
+    const jumped = { x: 40, y: 0, z: 0 };
+    const { view } = stepFlight(flight, FLIGHT_SECONDS / 10, jumped);
+    expectVec(view.target, jumped);
+    expect(length(subtract(view.camera, jumped))).toBeCloseTo(3, 10);
+  });
 });
 
 describe('followTarget', () => {

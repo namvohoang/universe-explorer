@@ -42,7 +42,10 @@ export interface View {
 
 /** A camera move towards a target that may itself be moving. */
 export interface Flight {
+  /** Where the move set off from, carried along with the target as it moves. */
   readonly from: View;
+  /** Where the target was at the last step. */
+  readonly target: Vec3;
   /** Unit vector from the target to where the camera should end up. */
   readonly direction: Vec3;
   readonly distance: number;
@@ -71,6 +74,7 @@ export function startFlight(
   }
   return {
     from,
+    target,
     direction: normalize(bearing),
     distance,
     seconds: reducedMotion ? 0 : seconds,
@@ -89,13 +93,22 @@ export function stepFlight(flight: Flight, dt: number, target: Vec3): FlightStep
   const elapsed = flight.elapsed + dt;
   const progress = flight.seconds === 0 ? 1 : Math.min(1, elapsed / flight.seconds);
   const eased = easeInOutCubic(progress);
-  const destination = add(target, scale(flight.direction, flight.distance));
+  // The start rides along with the target, so a jump in time that carries the target far (a
+  // world along its path) does not leave the look pointing at where it used to be.
+  const from = followTarget(flight.from, flight.target, target);
+  const offset = scale(flight.direction, flight.distance);
+  const lookedAt = lerp(from.target, target, eased);
+  // A move that stays on the same thing swings round it, so it never cuts through it to reach
+  // its other side; a move to another thing goes straight there.
+  const sameThing = length(subtract(target, from.target)) < flight.distance;
   return {
     view: {
-      camera: lerp(flight.from.camera, destination, eased),
-      target: lerp(flight.from.target, target, eased),
+      camera: sameThing
+        ? add(lookedAt, swungBetween(subtract(from.camera, from.target), offset, eased))
+        : lerp(from.camera, add(target, offset), eased),
+      target: lookedAt,
     },
-    flight: progress >= 1 ? null : { ...flight, elapsed },
+    flight: progress >= 1 ? null : { ...flight, from, target, elapsed },
   };
 }
 

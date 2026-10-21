@@ -2735,6 +2735,12 @@ body.watching .marker {
     line-height: 1.25;
   }
 
+  /* A long story's words scroll within their card, so the view keeps a third of the height. */
+  .watch-caption {
+    max-height: 46vh;
+    overflow-y: auto;
+  }
+
   .watch-caption:has(.watch-drawing-look:not([hidden])) {
     padding-right: 60px;
   }

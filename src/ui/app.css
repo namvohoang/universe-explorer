@@ -1870,7 +1870,8 @@ body.watching .marker {
     left: 16px;
     top: calc(var(--top-h) + 12px);
     width: min(340px, calc(100vw - 32px));
-    max-height: calc(var(--free-h) - 24px);
+    /* Ends well clear of the controls below it; longer words scroll within the card. */
+    max-height: calc(var(--free-h) - 64px);
     overflow: auto;
     padding: 16px;
   }

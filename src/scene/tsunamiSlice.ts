@@ -1113,7 +1113,6 @@ export function createTsunamiSlice(): TsunamiSlice {
     waterFrontMesh.visible = !showBreaker;
     coastStationGroup.visible = !showBreaker;
     faultBlockGroup.visible = !showBreaker;
-    barrelLight.intensity = showBreaker ? 4.8 : 0;
 
     dioramaBoxGroup.visible = showBreaker;
     // The sea cut open draws the whole wave itself; the breaker is for the look at the shore.
@@ -1221,7 +1220,15 @@ export function createTsunamiSlice(): TsunamiSlice {
     const sPos = sideCapGeom.attributes.position as BufferAttribute;
 
     // At the shore the wave is as tall as it has grown; the breaker on its own is always full.
-    const H = viewMode === 'breaker' ? 4.4 : Math.max(0.15, shoalingFactor * 4.4);
+    // The wave reaches the shore with the story's clock: until it comes the shore is calm.
+    const arrived = Math.min(1, Math.max(0, (shoalingFactor - 0.3) / 0.7));
+    const coming = arrived > 0.05;
+    breakerMesh.visible = coming;
+    foamMesh.visible = coming;
+    foamClumpsGroup.visible = coming;
+    sideCapMesh.visible = coming;
+    barrelLight.intensity = coming && viewMode === 'breaker' ? 4.8 : 0;
+    const H = Math.max(0.15, arrived * 4.4);
     const C = Math.max(0, Math.min(1.0, (shoalingFactor - 0.25) / 0.75)); // curl factor
 
     // Store profile curve at the two lateral boundaries for side caps
@@ -1456,7 +1463,7 @@ export function createTsunamiSlice(): TsunamiSlice {
         sPositions.setXYZ(i, px, py, pz);
       }
       sPositions.needsUpdate = true;
-      sprayPoints.visible = C > 0.25;
+      sprayPoints.visible = coming && C > 0.25;
     }
   };
 

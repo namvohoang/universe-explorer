@@ -1374,6 +1374,58 @@ body.watching .view-controls .turn {
   color: var(--sun);
 }
 
+/* The parts of a story by name, two to a row: only where the words stand in a card at the side. */
+.watch-parts {
+  display: none;
+}
+
+@media (min-width: 1000px) and (min-height: 501px) {
+  .watch-parts:not([hidden]) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .watch-parts button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 0 10px 0 6px;
+    background: transparent;
+    border-color: transparent;
+    color: var(--ink-dim);
+    font-size: 13px;
+    line-height: 1.15;
+    text-align: left;
+  }
+
+  .watch-parts button[aria-current='step'] {
+    border-color: var(--sun);
+    color: var(--ink);
+  }
+
+  .watch-part-number {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    font-size: 11px;
+  }
+
+  .watch-parts button[aria-current='step'] .watch-part-number {
+    background: var(--sun);
+    border-color: var(--sun);
+    color: var(--sun-ink);
+  }
+}
+
 /* While a story plays, the sentence under the title keeps the room of three lines, short or
    long, so the looks below the bar do not jump from one story to the next. */
 body.watching .brand p {

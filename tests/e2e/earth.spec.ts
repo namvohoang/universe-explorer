@@ -248,6 +248,11 @@ test.describe('the Earth screen', () => {
     );
     // The times worked out for the sea come from the app itself.
     await expect.poll(() => maps.length).toBe(1);
+    // The look at the shore, once picked, stays from part to part.
+    await page.getByRole('button', { name: 'See the wave at the shore' }).click();
+    await page.locator('.watch-step-button').nth(1).click();
+    await expect(page.locator('.watch-step')).toHaveText('Part 2 of 6');
+    await expect(page.getByRole('button', { name: 'See the whole sea' })).toBeVisible();
   });
 
   test('shows a tornado as a drawing on its real path, and says which is which', async ({

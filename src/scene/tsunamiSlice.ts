@@ -1468,9 +1468,7 @@ export function createTsunamiSlice(): TsunamiSlice {
   };
 
   const set = (chapterId: string, minutesAfter: number): void => {
-    if (chapterId !== currentChapter) {
-      viewMode = 'auto';
-    }
+    // The look the kid picked stays from part to part, so the wave can be watched coming in.
     currentChapter = chapterId;
 
     // One wave, going on from part to part with the story's clock.

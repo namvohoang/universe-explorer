@@ -157,7 +157,11 @@ export function createWatch(host: WatchHost): Watch {
     host.viewSwitch?.()?.toggle();
     showLook();
   });
-  caption.append(head, date, sentence, pathNote, look);
+  // The parts of the story by name, on a screen with room for them: one tap goes to a part.
+  const parts = create('ol', 'watch-parts');
+  parts.setAttribute('aria-label', words.watchParts);
+  parts.hidden = true;
+  caption.append(head, date, sentence, pathNote, look, parts);
 
   // Getting about in it.
   const controls = create('div', 'watch-controls');
@@ -367,6 +371,10 @@ export function createWatch(host: WatchHost): Watch {
       step.textContent = fill(words.watchStep, { n: index + 1, count: story.chapters.length });
       previous.disabled = index === 0;
       next.disabled = index === story.chapters.length - 1;
+      for (const [at, item] of [...parts.querySelectorAll('button')].entries()) {
+        if (at === index) item.setAttribute('aria-current', 'step');
+        else item.removeAttribute('aria-current');
+      }
       aim = true;
     }
     if (aim) host.aim(story, chapter);
@@ -442,6 +450,25 @@ export function createWatch(host: WatchHost): Watch {
           : '');
     pathNote.textContent = note;
     pathNote.hidden = note === '';
+    // Named parts are listed only where every part of the story has a name.
+    const named = picked.chapters.map((chapter) => text(`${chapter.text.key}Name`));
+    parts.hidden = named.some((one) => one === '');
+    parts.replaceChildren(
+      ...(parts.hidden
+        ? []
+        : named.map((one, index) => {
+            const item = create('li', '');
+            const go = create('button', '');
+            go.type = 'button';
+            go.append(create('span', 'watch-part-number', String(index + 1)), one);
+            go.addEventListener('click', () => {
+              const to = times?.chapterJds[index];
+              if (to !== undefined) goToJd(to);
+            });
+            item.append(go);
+            return item;
+          })),
+    );
     marks.replaceChildren(
       ...picked.chapters.slice(1).map((_, index) => {
         const mark = create('span', '');

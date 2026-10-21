@@ -28,6 +28,7 @@ import {
   SRGBColorSpace,
 } from 'three';
 import type { Vec3 } from '../sim/vec3';
+import { tsunamiPace } from './tsunamiPace';
 
 /**
  * A 3D close-up simulation of a tsunami:
@@ -68,7 +69,7 @@ export interface TsunamiSlice {
   readonly direction: Vec3;
   /** Sets the simulation to a specific chapter and elapsed time in minutes */
   set(chapterId: string, minutesAfter: number): void;
-  /** Continuous fluid, foam, and beacon animation */
+  /** Continuous fluid, foam, and beacon animation; 0 seconds puts the camera straight in place. */
   flow(seconds: number): void;
   /** Toggles between the close-up 3D Wave Breaker view and the wide Ocean Cross-Section view */
   toggleView(): void;
@@ -1142,6 +1143,7 @@ export function createTsunamiSlice(): TsunamiSlice {
   let currentChapter = 'sea-floor';
   let animTime = 0;
   let upliftOffset = 0;
+  let upliftShare = 1;
   let waveProgress = 0;
   let shoalingFactor = 0.15; // 0 in deep water, 1 at full shoaling breaker
 
@@ -1158,9 +1160,7 @@ export function createTsunamiSlice(): TsunamiSlice {
   const desiredDirection: MutableVec3 = { x: 0.12, y: 0.28, z: 1.0 };
 
   const updateCameraTarget = () => {
-    const isShoalingChapter =
-      currentChapter === 'across-the-ocean' || currentChapter === 'warnings';
-    const showBreaker = viewMode === 'breaker' || (viewMode === 'auto' && isShoalingChapter);
+    const showBreaker = viewMode === 'breaker';
 
     // In 3D Diorama mode, display the complete Coastal Tsunami Diorama Box
     seabedMesh.visible = !showBreaker;
@@ -1182,13 +1182,14 @@ export function createTsunamiSlice(): TsunamiSlice {
       desiredDirection.y = 0.38;
       desiredDirection.z = 0.91;
     } else {
-      // Wide overview of ocean bathymetric cross-section
-      desiredTarget.x = -0.5;
-      desiredTarget.y = -0.9;
+      // The whole sea cut open, drawing nearer the shore as the wave grows there.
+      const near = Math.min(1, Math.max(0, (shoalingFactor - 0.25) / 0.75));
+      desiredTarget.x = -0.5 + near * 7.5;
+      desiredTarget.y = -0.9 + near * 1.3;
       desiredTarget.z = 0;
-      desiredDistance = 24;
-      desiredDirection.x = 0.12;
-      desiredDirection.y = 0.28;
+      desiredDistance = 24 - near * 11;
+      desiredDirection.x = 0.12 - near * 0.2;
+      desiredDirection.y = 0.28 + near * 0.06;
       desiredDirection.z = 1.0;
     }
   };
@@ -1199,22 +1200,23 @@ export function createTsunamiSlice(): TsunamiSlice {
     const pos = waterGeom.attributes.position as BufferAttribute;
     const wfPos = waterFrontGeom.attributes.position as BufferAttribute;
     const waveCenter = -12 + waveProgress * 17; // travels up to shelf
+    // As the sea gets shallow the wave slows, grows taller and gets shorter from crest to crest.
+    const crestHeight = 0.45 + 1.5 * shoalingFactor;
+    const crestWidth = 25 * (1 - 0.6 * shoalingFactor);
+    const surfaceAt = (x: number): number => {
+      const dist = x - waveCenter;
+      const crest = Math.exp(-(dist * dist) / crestWidth) * crestHeight;
+      const trough = -Math.exp(-((dist - 6) * (dist - 6)) / 36) * 0.16;
+      const upliftDist = x - -10.5;
+      const lifted = Math.exp(-(upliftDist * upliftDist) / 4) * upliftOffset * 0.8;
+      return lifted * upliftShare + (crest + trough) * (1 - upliftShare);
+    };
 
     let wfIdx = 0;
     for (let ix = 0; ix <= waterGridX; ix++) {
       const x = -13.0 + (ix / waterGridX) * 18.0;
       const seabedY = seabedDepthAt(x);
-      const dist = x - waveCenter;
-
-      let waveY: number;
-      if (currentChapter === 'sea-floor') {
-        const upliftDist = x - -10.5;
-        waveY = Math.exp(-(upliftDist * upliftDist) / 4) * upliftOffset * 0.8;
-      } else {
-        const crest = Math.exp(-(dist * dist) / 25) * 0.35;
-        const trough = -Math.exp(-((dist - 6) * (dist - 6)) / 36) * 0.16;
-        waveY = crest + trough;
-      }
+      const waveY = surfaceAt(x);
       const ripple = Math.sin(x * 1.8 + animTime * 3) * 0.035;
       const surfaceY = Math.max(seabedY + 0.05, waveY + ripple);
 
@@ -1226,16 +1228,7 @@ export function createTsunamiSlice(): TsunamiSlice {
       if (ix < waterGridX) {
         const nextX = -13.0 + ((ix + 1) / waterGridX) * 18.0;
         const nextSeabedY = seabedDepthAt(nextX);
-        const nextDist = nextX - waveCenter;
-        let nextWaveY: number;
-        if (currentChapter === 'sea-floor') {
-          const nextUplift = nextX - -10.5;
-          nextWaveY = Math.exp(-(nextUplift * nextUplift) / 4) * upliftOffset * 0.8;
-        } else {
-          const nextCrest = Math.exp(-(nextDist * nextDist) / 25) * 0.35;
-          const nextTrough = -Math.exp(-((nextDist - 6) * (nextDist - 6)) / 36) * 0.16;
-          nextWaveY = nextCrest + nextTrough;
-        }
+        const nextWaveY = surfaceAt(nextX);
         const nextSurfaceY = Math.max(nextSeabedY + 0.05, nextWaveY + ripple);
         const zFront = SLICE_DEPTH / 2;
 
@@ -1259,7 +1252,8 @@ export function createTsunamiSlice(): TsunamiSlice {
     const fUV = foamGeom.attributes.uv as BufferAttribute;
     const sPos = sideCapGeom.attributes.position as BufferAttribute;
 
-    const H = Math.max(0.7, shoalingFactor * 4.4);
+    // At the shore the wave is as tall as it has grown; the breaker on its own is always full.
+    const H = viewMode === 'breaker' ? 4.4 : Math.max(0.15, shoalingFactor * 4.4);
     const C = Math.max(0, Math.min(1.0, (shoalingFactor - 0.25) / 0.75)); // curl factor
 
     // Store profile curve at the two lateral boundaries for side caps
@@ -1498,58 +1492,23 @@ export function createTsunamiSlice(): TsunamiSlice {
     }
   };
 
-  const set = (chapterId: string): void => {
+  const set = (chapterId: string, minutesAfter: number): void => {
     if (chapterId !== currentChapter) {
       viewMode = 'auto';
     }
     currentChapter = chapterId;
 
-    if (chapterId === 'sea-floor') {
-      upliftOffset = 0.55;
-      faultBlockGroup.position.y = 0.4;
-      waveProgress = 0.06;
-      shoalingFactor = 0.12;
-      jetGroup.visible = false;
-      buoyGroup.visible = false;
-      beacon.intensity = 0;
-    } else if (chapterId === 'every-direction') {
-      upliftOffset = 0.2;
-      faultBlockGroup.position.y = 0.15;
-      waveProgress = 0.22;
-      shoalingFactor = 0.15;
-      jetGroup.visible = false;
-      buoyGroup.visible = true;
-      beacon.intensity = 0;
-    } else if (chapterId === 'fast-and-slow') {
-      faultBlockGroup.position.y = 0;
-      waveProgress = 0.48;
-      shoalingFactor = 0.18;
-      jetGroup.visible = true;
-      buoyGroup.visible = true;
-      beacon.intensity = 0;
-    } else if (chapterId === 'gauges') {
-      faultBlockGroup.position.y = 0;
-      waveProgress = 0.65;
-      shoalingFactor = 0.22;
-      jetGroup.visible = false;
-      buoyGroup.visible = true;
-      beacon.intensity = 0;
-    } else if (chapterId === 'across-the-ocean') {
-      faultBlockGroup.position.y = 0;
-      waveProgress = 0.88;
-      shoalingFactor = 0.95; // full towering curling breaker!
-      jetGroup.visible = false;
-      buoyGroup.visible = true;
-      beacon.intensity = 1.5;
-    } else {
-      // warnings
-      faultBlockGroup.position.y = 0;
-      waveProgress = 0.96;
-      shoalingFactor = 1.0; // peak breaker crest at the shoreline
-      jetGroup.visible = false;
-      buoyGroup.visible = true;
-      beacon.intensity = 3.0;
-    }
+    // One wave, going on from part to part with the story's clock.
+    const pace = tsunamiPace(minutesAfter);
+    waveProgress = pace.progress;
+    shoalingFactor = pace.shoaling;
+    upliftShare = pace.uplift;
+    upliftOffset = 0.55 * pace.uplift;
+    faultBlockGroup.position.y = 0.4 * pace.uplift;
+
+    jetGroup.visible = chapterId === 'fast-and-slow';
+    buoyGroup.visible = chapterId !== 'sea-floor';
+    beacon.intensity = chapterId === 'warnings' ? 3.0 : chapterId === 'across-the-ocean' ? 1.5 : 0;
 
     updateCameraTarget();
     updateWaterProfile();
@@ -1558,8 +1517,8 @@ export function createTsunamiSlice(): TsunamiSlice {
   const flow = (seconds: number): void => {
     animTime += seconds;
 
-    // Smooth camera interpolation towards desired look
-    const tCam = Math.min(1.0, seconds * 3.5);
+    // Smooth camera interpolation towards desired look; with no time to move in, straight there
+    const tCam = seconds === 0 ? 1 : Math.min(1.0, seconds * 3.5);
     currentTarget.x += (desiredTarget.x - currentTarget.x) * tCam;
     currentTarget.y += (desiredTarget.y - currentTarget.y) * tCam;
     currentTarget.z += (desiredTarget.z - currentTarget.z) * tCam;
@@ -1591,15 +1550,6 @@ export function createTsunamiSlice(): TsunamiSlice {
       beacon.intensity = 2.0 + Math.sin(animTime * 8) * 1.8;
     }
 
-    // Continuous wave progression in deep ocean cross-section
-    if (
-      currentChapter !== 'sea-floor' &&
-      currentChapter !== 'across-the-ocean' &&
-      currentChapter !== 'warnings'
-    ) {
-      waveProgress = (waveProgress + seconds * 0.02) % 0.8;
-    }
-
     // Boat bobbing & inundation wash animation in diorama
     if (dioramaBoxGroup.visible) {
       boat1.position.y = -0.42 + Math.sin(animTime * 2.6) * 0.04;
@@ -1613,17 +1563,14 @@ export function createTsunamiSlice(): TsunamiSlice {
   };
 
   /** Whether the wave is seen close, breaking at the shore, rather than the whole sea cut open. */
-  const breakerShown = (): boolean =>
-    viewMode === 'breaker' ||
-    (viewMode === 'auto' &&
-      (currentChapter === 'across-the-ocean' || currentChapter === 'warnings'));
+  const breakerShown = (): boolean => viewMode === 'breaker';
   const toggleView = (): void => {
     viewMode = breakerShown() ? 'crossSection' : 'breaker';
     updateCameraTarget();
   };
 
   // Initial setup
-  set('sea-floor');
+  set('sea-floor', 0);
 
   return {
     scene,

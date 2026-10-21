@@ -3080,7 +3080,7 @@ function start(): void {
       if (!reducedMotion) stormSlice?.flow(dt);
       if (!reducedMotion) tornadoDrawing?.scene.flow(dt);
       if (!reducedMotion) watchQuake?.block?.flow(dt);
-      if (!reducedMotion) watchTsunamiSlice?.flow(dt);
+      watchTsunamiSlice?.flow(reducedMotion ? 0 : dt);
       watchVolcanoSlice?.flow(reducedMotion ? 0 : dt);
       watchTideSlice?.flow(reducedMotion ? 0 : dt);
       watchDustSlice?.flow(reducedMotion ? 0 : dt);

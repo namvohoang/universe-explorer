@@ -23,7 +23,7 @@ const NOAA = 'noaa-tides-variations';
 const FIRST_QUARTER = 2461332.175;
 const FULL_MOON = 2461339.675;
 const LAST_QUARTER = 2461346.3527777777;
-/** Seen with the 3D ocean tides and island simulation beside the enlarged Earth-Moon orbit picture. */
+/** Seen with the 3D close-up of Earth turning in its sea beside the enlarged Earth-Moon orbit picture. */
 const TIDE_VIEW = {
   lookAtId: 'earth',
   closeUp: true,

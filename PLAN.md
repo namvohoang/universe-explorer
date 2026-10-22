@@ -1296,7 +1296,12 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       towards the Moon and one towards the Sun; the screen says it is a drawing. Its last
       part says real seas are not so tidy. The drawn swellings point straight at the Moon, as
       NOAA draws them; NASA says the real ones run a little ahead. The sentences rest on
-      NASA's and NOAA's pages on tides. As planned: **The tides**: `orbits`, with no new source. The sea's two bulges following the
+      NASA's and NOAA's pages on tides. Redrawn on 2026-10-22: the close-up is Earth turning
+      in its sea in 3D, the sea shaped by `tideHeights` from where the Moon and Sun really
+      are (so spring and neap tides come from the catalogue, not set by hand), the Moon on
+      its path drawn closer (`TIDE_CLOSE_UP` in `src/sim/scale.ts`), sunlight from the Sun, a
+      post on a shore with a ring where the water stands, and arrows of the pull that raises
+      the tide (`tidePulls`). As planned: **The tides**: `orbits`, with no new source. The sea's two bulges following the
       Moon, and the bigger tides when the Sun and Moon line up, from the catalogue's own
       positions. Ties Earth's stories to the sky ones.
 - [ ] 14.12 How big? In Compare: a tornado, a thunderstorm, a hurricane, the country of

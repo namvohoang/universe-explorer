@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import { isKnown } from '../data/types';
 import { eclipticOffsetKm } from './layout';
-import { tideHeights, tideStrength, type TideRaiser } from './tides';
+import { equatorPoint, tideHeights, tidePulls, tideStrength, type TideRaiser } from './tides';
 import { scale, type Vec3 } from './vec3';
 
 const moon: TideRaiser = { massKg: 1, offsetKm: { x: 10, y: 0, z: 0 } };
@@ -91,5 +91,45 @@ describe('the tides the catalogue’s Moon and Sun raise on Earth', () => {
     // In line the Sun adds nearly all of its share; at right angles it takes half of it away.
     expect(under(FULL_MOON)).toBeGreaterThan(1.35);
     expect(under(FIRST_QUARTER)).toBeLessThan(0.85);
+  });
+});
+
+describe('tidePulls', () => {
+  it('pulls out under the raiser and on the far side, and in half as hard between', () => {
+    const pull = tidePulls([moon]);
+    const out = pull({ x: 1, y: 0, z: 0 });
+    expect(out.x).toBeCloseTo(1, 12);
+    expect(pull({ x: -2, y: 0, z: 0 }).x).toBeCloseTo(-1, 12);
+    const side = pull({ x: 0, y: 0, z: 1 });
+    expect(side.z).toBeCloseTo(-0.5, 12);
+    expect(side.x).toBeCloseTo(0, 12);
+  });
+
+  it('adds the Sun’s pull to the Moon’s when they are in line', () => {
+    const inLine = tidePulls([moon, { massKg: 0.5, offsetKm: { x: -10, y: 0, z: 0 } }]);
+    expect(inLine({ x: 1, y: 0, z: 0 }).x).toBeCloseTo(1.5, 12);
+  });
+});
+
+describe('equatorPoint', () => {
+  it('gives a shore two high tides and two low ones in a turn', () => {
+    const height = tideHeights([moon]);
+    const steps = 360;
+    const along = Array.from({ length: steps }, (_, i) =>
+      height(equatorPoint((i / steps) * 2 * Math.PI)),
+    );
+    const highs = along.filter((h, i) => {
+      const before = along[(i + steps - 1) % steps] ?? 0;
+      const after = along[(i + 1) % steps] ?? 0;
+      return h > before && h >= after;
+    });
+    expect(highs).toHaveLength(2);
+    expect(Math.min(...along)).toBeCloseTo(-0.5, 6);
+  });
+
+  it('turns anticlockwise seen from over the pole', () => {
+    const quarter = equatorPoint(Math.PI / 2);
+    expect(quarter.x).toBeCloseTo(0, 12);
+    expect(quarter.z).toBeCloseTo(-1, 12);
   });
 });

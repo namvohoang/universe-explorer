@@ -47,7 +47,7 @@ import {
   type WaveFront,
   waveReachKm,
 } from './sim/seismic';
-import { tideHeights, type TideRaiser } from './sim/tides';
+import { tideHeights, tidePulls, type TideRaiser } from './sim/tides';
 import {
   galeReachKm,
   sliceShares,
@@ -58,6 +58,7 @@ import {
 } from './sim/storm';
 import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
+import { spinAngleRad } from './sim/spin';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
 import {
   bodyFramePoint,
@@ -2086,12 +2087,34 @@ function start(): void {
     readonly raisers: readonly { readonly object: CelestialObject; readonly massKg: number }[];
   } | null = null;
   let watchTideSlice: TideSlice | null = null;
+  /** The close-up of how the tides work, with Earth and its Moon from the catalogue. */
+  const tideCloseUp = (story: Story): TideSlice | null => {
+    const earth = catalogue.find((object) => object.id === story.tide?.onId);
+    const moon = catalogue.find(
+      (object) => story.tide?.raiserIds.includes(object.id) === true && object.kind !== 'star',
+    );
+    const earthRadiusKm = earth ? bodyRadiusKm(earth) : null;
+    const moonRadiusKm = moon ? bodyRadiusKm(moon) : null;
+    if (!earth || !moon || earth.shape?.type !== 'spheroid' || !earthRadiusKm || !moonRadiusKm) {
+      return null;
+    }
+    const mapOf = (object: CelestialObject): string | null => {
+      const map = object.media.find((media) => media.role === 'surface-map');
+      return map ? mediaUrl(map.file) : null;
+    };
+    return createTideSlice({
+      earthMapUrl: mapOf(earth),
+      moonMapUrl: mapOf(moon),
+      moonRadiusRatio: moonRadiusKm / earthRadiusKm,
+      earthPoleRatio: earth.shape.polarRadiusKm.value / earth.shape.equatorialRadiusKm.value,
+    });
+  };
   /** Draws a story's tides: the sea of its world, and a line towards each thing that pulls on it. */
   const showTide = (story: Story): void => {
     watchTideSlice?.dispose();
     watchTideSlice = null;
     if (story.id === 'tides') {
-      watchTideSlice = createTideSlice();
+      watchTideSlice = tideCloseUp(story);
     }
     const world = catalogue.find((object) => object.id === story.tide?.onId);
     const raisers = (story.tide?.raiserIds ?? []).flatMap((id) => {
@@ -2136,8 +2159,16 @@ function start(): void {
     if (diagram) {
       diagram.system.showTide(heights, offsets);
     }
-    if (watchTideSlice) {
-      watchTideSlice.set(paired?.chapter.id ?? 'two-bulges', jd);
+    const moonPull = pulls.find((_, index) => raisers[index]?.object.kind !== 'star');
+    const sunPull = pulls.find((_, index) => raisers[index]?.object.kind === 'star');
+    if (watchTideSlice && moonPull && sunPull && world.shape?.type === 'spheroid') {
+      watchTideSlice.set({
+        height: heights,
+        pull: tidePulls(pulls),
+        moon: moonPull.offsetKm,
+        sun: sunPull.offsetKm,
+        turnRad: spinAngleRad(world.shape.orientation, jd),
+      });
     }
   };
   /** The tornado of the story on show, as a drawing in a scene of its own, and when it was on the ground. */

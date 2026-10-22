@@ -195,3 +195,26 @@ export function createScale<Mode extends ScaleMode | DrawingMode>(
     },
   };
 }
+
+/**
+ * The tides close-up, a drawing with Earth's radius as its unit. Earth and the Moon keep their
+ * true sizes next to each other; the Moon is drawn far closer than its real 60 Earth radii,
+ * and the sea's swelling enormously bigger than life. The screen says both.
+ */
+export const TIDE_CLOSE_UP = {
+  /** How far the Moon is drawn from Earth's middle, in Earth radii. */
+  moonAwayRadii: 3.4,
+  /** How far the sea stands off the ground where the tide is level, in Earth radii. */
+  seaLiftRadii: 0.22,
+  /** How much further out it stands for a tide of 1 (the Moon's own high tide alone). */
+  drawnTideRadii: 0.26,
+} as const;
+
+/**
+ * How far from Earth's middle the close-up draws the sea, in Earth radii, for a tide of
+ * `height` (as `tideHeights` gives it). The lowest sea there can be, -0.8 where the Moon's and
+ * the Sun's tides are both low, with the Sun's at its strongest, still stands off the ground.
+ */
+export function tideCloseUpSeaRadii(height: number): number {
+  return 1 + TIDE_CLOSE_UP.seaLiftRadii + TIDE_CLOSE_UP.drawnTideRadii * height;
+}

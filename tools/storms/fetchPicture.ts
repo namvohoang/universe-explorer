@@ -12,7 +12,9 @@
  * The two numbers after the satellite are the middle of the square: longitude east and latitude
  * north, in degrees, to a hundredth of a degree. A last number, if given,
  * is how far the square reaches from its middle, in degrees (15 if not given). `cwebp` must be
- * installed.
+ * installed. In place of the middle, `world` asks for the whole world:
+ *
+ *   npx tsx tools/storms/fetchPicture.ts world-2026-06-21 2026-06-21 NOAA20 world
  *
  *   npx tsx tools/storms/fetchPicture.ts blatten-2025-05-29 2025-05-29 L30 7.84 46.42 0.07
  */
@@ -25,6 +27,8 @@ const ROOT = join(import.meta.dirname, '..', '..');
 /** How far the square reaches from its middle, in degrees, unless asked otherwise, and how many pixels it is across. */
 const DEFAULT_HALF_DEG = 15;
 const PIXELS = 1536;
+/** The whole world is asked for this many pixels tall, and twice as wide. */
+const WORLD_PIXELS = 1024;
 /** A Landsat or Sentinel-2 picture is asked for no finer than its own 30 metres to a pixel. */
 const FINE_PIXELS = 768;
 const WEBP_QUALITY = 72;
@@ -41,9 +45,11 @@ const LAYERS = {
 
 const [name, day, satellite, lonText, latText, halfText] = process.argv.slice(2);
 const layer = LAYERS[satellite as keyof typeof LAYERS] as string | undefined;
-const lon = Number(lonText);
-const lat = Number(latText);
-const HALF_DEG = halfText === undefined ? DEFAULT_HALF_DEG : Number(halfText);
+/** `world` in place of the middle asks for the whole world, twice as wide as it is tall. */
+const world = lonText === 'world';
+const lon = world ? 0 : Number(lonText);
+const lat = world ? 0 : Number(latText);
+const HALF_DEG = world ? 90 : halfText === undefined ? DEFAULT_HALF_DEG : Number(halfText);
 const fine = satellite === 'L30' || satellite === 'S30';
 /** Edges in hundredths of a degree, so the ones written down are the ones asked for. */
 const onGrid = (value: number): boolean => Number.isInteger(Math.round(value * 100 * 1e6) / 1e6);
@@ -62,12 +68,9 @@ if (
 
 /** Rounded to hundredths, so the edges written down are the ones asked for. */
 const edge = (value: number): number => Math.round(value * 100) / 100;
-const [west, south, east, north] = [
-  lon - HALF_DEG,
-  lat - HALF_DEG,
-  lon + HALF_DEG,
-  lat + HALF_DEG,
-].map(edge) as [number, number, number, number];
+const [west, south, east, north] = (
+  world ? [-180, -90, 180, 90] : [lon - HALF_DEG, lat - HALF_DEG, lon + HALF_DEG, lat + HALF_DEG]
+).map(edge) as [number, number, number, number];
 const query = new URLSearchParams({
   REQUEST: 'GetSnapshot',
   TIME: day,
@@ -75,8 +78,8 @@ const query = new URLSearchParams({
   CRS: 'EPSG:4326',
   LAYERS: layer,
   FORMAT: 'image/jpeg',
-  WIDTH: String(fine ? FINE_PIXELS : PIXELS),
-  HEIGHT: String(fine ? FINE_PIXELS : PIXELS),
+  WIDTH: String(world ? 2 * WORLD_PIXELS : fine ? FINE_PIXELS : PIXELS),
+  HEIGHT: String(world ? WORLD_PIXELS : fine ? FINE_PIXELS : PIXELS),
 });
 const response = await fetch(`https://wvs.earthdata.nasa.gov/api/v1/snapshot?${query.toString()}`);
 if (!response.ok || !(response.headers.get('content-type') ?? '').startsWith('image/')) {

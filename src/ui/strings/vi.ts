@@ -111,7 +111,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsEarth1:
     'Mỗi câu chuyện là một sự kiện có thật, được chọn vì nó được đo đạc kỹ và gây ít hoặc không gây thiệt hại, và được kể qua những gì mặt đất, biển và không khí đã làm. Không câu chuyện nào nêu số người bị hại. Cơn bão vào Việt Nam là ngoại lệ của “không thiệt hại”: đã có người thiệt mạng ở Philippines và Việt Nam, và câu chuyện kể về cảnh báo và việc người dân đi sơ tán.',
   grownUpsEarth2:
-    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa, trận lở băng, trận lũ, gió mùa (hai loại sau là màu giả, để nước hiện màu xanh dương) và hồ nước có nhiều sét nhất, là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
+    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa, trận lở băng, trận lũ, gió mùa (hai loại sau là màu giả, để nước hiện màu xanh dương) hồ nước có nhiều sét nhất, và mây của cả thế giới trong một ngày, là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
   grownUpsEarth3:
     'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn. Một lý do có thể đúng, mà ứng dụng chưa kiểm chứng, là các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
   grownUpsEarth4:
@@ -1164,6 +1164,30 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Khi nghe sấm, hãy vào trong nhà! Nếu em nghe được tiếng sấm, cơn giông đã đủ gần để sét đánh tới em. Hãy chờ trong một tòa nhà hoặc trong ô tô có mui cứng.',
   scaleLabelLightningSlice: 'Hình nhìn gần là hình vẽ. Ảnh chụp từ vũ trụ là thật.',
   watchFlashCount: '{n} tia sét',
+  storyWaterCycleTitle: 'Vòng tuần hoàn của nước',
+  storyWaterCycleNote:
+    'Ảnh cả thế giới là ảnh thật, chụp từ vũ trụ trong một ngày. Hình nhìn gần là hình vẽ.',
+  storyWaterCyclePictureAlt:
+    'Cả thế giới nhìn từ vũ trụ trong một ngày: đại dương xanh, đất liền nâu và xanh lá, và mây trắng xoáy khắp nơi.',
+  storyWaterCycleWorld:
+    'Đây là cả thế giới, như một vệ tinh nhìn thấy vào ngày 20 tháng 3 năm 2026. Tất cả màu trắng là mây, và mỗi đám mây là nước đang di chuyển. Vòng tuần hoàn của nước là con đường nước đi khi nó di chuyển quanh Trái Đất.',
+  storyWaterCycleOcean:
+    'Gần như toàn bộ nước trên Trái Đất nằm trong đại dương: khoảng 97 trong mỗi 100 giọt.',
+  storyWaterCycleEvaporation:
+    'Ánh nắng làm ấm biển, hồ và sông. Một phần nước biến thành một chất khí không nhìn thấy được, gọi là hơi nước, rồi bay lên không trung. Đó là sự bốc hơi.',
+  storyWaterCyclePlants: 'Cây cối cũng tỏa hơi nước vào không khí.',
+  storyWaterCycleClouds:
+    'Trên cao, không khí lạnh. Hơi nước nguội đi và lại biến thành những giọt nước nhỏ xíu, tạo thành mây. Đó là sự ngưng tụ.',
+  storyWaterCycleRain:
+    'Khi các giọt nước nặng lên, chúng rơi xuống thành mưa, hoặc thành tuyết ở nơi lạnh. Đó là giáng thủy.',
+  storyWaterCycleBack:
+    'Khi trời ấm lên, tuyết tan. Sông mang nước chảy xuống biển, và vòng tuần hoàn lại bắt đầu.',
+  scaleLabelWaterCycleSlice: 'Hình nhìn gần là hình vẽ. Ảnh thế giới là ảnh thật.',
+  watchCycleOcean: 'Đại dương',
+  watchCycleEvaporation: 'Bốc hơi',
+  watchCycleCondensation: 'Ngưng tụ',
+  watchCyclePrecipitation: 'Giáng thủy',
+  watchCycleBack: 'Về lại biển',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
@@ -1280,6 +1304,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoHowHighName: 'Cao bao nhiêu',
   storyVolcanoDayLaterName: 'Một ngày sau',
   storyVolcanoPilotsName: 'Phi công',
+  storyWaterCycleWorldName: 'Cả thế giới',
+  storyWaterCycleOceanName: 'Đại dương',
+  storyWaterCycleEvaporationName: 'Bốc hơi',
+  storyWaterCyclePlantsName: 'Cây cối',
+  storyWaterCycleCloudsName: 'Mây',
+  storyWaterCycleRainName: 'Mưa và tuyết',
+  storyWaterCycleBackName: 'Về lại biển',
   storyLightningLakeName: 'Hồ nước',
   storyLightningWhyName: 'Vì sao ở đây?',
   storyLightningInsideName: 'Trong đám mây',

@@ -1321,7 +1321,7 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       a section on the grown-ups' page saying what is recorded, worked out and drawn, with
       the sources and a note on how these events are told to a child; keyboard, screen reader
       and reduced motion; layout tests at the five screen sizes.
-- [~] 14.14 Asked for on 2026-10-25. Done on 2026-10-25: **An avalanche**, the Birch Glacier
+- [x] 14.14 Asked for on 2026-10-25. Done on 2026-10-25: **An avalanche**, the Birch Glacier
       breaking away above Blatten (Switzerland) on 28 May 2025, in seven parts, in English and
       Vietnamese, recorded. Each part is a real picture from NASA's Harmonized Landsat and
       Sentinel-2 pictures (Sentinel-2, 30 metres to a pixel, from NASA Worldview: 18 May,
@@ -1357,7 +1357,14 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       National Weather Service. Its 3D close-up (`lightningSlice`) is a storm cloud growing
       over the lake into the night, ice and soft hail charging inside it, and flashes counted
       at the real average rate as the story's clock runs; no more than two are drawn in a
-      second, and with reduced motion they do not flicker. Left: the water cycle. As planned: Later, each its own story if wanted: lightning, the
+      second, and with reduced motion they do not flicker. Done on 2026-10-25: **The water cycle**, in seven parts, in English and
+      Vietnamese, recorded: the whole world's clouds on 20 March 2026 (VIIRS on NOAA-20, an
+      equinox so both poles are lit) laid on the globe, which stands back to show all of it;
+      the sentences resting on NASA's page for children "What Is the Water Cycle?" and NOAA's
+      Ocean Service (97 percent of Earth's water is in the ocean). Its 3D close-up
+      (`waterCycleSlice`) is sea, land and mountains under the Sun: vapour rising from the sea
+      and the trees, clouds, rain and snow, and a river back to the sea, each step named as it
+      comes. As planned: Later, each its own story if wanted: lightning, the
       water cycle, the monsoon, a flood, an avalanche.
 
 **Part two: how the land is shaped** (asked for on 2026-10-11: mountains, rivers, canyons, a

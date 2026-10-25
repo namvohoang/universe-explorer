@@ -99,7 +99,7 @@ export const en = {
   grownUpsEarth1:
     'Each story is one real event, picked because it was measured well and did little or no harm, and told as what the ground, the sea and the air did. No story gives a count of people hurt. The typhoon is the exception to “no harm”: people died in the Philippines and in Vietnam, and its story tells of the warnings and of people moving to safety.',
   grownUpsEarth2:
-    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms, of dust, of a volcano’s ash, of an avalanche, of a flood, of the monsoon (the last two in false colour, so water shows blue) and of the lake where lightning strikes most, which are what a NASA or NOAA satellite (or, for the avalanche, the European Sentinel-2, as NASA serves it) saw that day, laid on the globe where they were taken; for a valley too small to see on the globe, the close-up is a 3D drawing whose button shows the real picture, flat and at its real shape.',
+    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms, of dust, of a volcano’s ash, of an avalanche, of a flood, of the monsoon (the last two in false colour, so water shows blue) of the lake where lightning strikes most, and of the whole world’s clouds on one day, which are what a NASA or NOAA satellite (or, for the avalanche, the European Sentinel-2, as NASA serves it) saw that day, laid on the globe where they were taken; for a valley too small to see on the globe, the close-up is a 3D drawing whose button shows the real picture, flat and at its real shape.',
   grownUpsEarth3:
     'What is worked out by the app: the ring of an earthquake’s wave between stations, the tides (from the pull of the Moon and the Sun), and the pale band of a tsunami, from the depth of the sea. The band does not match the gauges exactly: at half of them it is within 6 per cent of the time measured, at nine in ten within 18 per cent, and it is mostly too early. A likely reason, which the app has not tested, is that gauges stand in harbours, where the wave comes later than in the open sea.',
   grownUpsEarth4:
@@ -1152,6 +1152,13 @@ export const en = {
   storyVolcanoHowHighName: 'How high',
   storyVolcanoDayLaterName: 'A day later',
   storyVolcanoPilotsName: 'Pilots',
+  storyWaterCycleWorldName: 'The whole world',
+  storyWaterCycleOceanName: 'The ocean',
+  storyWaterCycleEvaporationName: 'Evaporation',
+  storyWaterCyclePlantsName: 'Plants',
+  storyWaterCycleCloudsName: 'Clouds',
+  storyWaterCycleRainName: 'Rain and snow',
+  storyWaterCycleBackName: 'Back to the sea',
   storyLightningLakeName: 'The lake',
   storyLightningWhyName: 'Why here?',
   storyLightningInsideName: 'Inside the cloud',
@@ -1583,6 +1590,30 @@ export const en = {
     'When thunder roars, go indoors! If you can hear thunder, the storm is close enough to strike you. Wait inside a building or a car with a hard roof.',
   scaleLabelLightningSlice: 'Up close is a drawing. The pictures from space are real.',
   watchFlashCount: '{n} flashes',
+  storyWaterCycleTitle: 'The water cycle',
+  storyWaterCycleNote:
+    'The picture of the whole world is real, taken from space in one day. Up close is a drawing.',
+  storyWaterCyclePictureAlt:
+    'The whole world seen from space in one day: blue oceans, brown and green land, and swirls of white cloud everywhere.',
+  storyWaterCycleWorld:
+    'This is the whole world, as a satellite saw it on 20 March 2026. All the white is cloud, and every cloud is water on the move. The water cycle is the path water takes as it moves around Earth.',
+  storyWaterCycleOcean:
+    'Almost all of Earth’s water is in the ocean: about 97 out of every 100 drops.',
+  storyWaterCycleEvaporation:
+    'Sunlight warms the sea, lakes and rivers. Some of their water turns into an invisible gas, water vapour, and rises into the air. This is called evaporation.',
+  storyWaterCyclePlants: 'Plants and trees give off water vapour into the air too.',
+  storyWaterCycleClouds:
+    'High up, the air is cold. The vapour cools and turns back into tiny drops of water, and they make clouds. This is called condensation.',
+  storyWaterCycleRain:
+    'When the drops grow heavy, they fall as rain, or as snow where it is cold. This is called precipitation.',
+  storyWaterCycleBack:
+    'When it warms up, the snow melts. Rivers carry the water back down to the sea, and round it goes again.',
+  scaleLabelWaterCycleSlice: 'Up close is a drawing. The picture of the world is real.',
+  watchCycleOcean: 'The ocean',
+  watchCycleEvaporation: 'Evaporation',
+  watchCycleCondensation: 'Condensation',
+  watchCyclePrecipitation: 'Precipitation',
+  watchCycleBack: 'Back to the sea',
   storyQuakeTitle: 'An earthquake',
   storyQuakeNote:
     'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',

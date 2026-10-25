@@ -28,9 +28,11 @@ export interface PictureBoardOptions {
   /** How much ground every picture shows. */
   readonly widthKm: number;
   readonly heightKm: number;
-  /** The length the bar stands for, in km, and its words ("2 km"). */
-  readonly barKm: number;
-  readonly barLabel: string;
+  /**
+   * The length the bar stands for, in km, and its words ("2 km"); `null` for no bar, for a
+   * picture so wide that no one length holds across it (the whole world).
+   */
+  readonly bar: { readonly km: number; readonly label: string } | null;
 }
 
 export interface PictureBoard {
@@ -112,18 +114,20 @@ export function createPictureBoard(options: PictureBoardOptions): PictureBoard {
   });
 
   // The scale bar, under the picture's left edge, and its words after it.
-  const barWidth = options.barKm / options.heightKm;
-  const barY = -0.5 - BAR_BELOW;
-  const bar = new Mesh(
-    keep(new PlaneGeometry(barWidth, BAR_THICKNESS)),
-    keep(new MeshBasicMaterial({ color: BAR_COLOR })),
-  );
-  bar.position.set(-width / 2 + barWidth / 2, barY, 0);
-  group.add(bar);
-  const label = keep(createLabel(options.barLabel, LABEL_HEIGHT));
-  const labelWidth = (label.mesh.geometry as PlaneGeometry).parameters.width;
-  label.mesh.position.set(-width / 2 + barWidth + labelWidth / 2, barY, 0);
-  group.add(label.mesh);
+  if (options.bar) {
+    const barWidth = options.bar.km / options.heightKm;
+    const barY = -0.5 - BAR_BELOW;
+    const bar = new Mesh(
+      keep(new PlaneGeometry(barWidth, BAR_THICKNESS)),
+      keep(new MeshBasicMaterial({ color: BAR_COLOR })),
+    );
+    bar.position.set(-width / 2 + barWidth / 2, barY, 0);
+    group.add(bar);
+    const label = keep(createLabel(options.bar.label, LABEL_HEIGHT));
+    const labelWidth = (label.mesh.geometry as PlaneGeometry).parameters.width;
+    label.mesh.position.set(-width / 2 + barWidth + labelWidth / 2, barY, 0);
+    group.add(label.mesh);
+  }
 
   return {
     group,

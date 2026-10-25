@@ -669,6 +669,36 @@ export const JPL_HORIZONS_TURN_MARACAIBO_2025_EARTH: Source = {
   retrieved: '2026-10-25',
 };
 
+export const NASA_KIDS_WATER_CYCLE: Source = {
+  id: 'nasa-kids-water-cycle',
+  title: 'NASA Science for Kids — What Is the Water Cycle?',
+  url: 'https://science.nasa.gov/kids/earth/what-is-the-water-cycle/',
+  retrieved: '2026-10-25',
+};
+
+export const NOAA_OCEAN_WATER: Source = {
+  id: 'noaa-ocean-water',
+  title: 'NOAA National Ocean Service — How much water is in the ocean?',
+  url: 'https://oceanservice.noaa.gov/facts/oceanwater.html',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_WORLDVIEW_WORLD_2026: Source = {
+  id: 'nasa-worldview-world-2026',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — true-colour picture of the whole world from the VIIRS camera on NOAA-20, 20 March 2026, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=-180,-90,180,90&l=VIIRS_NOAA20_CorrectedReflectance_TrueColor&t=2026-03-20',
+  retrieved: '2026-10-25',
+};
+
+export const JPL_HORIZONS_TURN_WATER_CYCLE_2026_EARTH: Source = {
+  id: 'jpl-horizons-turn-watercycle2026earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2026-03-20 12:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272461120.000800759%27',
+  retrieved: '2026-10-25',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

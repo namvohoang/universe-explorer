@@ -22,6 +22,7 @@ import { supermoon } from './supermoon';
 import { avalancheBlatten } from './avalancheBlatten';
 import { floodGandak } from './floodGandak';
 import { lightningMaracaibo } from './lightningMaracaibo';
+import { waterCycle } from './waterCycle';
 import { monsoonIndia } from './monsoonIndia';
 import { tides } from './tides';
 import { tornadoTescott } from './tornadoTescott';
@@ -55,6 +56,7 @@ export const stories: readonly Story[] = [
   floodGandak,
   monsoonIndia,
   lightningMaracaibo,
+  waterCycle,
   hurricaneSam,
   typhoonNoru,
   tornadoTescott,

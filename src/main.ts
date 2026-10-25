@@ -31,6 +31,8 @@ import { createFloodSlice, type FloodSlice } from './scene/floodSlice';
 import { MONSOON_PARTS } from './data/stories/monsoonIndia';
 import { MARACAIBO_LIGHTNING, lightningMaracaibo } from './data/stories/lightningMaracaibo';
 import { createLightningSlice, type LightningSlice } from './scene/lightningSlice';
+import { WATER_CYCLE_PARTS } from './data/stories/waterCycle';
+import { createWaterCycleSlice, type WaterCycleSlice } from './scene/waterCycleSlice';
 import { createMonsoonSlice, type MonsoonSlice } from './scene/monsoonSlice';
 import { pictureSpanKm, scaleBarKm } from './sim/pictureSpan';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
@@ -298,6 +300,9 @@ const STORM_WIDE_RADII = 3;
  * above the ground, so that the picture fills the view. A choice of framing.
  */
 const PICTURE_HEIGHTS_AWAY = 1.05;
+/** A picture this wide, in degrees, is of the whole world, and the globe beside it stands back this many radii to show all of it. */
+const WHOLE_WORLD_DEG = 300;
+const WHOLE_WORLD_RADII = 3.4;
 /** The nearest the look from over a storm may be brought, in radii of its world. */
 const STORM_CLOSEST_RADII = 1.2;
 /** A pointer that has moved less than this between two turns of the wheel has not moved. */
@@ -1225,8 +1230,14 @@ function start(): void {
    * no nearer than the look may be brought. `null` for the whole picture, or with no picture.
    */
   const pictureCloseRadii = (story: Story, chapter: Chapter, radii: number): number | null => {
-    // A picture shown up close in its own pane leaves the globe to show where it is.
-    if (radii !== STORM_CLOSE_RADII || story.storm || story.groundPictures?.upClose) return null;
+    if (radii !== STORM_CLOSE_RADII || story.storm) return null;
+    // A picture shown up close in its own pane leaves the globe to show where it is, and a
+    // picture of the whole world, all of the world.
+    const upClose = story.groundPictures?.upClose ? story.groundPictures.pictures[0] : undefined;
+    if (upClose) {
+      const [west, , east] = upClose.box.value;
+      return east - west >= WHOLE_WORLD_DEG ? WHOLE_WORLD_RADII : null;
+    }
     const shown = story.groundPictures?.pictures.find(
       (picture) =>
         chapter.atJd.value >= picture.fromJd.value && chapter.atJd.value < picture.untilJd.value,
@@ -1959,11 +1970,14 @@ function start(): void {
    * The 3D close look of a story told in pictures of a place too small to see on the globe,
    * whose button swaps the drawing for the real picture of the moment.
    */
-  let watchPictureSlice: AvalancheSlice | FloodSlice | MonsoonSlice | LightningSlice | null = null;
+  let watchPictureSlice:
+    AvalancheSlice | FloodSlice | MonsoonSlice | LightningSlice | WaterCycleSlice | null = null;
   /** What the screen says of that close look: what in it is real and what is drawn. */
   let watchPictureSliceLabel = '';
   /** The share of a picture's width the scale bar under it may take. */
   const SCALE_BAR_SHARE = 0.45;
+  /** A picture narrower than this, in degrees, is of a place: it gets a ring and a scale bar. */
+  const RING_UNDER_DEG = 20;
   /** Lays a story's real pictures of the ground, of its storm or of anything else, ready to show. */
   const showPictures = (story: Story): void => {
     watchVolcanoSlice?.dispose();
@@ -1982,9 +1996,10 @@ function start(): void {
     const world = catalogue.find((object) => object.id === upClose?.onId);
     const worldKm = world ? bodyRadiusKm(world) : null;
     const box = upClose?.pictures[0]?.box.value;
-    // On the globe, a ring round the place, which is far too small to see there.
+    // On the globe, a ring round a place too small to see there; none round the whole world.
     const [markWest, markSouth, markEast, markNorth] = box ?? [0, 0, 0, 0];
-    system.setPlaceMark(upClose && box ? upClose.onId : null, [
+    const small = markEast - markWest < RING_UNDER_DEG;
+    system.setPlaceMark(upClose && box && small ? upClose.onId : null, [
       (markWest + markEast) / 2,
       (markSouth + markNorth) / 2,
     ]);
@@ -1996,8 +2011,10 @@ function start(): void {
         urls: upClose.pictures.map(({ media }) => mediaUrl(media.file)),
         widthKm: span.widthKm,
         heightKm: span.heightKm,
-        barKm,
-        barLabel: fill(words.watchScaleBarKm, { km: number.format(barKm) }),
+        // No one length holds across a picture of the whole world.
+        bar: small
+          ? { km: barKm, label: fill(words.watchScaleBarKm, { km: number.format(barKm) }) }
+          : null,
       };
       if (story.id === 'avalanche-blatten') {
         const { runoutKm, runUpKm, breaksJd, pilingFromJd } = BLATTEN_AVALANCHE;
@@ -2041,6 +2058,20 @@ function start(): void {
           pictures: real,
         });
         watchPictureSliceLabel = words.scaleLabelLightningSlice;
+      }
+      if (story.id === 'water-cycle') {
+        watchPictureSlice = createWaterCycleSlice({
+          ...WATER_CYCLE_PARTS,
+          words: {
+            ocean: words.watchCycleOcean,
+            evaporation: words.watchCycleEvaporation,
+            condensation: words.watchCycleCondensation,
+            precipitation: words.watchCyclePrecipitation,
+            back: words.watchCycleBack,
+          },
+          pictures: real,
+        });
+        watchPictureSliceLabel = words.scaleLabelWaterCycleSlice;
       }
     }
     // A storm's real pictures from space lie on the world in the whole picture, as the story says.

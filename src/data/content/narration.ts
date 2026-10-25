@@ -702,6 +702,11 @@ export const NARRATION: Readonly<
     fingerprint: '673d36e9',
     starts: [0.0, 1.98, 14.65, 21.35, 34.92, 43.17, 52.17, 57.75],
   },
+  'story-water-cycle': {
+    file: 'public/voice/story-water-cycle.mp3',
+    fingerprint: 'f7aac53f',
+    starts: [0.0, 2.35, 17.35, 24.38, 36.42, 41.05, 51.12, 58.85],
+  },
   'story-hurricane-sam': {
     file: 'public/voice/story-hurricane-sam.mp3',
     fingerprint: '7c6dcbe5',

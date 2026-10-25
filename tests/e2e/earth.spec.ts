@@ -145,7 +145,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(12);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(13);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -270,6 +270,19 @@ test.describe('the Earth screen', () => {
     await expect(page.locator('.pane:visible .pane-label').first()).toHaveText(
       'Close up (a drawing)',
     );
+  });
+
+  test('shows the water cycle in 3D up close, beside the whole world’s clouds that day', async ({
+    page,
+  }) => {
+    await page.goto('/#earth/water-cycle');
+    await expect(page.locator('.watch-caption h2')).toHaveText('The water cycle');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 7');
+    await expect(page.locator('.watch-date')).toContainText('20 March 2026');
+    await expect(page.locator('.pane:visible .pane-label').first()).toHaveText(
+      'Close up (a drawing)',
+    );
+    await expect(page.getByRole('button', { name: 'See the real picture' })).toBeVisible();
   });
 
   test('tells an earthquake to the second, and says what is recorded and what is worked out', async ({

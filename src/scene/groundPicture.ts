@@ -16,6 +16,8 @@ import {
 const PICTURE_LIFT = 0.002;
 /** How finely the patch follows the round of the world. */
 const SEGMENTS = 32;
+/** At most this many degrees for one piece of a wide picture. */
+const DEG_PER_SEGMENT = 2;
 /** The share of the picture's width over which each edge fades into the map round it. */
 const EDGE_FADE = 0.08;
 const FADE_PIXELS = 128;
@@ -161,7 +163,13 @@ export function createPlaceMark(lonDegEast: number, latDegNorth: number): Ground
 }
 
 export function createGroundPicture(box: PictureBox, url: string): GroundPicture {
-  const geometry = patchGeometry(box, PICTURE_LIFT);
+  // A wide picture needs more pieces, so that none sags under the ground between its corners.
+  const spanDeg = Math.max(box.eastDeg - box.westDeg, box.northDeg - box.southDeg);
+  const geometry = patchGeometry(
+    box,
+    PICTURE_LIFT,
+    Math.max(SEGMENTS, Math.ceil(spanDeg / DEG_PER_SEGMENT)),
+  );
   const fade = edgeFade();
   const material = new MeshLambertMaterial({
     alphaMap: fade,

@@ -231,4 +231,4 @@ export function landHeightKm(metres: number, times: number): number {
 }
 
 /** How many times taller than they are the land stories draw their heights. */
-export const LAND_HEIGHTS_DRAWN_TIMES = 2;
+export const LAND_HEIGHTS_DRAWN_TIMES = 3;

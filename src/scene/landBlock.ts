@@ -104,7 +104,8 @@ export function createLandBlock(options: LandBlockOptions): LandBlock {
       geometry.rotateX(-Math.PI / 2);
       const positions = geometry.getAttribute('position') as BufferAttribute;
       const colors = new Float32Array(positions.count * 3);
-      const highest = Math.max(...heights);
+      // Not Math.max(...heights): a spread of so many cells overflows the stack.
+      const highest = heights.reduce((most, metres) => Math.max(most, metres), -Infinity);
       for (let index = 0; index < positions.count; index++) {
         // The plane's points run row by row from the north, west to east, as the cells do.
         const metres = heights[index] ?? 0;

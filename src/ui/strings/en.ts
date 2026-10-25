@@ -1153,6 +1153,14 @@ export const en = {
   storyVolcanoHowHighName: 'How high',
   storyVolcanoDayLaterName: 'A day later',
   storyVolcanoPilotsName: 'Pilots',
+  storyMountainFarApartName: 'Far apart',
+  storyMountainMovingName: 'Moving north',
+  storyMountainMeetName: 'They meet',
+  storyMountainPushedName: 'Pushed up',
+  storyMountainIceName: 'Carved by ice',
+  storyMountainRisingName: 'Still rising',
+  storyMountainRealName: 'The real range',
+  storyMountainTallestName: 'Tallest of all',
   storyWaterCycleWorldName: 'The whole world',
   storyWaterCycleOceanName: 'The ocean',
   storyWaterCycleEvaporationName: 'Evaporation',
@@ -1624,6 +1632,26 @@ export const en = {
   watchCycleCondensation: 'Condensation',
   watchCyclePrecipitation: 'Precipitation',
   watchCycleBack: 'Back to the sea',
+  storyMountainTitle: 'A mountain range',
+  storyMountainPictureAlt:
+    'Snowy mountains seen from space: white peaks and ridges across the middle, brown high land to the north and green valleys to the south.',
+  storyMountainFarApart:
+    'About 80 million years ago, India was far to the south, and a wide ocean lay between it and Asia.',
+  storyMountainMoving: 'India was moving north, about 9 metres every hundred years.',
+  storyMountainMeet:
+    'About 40 to 50 million years ago, India crashed into Asia, very, very slowly.',
+  storyMountainPushed:
+    'The edges of the two lands jammed together and pushed the ground up into huge ridges. These are the Himalayas.',
+  storyMountainIce:
+    'All the while, glaciers, rivers of ice, wore the mountains down. They carved the top of Mount Everest into a huge pyramid.',
+  storyMountainRising:
+    'The Himalayas are still rising today, by more than 1 centimetre every year.',
+  storyMountainReal:
+    'This is the land around Mount Everest today, built from real measurements, with a picture from space on top. Everest is the tallest mountain on Earth.',
+  storyMountainTallest:
+    'Mars has a far taller one. The volcano Olympus Mons rises 27 kilometres: more than three times as high as the highest point here.',
+  scaleLabelLandSlice:
+    'The past up close is a drawing. Today’s land is real, its heights drawn {n} times taller.',
   storyQuakeTitle: 'An earthquake',
   storyQuakeNote:
     'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',

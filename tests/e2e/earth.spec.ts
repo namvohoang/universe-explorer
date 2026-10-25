@@ -145,7 +145,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(13);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(14);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -283,6 +283,20 @@ test.describe('the Earth screen', () => {
       'Close up (a drawing)',
     );
     await expect(page.getByRole('button', { name: 'See the real picture' })).toBeVisible();
+  });
+
+  test('tells a mountain range over millions of years, ending on the real land', async ({
+    page,
+  }) => {
+    await page.goto('/#earth/mountain-himalaya');
+    await expect(page.locator('.watch-caption h2')).toHaveText('A mountain range');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 8');
+    await expect(page.locator('.watch-date')).toContainText('million years ago');
+    await expect(page.locator('.watch-date')).toContainText('One second here is about');
+    await expect(page.locator('.watch-path')).toContainText('Nobody was there to see this.');
+    await expect(page.locator('.pane:visible .pane-label').first()).toHaveText(
+      'Close up (a drawing)',
+    );
   });
 
   test('tells an earthquake to the second, and says what is recorded and what is worked out', async ({

@@ -1,5 +1,5 @@
 import type { BufferAttribute } from 'three';
-import { type Group, type Material, Mesh, PlaneGeometry, Vector3 } from 'three';
+import { type Scene, type Group, type Material, Mesh, PlaneGeometry, Vector3 } from 'three';
 import type { PictureBoard } from './pictureBoard';
 import { FIELD_OF_VIEW_DEG } from './stage';
 
@@ -7,6 +7,23 @@ import { FIELD_OF_VIEW_DEG } from './stage';
  * Pieces shared by the 3D close-ups drawn as a block of ground cut open like a model (the
  * avalanche's valley, the flooded river, the monsoon's coast).
  */
+
+/**
+ * What every 3D close-up of a story told up close offers: its own scene and where it is seen
+ * from, a moment of the story to draw (with the real picture of that moment ready), movement,
+ * and a button that swaps the drawing for the real picture.
+ */
+export interface UpCloseSlice {
+  readonly scene: Scene;
+  readonly target: { readonly x: number; readonly y: number; readonly z: number };
+  readonly distance: number;
+  readonly direction: { readonly x: number; readonly y: number; readonly z: number };
+  set(jd: number, picture: number | null): void;
+  flow(seconds: number): void;
+  toggleView(): void;
+  viewToggled(): boolean;
+  dispose(): void;
+}
 
 /** 0 below `from`, 1 above `to`, and a smooth step between; `to` may be below `from`. */
 export function smooth(from: number, to: number, value: number): number {

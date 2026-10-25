@@ -1188,6 +1188,24 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchCycleCondensation: 'Ngưng tụ',
   watchCyclePrecipitation: 'Giáng thủy',
   watchCycleBack: 'Về lại biển',
+  storyMountainTitle: 'Một dãy núi',
+  storyMountainPictureAlt:
+    'Núi tuyết nhìn từ vũ trụ: những đỉnh và dãy núi trắng ở giữa, cao nguyên màu nâu ở phía bắc và thung lũng xanh ở phía nam.',
+  storyMountainFarApart:
+    'Khoảng 80 triệu năm trước, Ấn Độ ở xa về phía nam, và một đại dương rộng nằm giữa nó với châu Á.',
+  storyMountainMoving: 'Ấn Độ trôi dần lên phía bắc, khoảng 9 mét mỗi trăm năm.',
+  storyMountainMeet: 'Khoảng 40 đến 50 triệu năm trước, Ấn Độ va vào châu Á, rất, rất chậm.',
+  storyMountainPushed:
+    'Rìa của hai vùng đất ép chặt vào nhau và đẩy mặt đất lên thành những dãy núi khổng lồ. Đó là dãy Himalaya.',
+  storyMountainIce:
+    'Suốt thời gian đó, sông băng, những dòng sông bằng băng, mài mòn núi. Chúng tạc đỉnh Everest thành một kim tự tháp khổng lồ.',
+  storyMountainRising: 'Ngày nay dãy Himalaya vẫn đang cao lên, hơn 1 xen-ti-mét mỗi năm.',
+  storyMountainReal:
+    'Đây là vùng đất quanh đỉnh Everest ngày nay, dựng từ số đo thật, với một ảnh chụp từ vũ trụ phủ lên trên. Everest là ngọn núi cao nhất Trái Đất.',
+  storyMountainTallest:
+    'Sao Hỏa có một ngọn núi cao hơn nhiều. Núi lửa Olympus Mons cao 27 ki-lô-mét: hơn ba lần điểm cao nhất ở đây.',
+  scaleLabelLandSlice:
+    'Quá khứ nhìn gần là hình vẽ. Mặt đất hôm nay là thật, độ cao vẽ cao gấp {n} lần.',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
@@ -1304,6 +1322,14 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoHowHighName: 'Cao bao nhiêu',
   storyVolcanoDayLaterName: 'Một ngày sau',
   storyVolcanoPilotsName: 'Phi công',
+  storyMountainFarApartName: 'Cách xa nhau',
+  storyMountainMovingName: 'Trôi lên phía bắc',
+  storyMountainMeetName: 'Va vào nhau',
+  storyMountainPushedName: 'Đẩy lên cao',
+  storyMountainIceName: 'Băng tạc núi',
+  storyMountainRisingName: 'Vẫn đang cao lên',
+  storyMountainRealName: 'Dãy núi thật',
+  storyMountainTallestName: 'Cao nhất',
   storyWaterCycleWorldName: 'Cả thế giới',
   storyWaterCycleOceanName: 'Đại dương',
   storyWaterCycleEvaporationName: 'Bốc hơi',

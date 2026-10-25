@@ -399,11 +399,18 @@ export function createWatch(host: WatchHost): Watch {
     );
     // A story told over years says how long ago, and how many years a second stands for.
     const years = chapter.yearsAgo?.value;
+    const ago = years
+      ? formatYearsAgo(yearsAgoAt(years, chapter.atJd.value, chapterEndJd(told, index), jd))
+      : '';
+    // A part with no span of years (today) has no years to a second.
+    const perSecond =
+      years && years[0] !== years[1]
+        ? ` · ${fill(words.watchYearsPerSecond, {
+            n: formatYears(yearsPerSecond(years, story.chapterSeconds ?? CHAPTER_SECONDS)),
+          })}`
+        : '';
     const label = years
-      ? `${formatYearsAgo(yearsAgoAt(years, chapter.atJd.value, chapterEndJd(told, index), jd))} · ${fill(
-          words.watchYearsPerSecond,
-          { n: formatYears(yearsPerSecond(years, story.chapterSeconds ?? CHAPTER_SECONDS)) },
-        )}`
+      ? `${ago}${perSecond}`
       : days < 1
         ? formatDateAndSecond(jd)
         : days < MINUTES_SHOWN_UNDER_DAYS

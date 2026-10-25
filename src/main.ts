@@ -23,17 +23,22 @@ import { createTsunamiSlice, type TsunamiSlice } from './scene/tsunamiSlice';
 import { createVolcanoSlice, type VolcanoSlice } from './scene/volcanoSlice';
 import { createTideSlice, type TideSlice } from './scene/tideSlice';
 import { createDustSlice, type DustSlice } from './scene/dustSlice';
-import { createAvalancheSlice, type AvalancheSlice } from './scene/avalancheSlice';
+import { createAvalancheSlice } from './scene/avalancheSlice';
 import type { PictureBoardOptions } from './scene/pictureBoard';
 import { BLATTEN_AVALANCHE } from './data/stories/avalancheBlatten';
 import { GANDAK_FLOOD } from './data/stories/floodGandak';
-import { createFloodSlice, type FloodSlice } from './scene/floodSlice';
+import { createFloodSlice } from './scene/floodSlice';
 import { MONSOON_PARTS } from './data/stories/monsoonIndia';
 import { MARACAIBO_LIGHTNING, lightningMaracaibo } from './data/stories/lightningMaracaibo';
-import { createLightningSlice, type LightningSlice } from './scene/lightningSlice';
+import { createLightningSlice } from './scene/lightningSlice';
 import { WATER_CYCLE_PARTS } from './data/stories/waterCycle';
-import { createWaterCycleSlice, type WaterCycleSlice } from './scene/waterCycleSlice';
-import { createMonsoonSlice, type MonsoonSlice } from './scene/monsoonSlice';
+import { createWaterCycleSlice } from './scene/waterCycleSlice';
+import type { UpCloseSlice } from './scene/diorama';
+import { HIMALAYA_DRAWING } from './data/stories/mountainHimalaya';
+import { createMountainSlice } from './scene/mountainSlice';
+import { LAND_HEIGHTS_DRAWN_TIMES } from './sim/scale';
+import { yearsAgoAt } from './sim/years';
+import { createMonsoonSlice } from './scene/monsoonSlice';
 import { pictureSpanKm, scaleBarKm } from './sim/pictureSpan';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
@@ -1970,10 +1975,23 @@ function start(): void {
    * The 3D close look of a story told in pictures of a place too small to see on the globe,
    * whose button swaps the drawing for the real picture of the moment.
    */
-  let watchPictureSlice:
-    AvalancheSlice | FloodSlice | MonsoonSlice | LightningSlice | WaterCycleSlice | null = null;
+  let watchPictureSlice: UpCloseSlice | null = null;
   /** What the screen says of that close look: what in it is real and what is drawn. */
   let watchPictureSliceLabel = '';
+  /** How many years ago it is at a moment of a story told over years; nought without. */
+  const storyYearsAgo = (story: Story, jd: number): number => {
+    // The last part to have begun.
+    const index = story.chapters.reduce(
+      (latest, chapter, at) => (chapter.atJd.value <= jd ? at : latest),
+      0,
+    );
+    const chapter = story.chapters[index];
+    const years = chapter?.yearsAgo?.value;
+    if (!chapter || !years) return 0;
+    const endJd =
+      chapter.untilJd?.value ?? story.chapters[index + 1]?.atJd.value ?? story.endJd.value;
+    return yearsAgoAt(years, chapter.atJd.value, endJd, jd);
+  };
   /** The share of a picture's width the scale bar under it may take. */
   const SCALE_BAR_SHARE = 0.45;
   /** A picture narrower than this, in degrees, is of a place: it gets a ring and a scale bar. */
@@ -2072,6 +2090,38 @@ function start(): void {
           pictures: real,
         });
         watchPictureSliceLabel = words.scaleLabelWaterCycleSlice;
+      }
+      if (story.id === 'mountain-himalaya' && story.land) {
+        const heights = story.land;
+        const land = pictureSpanKm(heights.box.value, worldKm);
+        const { startYearsAgo, meetYearsAgo, todayFromJd, barsFromJd, tallestKm } =
+          HIMALAYA_DRAWING;
+        const highestKm = heights.highestM.value / 1000;
+        watchPictureSlice = createMountainSlice({
+          yearsAt: (jd) => storyYearsAgo(story, jd),
+          startYearsAgo: startYearsAgo.value,
+          meetYearsAgo: meetYearsAgo.value,
+          todayFromJd: todayFromJd.value,
+          barsFromJd: barsFromJd.value,
+          land: {
+            heightsUrl: mediaUrl(heights.file),
+            cellsAcross: heights.cellsAcross,
+            cellsUp: heights.cellsUp,
+            offsetM: heights.offsetM,
+            widthKm: land.widthKm,
+            depthKm: land.heightKm,
+            drawnTimes: LAND_HEIGHTS_DRAWN_TIMES,
+            pictureUrl: real.urls[0] ?? null,
+          },
+          highestKm,
+          tallestKm: tallestKm.value,
+          highestLabel: fill(words.watchScaleBarKm, {
+            km: number.format(Math.round(highestKm * 10) / 10),
+          }),
+          tallestLabel: fill(words.watchScaleBarKm, { km: number.format(tallestKm.value) }),
+          pictures: real,
+        });
+        watchPictureSliceLabel = fill(words.scaleLabelLandSlice, { n: LAND_HEIGHTS_DRAWN_TIMES });
       }
     }
     // A storm's real pictures from space lie on the world in the whole picture, as the story says.

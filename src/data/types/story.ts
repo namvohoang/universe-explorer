@@ -630,6 +630,11 @@ export interface Story {
    * taken and shown for a stretch of the story: for something seen from space that has no
    * record of its own to be drawn from (a cloud of dust crossing a sea). Earliest first.
    */
+  /**
+   * The measured heights of the land its 3D close-up ends on, loaded only for this story and
+   * built into a block (`src/scene/landBlock.ts`).
+   */
+  readonly land?: LandHeights;
   readonly groundPictures?: {
     /** Catalogue id of the world. */
     readonly onId: string;

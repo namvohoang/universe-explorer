@@ -687,6 +687,11 @@ export const NARRATION: Readonly<
     fingerprint: '8cbf17e3',
     starts: [0.0, 2.25, 15.93, 24.75, 31.23, 40.35, 53.38, 62.85],
   },
+  'story-mountain-himalaya': {
+    file: 'public/voice/story-mountain-himalaya.mp3',
+    fingerprint: '8e1275aa',
+    starts: [0.0, 2.38, 9.97, 15.12, 21.85, 29.65, 38.52, 44.27, 54.85],
+  },
   'story-flood-gandak': {
     file: 'public/voice/story-flood-gandak.mp3',
     fingerprint: 'a63ffdad',

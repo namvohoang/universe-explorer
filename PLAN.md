@@ -1424,7 +1424,7 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       has watched grow; a dust cloud from the Sahara followed across the Atlantic. Find out
       whether any trusted source gives where the continents were in the past as data, or
       only as pictures (decision 12).
-- [~] 14.16 Built on 2026-10-25, to be shown with its first story (14.18): `tools/land/
+- [x] 14.16 Built on 2026-10-25 and first shown with the mountain range (14.18): `tools/land/
       fetchHeights.ts` keeps the measured heights of a square, from ETOPO 2022 (by OPeNDAP) or
       USGS 3DEP (its image service, read as a TIFF by hand), as numbers in a PNG's colours
       with a record of them (`LandHeights`, a new media kind, `heights`); `landBlock.ts`
@@ -1435,8 +1435,8 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       here is about …", worked out from the part's years and the seconds it plays
       (`yearsAgoAt`, `yearsPerSecond`, `yearsInWords`, `formatYearsAgo`, tested). The
       `rebuilt` path, its sentence, and its `validate` check (every part has years, never
-      going back in time; no other kind of story counts years). Left: seen on screen with a
-      story. As planned: Real land in 3D and the clock in years: a block of ground built from the height
+      going back in time; no other kind of story counts years). Heights are drawn 3 times
+      taller (2 left the ranges looking flat), and the screen says so. As planned: Real land in 3D and the clock in years: a block of ground built from the height
       data of one region, loaded only for its story, with its `CREDITS.md` row; the story
       clock's years and its sentence ("One second here is [N] years"); the `rebuilt` path and
       its `validate` check. Pure and tested: the block's heights keep their true ratios.
@@ -1453,7 +1453,17 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       taken from space day by day. `staged`: the wall of dust seen from the ground. Parts:
       dry ground and strong wind; the dust lifts; seen from space; where it comes down and
       what it does there; dust storms on Mars, from the catalogue's Mars.
-- [ ] 14.18 **A mountain range.** `rebuilt`: two plates meeting and the land between them
+- [x] 14.18 Done on 2026-10-25: **A mountain range**, the Himalaya, `rebuilt`, in eight
+      parts over 80 million years, in English and Vietnamese, recorded, the date line counting
+      the years. The sentences rest on USGS "The Himalayas: Two continents collide", NASA
+      Earth Observatory's "The World's Tallest Mountain" and JPL's page on Olympus Mons (27 km;
+      the catalogue holds no height for it, so the story carries it). Its 3D close-up
+      (`mountainSlice`) is two plates with a sea between, closing until they meet, the ground
+      between crumpling into ridges; from today, the real land round Everest from ETOPO 2022
+      with MODIS's picture of 15 November 2025 laid over it, and two bars by the same factor:
+      the block's highest cell (8.6 km, the summit smoothed by the 460 m cells) and Olympus
+      Mons. Left out: rain wearing the range down (no page read; glaciers are told), and
+      today's measured speed, for which no page was read. As planned: **A mountain range.** `rebuilt`: two plates meeting and the land between them
       folding up, in a slice, ending on the real range. Today's measured speed is `tracked`.
       Parts: plates move; they meet; the land folds and rises; rain and ice wear it down as
       it grows; the range today; how it stands beside the tallest mountain of the solar

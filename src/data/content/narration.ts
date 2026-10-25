@@ -692,6 +692,11 @@ export const NARRATION: Readonly<
     fingerprint: 'a63ffdad',
     starts: [0.0, 2.05, 15.95, 21.48, 31.32, 47.85, 56.1, 64.65],
   },
+  'story-monsoon-india': {
+    file: 'public/voice/story-monsoon-india.mp3',
+    fingerprint: 'ca6924d6',
+    starts: [0.0, 2.17, 16.02, 22.68, 27.18, 35.2, 42.08, 48.35],
+  },
   'story-hurricane-sam': {
     file: 'public/voice/story-hurricane-sam.mp3',
     fingerprint: '7c6dcbe5',

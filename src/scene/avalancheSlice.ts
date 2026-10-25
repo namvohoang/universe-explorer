@@ -23,7 +23,7 @@ import {
 } from 'three';
 import type { Vec3 } from '../sim/vec3';
 import { createLabel, createPictureBoard, type PictureBoardOptions } from './pictureBoard';
-import { FIELD_OF_VIEW_DEG } from './stage';
+import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
 
 /**
  * A 3D close-up of a rock-and-ice avalanche in a mountain valley, seen from above the far side
@@ -108,11 +108,6 @@ export interface AvalancheSlice {
   dispose(): void;
 }
 
-const smooth = (from: number, to: number, value: number): number => {
-  const t = Math.min(1, Math.max(0, (value - from) / (to - from)));
-  return t * t * (3 - 2 * t);
-};
-
 /** How high the drawn ground stands, in km above the valley floor where the avalanche lies. */
 function groundKm(x: number, z: number): number {
   const floor = 0.02 * ((x - WEST) / (EAST - WEST));
@@ -160,16 +155,6 @@ function iceTexture(): CanvasTexture {
   return texture;
 }
 
-/** A fixed scatter of points, the same every time. */
-function scatter(count: number, seed: number): (readonly [number, number])[] {
-  let state = seed;
-  const next = (): number => {
-    state = (state * 16807) % 2147483647;
-    return state / 2147483647;
-  };
-  return Array.from({ length: count }, () => [next(), next()] as const);
-}
-
 export function createAvalancheSlice(options: AvalancheSliceOptions): AvalancheSlice {
   const scene = new Scene();
   scene.background = new Color(BACKGROUND);
@@ -213,25 +198,14 @@ export function createAvalancheSlice(options: AvalancheSliceOptions): AvalancheS
 
   // The sides of the block, cut open down to its base like a model.
   const sideMaterial = keep(new MeshStandardMaterial({ color: 0x4a3d33, roughness: 1 }));
-  const edges: readonly (readonly [number, number, number, number])[] = [
-    [WEST, SOUTH, EAST, SOUTH],
-    [EAST, SOUTH, EAST, NORTH],
-    [EAST, NORTH, WEST, NORTH],
-    [WEST, NORTH, WEST, SOUTH],
-  ];
-  for (const [x0, z0, x1, z1] of edges) {
-    const side = keep(new PlaneGeometry(1, 1, 120, 1));
-    const sidePositions = side.getAttribute('position') as BufferAttribute;
-    for (let index = 0; index < sidePositions.count; index++) {
-      const share = sidePositions.getX(index) + 0.5;
-      const top = sidePositions.getY(index) > 0;
-      const x = x0 + (x1 - x0) * share;
-      const z = z0 + (z1 - z0) * share;
-      sidePositions.setXYZ(index, x, top ? groundKm(x, z) : BASE, z);
-    }
-    side.computeVertexNormals();
-    diorama.add(new Mesh(side, sideMaterial));
-  }
+  for (const side of addBlockSides(
+    diorama,
+    groundKm,
+    { west: WEST, east: EAST, north: NORTH, south: SOUTH },
+    BASE,
+    sideMaterial,
+  ))
+    keep(side);
 
   // The river along the valley floor.
   const riverZ = 0.12;
@@ -452,13 +426,8 @@ export function createAvalancheSlice(options: AvalancheSliceOptions): AvalancheS
   const target = { x: 0.15, y: 0.3, z: -0.45 };
   const direction = SEEN_FROM;
   const distance = 5.4;
-  const eye = new Vector3(target.x, target.y, target.z).addScaledVector(direction, distance);
   // The board faces the eye and fills most of the view.
-  board.group.position.set(target.x, target.y, target.z);
-  board.group.lookAt(eye);
-  board.group.scale.setScalar(
-    (0.85 * 2 * distance * Math.tan((FIELD_OF_VIEW_DEG * Math.PI) / 360)) / board.height,
-  );
+  placeBoard(board, target, direction, distance);
 
   let broken: boolean | null = null;
   /** How far the avalanche has spread on screen, 0 to 1, and whether it is still spreading. */

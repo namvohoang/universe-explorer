@@ -145,7 +145,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(10);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(11);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -239,6 +239,24 @@ test.describe('the Earth screen', () => {
       'Close up (a drawing)',
     );
     await expect(page.getByRole('button', { name: 'See the real picture' })).toBeVisible();
+  });
+
+  test('shows the monsoon in 3D up close, the wind turning, with real pictures on its button', async ({
+    page,
+  }) => {
+    const pictures: string[] = [];
+    page.on('response', (response) => {
+      if (/stories\/monsoon-.*\.webp/.test(response.url()) && response.ok())
+        pictures.push(response.url());
+    });
+    await page.goto('/#earth/monsoon-india');
+    await expect(page.locator('.watch-caption h2')).toHaveText('The monsoon');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 7');
+    await expect(page.locator('.watch-date')).toContainText('19 June 2005');
+    await expect.poll(() => pictures.length).toBe(3);
+    await expect(page.locator('.pane:visible .pane-label').first()).toHaveText(
+      'Close up (a drawing)',
+    );
   });
 
   test('tells an earthquake to the second, and says what is recorded and what is worked out', async ({

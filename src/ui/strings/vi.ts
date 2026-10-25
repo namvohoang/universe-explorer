@@ -111,7 +111,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsEarth1:
     'Mỗi câu chuyện là một sự kiện có thật, được chọn vì nó được đo đạc kỹ và gây ít hoặc không gây thiệt hại, và được kể qua những gì mặt đất, biển và không khí đã làm. Không câu chuyện nào nêu số người bị hại. Cơn bão vào Việt Nam là ngoại lệ của “không thiệt hại”: đã có người thiệt mạng ở Philippines và Việt Nam, và câu chuyện kể về cảnh báo và việc người dân đi sơ tán.',
   grownUpsEarth2:
-    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa, trận lở băng và trận lũ (màu giả, để nước hiện màu xanh dương), là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
+    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa, trận lở băng, trận lũ và gió mùa (hai loại sau là màu giả, để nước hiện màu xanh dương), là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
   grownUpsEarth3:
     'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn. Một lý do có thể đúng, mà ứng dụng chưa kiểm chứng, là các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
   grownUpsEarth4:
@@ -1125,6 +1125,25 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Nước lũ đang chảy mạnh hơn vẻ ngoài của nó rất nhiều. Nước chỉ sâu 15 xen-ti-mét cũng có thể làm ngã một người lớn. Vì vậy đừng bao giờ đi bộ, đạp xe hay chơi trong nước lũ.',
   scaleLabelFloodSlice:
     'Dòng sông nhìn gần là hình vẽ, độ sâu được vẽ cao hơn thật rất nhiều. Vạch cao nhất trên cột đo là thật.',
+  storyMonsoonTitle: 'Gió mùa',
+  storyMonsoonNote:
+    'Đây là ảnh thật, chụp từ vũ trụ vào từng ngày. Màu đã được đổi để nước hiện màu xanh đậm.',
+  storyMonsoonPictureAlt:
+    'Miền bắc Ấn Độ nhìn từ vũ trụ, có núi tuyết ở phía trên. Tháng 6 mặt đất màu nâu; tháng 7 mây phủ kín; cuối tháng 8 mặt đất xanh tươi.',
+  storyMonsoonBefore:
+    'Đây là miền bắc Ấn Độ vào tháng 6 năm 2005, trước mùa mưa. Màu đã được đổi: nước màu xanh đậm, còn mây màu xanh nhạt và trắng. Dãy núi tuyết ở phía trên là dãy Himalaya.',
+  storyMonsoonWhat:
+    'Gió mùa là sự đổi chiều của gió, mang đến một mùa mưa rất nhiều, hoặc một mùa rất khô.',
+  storyMonsoonWarms: 'Đầu mùa hè, đất liền nóng lên nhanh hơn biển.',
+  storyMonsoonWind:
+    'Không khí nóng bốc lên từ đất liền, và gió đổi chiều. Giờ gió thổi từ biển vào, mang theo đầy hơi nước.',
+  storyMonsoonRain:
+    'Trên đất liền, không khí nóng và ẩm nguội đi và hóa thành mưa. Mây phủ kín mặt đất suốt nhiều tuần.',
+  storyMonsoonGreen:
+    'Đến cuối tháng 8, mưa đã làm đầy các dòng sông và làm mặt đất xanh tươi khi cây cối lớn lên.',
+  storyMonsoonWinter:
+    'Vào mùa đông, gió lại đổi chiều và thổi từ đất liền ra biển. Khi đó trời khô ráo.',
+  scaleLabelMonsoonSlice: 'Hình nhìn gần là hình vẽ. Ảnh chụp từ vũ trụ là thật.',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
@@ -1241,6 +1260,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoHowHighName: 'Cao bao nhiêu',
   storyVolcanoDayLaterName: 'Một ngày sau',
   storyVolcanoPilotsName: 'Phi công',
+  storyMonsoonBeforeName: 'Trước mùa mưa',
+  storyMonsoonWhatName: 'Gió mùa là gì?',
+  storyMonsoonWarmsName: 'Đất nóng lên',
+  storyMonsoonWindName: 'Gió đổi chiều',
+  storyMonsoonRainName: 'Mưa',
+  storyMonsoonGreenName: 'Xanh tươi',
+  storyMonsoonWinterName: 'Mùa đông',
   storyFloodRiverName: 'Dòng sông',
   storyFloodWhatName: 'Lũ là gì?',
   storyFloodRainName: 'Mưa',

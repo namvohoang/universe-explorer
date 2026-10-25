@@ -26,7 +26,7 @@ import {
 import type { Vec3 } from '../sim/vec3';
 import { floodPlainM, floodStageM, type FloodStage } from './floodStage';
 import { createLabel, createPictureBoard, type PictureBoardOptions } from './pictureBoard';
-import { FIELD_OF_VIEW_DEG } from './stage';
+import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
 
 /**
  * A 3D close-up of a river in flood, cut open like a model, seen from above one bank:
@@ -111,11 +111,6 @@ export interface FloodSlice {
   dispose(): void;
 }
 
-const smooth = (from: number, to: number, value: number): number => {
-  const t = Math.min(1, Math.max(0, (value - from) / (to - from)));
-  return t * t * (3 - 2 * t);
-};
-
 /** How high the drawn land stands across the river, in metres up the post. */
 function landM(x: number, z: number): number {
   const across = Math.abs(z);
@@ -167,16 +162,6 @@ function rippleTexture(): CanvasTexture {
   return texture;
 }
 
-/** A fixed scatter of points, the same every time. */
-function scatter(count: number, seed: number): (readonly [number, number])[] {
-  let state = seed;
-  const next = (): number => {
-    state = (state * 16807) % 2147483647;
-    return state / 2147483647;
-  };
-  return Array.from({ length: count }, () => [next(), next()] as const);
-}
-
 export function createFloodSlice(options: FloodSliceOptions): FloodSlice {
   const scene = new Scene();
   scene.background = new Color(BACKGROUND);
@@ -224,25 +209,14 @@ export function createFloodSlice(options: FloodSliceOptions): FloodSlice {
 
   // The sides of the block, cut open down to its base like a model.
   const sideMaterial = keep(new MeshStandardMaterial({ color: 0x5a4632, roughness: 1 }));
-  const edges: readonly (readonly [number, number, number, number])[] = [
-    [-HALF_X, HALF_Z, HALF_X, HALF_Z],
-    [HALF_X, HALF_Z, HALF_X, -HALF_Z],
-    [HALF_X, -HALF_Z, -HALF_X, -HALF_Z],
-    [-HALF_X, -HALF_Z, -HALF_X, HALF_Z],
-  ];
-  for (const [x0, z0, x1, z1] of edges) {
-    const side = keep(new PlaneGeometry(1, 1, 120, 1));
-    const sidePositions = side.getAttribute('position') as BufferAttribute;
-    for (let index = 0; index < sidePositions.count; index++) {
-      const share = sidePositions.getX(index) + 0.5;
-      const top = sidePositions.getY(index) > 0;
-      const x = x0 + (x1 - x0) * share;
-      const z = z0 + (z1 - z0) * share;
-      sidePositions.setXYZ(index, x, top ? landY(x, z) : BASE, z);
-    }
-    side.computeVertexNormals();
-    diorama.add(new Mesh(side, sideMaterial));
-  }
+  for (const side of addBlockSides(
+    diorama,
+    landY,
+    { west: -HALF_X, east: HALF_X, north: -HALF_Z, south: HALF_Z },
+    BASE,
+    sideMaterial,
+  ))
+    keep(side);
 
   // The houses of a village and some trees, on the far side behind the bank.
   const houseSpots = scatter(HOUSES, 5).map(([u, v]) => [-1.2 + u * 2.4, -2.0 - v * 0.8] as const);
@@ -407,14 +381,9 @@ export function createFloodSlice(options: FloodSliceOptions): FloodSlice {
   const target = { x: -0.6, y: 0.55, z: 0.2 };
   const direction = new Vector3(0.55, 0.75, 1).normalize();
   const distance = 7;
-  const eye = new Vector3(target.x, target.y, target.z).addScaledVector(direction, distance);
   // The words on the post turn to face the eye.
   peakWords.mesh.quaternion.setFromUnitVectors(new Vector3(0, 0, 1), direction);
-  board.group.position.set(target.x, target.y, target.z);
-  board.group.lookAt(eye);
-  board.group.scale.setScalar(
-    (0.85 * 2 * distance * Math.tan((FIELD_OF_VIEW_DEG * Math.PI) / 360)) / board.height,
-  );
+  placeBoard(board, target, direction, distance);
 
   let flowing = 0;
   return {

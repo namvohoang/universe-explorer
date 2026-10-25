@@ -602,6 +602,36 @@ export const JPL_HORIZONS_TURN_GANDAK_2026_EARTH: Source = {
   retrieved: '2026-10-25',
 };
 
+export const NASA_EARTH_OBSERVATORY_MONSOON_2005: Source = {
+  id: 'nasa-earth-observatory-monsoon-2005',
+  title: 'NASA Earth Observatory — Monsoon Flooding in India (29 August 2005)',
+  url: 'https://science.nasa.gov/earth/earth-observatory/monsoon-flooding-in-india-15102/',
+  retrieved: '2026-10-25',
+};
+
+export const NOAA_SCIJINKS_MONSOON: Source = {
+  id: 'noaa-scijinks-monsoon',
+  title: 'NOAA NESDIS SciJinks — What Is a Monsoon?',
+  url: 'https://nesdis.noaa.gov/about/k-12-education/scijinks/what-monsoon',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_WORLDVIEW_MONSOON_2005: Source = {
+  id: 'nasa-worldview-monsoon-2005',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — false-colour pictures (bands 7, 2 and 1) from the MODIS camera on the Aqua satellite, 19 June to 29 August 2005, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=80,24,87,31&l=MODIS_Aqua_CorrectedReflectance_Bands721&t=2005-08-29',
+  retrieved: '2026-10-25',
+};
+
+export const JPL_HORIZONS_TURN_MONSOON_2005_EARTH: Source = {
+  id: 'jpl-horizons-turn-monsoon2005earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2005-06-19 08:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272453540.834076209%27',
+  retrieved: '2026-10-25',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

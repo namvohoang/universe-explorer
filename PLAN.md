@@ -1341,7 +1341,14 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       close-up (`floodSlice`) is the river between its banks, rain falling while it rained,
       the water rising to the real highest mark on the post at Devghat (11.94 m on
       27 September) and over the banks, then draining (`floodStageM`, `floodPlainM`, tested to
-      reach the real mark at the real time). Left: lightning, the water cycle, the monsoon. As planned: Later, each its own story if wanted: lightning, the
+      reach the real mark at the real time). Done on 2026-10-25: **The monsoon**, northern India from
+      19 June to 29 August 2005, in seven parts, in English and Vietnamese, recorded: three
+      false-colour MODIS pictures from Aqua (brown before the rains, under cloud, green after),
+      the sentences resting on NASA Earth Observatory's "Monsoon Flooding in India" and NOAA's
+      SciJinks "What Is a Monsoon?". Its 3D close-up (`monsoonSlice`) is land and sea: the
+      land warming, the wind turning to blow in from the sea, clouds and rain over the land,
+      the land turning green and the rivers fuller, and the dry winter wind off the land. The
+      close-ups share their pieces (`diorama.ts`). Left: lightning, the water cycle. As planned: Later, each its own story if wanted: lightning, the
       water cycle, the monsoon, a flood, an avalanche.
 
 **Part two: how the land is shaped** (asked for on 2026-10-11: mountains, rivers, canyons, a

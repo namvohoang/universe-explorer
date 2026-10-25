@@ -28,6 +28,8 @@ import type { PictureBoardOptions } from './scene/pictureBoard';
 import { BLATTEN_AVALANCHE } from './data/stories/avalancheBlatten';
 import { GANDAK_FLOOD } from './data/stories/floodGandak';
 import { createFloodSlice, type FloodSlice } from './scene/floodSlice';
+import { MONSOON_PARTS } from './data/stories/monsoonIndia';
+import { createMonsoonSlice, type MonsoonSlice } from './scene/monsoonSlice';
 import { pictureSpanKm, scaleBarKm } from './sim/pictureSpan';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
@@ -1955,7 +1957,7 @@ function start(): void {
    * The 3D close look of a story told in pictures of a place too small to see on the globe,
    * whose button swaps the drawing for the real picture of the moment.
    */
-  let watchPictureSlice: AvalancheSlice | FloodSlice | null = null;
+  let watchPictureSlice: AvalancheSlice | FloodSlice | MonsoonSlice | null = null;
   /** What the screen says of that close look: what in it is real and what is drawn. */
   let watchPictureSliceLabel = '';
   /** The share of a picture's width the scale bar under it may take. */
@@ -2019,6 +2021,10 @@ function start(): void {
           pictures: real,
         });
         watchPictureSliceLabel = words.scaleLabelFloodSlice;
+      }
+      if (story.id === 'monsoon-india') {
+        watchPictureSlice = createMonsoonSlice({ ...MONSOON_PARTS, pictures: real });
+        watchPictureSliceLabel = words.scaleLabelMonsoonSlice;
       }
     }
     // A storm's real pictures from space lie on the world in the whole picture, as the story says.

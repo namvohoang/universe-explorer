@@ -21,6 +21,7 @@ import { solarEclipse } from './solarEclipse';
 import { supermoon } from './supermoon';
 import { avalancheBlatten } from './avalancheBlatten';
 import { floodGandak } from './floodGandak';
+import { monsoonIndia } from './monsoonIndia';
 import { tides } from './tides';
 import { tornadoTescott } from './tornadoTescott';
 import { volcanoRaikoke } from './volcanoRaikoke';
@@ -51,6 +52,7 @@ export const stories: readonly Story[] = [
   volcanoRaikoke,
   avalancheBlatten,
   floodGandak,
+  monsoonIndia,
   hurricaneSam,
   typhoonNoru,
   tornadoTescott,

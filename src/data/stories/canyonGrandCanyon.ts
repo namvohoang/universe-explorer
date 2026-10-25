@@ -8,9 +8,8 @@
 // The years of the first part, from 300 million years ago, are the age of the canyon's
 // exposed bedrock as "The Colorado River Cuts a Canyon" gives it; the layers are older at the
 // bottom, which the drawing does not count.
-// The last parts are today: the real canyon built from its measured heights (NOAA's ETOPO
-// 2022, about 460 metres to a cell; the USGS 3D Elevation Program is finer, but its service is
-// not on a site the media rules trust) with what Sentinel-2 saw on 21 May 2025 laid over it (NASA's Harmonized
+// The last parts are today: the real canyon built from its measured heights (the USGS 3D
+// Elevation Program, about 120 metres to a cell as asked for) with what Sentinel-2 saw on 21 May 2025 laid over it (NASA's Harmonized
 // Landsat and Sentinel-2, through NASA Worldview).
 // The story's instants are 21 May 2025, the day of the picture, one hour to a part; they only
 // drive its clock, which counts the years.
@@ -27,7 +26,7 @@ import {
   NASA_EARTH_OBSERVATORY_GRAND_CANYON_LESSONS,
   NASA_VALLES_MARINERIS,
   NASA_WORLDVIEW_GRAND_CANYON_2025,
-  NOAA_ETOPO_2022,
+  USGS_3DEP,
 } from './sources';
 
 const CANYON = 'nasa-earth-observatory-grand-canyon';
@@ -203,7 +202,7 @@ export const canyonGrandCanyon: Story = {
     NASA_EARTH_OBSERVATORY_COLORADO_CUTS,
     NASA_EARTH_OBSERVATORY_GRAND_CANYON_LESSONS,
     NASA_VALLES_MARINERIS,
-    NOAA_ETOPO_2022,
+    USGS_3DEP,
     NASA_WORLDVIEW_GRAND_CANYON_2025,
     JPL_HORIZONS_TURN_GRAND_CANYON_2025_EARTH,
   ],

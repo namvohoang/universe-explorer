@@ -1491,10 +1491,8 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       when the river began cutting, and the story says scientists are still working it out.
       Its 3D close-up (`canyonSlice`) is coloured layers building under a sea, the land
       lifted, a river cutting down through the layers with its walls widening, then the real
-      canyon from ETOPO 2022 with Sentinel-2's picture of 21 May 2025 laid over it. 3DEP's
-      finer heights were fetched, but its service is on nationalmap.gov, not on the trusted
-      list (`.claude/rules/media.md`), and USGS's own 3DEP page sits behind a robot check: to
-      use them the owner would add the site. As planned: **A canyon.** `rebuilt`: a river cutting down through layers of rock while the
+      canyon from USGS 3DEP heights (about 120 m to a cell) with Sentinel-2's picture of 21
+      May 2025 laid over it, its service on nationalmap.gov added to the trusted sites by the owner on 2026-10-25. As planned: **A canyon.** `rebuilt`: a river cutting down through layers of rock while the
       land is lifted, ending on the real canyon. Parts: the layers were laid down first; the
       land rises; the river cuts; the sides fall in and widen; the canyon today; what is
       still argued over; how it stands beside the great canyon of Mars, from the catalogue.

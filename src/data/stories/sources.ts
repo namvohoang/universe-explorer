@@ -838,6 +838,14 @@ export const NASA_VALLES_MARINERIS: Source = {
   retrieved: '2026-10-25',
 };
 
+export const USGS_3DEP: Source = {
+  id: 'usgs-3dep',
+  title:
+    'USGS National Map 3D Elevation Program (3DEP) — bare-earth heights, from its image service',
+  url: 'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer',
+  retrieved: '2026-10-25',
+};
+
 export const NASA_WORLDVIEW_GRAND_CANYON_2025: Source = {
   id: 'nasa-worldview-grand-canyon-2025',
   title:

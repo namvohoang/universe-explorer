@@ -27,6 +27,8 @@ export const TRUSTED_HOSTS = [
   // Approved by the owner on 2026-10-11 for what happens on Earth (PLAN.md Phase 14).
   'noaa.gov',
   'weather.gov',
+  // Approved by the owner on 2026-10-25: USGS's The National Map, home of its 3D Elevation Program.
+  'nationalmap.gov',
 ] as const;
 
 const COLUMNS = [

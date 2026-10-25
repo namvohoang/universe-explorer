@@ -7,7 +7,8 @@
 // Floodplains of Congaree National Park", "Meandering in the Amazon"). Two parts look at
 // rivers on other worlds: the dry river channels of Mars (NASA, Jezero Crater) and the
 // methane rivers of Titan (NASA, Titan facts).
-// The 3D close-up is a drawing of a winding river: the faster water on the outside of each
+// The 3D close-up is a drawing of a winding river: rain on the plain around it, drying up,
+// soaking in and running off into the river; the faster water on the outside of each
 // bend, sand on the inside, the bends sliding, and a loop cut off into an oxbow lake. How fast
 // it is drawn to happen is a drawing; the pictures show how it really went.
 // The story's instants are the days of the pictures, part by part, with the years between
@@ -81,10 +82,12 @@ const picture = (year: Year, camera: string, credit: string, untilJd: number): S
 });
 
 /**
- * When the 3D close-up shows each thing: the bend's outside and inside, the years it is drawn
+ * When the 3D close-up shows each thing: the rain on the plain, the bend's outside and inside, the years it is drawn
  * over (the first picture to the last), and the other worlds.
  */
 export const UCAYALI_PARTS = {
+  rainJd: at(2016, 16),
+  rainUntilJd: at(2016, 17),
   outsideJd: at(2016, 18),
   insideJd: at(2016, 19),
   fromJd: at(2016, 15),

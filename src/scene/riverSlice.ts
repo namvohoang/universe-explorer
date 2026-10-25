@@ -8,6 +8,8 @@ import {
   DoubleSide,
   Group,
   InstancedMesh,
+  LineBasicMaterial,
+  LineSegments,
   Matrix4,
   Mesh,
   MeshBasicMaterial,
@@ -18,11 +20,14 @@ import {
   Vector3,
 } from 'three';
 import type { Vec3 } from '../sim/vec3';
-import { addBlockSides, placeBoard, smooth } from './diorama';
+import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
 import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
 
 /**
  * A 3D close-up of a winding river on a flat plain, cut open like a model:
+ * 0. Where its water comes from: rain falling from a cloud over the plain. Some of it rises
+ *    back up as it dries, some soaks into the ground (the ground darkens), and some runs off
+ *    across the plain into the river.
  * 1. Water running faster along the outside of each bend, its bank there worn away.
  * 2. Sand building on the inside of each bend.
  * 3. As the years go by, the bends growing and sliding down the valley; one loop growing until
@@ -30,7 +35,7 @@ import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
  * 4. The river reaching the sea, its mud building new land at its mouth: a delta.
  * 5. Then the same plain as Mars, its river channel long dry, and as Titan, its river of methane
  *    under an orange sky.
- * 5. With its button, the real picture from space of that moment in place of the drawing.
+ * 6. With its button, the real picture from space of that moment in place of the drawing.
  *
  * Everything here is a drawing.
  */
@@ -55,17 +60,29 @@ const DOTS = 90;
 /** Where the sea begins at the river's mouth, during the delta's part. */
 const SEA_X = 3.9;
 const SEA = 0x2f6fa8;
+/** The rain: its cloud, how many drops fall, dry up and run off, and the soaked ground. */
+const CLOUD = 0x9aa4af;
+const RAIN = 0xb8d4f0;
+const CLOUD_Y = 3.2;
+const CLOUD_PUFFS = 24;
+const RAIN_DROPS = 420;
+const VAPOUR_BITS = 40;
+const RUNOFF_BITS = 60;
+const SOAKED = new Color('#2c5a2a');
 
 export interface RiverSliceOptions {
+  /** When rain falls on the plain, as Julian dates. */
+  readonly rainJd: number;
+  readonly rainUntilJd: number;
   /** When the close-up stresses the bend's outside and inside, as Julian dates. */
   readonly outsideJd: number;
   readonly insideJd: number;
   /** The years the river is drawn changing over: from the first picture to the last. */
   readonly fromJd: number;
   readonly untilJd: number;
-  /** From when the plain is drawn as Mars, then as Titan. */
   /** From when the river is drawn reaching the sea and building its delta. */
   readonly deltaJd: number;
+  /** From when the plain is drawn as Mars, then as Titan. */
   readonly marsJd: number;
   readonly titanJd: number;
   /** The real pictures, for the button. */
@@ -205,6 +222,53 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
   fan.rotation.x = -Math.PI / 2;
   delta.add(fan);
 
+  // The rain: a cloud over the plain, its drops falling; some rising back up as they dry, some
+  // running off across the plain into the river.
+  const rainfall = new Group();
+  rainfall.visible = false;
+  diorama.add(rainfall);
+  const cloudMaterial = keep(
+    new MeshStandardMaterial({
+      color: CLOUD,
+      roughness: 1,
+      transparent: true,
+      opacity: 0.45,
+      depthWrite: false,
+    }),
+  );
+  const puff = keep(new SphereGeometry(1, 16, 12));
+  for (const [u, v] of scatter(CLOUD_PUFFS, 41)) {
+    const mesh = new Mesh(puff, cloudMaterial);
+    mesh.position.set((u - 0.5) * 2 * HALF_X * 0.8, CLOUD_Y + (v - 0.5) * 0.3, (v - 0.5) * HALF_Z);
+    mesh.scale.set(0.6 + u * 0.4, 0.14 + v * 0.08, 0.45 + v * 0.3);
+    rainfall.add(mesh);
+  }
+  const rainPositions = new Float32Array(RAIN_DROPS * 6);
+  const rainGeometry = keep(new BufferGeometry());
+  rainGeometry.setAttribute('position', new BufferAttribute(rainPositions, 3));
+  rainfall.add(
+    new LineSegments(
+      rainGeometry,
+      keep(new LineBasicMaterial({ color: RAIN, transparent: true, opacity: 0.6 })),
+    ),
+  );
+  const drops = scatter(RAIN_DROPS, 43);
+  const bit = keep(new SphereGeometry(0.035, 6, 4));
+  const runoffBit = keep(new SphereGeometry(0.05, 8, 6));
+  const vapour = new InstancedMesh(
+    bit,
+    keep(new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55 })),
+    VAPOUR_BITS,
+  );
+  const vapourSpots = scatter(VAPOUR_BITS, 47);
+  const runoff = new InstancedMesh(
+    runoffBit,
+    keep(new MeshBasicMaterial({ color: 0x6fb6ff })),
+    RUNOFF_BITS,
+  );
+  const runoffSpots = scatter(RUNOFF_BITS, 53);
+  rainfall.add(vapour, runoff);
+
   // The real picture from space, in place of the drawing, with the button.
   const board = keep(createPictureBoard(options.pictures));
   board.group.visible = false;
@@ -283,6 +347,40 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
       dots.setMatrixAt(dot, place);
     }
     dots.instanceMatrix.needsUpdate = true;
+    if (rainfall.visible) rain();
+  };
+
+  /** Places the falling rain, the water drying back up, and the water running off. */
+  const rain = (): void => {
+    const line = (x: number): number => riverZ(x, grown, cut);
+    for (const [index, [u, v]] of drops.entries()) {
+      const x = (u - 0.5) * 2 * HALF_X * 0.9;
+      const z = (v - 0.5) * 2 * HALF_Z * 0.9;
+      const fallen = (u * 5.1 + v * 3.7 + time * 1.3) % 1;
+      const y = CLOUD_Y - 0.2 - fallen * (CLOUD_Y - 0.2);
+      rainPositions.set([x, y, z, x, y - 0.12, z], index * 6);
+    }
+    (rainGeometry.getAttribute('position') as BufferAttribute).needsUpdate = true;
+    for (const [index, [u, v]] of vapourSpots.entries()) {
+      const risen = (u * 3.3 + time * 0.25) % 1;
+      place.makeTranslation(
+        (u - 0.5) * 2 * HALF_X * 0.9,
+        0.05 + risen * (CLOUD_Y - 0.5),
+        (v - 0.5) * 2 * HALF_Z * 0.9,
+      );
+      vapour.setMatrixAt(index, place);
+    }
+    vapour.instanceMatrix.needsUpdate = true;
+    // Each bit of runoff starts where it fell and slides across the plain to the river.
+    for (const [index, [u, v]] of runoffSpots.entries()) {
+      const x = (u - 0.5) * 2 * HALF_X * 0.9;
+      const from = (v - 0.5) * 2 * HALF_Z * 0.9;
+      const ran = (v * 4.7 + time * 0.3) % 1;
+      const z = from + (line(x) - from) * ran;
+      place.makeTranslation(x, Math.max(0.02, groundHeight(x, z) + 0.03), z);
+      runoff.setMatrixAt(index, place);
+    }
+    runoff.instanceMatrix.needsUpdate = true;
   };
 
   return {
@@ -319,6 +417,15 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
         material.color.copy(world === 'mars' ? DRY_BED : liquid);
       }
       bars.visible = world === 'earth';
+      // The rain on the plain, and the ground soaking it up.
+      rainfall.visible = jd >= options.rainJd && jd < options.rainUntilJd;
+      if (rainfall.visible) {
+        groundMaterial.color.lerpColors(
+          FOREST,
+          SOAKED,
+          0.3 + 0.7 * smooth(options.rainJd, options.rainUntilJd, jd),
+        );
+      }
       // The delta, growing over its part: drawn new land, as big as a drawing allows.
       delta.visible = jd >= options.deltaJd && jd < options.marsJd;
       if (delta.visible) {

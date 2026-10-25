@@ -21,6 +21,8 @@ export function mediaKindLabel(kind: MediaKind): string | null {
       return words.mediaKindSimulation;
     case 'diagram':
       return words.mediaKindDiagram;
+    case 'heights':
+      return words.mediaKindHeights;
     default:
       return kind satisfies never;
   }

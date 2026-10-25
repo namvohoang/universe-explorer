@@ -459,6 +459,37 @@ function stormErrors(story: Story): string[] {
   return errors;
 }
 
+/**
+ * A story told over years (`rebuilt`) gives every part its years, never below nought and
+ * always nearer today as the story goes on; no other kind of story counts years.
+ */
+function yearsErrors(story: Story): string[] {
+  const errors: string[] = [];
+  const at = `story ${story.id}:`;
+  let latest = Infinity;
+  for (const chapter of story.chapters) {
+    const years = chapter.yearsAgo?.value;
+    if (!years) {
+      if (story.path === 'rebuilt') {
+        errors.push(`${at} chapter "${chapter.id}" is rebuilt but says no years ago`);
+      }
+      continue;
+    }
+    if (story.path !== 'rebuilt') {
+      errors.push(`${at} chapter "${chapter.id}" counts years but the story is not rebuilt`);
+    }
+    const [from, until] = years;
+    if (!(from >= 0 && until >= 0)) {
+      errors.push(`${at} chapter "${chapter.id}" counts years before nought`);
+    }
+    if (from < until || from > latest) {
+      errors.push(`${at} chapter "${chapter.id}" goes back in time`);
+    }
+    latest = until;
+  }
+  return errors;
+}
+
 export function checkStories(
   stories: readonly Story[],
   catalogueIds: readonly string[],
@@ -494,6 +525,7 @@ export function checkStories(
     }
     errors.push(...groundPictureErrors(story));
     errors.push(...stormErrors(story));
+    errors.push(...yearsErrors(story));
     // A path drawn between a few known places must never be passed off as the path flown.
     if (
       story.path !== 'staged' &&

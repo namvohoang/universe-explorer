@@ -1121,6 +1121,7 @@ export const en = {
     'It was taken in infrared light, a kind of light our eyes cannot see, which gets through the thick haze that hides the ground.',
   mediaKindSimulation: 'A computer simulation, not a photo.',
   mediaKindDiagram: 'A diagram, not a photo.',
+  mediaKindHeights: 'Measured heights of the land, not a photo.',
   showNamesHint: 'Labels next to each place',
   grownUpsHint: 'Privacy · sources',
   languageQuestion: 'Language',
@@ -1279,6 +1280,15 @@ export const en = {
   watchClose: 'Stop watching',
   watchPathTracked: 'This is the real path the spaceship flew.',
   watchPathStaged: 'The line between real places is a drawing.',
+  watchPathRebuilt:
+    'Nobody was there to see this. Scientists worked it out from the rocks. The picture is a drawing.',
+  watchYearsN: '{n} years',
+  watchYearsThousand: '{n} thousand years',
+  watchYearsMillion: '{n} million years',
+  watchYearsBillion: '{n} billion years',
+  watchYearsAgo: '{years} ago',
+  watchYearsToday: 'Today',
+  watchYearsPerSecond: 'One second here is about {n}.',
   storyMoonPhasesTitle: 'The Moon’s phases',
   storyMoonPhasesNew:
     'This is a new Moon, seen from Earth. The Sun lights the far side of the Moon. The side facing us is dark.',

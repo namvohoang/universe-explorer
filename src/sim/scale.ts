@@ -218,3 +218,17 @@ export const TIDE_SHORE = {
 export function tideShoreLevel(height: number): number {
   return TIDE_SHORE.levelAtZero + TIDE_SHORE.levelPerTide * height;
 }
+
+/**
+ * Real land up close: one unit is one kilometre across, and heights are drawn `times` as tall
+ * as they are, by one factor for every height in the block, so their order and their ratios
+ * stay true (a peak twice as high as another is still drawn twice as high). The screen says
+ * how many times taller they are drawn.
+ */
+export function landHeightKm(metres: number, times: number): number {
+  if (!(times > 0)) throw new RangeError('Heights are drawn some number of times as tall');
+  return (metres / 1000) * times;
+}
+
+/** How many times taller than they are the land stories draw their heights. */
+export const LAND_HEIGHTS_DRAWN_TIMES = 2;

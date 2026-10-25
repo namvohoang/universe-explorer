@@ -4,6 +4,8 @@ import { julianDateAtStartOfYear } from '../sim/time';
 import {
   fill,
   formatDate,
+  formatYears,
+  formatYearsAgo,
   formatDateAndHour,
   formatDateAndMinute,
   formatDateAndSecond,
@@ -42,6 +44,16 @@ describe('formatDateAndSecond', () => {
   it('gives the time to the second in world time', () => {
     expect(formatDateAndSecond(J2000_JD)).toBe('1 January 2000, 12:00:00');
     expect(formatDateAndSecond(J2000_JD + 90.4 / 86_400)).toBe('1 January 2000, 12:01:30');
+  });
+});
+
+describe('formatYearsAgo', () => {
+  it('says how long ago in millions, thousands or years, and today for less than a year', () => {
+    expect(formatYearsAgo(45_300_000)).toBe('45 million years ago');
+    expect(formatYearsAgo(12_000)).toBe('12 thousand years ago');
+    expect(formatYearsAgo(350)).toBe('350 years ago');
+    expect(formatYearsAgo(0)).toBe('Today');
+    expect(formatYears(714_285)).toBe('710 thousand years');
   });
 });
 

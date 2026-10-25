@@ -3,7 +3,15 @@ import { catalogue } from '../data/catalogue';
 import type { CelestialObject } from '../data/types';
 import { KM_PER_AU } from './constants';
 import { bodyRadiusKm } from './layout';
-import { SCALE_MODES, TIDE_SHORE, createScale, tideShoreLevel, type Scale } from './scale';
+import {
+  LAND_HEIGHTS_DRAWN_TIMES,
+  SCALE_MODES,
+  TIDE_SHORE,
+  createScale,
+  landHeightKm,
+  tideShoreLevel,
+  type Scale,
+} from './scale';
 
 const radiusKm = (object: CelestialObject): number => {
   const radius = bodyRadiusKm(object);
@@ -321,5 +329,21 @@ describe('the tides close-up', () => {
   it('draws a higher tide higher up the shore', () => {
     expect(tideShoreLevel(1.5)).toBeGreaterThan(tideShoreLevel(0.5));
     expect(tideShoreLevel(0)).toBe(TIDE_SHORE.levelAtZero);
+  });
+});
+
+describe('real land up close', () => {
+  it('draws every height by one factor, so order and ratios stay true', () => {
+    const metres = [8348, 4174, 406, 0, -120];
+    const drawn = metres.map((m) => landHeightKm(m, LAND_HEIGHTS_DRAWN_TIMES));
+    expect(drawn[0] ?? 0).toBeCloseTo(2 * (drawn[1] ?? 0), 12);
+    for (let index = 1; index < drawn.length; index++) {
+      expect(drawn[index] ?? 0).toBeLessThan(drawn[index - 1] ?? 0);
+    }
+    expect(landHeightKm(1000, 1)).toBe(1);
+  });
+
+  it('needs a factor above nought', () => {
+    expect(() => landHeightKm(100, 0)).toThrow(RangeError);
   });
 });

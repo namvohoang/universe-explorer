@@ -1,5 +1,29 @@
 import { unixMsFromJulianDate } from '../sim/time';
-import { locale } from './strings';
+import { yearsInWords } from '../sim/years';
+import { locale, words } from './strings';
+
+const NUMBER_FORMAT = new Intl.NumberFormat(locale);
+
+/** A number of years in words, e.g. "45 million years" or "350 years". */
+export function formatYears(years: number): string {
+  const { unit, amount } = yearsInWords(years);
+  const template =
+    unit === 'billion'
+      ? words.watchYearsBillion
+      : unit === 'million'
+        ? words.watchYearsMillion
+        : unit === 'thousand'
+          ? words.watchYearsThousand
+          : words.watchYearsN;
+  return fill(template, { n: NUMBER_FORMAT.format(amount) });
+}
+
+/** How long ago, e.g. "45 million years ago"; "Today" for less than a year. */
+export function formatYearsAgo(years: number): string {
+  return years < 1
+    ? words.watchYearsToday
+    : fill(words.watchYearsAgo, { years: formatYears(years) });
+}
 
 const DATE_FORMAT = new Intl.DateTimeFormat(locale, {
   day: 'numeric',

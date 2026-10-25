@@ -28,9 +28,11 @@ export function screenOfGroup(group: StoryGroup): StoryScreen {
  * Where a story's movement comes from, which the screen always says:
  * `orbits` is worked out from the catalogue's own orbits, or from JPL's positions of the
  * bodies themselves; `tracked` is positions sampled from
- * JPL Horizons; `staged` has real event times but the movement between them is a drawing.
+ * JPL Horizons; `staged` has real event times but the movement between them is a drawing;
+ * `rebuilt` is what nobody saw happen but scientists worked out from the rocks, told over
+ * years, and drawn.
  */
-export const STORY_PATHS = ['orbits', 'tracked', 'staged'] as const;
+export const STORY_PATHS = ['orbits', 'tracked', 'staged', 'rebuilt'] as const;
 export type StoryPath = (typeof STORY_PATHS)[number];
 
 /** One step of a story: when it starts, what the kid is told, and what the camera looks at. */
@@ -44,6 +46,13 @@ export interface Chapter {
    */
   readonly untilJd?: Sourced<number>;
   readonly text: BackedText;
+  /**
+   * For a story told over years (`rebuilt`): how many years ago the part starts and ends, from
+   * its source. As it plays from `atJd` to its end, the screen counts those years down, and
+   * says how many years a second stands for. Its instants are then only the story's own
+   * clock, set on a real day so that the globe beside it is the world of today.
+   */
+  readonly yearsAgo?: Sourced<readonly [fromYearsAgo: number, untilYearsAgo: number]>;
   /** One of the story's `actorIds`, or one of its craft. */
   readonly lookAtId: string;
   /**
@@ -355,6 +364,29 @@ export interface StoryStorm {
  * A picture of a storm, or of anything else on a world's ground, taken from above and laid out evenly in longitude and latitude, so
  * that it can be put back on its world at its true place and size.
  */
+/**
+ * The measured heights of a square of land, kept as numbers in the colours of a PNG: each
+ * cell's height in whole metres plus `offsetM`, as red × 256 + green. Rows run from the north,
+ * cells from the west, all square on the ground. Loaded only for its story.
+ */
+export interface LandHeights {
+  readonly file: string;
+  /** The square's edges: [west, south, east, north], in degrees east and north. */
+  readonly box: Sourced<
+    readonly [
+      westDegEast: number,
+      southDegNorth: number,
+      eastDegEast: number,
+      northDegNorth: number,
+    ]
+  >;
+  readonly cellsAcross: number;
+  readonly cellsUp: number;
+  readonly offsetM: number;
+  readonly lowestM: Sourced<number>;
+  readonly highestM: Sourced<number>;
+}
+
 export interface StormPicture {
   readonly media: MediaRef;
   /** The picture's edges: [west, south, east, north], in degrees east and degrees north. */

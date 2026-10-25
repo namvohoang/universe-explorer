@@ -59,6 +59,37 @@ describe('checkStories', () => {
     ).toEqual([]);
   });
 
+  describe('a story told over years', () => {
+    const over = (fromYearsAgo: number, untilYearsAgo: number) => ({
+      yearsAgo: { value: [fromYearsAgo, untilYearsAgo] as const, sourceId: 'test' },
+    });
+    it('accepts years that come nearer today part by part', () => {
+      const rebuilt = story({
+        path: 'rebuilt',
+        chapters: [
+          { ...chapter('one', 10), ...over(50e6, 40e6) },
+          { ...chapter('two', 20), ...over(40e6, 0) },
+        ],
+      });
+      expect(checkStories([rebuilt], IDS)).toEqual([]);
+    });
+
+    it('wants years on every part, going forward, and only in a rebuilt story', () => {
+      const backwards = story({
+        path: 'rebuilt',
+        chapters: [{ ...chapter('one', 10), ...over(10e6, 20e6) }, chapter('two', 20)],
+      });
+      expect(checkStories([backwards], IDS)).toEqual([
+        'story test-story: chapter "one" goes back in time',
+        'story test-story: chapter "two" is rebuilt but says no years ago',
+      ]);
+      const counted = story({ chapters: [{ ...chapter('one', 10), ...over(5, 0) }] });
+      expect(checkStories([counted], IDS)).toEqual([
+        'story test-story: chapter "one" counts years but the story is not rebuilt',
+      ]);
+    });
+  });
+
   describe('pictures of the ground', () => {
     const shot = (
       fromJd: number,

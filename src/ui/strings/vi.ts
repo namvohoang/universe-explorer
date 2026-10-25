@@ -1432,6 +1432,15 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchClose: 'Thôi xem',
   watchPathTracked: 'Đây là đường bay thật của con tàu.',
   watchPathStaged: 'Đường nối giữa các vị trí thật là hình vẽ.',
+  watchPathRebuilt:
+    'Không ai có mặt để nhìn thấy điều này. Các nhà khoa học tìm ra nó nhờ đá. Hình ảnh là hình vẽ.',
+  watchYearsN: '{n} năm',
+  watchYearsThousand: '{n} nghìn năm',
+  watchYearsMillion: '{n} triệu năm',
+  watchYearsBillion: '{n} tỉ năm',
+  watchYearsAgo: '{years} trước',
+  watchYearsToday: 'Hôm nay',
+  watchYearsPerSecond: 'Một giây ở đây là khoảng {n}.',
   storyMoonPhasesTitle: 'Các pha của Mặt Trăng',
   storyMoonPhasesNew:
     'Đây là trăng non, nhìn từ Trái Đất. Mặt Trời chiếu sáng nửa bên kia của Mặt Trăng. Nửa quay về phía chúng ta thì tối.',
@@ -1730,6 +1739,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Nó được chụp bằng ánh sáng hồng ngoại, một loại ánh sáng mắt ta không thấy được, có thể xuyên qua lớp sương mù dày che mặt đất.',
   mediaKindSimulation: 'Mô phỏng bằng máy tính, không phải ảnh chụp.',
   mediaKindDiagram: 'Sơ đồ, không phải ảnh chụp.',
+  mediaKindHeights: 'Độ cao đo được của mặt đất, không phải ảnh chụp.',
   showNamesHint: 'Nhãn tên bên cạnh mỗi nơi',
   grownUpsHint: 'Quyền riêng tư · nguồn',
   languageQuestion: 'Ngôn ngữ',

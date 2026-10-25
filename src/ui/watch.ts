@@ -11,6 +11,7 @@ import {
   type StoryScreen,
 } from '../data/types';
 import {
+  CHAPTER_SECONDS,
   SWEEP_SECONDS,
   advanceStory,
   steppedInGap,
@@ -27,7 +28,15 @@ import { create } from './dom';
 import { narrationFor } from './narration';
 import type { Speaker } from './speech';
 import { lineSpan, storyLines, storyNarrationId } from './storyLines';
-import { fill, formatDateAndHour, formatDateAndMinute, formatDateAndSecond } from './format';
+import {
+  fill,
+  formatDateAndHour,
+  formatDateAndMinute,
+  formatDateAndSecond,
+  formatYears,
+  formatYearsAgo,
+} from './format';
+import { yearsAgoAt, yearsPerSecond } from '../sim/years';
 import { icon, type IconName } from './icons';
 import { formatVisited, parseVisited } from './passport';
 import { recall, remember } from './storage';
@@ -388,8 +397,14 @@ export function createWatch(host: WatchHost): Watch {
       (sum, from, index) => sum + (chapterEndJd(told, index) - from),
       0,
     );
-    const label =
-      days < 1
+    // A story told over years says how long ago, and how many years a second stands for.
+    const years = chapter.yearsAgo?.value;
+    const label = years
+      ? `${formatYearsAgo(yearsAgoAt(years, chapter.atJd.value, chapterEndJd(told, index), jd))} · ${fill(
+          words.watchYearsPerSecond,
+          { n: formatYears(yearsPerSecond(years, story.chapterSeconds ?? CHAPTER_SECONDS)) },
+        )}`
+      : days < 1
         ? formatDateAndSecond(jd)
         : days < MINUTES_SHOWN_UNDER_DAYS
           ? formatDateAndMinute(jd)
@@ -448,7 +463,9 @@ export function createWatch(host: WatchHost): Watch {
         ? words.watchPathTracked
         : picked.path === 'staged'
           ? words.watchPathStaged
-          : '');
+          : picked.path === 'rebuilt'
+            ? words.watchPathRebuilt
+            : '');
     pathNote.textContent = note;
     pathNote.hidden = note === '';
     // Named parts are listed only where every part of the story has a name.

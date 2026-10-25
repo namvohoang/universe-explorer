@@ -1424,7 +1424,19 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       has watched grow; a dust cloud from the Sahara followed across the Atlantic. Find out
       whether any trusted source gives where the continents were in the past as data, or
       only as pictures (decision 12).
-- [ ] 14.16 Real land in 3D and the clock in years: a block of ground built from the height
+- [~] 14.16 Built on 2026-10-25, to be shown with its first story (14.18): `tools/land/
+      fetchHeights.ts` keeps the measured heights of a square, from ETOPO 2022 (by OPeNDAP) or
+      USGS 3DEP (its image service, read as a TIFF by hand), as numbers in a PNG's colours
+      with a record of them (`LandHeights`, a new media kind, `heights`); `landBlock.ts`
+      builds the block of land from them, cut open like a model, with a real picture from
+      space laid over it, its heights drawn by one named factor (`landHeightKm`,
+      `LAND_HEIGHTS_DRAWN_TIMES`, tested to keep order and ratios). The clock in years: a
+      part may carry `yearsAgo`, and the date line then says how long ago and "One second
+      here is about …", worked out from the part's years and the seconds it plays
+      (`yearsAgoAt`, `yearsPerSecond`, `yearsInWords`, `formatYearsAgo`, tested). The
+      `rebuilt` path, its sentence, and its `validate` check (every part has years, never
+      going back in time; no other kind of story counts years). Left: seen on screen with a
+      story. As planned: Real land in 3D and the clock in years: a block of ground built from the height
       data of one region, loaded only for its story, with its `CREDITS.md` row; the story
       clock's years and its sentence ("One second here is [N] years"); the `rebuilt` path and
       its `validate` check. Pure and tested: the block's heights keep their true ratios.

@@ -8,6 +8,8 @@ export const MEDIA_KINDS = [
   'agency-model',
   'simulation',
   'diagram',
+  /** Measured heights of the land, kept as numbers in a picture's colours: never shown as one. */
+  'heights',
 ] as const;
 export type MediaKind = (typeof MEDIA_KINDS)[number];
 

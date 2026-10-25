@@ -1225,6 +1225,23 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyRiverTitan:
     'Trên Titan, mặt trăng lớn nhất của Sao Thổ, sông cũng khoét đất, nhưng không phải là nước. Đó là khí mê-tan, lạnh đến mức hóa lỏng.',
   scaleLabelRiverSlice: 'Hình nhìn gần là hình vẽ. Ảnh chụp từ vũ trụ là thật.',
+  storyCanyonTitle: 'Một hẻm núi',
+  storyCanyonPictureAlt:
+    'Vùng đất đá màu nâu và đỏ nhìn từ vũ trụ, bị cắt bởi một hẻm núi sâu uốn khúc với nhiều hẻm nhánh, và một dòng sông nhỏ dưới đáy.',
+  storyCanyonLayers:
+    'Từ rất, rất lâu, đá đã được bồi ở đây, hết lớp này đến lớp khác, mỗi lớp một màu. Những lớp đá ấy giữ hàng triệu năm lịch sử của Trái Đất.',
+  storyCanyonRises:
+    'Khoảng 60 triệu năm trước, các mảng đáy Thái Bình Dương bắt đầu trượt xuống dưới Bắc Mỹ. Điều đó đẩy cả vùng đất này lên cao.',
+  storyCanyonCuts:
+    'Suốt hàng triệu năm, sông Colorado khoét xuống xuyên qua những lớp đá cũ, trong khi mặt đất vẫn tiếp tục nâng lên.',
+  storyCanyonWhy:
+    'Một dòng sông chỉ khoét được hẻm núi sâu ở nơi mặt đất đang nâng lên. Dòng sông giữ đường đi của nó và cưa dần xuống đá.',
+  storyCanyonArguing:
+    'Sông bắt đầu khoét từ khi nào? Một trang của NASA nói khoảng 5 triệu năm trước, một trang khác nói khoảng 10 triệu năm. Các nhà khoa học vẫn đang tìm hiểu.',
+  storyCanyonReal:
+    'Đây là hẻm núi Grand Canyon thật ngày nay, dựng từ số đo. Nó dài 800 ki-lô-mét, rộng 30 ki-lô-mét và sâu 1,8 ki-lô-mét.',
+  storyCanyonMars:
+    'Sao Hỏa có một hẻm núi lớn hơn nhiều: Valles Marineris dài khoảng 3.870 ki-lô-mét, gần gấp năm lần Grand Canyon.',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
@@ -1341,6 +1358,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoHowHighName: 'Cao bao nhiêu',
   storyVolcanoDayLaterName: 'Một ngày sau',
   storyVolcanoPilotsName: 'Phi công',
+  storyCanyonLayersName: 'Các lớp đá',
+  storyCanyonRisesName: 'Đất nâng lên',
+  storyCanyonCutsName: 'Sông khoét sâu',
+  storyCanyonWhyName: 'Vì sao sông khoét',
+  storyCanyonArguingName: 'Vẫn còn tranh luận',
+  storyCanyonRealName: 'Hẻm núi thật',
+  storyCanyonMarsName: 'Trên Sao Hỏa',
   storyRiverRiverName: 'Dòng sông',
   storyRiverMudName: 'Bùn từ dãy Andes',
   storyRiverOutsideName: 'Phía ngoài',

@@ -1153,6 +1153,13 @@ export const en = {
   storyVolcanoHowHighName: 'How high',
   storyVolcanoDayLaterName: 'A day later',
   storyVolcanoPilotsName: 'Pilots',
+  storyCanyonLayersName: 'The layers',
+  storyCanyonRisesName: 'The land rises',
+  storyCanyonCutsName: 'The river cuts',
+  storyCanyonWhyName: 'Why it cuts',
+  storyCanyonArguingName: 'Still arguing',
+  storyCanyonRealName: 'The real canyon',
+  storyCanyonMarsName: 'On Mars',
   storyRiverRiverName: 'The river',
   storyRiverMudName: 'Mud from the Andes',
   storyRiverOutsideName: 'The outside',
@@ -1681,6 +1688,23 @@ export const en = {
   storyRiverTitan:
     'On Titan, Saturn’s biggest moon, rivers carve the land too, but they are not water. They are methane, so cold that it is a liquid.',
   scaleLabelRiverSlice: 'Up close is a drawing. The pictures from space are real.',
+  storyCanyonTitle: 'A canyon',
+  storyCanyonPictureAlt:
+    'Brown and red rocky land seen from space, cut by a deep, winding canyon with many side canyons, and a thin river at its bottom.',
+  storyCanyonLayers:
+    'Long, long ago, rock was laid down here, layer upon layer, each of its own colour. Those layers hold millions of years of Earth’s history.',
+  storyCanyonRises:
+    'About 60 million years ago, plates of the Pacific Ocean floor began sliding under North America. That pushed this whole land up high.',
+  storyCanyonCuts:
+    'Over millions of years, the Colorado River cut down through the old layers of rock, even as the land kept rising.',
+  storyCanyonWhy:
+    'A river can cut a deep canyon only where the land is rising. The river keeps its path and saws down into the rock.',
+  storyCanyonArguing:
+    'When did the river start cutting? One NASA page says about 5 million years ago, another about 10 million. Scientists are still working it out.',
+  storyCanyonReal:
+    'This is the real Grand Canyon today, built from measurements. It is 800 kilometres long, 30 kilometres across and 1.8 kilometres deep.',
+  storyCanyonMars:
+    'Mars has a canyon far bigger: Valles Marineris stretches about 3,870 kilometres, nearly five times as long as the Grand Canyon.',
   storyQuakeTitle: 'An earthquake',
   storyQuakeNote:
     'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',

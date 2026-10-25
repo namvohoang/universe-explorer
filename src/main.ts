@@ -38,6 +38,8 @@ import { HIMALAYA_DRAWING } from './data/stories/mountainHimalaya';
 import { createMountainSlice } from './scene/mountainSlice';
 import { UCAYALI_PARTS } from './data/stories/riverUcayali';
 import { createRiverSlice } from './scene/riverSlice';
+import { GRAND_CANYON_DRAWING } from './data/stories/canyonGrandCanyon';
+import { createCanyonSlice } from './scene/canyonSlice';
 import { LAND_HEIGHTS_DRAWN_TIMES } from './sim/scale';
 import { yearsAgoAt } from './sim/years';
 import { createMonsoonSlice } from './scene/monsoonSlice';
@@ -2096,6 +2098,31 @@ function start(): void {
       if (story.id === 'river-ucayali') {
         watchPictureSlice = createRiverSlice({ ...UCAYALI_PARTS, pictures: real });
         watchPictureSliceLabel = words.scaleLabelRiverSlice;
+      }
+      if (story.id === 'canyon-grand-canyon' && story.land) {
+        const heights = story.land;
+        const land = pictureSpanKm(heights.box.value, worldKm);
+        const { layersFromYearsAgo, liftFromYearsAgo, cutFromYearsAgo, todayFromJd } =
+          GRAND_CANYON_DRAWING;
+        watchPictureSlice = createCanyonSlice({
+          yearsAt: (jd) => storyYearsAgo(story, jd),
+          layersFromYearsAgo: layersFromYearsAgo.value,
+          liftFromYearsAgo: liftFromYearsAgo.value,
+          cutFromYearsAgo: cutFromYearsAgo.value,
+          todayFromJd: todayFromJd.value,
+          land: {
+            heightsUrl: mediaUrl(heights.file),
+            cellsAcross: heights.cellsAcross,
+            cellsUp: heights.cellsUp,
+            offsetM: heights.offsetM,
+            widthKm: land.widthKm,
+            depthKm: land.heightKm,
+            drawnTimes: LAND_HEIGHTS_DRAWN_TIMES,
+            pictureUrl: real.urls[0] ?? null,
+          },
+          pictures: real,
+        });
+        watchPictureSliceLabel = fill(words.scaleLabelLandSlice, { n: LAND_HEIGHTS_DRAWN_TIMES });
       }
       if (story.id === 'mountain-himalaya' && story.land) {
         const heights = story.land;

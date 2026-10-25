@@ -26,6 +26,7 @@ import { waterCycle } from './waterCycle';
 import { monsoonIndia } from './monsoonIndia';
 import { mountainHimalaya } from './mountainHimalaya';
 import { riverUcayali } from './riverUcayali';
+import { canyonGrandCanyon } from './canyonGrandCanyon';
 import { tides } from './tides';
 import { tornadoTescott } from './tornadoTescott';
 import { volcanoRaikoke } from './volcanoRaikoke';
@@ -57,6 +58,7 @@ export const stories: readonly Story[] = [
   avalancheBlatten,
   mountainHimalaya,
   riverUcayali,
+  canyonGrandCanyon,
   floodGandak,
   monsoonIndia,
   lightningMaracaibo,

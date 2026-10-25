@@ -697,6 +697,11 @@ export const NARRATION: Readonly<
     fingerprint: '07b101ed',
     starts: [0.0, 2.0, 9.93, 16.35, 22.27, 29.0, 36.35, 48.4, 58.95],
   },
+  'story-canyon-grand-canyon': {
+    file: 'public/voice/story-canyon-grand-canyon.mp3',
+    fingerprint: '9d6b4710',
+    starts: [0.0, 2.12, 12.03, 21.57, 29.8, 38.17, 48.42, 59.67],
+  },
   'story-flood-gandak': {
     file: 'public/voice/story-flood-gandak.mp3',
     fingerprint: 'a63ffdad',

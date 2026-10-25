@@ -803,6 +803,57 @@ export const JPL_HORIZONS_TURN_UCAYALI_2016_EARTH: Source = {
   retrieved: '2026-10-25',
 };
 
+export const NASA_EARTH_OBSERVATORY_GRAND_CANYON: Source = {
+  id: 'nasa-earth-observatory-grand-canyon',
+  title: 'NASA Earth Observatory — Grand Canyon',
+  url: 'https://science.nasa.gov/earth/earth-observatory/grand-canyon-3595/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_EARTH_OBSERVATORY_CANYONLANDS: Source = {
+  id: 'nasa-earth-observatory-canyonlands',
+  title: 'NASA Earth Observatory — Canyonlands’ Grabens',
+  url: 'https://science.nasa.gov/earth/earth-observatory/canyonlands-grabens-83819/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_EARTH_OBSERVATORY_COLORADO_CUTS: Source = {
+  id: 'nasa-earth-observatory-colorado-cuts',
+  title: 'NASA Earth Observatory — The Colorado River Cuts a Canyon',
+  url: 'https://science.nasa.gov/earth/earth-observatory/the-colorado-river-cuts-a-canyon-150622/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_EARTH_OBSERVATORY_GRAND_CANYON_LESSONS: Source = {
+  id: 'nasa-earth-observatory-grand-canyon-lessons',
+  title: 'NASA Earth Observatory — Grand Canyon Geology Lessons on View',
+  url: 'https://science.nasa.gov/earth/earth-observatory/grand-canyon-geology-lessons-on-view-83495/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_VALLES_MARINERIS: Source = {
+  id: 'nasa-valles-marineris',
+  title: 'NASA — Valles Marineris: The Grand Canyon of Mars',
+  url: 'https://www.nasa.gov/image-article/valles-marineris-grand-canyon-of-mars/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_WORLDVIEW_GRAND_CANYON_2025: Source = {
+  id: 'nasa-worldview-grand-canyon-2025',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — Harmonized Landsat and Sentinel-2 picture from Sentinel-2 (HLSS30 v2.0, NASA LP DAAC), 21 May 2025, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=-112.3,35.95,-111.9,36.35&l=HLS_S30_Nadir_BRDF_Adjusted_Reflectance&t=2025-05-21',
+  retrieved: '2026-10-25',
+};
+
+export const JPL_HORIZONS_TURN_GRAND_CANYON_2025_EARTH: Source = {
+  id: 'jpl-horizons-turn-grandcanyon2025earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2025-05-21 17:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272460817.209134087%27',
+  retrieved: '2026-10-25',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

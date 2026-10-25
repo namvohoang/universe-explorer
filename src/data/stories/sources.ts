@@ -632,6 +632,43 @@ export const JPL_HORIZONS_TURN_MONSOON_2005_EARTH: Source = {
   retrieved: '2026-10-25',
 };
 
+export const NASA_EARTH_OBSERVATORY_LIGHTNING: Source = {
+  id: 'nasa-earth-observatory-new-look-lightning',
+  title: 'NASA Earth Observatory — A New Look at Earth’s Lightning (image of the day, 2022)',
+  url: 'https://science.nasa.gov/earth/earth-observatory/a-new-look-at-earths-lightning-149301',
+  retrieved: '2026-10-25',
+};
+
+export const NOAA_NSSL_LIGHTNING: Source = {
+  id: 'noaa-nssl-lightning',
+  title: 'NOAA National Severe Storms Laboratory — Severe Weather 101: Lightning',
+  url: 'https://www.nssl.noaa.gov/education/svrwx101/lightning/',
+  retrieved: '2026-10-25',
+};
+
+export const NWS_LIGHTNING_SAFETY: Source = {
+  id: 'nws-lightning-safety',
+  title: 'NOAA National Weather Service — Lightning Safety Overview',
+  url: 'https://www.weather.gov/safety/lightning-safety-overview',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_WORLDVIEW_MARACAIBO_2025: Source = {
+  id: 'nasa-worldview-maracaibo-2025',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — true-colour pictures from the MODIS camera on Terra and the VIIRS camera on Suomi NPP, 29 September 2025, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=-73,8.4,-70.2,11.2&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2025-09-29',
+  retrieved: '2026-10-25',
+};
+
+export const JPL_HORIZONS_TURN_MARACAIBO_2025_EARTH: Source = {
+  id: 'jpl-horizons-turn-maracaibo2025earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2025-09-29 14:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272460948.084134055%27',
+  retrieved: '2026-10-25',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

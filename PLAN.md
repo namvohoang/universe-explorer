@@ -1348,7 +1348,16 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       SciJinks "What Is a Monsoon?". Its 3D close-up (`monsoonSlice`) is land and sea: the
       land warming, the wind turning to blow in from the sea, clouds and rain over the land,
       the land turning green and the rivers fuller, and the dry winter wind off the land. The
-      close-ups share their pieces (`diorama.ts`). Left: lightning, the water cycle. As planned: Later, each its own story if wanted: lightning, the
+      close-ups share their pieces (`diorama.ts`). Done on 2026-10-25: **Lightning**, at Lake
+      Maracaibo in Venezuela, which NASA Earth Observatory's "A New Look at Earth's Lightning"
+      names as having the most (389 flashes a day on average), in seven parts, in English and
+      Vietnamese, recorded: two true-colour pictures of 29 September 2025 (MODIS on Terra,
+      VIIRS on Suomi NPP); how a storm charges up, how hot a flash is and why it thunders from
+      NOAA's National Severe Storms Laboratory, and "When Thunder Roars, Go Indoors" from the
+      National Weather Service. Its 3D close-up (`lightningSlice`) is a storm cloud growing
+      over the lake into the night, ice and soft hail charging inside it, and flashes counted
+      at the real average rate as the story's clock runs; no more than two are drawn in a
+      second, and with reduced motion they do not flicker. Left: the water cycle. As planned: Later, each its own story if wanted: lightning, the
       water cycle, the monsoon, a flood, an avalanche.
 
 **Part two: how the land is shaped** (asked for on 2026-10-11: mountains, rivers, canyons, a

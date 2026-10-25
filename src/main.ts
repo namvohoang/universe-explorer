@@ -29,6 +29,8 @@ import { BLATTEN_AVALANCHE } from './data/stories/avalancheBlatten';
 import { GANDAK_FLOOD } from './data/stories/floodGandak';
 import { createFloodSlice, type FloodSlice } from './scene/floodSlice';
 import { MONSOON_PARTS } from './data/stories/monsoonIndia';
+import { MARACAIBO_LIGHTNING, lightningMaracaibo } from './data/stories/lightningMaracaibo';
+import { createLightningSlice, type LightningSlice } from './scene/lightningSlice';
 import { createMonsoonSlice, type MonsoonSlice } from './scene/monsoonSlice';
 import { pictureSpanKm, scaleBarKm } from './sim/pictureSpan';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
@@ -1957,7 +1959,7 @@ function start(): void {
    * The 3D close look of a story told in pictures of a place too small to see on the globe,
    * whose button swaps the drawing for the real picture of the moment.
    */
-  let watchPictureSlice: AvalancheSlice | FloodSlice | MonsoonSlice | null = null;
+  let watchPictureSlice: AvalancheSlice | FloodSlice | MonsoonSlice | LightningSlice | null = null;
   /** What the screen says of that close look: what in it is real and what is drawn. */
   let watchPictureSliceLabel = '';
   /** The share of a picture's width the scale bar under it may take. */
@@ -2025,6 +2027,20 @@ function start(): void {
       if (story.id === 'monsoon-india') {
         watchPictureSlice = createMonsoonSlice({ ...MONSOON_PARTS, pictures: real });
         watchPictureSliceLabel = words.scaleLabelMonsoonSlice;
+      }
+      if (story.id === 'lightning-maracaibo') {
+        const { flashesPerDay, countFromJd } = MARACAIBO_LIGHTNING;
+        const chapterAt = (id: string): number =>
+          lightningMaracaibo.chapters.find((chapter) => chapter.id === id)?.atJd.value ?? 0;
+        watchPictureSlice = createLightningSlice({
+          flashesPerDay: flashesPerDay.value,
+          countFromJd: countFromJd.value,
+          insideFromJd: chapterAt('inside-the-cloud'),
+          grownJd: chapterAt('the-spark'),
+          countLabel: (flashes) => fill(words.watchFlashCount, { n: number.format(flashes) }),
+          pictures: real,
+        });
+        watchPictureSliceLabel = words.scaleLabelLightningSlice;
       }
     }
     // A storm's real pictures from space lie on the world in the whole picture, as the story says.

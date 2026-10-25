@@ -111,7 +111,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsEarth1:
     'Mỗi câu chuyện là một sự kiện có thật, được chọn vì nó được đo đạc kỹ và gây ít hoặc không gây thiệt hại, và được kể qua những gì mặt đất, biển và không khí đã làm. Không câu chuyện nào nêu số người bị hại. Cơn bão vào Việt Nam là ngoại lệ của “không thiệt hại”: đã có người thiệt mạng ở Philippines và Việt Nam, và câu chuyện kể về cảnh báo và việc người dân đi sơ tán.',
   grownUpsEarth2:
-    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa, trận lở băng, trận lũ và gió mùa (hai loại sau là màu giả, để nước hiện màu xanh dương), là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
+    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa, trận lở băng, trận lũ, gió mùa (hai loại sau là màu giả, để nước hiện màu xanh dương) và hồ nước có nhiều sét nhất, là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
   grownUpsEarth3:
     'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn. Một lý do có thể đúng, mà ứng dụng chưa kiểm chứng, là các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
   grownUpsEarth4:
@@ -1144,6 +1144,26 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyMonsoonWinter:
     'Vào mùa đông, gió lại đổi chiều và thổi từ đất liền ra biển. Khi đó trời khô ráo.',
   scaleLabelMonsoonSlice: 'Hình nhìn gần là hình vẽ. Ảnh chụp từ vũ trụ là thật.',
+  storyLightningTitle: 'Sét',
+  storyLightningNote:
+    'Ảnh chụp từ vũ trụ là thật. Ở hình nhìn gần, sét đánh theo mức trung bình thật của hồ: 389 lần mỗi ngày.',
+  storyLightningPictureAlt:
+    'Một hồ nước lớn nhìn từ vũ trụ, xung quanh là đất xanh và núi, mây trắng đang dâng lên trên đất liền.',
+  storyLightningLake:
+    'Đây là hồ Maracaibo, ở Venezuela. Các vệ tinh đếm sét cho thấy nơi đây có nhiều sét nhất Trái Đất: trung bình khoảng 389 tia sét mỗi ngày.',
+  storyLightningWhy:
+    'Hình dạng vùng đất quanh hồ khiến thời tiết ở đây hút giông bão đến, hết lần này đến lần khác.',
+  storyLightningInside:
+    'Trong đám mây giông, những hạt mưa đá mềm va vào những mẩu băng nhỏ xíu rồi bật ra. Băng mang điện tích dương bay lên đỉnh mây. Mưa đá giữ điện tích âm ở thấp hơn.',
+  storyLightningSpark:
+    'Khi điện tích dồn lại đủ nhiều, nó phóng qua thành một tia chớp. Sét là một tia lửa điện khổng lồ trong không khí.',
+  storyLightningHot:
+    'Trong chớp mắt, tia sét làm không khí nóng tới khoảng 28.000 độ C. Nóng hơn bề mặt Mặt Trời rất nhiều.',
+  storyLightningThunder: 'Không khí nóng lên nhanh đến mức nó nổ bung ra. Tiếng nổ đó là sấm.',
+  storyLightningIndoors:
+    'Khi nghe sấm, hãy vào trong nhà! Nếu em nghe được tiếng sấm, cơn giông đã đủ gần để sét đánh tới em. Hãy chờ trong một tòa nhà hoặc trong ô tô có mui cứng.',
+  scaleLabelLightningSlice: 'Hình nhìn gần là hình vẽ. Ảnh chụp từ vũ trụ là thật.',
+  watchFlashCount: '{n} tia sét',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
@@ -1260,6 +1280,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoHowHighName: 'Cao bao nhiêu',
   storyVolcanoDayLaterName: 'Một ngày sau',
   storyVolcanoPilotsName: 'Phi công',
+  storyLightningLakeName: 'Hồ nước',
+  storyLightningWhyName: 'Vì sao ở đây?',
+  storyLightningInsideName: 'Trong đám mây',
+  storyLightningSparkName: 'Tia lửa điện',
+  storyLightningHotName: 'Nóng bao nhiêu?',
+  storyLightningThunderName: 'Sấm',
+  storyLightningIndoorsName: 'Vào trong nhà',
   storyMonsoonBeforeName: 'Trước mùa mưa',
   storyMonsoonWhatName: 'Gió mùa là gì?',
   storyMonsoonWarmsName: 'Đất nóng lên',

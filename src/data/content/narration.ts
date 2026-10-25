@@ -697,6 +697,11 @@ export const NARRATION: Readonly<
     fingerprint: 'ca6924d6',
     starts: [0.0, 2.17, 16.02, 22.68, 27.18, 35.2, 42.08, 48.35],
   },
+  'story-lightning-maracaibo': {
+    file: 'public/voice/story-lightning-maracaibo.mp3',
+    fingerprint: '673d36e9',
+    starts: [0.0, 1.98, 14.65, 21.35, 34.92, 43.17, 52.17, 57.75],
+  },
   'story-hurricane-sam': {
     file: 'public/voice/story-hurricane-sam.mp3',
     fingerprint: '7c6dcbe5',

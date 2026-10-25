@@ -23,6 +23,8 @@ import { createTsunamiSlice, type TsunamiSlice } from './scene/tsunamiSlice';
 import { createVolcanoSlice, type VolcanoSlice } from './scene/volcanoSlice';
 import { createTideSlice, type TideSlice } from './scene/tideSlice';
 import { createDustSlice, type DustSlice } from './scene/dustSlice';
+import { createPictureSlice, type PictureSlice } from './scene/pictureSlice';
+import { pictureSpanKm, scaleBarKm } from './sim/pictureSpan';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
 import {
@@ -569,6 +571,7 @@ function start(): void {
           watchVolcanoSlice ??
           watchTideSlice ??
           watchDustSlice ??
+          watchPictureSlice ??
           tornadoDrawing?.scene ??
           stormSlice ??
           null)
@@ -648,11 +651,13 @@ function start(): void {
       },
       {
         box: side,
-        // Every look up close at a story's drawing says it is a drawing.
+        // Every look up close at a story's drawing says it is a drawing; a real picture is not one.
         label: cut
           ? cut === tornadoDrawing?.scene
             ? words.watchPaneTornado
-            : words.watchPaneQuakeBlock
+            : Object.is(cut, watchPictureSlice)
+              ? words.watchPaneClose
+              : words.watchPaneQuakeBlock
           : modelled
             ? words.watchPaneWhole
             : close
@@ -1214,7 +1219,8 @@ function start(): void {
    * no nearer than the look may be brought. `null` for the whole picture, or with no picture.
    */
   const pictureCloseRadii = (story: Story, chapter: Chapter, radii: number): number | null => {
-    if (radii !== STORM_CLOSE_RADII || story.storm) return null;
+    // A picture shown up close in its own pane leaves the globe to show where it is.
+    if (radii !== STORM_CLOSE_RADII || story.storm || story.groundPictures?.upClose) return null;
     const shown = story.groundPictures?.pictures.find(
       (picture) =>
         chapter.atJd.value >= picture.fromJd.value && chapter.atJd.value < picture.untilJd.value,
@@ -1943,6 +1949,10 @@ function start(): void {
   let watchPictured: readonly (readonly [fromJd: number, untilJd: number])[] = [];
   let watchVolcanoSlice: VolcanoSlice | null = null;
   let watchDustSlice: DustSlice | null = null;
+  /** The close look of a story told in pictures of a place too small to see on the globe. */
+  let watchPictureSlice: PictureSlice | null = null;
+  /** The share of a picture's width the scale bar under it may take. */
+  const SCALE_BAR_SHARE = 0.45;
   /** Lays a story's real pictures of the ground, of its storm or of anything else, ready to show. */
   const showPictures = (story: Story): void => {
     watchVolcanoSlice?.dispose();
@@ -1954,6 +1964,31 @@ function start(): void {
     watchDustSlice = null;
     if (story.id === 'sahara-dust') {
       watchDustSlice = createDustSlice();
+    }
+    watchPictureSlice?.dispose();
+    watchPictureSlice = null;
+    const upClose = story.groundPictures?.upClose === true ? story.groundPictures : null;
+    const world = catalogue.find((object) => object.id === upClose?.onId);
+    const worldKm = world ? bodyRadiusKm(world) : null;
+    const box = upClose?.pictures[0]?.box.value;
+    // On the globe, a ring round the place, which is far too small to see there.
+    const [markWest, markSouth, markEast, markNorth] = box ?? [0, 0, 0, 0];
+    system.setPlaceMark(upClose && box ? upClose.onId : null, [
+      (markWest + markEast) / 2,
+      (markSouth + markNorth) / 2,
+    ]);
+    if (upClose && box && worldKm) {
+      const span = pictureSpanKm(box, worldKm);
+      const barKm = scaleBarKm(span.widthKm * SCALE_BAR_SHARE);
+      watchPictureSlice = createPictureSlice({
+        urls: upClose.pictures.map(({ media }) => mediaUrl(media.file)),
+        widthKm: span.widthKm,
+        heightKm: span.heightKm,
+        barKm,
+        barLabel: fill(words.watchScaleBarKm, {
+          km: new Intl.NumberFormat(language).format(barKm),
+        }),
+      });
     }
     // A storm's real pictures from space lie on the world in the whole picture, as the story says.
     const onId = story.storm?.onId ?? story.groundPictures?.onId ?? null;
@@ -1975,6 +2010,7 @@ function start(): void {
       if (jd >= fromJd && jd <= untilJd) picture = index;
     }
     system.showGroundPicture(picture);
+    watchPictureSlice?.set(picture);
     if (watchVolcanoSlice) {
       // 21 June 2019 noon UTC is 2458656; 22 June 00:00 UTC eruption onset is 2458656.5
       const hoursAfter = (jd - 2458656.5) * 24;
@@ -2551,7 +2587,9 @@ function start(): void {
                             ? words.scaleLabelTideSlice
                             : chapter.slice === true && watchDustSlice
                               ? words.scaleLabelDustSlice
-                              : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
+                              : chapter.slice === true && watchPictureSlice
+                                ? words.scaleLabelPictureSlice
+                                : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
                 chapter.standAtId === undefined
@@ -2617,13 +2655,15 @@ function start(): void {
                       ? [watchTideSlice, words.watchLookPull, words.watchLookArrowsOff]
                       : watchDustSlice
                         ? [watchDustSlice, words.watchLookAir, words.watchLookArrowsOff]
-                        : tornadoDrawing?.scene.slice
-                          ? [
-                              tornadoDrawing.scene.slice,
-                              words.watchLookAir,
-                              words.watchLookArrowsOff,
-                            ]
-                          : [stormSlice, words.watchLookAir, words.watchLookArrowsOff];
+                        : watchPictureSlice
+                          ? [watchPictureSlice, words.watchLookBefore, words.watchLookThisDay]
+                          : tornadoDrawing?.scene.slice
+                            ? [
+                                tornadoDrawing.scene.slice,
+                                words.watchLookAir,
+                                words.watchLookArrowsOff,
+                              ]
+                            : [stormSlice, words.watchLookAir, words.watchLookArrowsOff];
               const [shown, toOther, back] = drawing;
               if (!shown) return null;
               return {
@@ -2849,6 +2889,9 @@ function start(): void {
       watchVolcanoSlice = null;
       watchDustSlice?.dispose();
       watchDustSlice = null;
+      watchPictureSlice?.dispose();
+      watchPictureSlice = null;
+      system.setPlaceMark(null, [0, 0]);
       watchStorm = null;
       stormSlice?.dispose();
       stormSlice = null;
@@ -3116,6 +3159,7 @@ function start(): void {
       watchVolcanoSlice?.flow(reducedMotion ? 0 : dt);
       watchTideSlice?.flow(reducedMotion ? 0 : dt);
       watchDustSlice?.flow(reducedMotion ? 0 : dt);
+      watchPictureSlice?.flow(reducedMotion ? 0 : dt);
       if (!reducedMotion) system.flowQuake?.(dt);
       diagram?.setDate(jd);
       // While the story runs, a comet's jets and tails stream; with it stopped they stand still.
@@ -3216,7 +3260,8 @@ function start(): void {
         watchTsunamiSlice !== null ||
         watchVolcanoSlice !== null ||
         watchTideSlice !== null ||
-        watchDustSlice !== null);
+        watchDustSlice !== null ||
+        watchPictureSlice !== null);
     sideTags.update((id) => {
       if (besideADrawing) {
         return { point: { ...stage.toSideScreen(ORIGIN), visible: false }, radiusPixels: 0 };

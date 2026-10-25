@@ -541,6 +541,30 @@ export const JPL_HORIZONS_TURN_RAIKOKE_2019_EARTH: Source = {
   retrieved: '2026-10-12',
 };
 
+export const NASA_EARTH_OBSERVATORY_BLATTEN: Source = {
+  id: 'nasa-earth-observatory-glacier-collapse-blatten',
+  title:
+    'NASA Earth Observatory — Glacier Collapse Buries Swiss Village (image of the day, June 2025)',
+  url: 'https://science.nasa.gov/earth/earth-observatory/glacier-collapse-buries-swiss-village-154387/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_WORLDVIEW_BLATTEN: Source = {
+  id: 'nasa-worldview-blatten-2025',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — Harmonized Landsat and Sentinel-2 pictures from Sentinel-2 (HLSS30 v2.0, NASA LP DAAC, doi:10.5067/HLS/HLSS30.002) of the Lötschental, 18 May to 12 June 2025, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=7.78,46.38,7.86,46.46&l=HLS_S30_Nadir_BRDF_Adjusted_Reflectance&t=2025-05-30',
+  retrieved: '2026-10-25',
+};
+
+export const JPL_HORIZONS_TURN_BLATTEN_2025_EARTH: Source = {
+  id: 'jpl-horizons-turn-blatten2025earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2025-05-18 10:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272460813.917467421%27',
+  retrieved: '2026-10-25',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

@@ -1321,8 +1321,19 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       a section on the grown-ups' page saying what is recorded, worked out and drawn, with
       the sources and a note on how these events are told to a child; keyboard, screen reader
       and reduced motion; layout tests at the five screen sizes.
-- [ ] 14.14 Later, each its own story if wanted: lightning, the water cycle, the monsoon, a
-      flood, an avalanche.
+- [~] 14.14 Asked for on 2026-10-25. Done on 2026-10-25: **An avalanche**, the Birch Glacier
+      breaking away above Blatten (Switzerland) on 28 May 2025, in seven parts, in English and
+      Vietnamese, recorded. Each part is a real picture from NASA's Harmonized Landsat and
+      Sentinel-2 pictures (Sentinel-2, 30 metres to a pixel, from NASA Worldview: 18 May,
+      30 May, 12 June); the sentences rest on NASA Earth Observatory's "Glacier Collapse Buries
+      Swiss Village", which says people had left by 19 May. A valley is too small to see on the
+      globe, and a few kilometres there are lost to the precision of the scene's numbers, so a
+      story can now show its pictures up close (`groundPictures.upClose`): the picture flat, at
+      its real shape on the ground, with a scale bar (`pictureSpanKm`, `scaleBarKm`), and a
+      button to see the first picture again; the globe beside it stands back, with a ring round
+      the place. A new kind of Earth story, "Land and ice". Left: lightning, the water cycle,
+      the monsoon, a flood. As planned: Later, each its own story if wanted: lightning, the
+      water cycle, the monsoon, a flood, an avalanche.
 
 **Part two: how the land is shaped** (asked for on 2026-10-11: mountains, rivers, canyons, a
 sand storm). A sand storm is a fast event like the ones above. The others are slow: nobody

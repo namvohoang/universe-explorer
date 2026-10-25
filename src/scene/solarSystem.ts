@@ -18,7 +18,12 @@ import {
 import { createScale, type Scale } from '../sim/scale';
 import { add, cross, dot, length, scale as scaleBy, subtract, type Vec3 } from '../sim/vec3';
 import { createAuroraRings, type AuroraRings, type AuroraShape } from './auroraRings';
-import { createGroundPicture, type GroundPicture, type PictureBox } from './groundPicture';
+import {
+  createGroundPicture,
+  createPlaceMark,
+  type GroundPicture,
+  type PictureBox,
+} from './groundPicture';
 import { createQuakeWaves, type QuakeStation, type QuakeWaves } from './quakeWaves';
 import { createStormCloud, type StormCloud } from './stormCloud';
 import { createTideBulge, type TideBulge } from './tideBulge';
@@ -291,6 +296,14 @@ export interface SolarSystem {
    */
   showGroundPicture(index: number | null): void;
   /**
+   * A ring on a body's ground round one place, given as degrees east and north, riding round
+   * with the body: for a place too small to see from space. `null` takes it away.
+   */
+  setPlaceMark(
+    onId: string | null,
+    place: readonly [lonDegEast: number, latDegNorth: number],
+  ): void;
+  /**
    * Puts the storm's cloud over a place, so wide (an angle at the body's centre) and turned so
    * far, with the line of where it has been drawn through the first `passed` places of its
    * track; `null` for a date its record says nothing of.
@@ -422,6 +435,7 @@ export function createSolarSystem(
   let tsunami: TsunamiFront | null = null;
   let tide: { readonly onId: string; readonly bulge: TideBulge } | null = null;
   let groundPictures: GroundPicture[] = [];
+  let placeMark: GroundPicture | null = null;
   /** How many sights a sky track is drawn through, and how far off it is drawn, in scene units. */
   const SKY_TRACK_STEPS = 400;
   const SKY_TRACK_FAR = 200_000;
@@ -1054,6 +1068,15 @@ export function createSolarSystem(
       if (!body || !pictures) return;
       groundPictures = pictures.map(({ box, url }) => createGroundPicture(box, url));
       for (const picture of groundPictures) body.frame.add(picture.mesh);
+    },
+    setPlaceMark(onId, place) {
+      placeMark?.mesh.removeFromParent();
+      placeMark?.dispose();
+      placeMark = null;
+      const body = onId === null ? undefined : bodies.get(onId);
+      if (!body) return;
+      placeMark = createPlaceMark(place[0], place[1]);
+      body.frame.add(placeMark.mesh);
     },
     showGroundPicture(index) {
       for (const [at, picture] of groundPictures.entries()) picture.show(at === index);

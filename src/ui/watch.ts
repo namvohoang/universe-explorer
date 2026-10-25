@@ -58,6 +58,7 @@ const GROUP_LABELS: Readonly<Record<StoryGroup, string>> = {
 const KIND_LABELS: Readonly<Record<StoryKind, string>> = {
   'inside-earth': words.watchKindInsideEarth,
   weather: words.watchKindWeather,
+  land: words.watchKindLand,
   'sea-and-moon': words.watchKindSeaAndMoon,
 };
 const GROUP_ICONS: Readonly<Record<StoryGroup, IconName>> = {

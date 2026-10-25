@@ -111,7 +111,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsEarth1:
     'Mỗi câu chuyện là một sự kiện có thật, được chọn vì nó được đo đạc kỹ và gây ít hoặc không gây thiệt hại, và được kể qua những gì mặt đất, biển và không khí đã làm. Không câu chuyện nào nêu số người bị hại. Cơn bão vào Việt Nam là ngoại lệ của “không thiệt hại”: đã có người thiệt mạng ở Philippines và Việt Nam, và câu chuyện kể về cảnh báo và việc người dân đi sơ tán.',
   grownUpsEarth2:
-    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi và tro núi lửa, là những gì vệ tinh của NASA hoặc NOAA nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp.',
+    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa và trận lở băng, là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; một thung lũng quá nhỏ để thấy trên quả địa cầu thì được bày phẳng bên cạnh, đúng hình dạng thật.',
   grownUpsEarth3:
     'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn. Một lý do có thể đúng, mà ứng dụng chưa kiểm chứng, là các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
   grownUpsEarth4:
@@ -1087,6 +1087,24 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoDayLater: 'Một ngày sau, từ vũ trụ chỉ còn thấy một vệt tro mờ nhạt.',
   storyVolcanoPilots:
     'Tro không mềm như khói. Đó là những mảnh đá và thủy tinh li ti, sắc nhọn, rất nguy hiểm cho máy bay. Vì thế hai trung tâm, ở Tokyo và ở Anchorage, đã theo dõi đám tro và cảnh báo cho phi công.',
+  storyAvalancheTitle: 'Một trận lở băng',
+  storyAvalancheNote: 'Đây là ảnh thật, chụp từ vũ trụ vào từng ngày.',
+  storyAvalanchePictureAlt:
+    'Một thung lũng xanh giữa những ngọn núi phủ tuyết, nhìn từ vũ trụ. Sau trận lở, một dải đá và băng rộng màu nâu xám nằm vắt ngang đáy thung lũng.',
+  storyAvalancheValley:
+    'Đây là một thung lũng trên cao ở dãy Alps, nước Thụy Sĩ. Trên núi có sông băng Birch. Sông băng là một cánh đồng băng khổng lồ trượt xuống núi rất chậm. Bên dưới là một ngôi làng tên là Blatten.',
+  storyAvalancheRock:
+    'Vào tháng 5 năm 2025, đỉnh núi đá phía trên sông băng bắt đầu vỡ vụn. Đá rơi xuống ngày càng nhiều và chất đống trên mặt băng.',
+  storyAvalancheLeave:
+    'Mọi người thấy sườn núi không còn an toàn. Đến ngày 19 tháng 5, tất cả mọi người đã rời khỏi làng.',
+  storyAvalancheFaster:
+    'Sông băng bắt đầu trượt ngày càng nhanh. Đến ngày 27 tháng 5, mỗi ngày nó trượt xuống núi khoảng 10 mét.',
+  storyAvalancheBreaks:
+    'Chiều ngày 28 tháng 5, sông băng vỡ ra. Đá và băng ào xuống, phủ lấp gần hết ngôi làng. Ảnh này chụp hai ngày sau đó: dải màu xám chính là trận lở.',
+  storyAvalancheRiver:
+    'Đá và băng trải dài 2,5 ki-lô-mét dọc thung lũng. Chúng chặn dòng sông, nên nước dâng lên và làm ngập một phần thung lũng.',
+  storyAvalancheLearning:
+    'Ở dãy Alps, chuyện lớn như thế này rất hiếm. Các nhà khoa học vẫn đang tìm hiểu mọi nguyên nhân gây ra nó.',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
@@ -1183,6 +1201,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchGroupEarthAtWork: 'Trái Đất chuyển động',
   watchKindInsideEarth: 'Lòng đất',
   watchKindWeather: 'Thời tiết',
+  watchKindLand: 'Đất và băng',
   watchKindSeaAndMoon: 'Biển và Mặt Trăng',
   watchParts: 'Các phần của câu chuyện',
   storyQuakePlatesName: 'Các mảng đá',
@@ -1202,6 +1221,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoHowHighName: 'Cao bao nhiêu',
   storyVolcanoDayLaterName: 'Một ngày sau',
   storyVolcanoPilotsName: 'Phi công',
+  storyAvalancheValleyName: 'Thung lũng',
+  storyAvalancheRockName: 'Đá chất đống',
+  storyAvalancheLeaveName: 'Mọi người rời đi',
+  storyAvalancheFasterName: 'Nhanh hơn',
+  storyAvalancheBreaksName: 'Sông băng vỡ',
+  storyAvalancheRiverName: 'Dòng sông',
+  storyAvalancheLearningName: 'Vẫn đang tìm hiểu',
   storyHurricaneBornName: 'Bắt đầu',
   storyHurricaneWarmSeaName: 'Biển ấm',
   storyHurricaneSpinsName: 'Xoay tròn',
@@ -1258,6 +1284,11 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPaneWhole: 'Toàn cảnh',
   watchLookAir: 'Xem không khí chuyển động',
   watchLookPull: 'Xem Mặt Trăng kéo thế nào',
+  watchScaleBarKm: '{km} km',
+  watchLookBefore: 'Xem lúc trước',
+  watchLookThisDay: 'Quay lại ngày này',
+  scaleLabelPictureSlice:
+    'Hình nhìn gần là ảnh thật chụp từ vũ trụ. Bên cạnh là vị trí của nó trên Trái Đất.',
   watchLookArrowsOff: 'Ẩn các mũi tên',
   watchLookCutOpen: 'Cắt đôi ngọn núi',
   watchLookWholeMountain: 'Xem cả ngọn núi',

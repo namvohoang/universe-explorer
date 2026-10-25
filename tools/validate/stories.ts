@@ -622,6 +622,7 @@ export function checkStories(
         !story.quake &&
         !story.tsunami &&
         !story.tide &&
+        story.groundPictures?.upClose !== true &&
         story.id !== 'volcano-raikoke' &&
         story.id !== 'sahara-dust'
       ) {

@@ -5,7 +5,7 @@ import type { Source, Sourced } from './source';
 /** The rows the Watch screen sorts its stories into, in the order shown. */
 export const STORY_GROUPS = ['sky-events', 'space-flights', 'earth-at-work'] as const;
 /** Kinds of story within Earth at work, shown together in its row: what the ground, the air and the sea do. */
-export const STORY_KINDS = ['inside-earth', 'weather', 'sea-and-moon'] as const;
+export const STORY_KINDS = ['inside-earth', 'weather', 'land', 'sea-and-moon'] as const;
 export type StoryKind = (typeof STORY_KINDS)[number];
 export type StoryGroup = (typeof STORY_GROUPS)[number];
 
@@ -602,6 +602,12 @@ export interface Story {
     /** Catalogue id of the world. */
     readonly onId: string;
     readonly pictures: readonly StormPicture[];
+    /**
+     * Set for a place too small to see on the globe (one valley): a part of the story with
+     * `slice` shows the picture itself up close, flat, beside the globe, which then stands
+     * back far enough to show where on the world the place is.
+     */
+    readonly upClose?: true;
   };
   /**
    * An earthquake's first wave crossing a world, from the record of when each station felt

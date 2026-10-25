@@ -677,6 +677,16 @@ export const NARRATION: Readonly<
     fingerprint: '4203e0ae',
     starts: [0.0, 2.15, 12.5, 17.57, 28.5, 39.95, 52.45],
   },
+  'story-volcano-raikoke': {
+    file: 'public/voice/story-volcano-raikoke.mp3',
+    fingerprint: '1689fe84',
+    starts: [0.0, 2.27, 14.85, 27.02, 37.65, 49.1, 54.6],
+  },
+  'story-avalanche-blatten': {
+    file: 'public/voice/story-avalanche-blatten.mp3',
+    fingerprint: '8cbf17e3',
+    starts: [0.0, 2.25, 15.93, 24.75, 31.23, 40.35, 53.38, 62.85],
+  },
   'story-hurricane-sam': {
     file: 'public/voice/story-hurricane-sam.mp3',
     fingerprint: '7c6dcbe5',
@@ -692,19 +702,14 @@ export const NARRATION: Readonly<
     fingerprint: '24f2169a',
     starts: [0.0, 2.23, 9.2, 20.88, 30.25, 40.23],
   },
-  'story-volcano-raikoke': {
-    file: 'public/voice/story-volcano-raikoke.mp3',
-    fingerprint: '1689fe84',
-    starts: [0.0, 2.27, 14.85, 27.02, 37.65, 49.1, 54.6],
+  'story-sahara-dust': {
+    file: 'public/voice/story-sahara-dust.mp3',
+    fingerprint: '4cb02027',
+    starts: [0.0, 2.23, 14.07, 23.4, 32.55, 41.0, 52.9],
   },
   'story-tides': {
     file: 'public/voice/story-tides.mp3',
     fingerprint: '75a932d3',
     starts: [0.0, 2.1, 10.45, 20.45, 30.23, 39.45],
-  },
-  'story-sahara-dust': {
-    file: 'public/voice/story-sahara-dust.mp3',
-    fingerprint: '4cb02027',
-    starts: [0.0, 2.23, 14.07, 23.4, 32.55, 41.0, 52.9],
   },
 };

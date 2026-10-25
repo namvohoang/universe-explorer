@@ -19,6 +19,7 @@ import { seasons } from './seasons';
 import { shuttleDocking } from './shuttleDocking';
 import { solarEclipse } from './solarEclipse';
 import { supermoon } from './supermoon';
+import { avalancheBlatten } from './avalancheBlatten';
 import { tides } from './tides';
 import { tornadoTescott } from './tornadoTescott';
 import { volcanoRaikoke } from './volcanoRaikoke';
@@ -47,6 +48,7 @@ export const stories: readonly Story[] = [
   earthquakeFiji,
   tsunamiKermadec,
   volcanoRaikoke,
+  avalancheBlatten,
   hurricaneSam,
   typhoonNoru,
   tornadoTescott,

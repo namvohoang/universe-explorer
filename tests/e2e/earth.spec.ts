@@ -145,7 +145,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(8);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(9);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -198,6 +198,26 @@ test.describe('the Earth screen', () => {
     );
     await expect.poll(() => pictures.length).toBe(4);
     await expect(page.locator('.pane:visible')).toHaveCount(2);
+  });
+
+  test('shows an avalanche in a valley up close, real and flat, beside where it is on the globe', async ({
+    page,
+  }) => {
+    const pictures: string[] = [];
+    page.on('response', (response) => {
+      if (/stories\/blatten-.*\.webp/.test(response.url()) && response.ok())
+        pictures.push(response.url());
+    });
+    await page.goto('/#earth/avalanche-blatten');
+    await expect(page.locator('.watch-caption h2')).toHaveText('An avalanche');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 7');
+    await expect(page.locator('.watch-date')).toContainText('18 May 2025');
+    await expect.poll(() => pictures.length).toBe(3);
+    await expect(page.locator('.pane:visible')).toHaveCount(2);
+    // A real picture is not called a drawing.
+    const closeUp = page.locator('.pane:visible .pane-label').first();
+    await expect(closeUp).toHaveText('Close up');
+    await expect(page.locator('.watch-row').getByText('Land and ice')).toBeVisible();
   });
 
   test('tells an earthquake to the second, and says what is recorded and what is worked out', async ({

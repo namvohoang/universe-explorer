@@ -3,6 +3,7 @@ import {
   BufferGeometry,
   CanvasTexture,
   Mesh,
+  MeshBasicMaterial,
   MeshLambertMaterial,
   SRGBColorSpace,
   TextureLoader,
@@ -108,6 +109,55 @@ export function patchGeometry(
   geometry.setIndex(indices);
 
   return geometry;
+}
+
+/** How far the ring round a place reaches from it, in degrees of latitude: a drawing choice. */
+const MARK_REACH_DEG = 0.7;
+const MARK_PIXELS = 128;
+const MARK_COLOR = '#ffd23f';
+
+/**
+ * A ring on the ground round one place, for a place far too small to see from space. Its
+ * patch is wider in longitude by one over the cosine of the latitude, so the ring is round on
+ * the ground. It is not lit: it is a mark, not part of the world.
+ */
+export function createPlaceMark(lonDegEast: number, latDegNorth: number): GroundPicture {
+  const across = MARK_REACH_DEG / Math.cos(latDegNorth * DEG);
+  const geometry = patchGeometry(
+    {
+      westDeg: lonDegEast - across,
+      southDeg: latDegNorth - MARK_REACH_DEG,
+      eastDeg: lonDegEast + across,
+      northDeg: latDegNorth + MARK_REACH_DEG,
+    },
+    PICTURE_LIFT,
+  );
+  const canvas = document.createElement('canvas');
+  canvas.width = MARK_PIXELS;
+  canvas.height = MARK_PIXELS;
+  const context = canvas.getContext('2d');
+  if (context) {
+    context.strokeStyle = MARK_COLOR;
+    context.lineWidth = MARK_PIXELS * 0.08;
+    context.beginPath();
+    context.arc(MARK_PIXELS / 2, MARK_PIXELS / 2, MARK_PIXELS * 0.42, 0, 2 * Math.PI);
+    context.stroke();
+  }
+  const map = new CanvasTexture(canvas);
+  map.colorSpace = SRGBColorSpace;
+  const material = new MeshBasicMaterial({ map, transparent: true, depthWrite: false });
+  const mesh = new Mesh(geometry, material);
+  return {
+    mesh,
+    show(now) {
+      mesh.visible = now;
+    },
+    dispose() {
+      geometry.dispose();
+      material.dispose();
+      map.dispose();
+    },
+  };
 }
 
 export function createGroundPicture(box: PictureBox, url: string): GroundPicture {

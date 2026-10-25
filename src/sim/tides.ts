@@ -1,4 +1,4 @@
-import { add, dot, length, normalize, scale, subtract, type Vec3 } from './vec3';
+import { add, cross, dot, length, normalize, scale, subtract, type Vec3 } from './vec3';
 
 /** Something that raises a tide on a world: its mass, and where it is from the world's middle. */
 export interface TideRaiser {
@@ -65,11 +65,19 @@ export function tidePulls(raisers: readonly TideRaiser[]): (towards: Vec3) => Ve
   };
 }
 
+/** A direction or a pull as it is seen at one place on a world: along east, up and north. */
+export interface InSky {
+  readonly east: number;
+  readonly up: number;
+  readonly north: number;
+}
+
 /**
- * Which way a place on the equator lies from the world's middle, once the world has turned
- * `turnRad` about its pole (scene axes: the pole is up, +y, and the turn is anticlockwise
- * seen from over it, as three.js turns a mesh about y).
+ * A vector split along a place's east, up and north, for a place on its world's equator:
+ * `up` is straight up there and `pole` the world's north pole, both unit vectors in the same
+ * axes as `v`. Its length is kept, so a direction gives where it lies in the place's sky, and
+ * a pull how much of it is along the ground and how much straight up.
  */
-export function equatorPoint(turnRad: number): Vec3 {
-  return { x: Math.cos(turnRad), y: 0, z: -Math.sin(turnRad) };
+export function inSkyAtEquator(v: Vec3, up: Vec3, pole: Vec3): InSky {
+  return { east: dot(v, cross(pole, up)), up: dot(v, up), north: dot(v, pole) };
 }

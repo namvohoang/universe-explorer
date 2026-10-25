@@ -47,7 +47,7 @@ import {
   type WaveFront,
   waveReachKm,
 } from './sim/seismic';
-import { tideHeights, tidePulls, type TideRaiser } from './sim/tides';
+import { inSkyAtEquator, tideHeights, tidePulls, type TideRaiser } from './sim/tides';
 import {
   galeReachKm,
   sliceShares,
@@ -58,7 +58,7 @@ import {
 } from './sim/storm';
 import { farSkyRadius, onFarSky } from './sim/farSky';
 import { bodyRadiusKm, eclipticOffsetKm, scenePositions } from './sim/layout';
-import { spinAngleRad } from './sim/spin';
+import { phaseAngleRad } from './sim/phase';
 import { noonToNoonDays, seasonsAt, starLatitudeDeg, type Season } from './sim/seasons';
 import {
   bodyFramePoint,
@@ -2087,28 +2087,16 @@ function start(): void {
     readonly raisers: readonly { readonly object: CelestialObject; readonly massKg: number }[];
   } | null = null;
   let watchTideSlice: TideSlice | null = null;
-  /** The close-up of how the tides work, with Earth and its Moon from the catalogue. */
+  /** The close-up of the tides at a shore, with the Moon's map from the catalogue. */
   const tideCloseUp = (story: Story): TideSlice | null => {
-    const earth = catalogue.find((object) => object.id === story.tide?.onId);
     const moon = catalogue.find(
       (object) => story.tide?.raiserIds.includes(object.id) === true && object.kind !== 'star',
     );
-    const earthRadiusKm = earth ? bodyRadiusKm(earth) : null;
-    const moonRadiusKm = moon ? bodyRadiusKm(moon) : null;
-    if (!earth || !moon || earth.shape?.type !== 'spheroid' || !earthRadiusKm || !moonRadiusKm) {
-      return null;
-    }
-    const mapOf = (object: CelestialObject): string | null => {
-      const map = object.media.find((media) => media.role === 'surface-map');
-      return map ? mediaUrl(map.file) : null;
-    };
-    return createTideSlice({
-      earthMapUrl: mapOf(earth),
-      moonMapUrl: mapOf(moon),
-      moonRadiusRatio: moonRadiusKm / earthRadiusKm,
-      earthPoleRatio: earth.shape.polarRadiusKm.value / earth.shape.equatorialRadiusKm.value,
-    });
+    const map = moon?.media.find((media) => media.role === 'surface-map');
+    return createTideSlice({ moonMapUrl: map ? mediaUrl(map.file) : null });
   };
+  /** A shore on the equator, where the close-up of the tides is drawn. */
+  const TIDE_SHORE_PLACE = bodyFramePoint({ lonDegEast: 0, latDeg: 0, altitudeKm: 0 }, 1);
   /** Draws a story's tides: the sea of its world, and a line towards each thing that pulls on it. */
   const showTide = (story: Story): void => {
     watchTideSlice?.dispose();
@@ -2159,15 +2147,28 @@ function start(): void {
     if (diagram) {
       diagram.system.showTide(heights, offsets);
     }
-    const moonPull = pulls.find((_, index) => raisers[index]?.object.kind !== 'star');
-    const sunPull = pulls.find((_, index) => raisers[index]?.object.kind === 'star');
-    if (watchTideSlice && moonPull && sunPull && world.shape?.type === 'spheroid') {
+    const moonIndex = raisers.findIndex(({ object }) => object.kind !== 'star');
+    const sunIndex = raisers.findIndex(({ object }) => object.kind === 'star');
+    const moonPull = pulls[moonIndex];
+    const sunPull = pulls[sunIndex];
+    const moonRadiusKm = raisers[moonIndex] ? bodyRadiusKm(raisers[moonIndex].object) : null;
+    const sunRadiusKm = raisers[sunIndex] ? bodyRadiusKm(raisers[sunIndex].object) : null;
+    if (watchTideSlice && moonPull && sunPull && moonRadiusKm && sunRadiusKm) {
+      // The shore's up and Earth's pole, from Earth as it is drawn turned at this date.
+      const middle = system.groundPointOf(world.id, { x: 0, y: 0, z: 0 });
+      const up = normalize(subtract(system.groundPointOf(world.id, TIDE_SHORE_PLACE), middle));
+      const pole = system.northOf(world.id);
+      const inSky = (v: Vec3) => inSkyAtEquator(v, up, pole);
+      const looks = (radiusKm: number, offsetKm: Vec3): number =>
+        Math.asin(Math.min(1, radiusKm / length(offsetKm)));
       watchTideSlice.set({
-        height: heights,
-        pull: tidePulls(pulls),
-        moon: moonPull.offsetKm,
-        sun: sunPull.offsetKm,
-        turnRad: spinAngleRad(world.shape.orientation, jd),
+        height: heights(up),
+        pull: inSky(tidePulls(pulls)(up)),
+        moon: inSky(normalize(moonPull.offsetKm)),
+        sun: inSky(normalize(sunPull.offsetKm)),
+        moonAngularRadiusRad: looks(moonRadiusKm, moonPull.offsetKm),
+        sunAngularRadiusRad: looks(sunRadiusKm, sunPull.offsetKm),
+        moonPhaseRad: phaseAngleRad(moonPull.offsetKm, sunPull.offsetKm, { x: 0, y: 0, z: 0 }),
       });
     }
   };

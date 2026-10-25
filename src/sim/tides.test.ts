@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { catalogue } from '../data/catalogue';
 import { isKnown } from '../data/types';
 import { eclipticOffsetKm } from './layout';
-import { equatorPoint, tideHeights, tidePulls, tideStrength, type TideRaiser } from './tides';
+import { inSkyAtEquator, tideHeights, tidePulls, tideStrength, type TideRaiser } from './tides';
 import { scale, type Vec3 } from './vec3';
 
 const moon: TideRaiser = { massKg: 1, offsetKm: { x: 10, y: 0, z: 0 } };
@@ -111,12 +111,20 @@ describe('tidePulls', () => {
   });
 });
 
-describe('equatorPoint', () => {
-  it('gives a shore two high tides and two low ones in a turn', () => {
+/** A place on the equator once a world with its pole up has turned `turnRad`. */
+const onEquator = (turnRad: number): Vec3 => ({
+  x: Math.cos(turnRad),
+  y: 0,
+  z: -Math.sin(turnRad),
+});
+const POLE: Vec3 = { x: 0, y: 1, z: 0 };
+
+describe('a shore on the equator', () => {
+  it('has two high tides and two low ones in a turn', () => {
     const height = tideHeights([moon]);
     const steps = 360;
     const along = Array.from({ length: steps }, (_, i) =>
-      height(equatorPoint((i / steps) * 2 * Math.PI)),
+      height(onEquator((i / steps) * 2 * Math.PI)),
     );
     const highs = along.filter((h, i) => {
       const before = along[(i + steps - 1) % steps] ?? 0;
@@ -127,9 +135,26 @@ describe('equatorPoint', () => {
     expect(Math.min(...along)).toBeCloseTo(-0.5, 6);
   });
 
-  it('turns anticlockwise seen from over the pole', () => {
-    const quarter = equatorPoint(Math.PI / 2);
-    expect(quarter.x).toBeCloseTo(0, 12);
-    expect(quarter.z).toBeCloseTo(-1, 12);
+  it('sees overhead what lies straight out from it, and the pole at its north', () => {
+    const up = onEquator(0.7);
+    expect(inSkyAtEquator(up, up, POLE).up).toBeCloseTo(1, 12);
+    expect(inSkyAtEquator(POLE, up, POLE).north).toBeCloseTo(1, 12);
+  });
+
+  it('sees the sky turn from east to west as the world turns', () => {
+    // Something fixed in the sky rises: from the east horizon, a little later it is higher.
+    const star = onEquator(Math.PI / 2);
+    const rising = inSkyAtEquator(star, onEquator(0), POLE);
+    expect(rising.east).toBeCloseTo(1, 12);
+    expect(rising.up).toBeCloseTo(0, 12);
+    expect(inSkyAtEquator(star, onEquator(0.1), POLE).up).toBeGreaterThan(0);
+  });
+
+  it('splits the pull at the shore into along the ground and straight up', () => {
+    const pull = tidePulls([moon]);
+    // Under the Moon the pull is all straight up; between, part of it runs along the ground.
+    expect(inSkyAtEquator(pull(onEquator(0)), onEquator(0), POLE).east).toBeCloseTo(0, 12);
+    const between = inSkyAtEquator(pull(onEquator(Math.PI / 4)), onEquator(Math.PI / 4), POLE);
+    expect(Math.abs(between.east)).toBeGreaterThan(0.5);
   });
 });

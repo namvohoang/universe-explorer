@@ -1191,7 +1191,7 @@ export const en = {
   scaleLabelQuakeBlock: 'The ground cut open is a drawing. How deep and when are real.',
   scaleLabelTsunamiSlice: 'The sea cut open is a drawing, made taller. How the wave slows is real.',
   scaleLabelVolcanoSlice: 'The volcano cut open is a drawing. How high the ash rose is real.',
-  scaleLabelTideSlice: 'The sea’s swelling is drawn much bigger, and the Moon much closer.',
+  scaleLabelTideSlice: 'The shore is a drawing. The Sun and the Moon are drawn bigger in its sky.',
   scaleLabelDustSlice: 'The dust storm up close is a drawing. The view from space is real.',
   scaleLabelTornado: 'The path and the width of the funnel are real. The rest is a drawing.',
   scaleLabelSlice: 'The storm up close is a drawing. Its path and spin are real.',

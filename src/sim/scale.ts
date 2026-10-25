@@ -197,24 +197,24 @@ export function createScale<Mode extends ScaleMode | DrawingMode>(
 }
 
 /**
- * The tides close-up, a drawing with Earth's radius as its unit. Earth and the Moon keep their
- * true sizes next to each other; the Moon is drawn far closer than its real 60 Earth radii,
- * and the sea's swelling enormously bigger than life. The screen says both.
+ * The tides close-up: a drawing of one shore, with no real size of its own. How high the water
+ * stands follows the tide the app works out, but no real height is drawn. The Sun and the Moon
+ * are drawn bigger in its sky, both by the same factor, so they keep their real sizes next to
+ * each other: about the same. The screen says both are drawn.
  */
-export const TIDE_CLOSE_UP = {
-  /** How far the Moon is drawn from Earth's middle, in Earth radii. */
-  moonAwayRadii: 3.4,
-  /** How far the sea stands off the ground where the tide is level, in Earth radii. */
-  seaLiftRadii: 0.22,
-  /** How much further out it stands for a tide of 1 (the Moon's own high tide alone). */
-  drawnTideRadii: 0.26,
+export const TIDE_SHORE = {
+  /** How high the water stands on the drawing where the tide is level, in drawing units. */
+  levelAtZero: 0.05,
+  /** How much higher it stands for a tide of 1 (the Moon's own high tide alone). */
+  levelPerTide: 0.9,
+  /** How much bigger the Sun and the Moon are drawn in the sky than they really look. */
+  skyMagnification: 16,
 } as const;
 
 /**
- * How far from Earth's middle the close-up draws the sea, in Earth radii, for a tide of
- * `height` (as `tideHeights` gives it). The lowest sea there can be, -0.8 where the Moon's and
- * the Sun's tides are both low, with the Sun's at its strongest, still stands off the ground.
+ * How high the close-up draws the water at its shore, in drawing units, for a tide of
+ * `height` (as `tideHeights` gives it).
  */
-export function tideCloseUpSeaRadii(height: number): number {
-  return 1 + TIDE_CLOSE_UP.seaLiftRadii + TIDE_CLOSE_UP.drawnTideRadii * height;
+export function tideShoreLevel(height: number): number {
+  return TIDE_SHORE.levelAtZero + TIDE_SHORE.levelPerTide * height;
 }

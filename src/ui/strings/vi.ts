@@ -1242,7 +1242,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   scaleLabelQuakeBlock: 'Khối đất cắt ra là hình vẽ. Độ sâu và thời điểm là thật.',
   scaleLabelTsunamiSlice: 'Hình cắt biển là hình vẽ, được kéo cao. Cách sóng chậm lại là thật.',
   scaleLabelVolcanoSlice: 'Núi lửa cắt ra là hình vẽ. Độ cao tro bụi bốc lên là thật.',
-  scaleLabelTideSlice: 'Chỗ biển phồng được vẽ to hơn nhiều, Mặt Trăng được vẽ gần hơn nhiều.',
+  scaleLabelTideSlice: 'Bờ biển là hình vẽ. Mặt Trời và Mặt Trăng được vẽ to hơn trên bầu trời.',
   scaleLabelDustSlice: 'Bão bụi nhìn gần là hình vẽ. Ảnh chụp từ vũ trụ là thật.',
   scaleLabelTornado: 'Đường đi và bề rộng của vòi lốc là thật. Phần còn lại là hình vẽ.',
   scaleLabelSlice: 'Cơn bão nhìn gần là hình vẽ. Đường đi và hướng xoay là thật.',

@@ -1301,7 +1301,13 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       are (so spring and neap tides come from the catalogue, not set by hand), the Moon on
       its path drawn closer (`TIDE_CLOSE_UP` in `src/sim/scale.ts`), sunlight from the Sun, a
       post on a shore with a ring where the water stands, and arrows of the pull that raises
-      the tide (`tidePulls`). As planned: **The tides**: `orbits`, with no new source. The sea's two bulges following the
+      the tide (`tidePulls`). Redrawn again on 2026-10-25, as the globe was the same picture as
+      the whole one beside it: the close-up is a shore on the equator, seen from the side, with a
+      tide post. The water stands as high as `tideHeights` puts it there, so it runs up and down
+      the sand twice a day and further at spring tides. The Sun and the Moon are in the shore's
+      sky where they really are (`inSkyAtEquator`), the Moon in its real phase and both drawn
+      bigger by one factor (`TIDE_SHORE` in `src/sim/scale.ts`). One below the ground is drawn
+      faintly through it, and the arrow is the pull at the shore. As planned: **The tides**: `orbits`, with no new source. The sea's two bulges following the
       Moon, and the bigger tides when the Sun and Moon line up, from the catalogue's own
       positions. Ties Earth's stories to the sky ones.
 - [ ] 14.12 How big? In Compare: a tornado, a thunderstorm, a hurricane, the country of

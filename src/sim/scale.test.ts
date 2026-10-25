@@ -3,7 +3,7 @@ import { catalogue } from '../data/catalogue';
 import type { CelestialObject } from '../data/types';
 import { KM_PER_AU } from './constants';
 import { bodyRadiusKm } from './layout';
-import { SCALE_MODES, TIDE_CLOSE_UP, createScale, tideCloseUpSeaRadii, type Scale } from './scale';
+import { SCALE_MODES, TIDE_SHORE, createScale, tideShoreLevel, type Scale } from './scale';
 
 const radiusKm = (object: CelestialObject): number => {
   const radius = bodyRadiusKm(object);
@@ -318,17 +318,8 @@ describe.each(SCALE_MODES)('%s mode', (mode) => {
 });
 
 describe('the tides close-up', () => {
-  it('keeps the sea off the ground at the lowest tide there can be', () => {
-    // Two raisers can at most add their shares: -1/2 each at right angles to both, and the
-    // Sun's share stays under 0.6 of the Moon's (tides.test.ts).
-    expect(tideCloseUpSeaRadii(-0.5 * 1.6)).toBeGreaterThan(1);
-  });
-
-  it('draws a higher tide further out', () => {
-    expect(tideCloseUpSeaRadii(1.5)).toBeGreaterThan(tideCloseUpSeaRadii(0.5));
-  });
-
-  it('draws the Moon well clear of the highest sea', () => {
-    expect(TIDE_CLOSE_UP.moonAwayRadii).toBeGreaterThan(tideCloseUpSeaRadii(1.6) + 1);
+  it('draws a higher tide higher up the shore', () => {
+    expect(tideShoreLevel(1.5)).toBeGreaterThan(tideShoreLevel(0.5));
+    expect(tideShoreLevel(0)).toBe(TIDE_SHORE.levelAtZero);
   });
 });

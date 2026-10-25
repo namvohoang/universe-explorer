@@ -23,7 +23,9 @@ import { createTsunamiSlice, type TsunamiSlice } from './scene/tsunamiSlice';
 import { createVolcanoSlice, type VolcanoSlice } from './scene/volcanoSlice';
 import { createTideSlice, type TideSlice } from './scene/tideSlice';
 import { createDustSlice, type DustSlice } from './scene/dustSlice';
-import { createPictureSlice, type PictureSlice } from './scene/pictureSlice';
+import { createAvalancheSlice, type AvalancheSlice } from './scene/avalancheSlice';
+import type { PictureBoardOptions } from './scene/pictureBoard';
+import { BLATTEN_AVALANCHE } from './data/stories/avalancheBlatten';
 import { pictureSpanKm, scaleBarKm } from './sim/pictureSpan';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
@@ -651,13 +653,11 @@ function start(): void {
       },
       {
         box: side,
-        // Every look up close at a story's drawing says it is a drawing; a real picture is not one.
+        // Every look up close at a story's drawing says it is a drawing.
         label: cut
           ? cut === tornadoDrawing?.scene
             ? words.watchPaneTornado
-            : Object.is(cut, watchPictureSlice)
-              ? words.watchPaneClose
-              : words.watchPaneQuakeBlock
+            : words.watchPaneQuakeBlock
           : modelled
             ? words.watchPaneWhole
             : close
@@ -1949,8 +1949,11 @@ function start(): void {
   let watchPictured: readonly (readonly [fromJd: number, untilJd: number])[] = [];
   let watchVolcanoSlice: VolcanoSlice | null = null;
   let watchDustSlice: DustSlice | null = null;
-  /** The close look of a story told in pictures of a place too small to see on the globe. */
-  let watchPictureSlice: PictureSlice | null = null;
+  /**
+   * The 3D close look of a story told in pictures of a place too small to see on the globe,
+   * whose button swaps the drawing for the real picture of the moment.
+   */
+  let watchPictureSlice: AvalancheSlice | null = null;
   /** The share of a picture's width the scale bar under it may take. */
   const SCALE_BAR_SHARE = 0.45;
   /** Lays a story's real pictures of the ground, of its storm or of anything else, ready to show. */
@@ -1980,15 +1983,26 @@ function start(): void {
     if (upClose && box && worldKm) {
       const span = pictureSpanKm(box, worldKm);
       const barKm = scaleBarKm(span.widthKm * SCALE_BAR_SHARE);
-      watchPictureSlice = createPictureSlice({
+      const number = new Intl.NumberFormat(language);
+      const real: PictureBoardOptions = {
         urls: upClose.pictures.map(({ media }) => mediaUrl(media.file)),
         widthKm: span.widthKm,
         heightKm: span.heightKm,
         barKm,
-        barLabel: fill(words.watchScaleBarKm, {
-          km: new Intl.NumberFormat(language).format(barKm),
-        }),
-      });
+        barLabel: fill(words.watchScaleBarKm, { km: number.format(barKm) }),
+      };
+      if (story.id === 'avalanche-blatten') {
+        const { runoutKm, runUpKm, breaksJd, pilingFromJd } = BLATTEN_AVALANCHE;
+        watchPictureSlice = createAvalancheSlice({
+          runoutKm: runoutKm.value,
+          runUpKm: runUpKm.value,
+          breaksJd: breaksJd.value,
+          pilingFromJd: pilingFromJd.value,
+          runoutLabel: fill(words.watchScaleBarKm, { km: number.format(runoutKm.value) }),
+          runUpLabel: fill(words.watchScaleM, { m: number.format(runUpKm.value * 1000) }),
+          pictures: real,
+        });
+      }
     }
     // A storm's real pictures from space lie on the world in the whole picture, as the story says.
     const onId = story.storm?.onId ?? story.groundPictures?.onId ?? null;
@@ -2010,7 +2024,7 @@ function start(): void {
       if (jd >= fromJd && jd <= untilJd) picture = index;
     }
     system.showGroundPicture(picture);
-    watchPictureSlice?.set(picture);
+    watchPictureSlice?.set(jd, picture);
     if (watchVolcanoSlice) {
       // 21 June 2019 noon UTC is 2458656; 22 June 00:00 UTC eruption onset is 2458656.5
       const hoursAfter = (jd - 2458656.5) * 24;
@@ -2588,7 +2602,7 @@ function start(): void {
                             : chapter.slice === true && watchDustSlice
                               ? words.scaleLabelDustSlice
                               : chapter.slice === true && watchPictureSlice
-                                ? words.scaleLabelPictureSlice
+                                ? words.scaleLabelAvalancheSlice
                                 : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =
@@ -2656,7 +2670,7 @@ function start(): void {
                       : watchDustSlice
                         ? [watchDustSlice, words.watchLookAir, words.watchLookArrowsOff]
                         : watchPictureSlice
-                          ? [watchPictureSlice, words.watchLookBefore, words.watchLookThisDay]
+                          ? [watchPictureSlice, words.watchLookRealPicture, words.watchLookDrawing]
                           : tornadoDrawing?.scene.slice
                             ? [
                                 tornadoDrawing.scene.slice,

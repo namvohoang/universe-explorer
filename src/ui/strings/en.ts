@@ -99,7 +99,7 @@ export const en = {
   grownUpsEarth1:
     'Each story is one real event, picked because it was measured well and did little or no harm, and told as what the ground, the sea and the air did. No story gives a count of people hurt. The typhoon is the exception to “no harm”: people died in the Philippines and in Vietnam, and its story tells of the warnings and of people moving to safety.',
   grownUpsEarth2:
-    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms, of dust, of a volcano’s ash and of an avalanche, which are what a NASA or NOAA satellite (or, for the avalanche, the European Sentinel-2, as NASA serves it) saw that day, laid on the globe where they were taken; a valley too small to see on the globe is shown flat beside it, at its real shape.',
+    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms, of dust, of a volcano’s ash and of an avalanche, which are what a NASA or NOAA satellite (or, for the avalanche, the European Sentinel-2, as NASA serves it) saw that day, laid on the globe where they were taken; for a valley too small to see on the globe, the close-up is a 3D drawing whose button shows the real picture, flat and at its real shape.',
   grownUpsEarth3:
     'What is worked out by the app: the ring of an earthquake’s wave between stations, the tides (from the pull of the Moon and the Sun), and the pale band of a tsunami, from the depth of the sea. The band does not match the gauges exactly: at half of them it is within 6 per cent of the time measured, at nine in ten within 18 per cent, and it is mostly too early. A likely reason, which the app has not tested, is that gauges stand in harbours, where the wave comes later than in the open sea.',
   grownUpsEarth4:
@@ -1216,9 +1216,11 @@ export const en = {
   watchLookAir: 'Show how the air moves',
   watchLookPull: 'Show how the Moon pulls',
   watchScaleBarKm: '{km} km',
-  watchLookBefore: 'See it before',
-  watchLookThisDay: 'Back to this day',
-  scaleLabelPictureSlice: 'Up close is a real picture from space. Beside it, where on Earth it is.',
+  watchScaleM: '{m} m',
+  watchLookRealPicture: 'See the real picture',
+  watchLookDrawing: 'Back to the drawing',
+  scaleLabelAvalancheSlice:
+    'The valley up close is a drawing. How far the avalanche reached and climbed is real.',
   watchLookArrowsOff: 'Hide the arrows',
   watchLookCutOpen: 'Cut the mountain open',
   watchLookWholeMountain: 'See the whole mountain',

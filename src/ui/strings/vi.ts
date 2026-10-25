@@ -111,7 +111,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsEarth1:
     'Mỗi câu chuyện là một sự kiện có thật, được chọn vì nó được đo đạc kỹ và gây ít hoặc không gây thiệt hại, và được kể qua những gì mặt đất, biển và không khí đã làm. Không câu chuyện nào nêu số người bị hại. Cơn bão vào Việt Nam là ngoại lệ của “không thiệt hại”: đã có người thiệt mạng ở Philippines và Việt Nam, và câu chuyện kể về cảnh báo và việc người dân đi sơ tán.',
   grownUpsEarth2:
-    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa và trận lở băng, là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; một thung lũng quá nhỏ để thấy trên quả địa cầu thì được bày phẳng bên cạnh, đúng hình dạng thật.',
+    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa và trận lở băng, là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
   grownUpsEarth3:
     'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn. Một lý do có thể đúng, mà ứng dụng chưa kiểm chứng, là các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
   grownUpsEarth4:
@@ -1285,10 +1285,11 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchLookAir: 'Xem không khí chuyển động',
   watchLookPull: 'Xem Mặt Trăng kéo thế nào',
   watchScaleBarKm: '{km} km',
-  watchLookBefore: 'Xem lúc trước',
-  watchLookThisDay: 'Quay lại ngày này',
-  scaleLabelPictureSlice:
-    'Hình nhìn gần là ảnh thật chụp từ vũ trụ. Bên cạnh là vị trí của nó trên Trái Đất.',
+  watchScaleM: '{m} m',
+  watchLookRealPicture: 'Xem ảnh thật',
+  watchLookDrawing: 'Quay lại hình vẽ',
+  scaleLabelAvalancheSlice:
+    'Thung lũng nhìn gần là hình vẽ. Trận lở đi xa và leo cao bao nhiêu là thật.',
   watchLookArrowsOff: 'Ẩn các mũi tên',
   watchLookCutOpen: 'Cắt đôi ngọn núi',
   watchLookWholeMountain: 'Xem cả ngọn núi',

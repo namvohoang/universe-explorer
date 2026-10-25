@@ -76,6 +76,27 @@ const picture = (
   untilJd: s(untilJd, WORLDVIEW, 'When the next picture takes its place, or the story ends.'),
 });
 
+/**
+ * What the 3D close-up draws from the page: how far the avalanche reached along the valley,
+ * how high it climbed the far side, and when the glacier broke (the page gives the afternoon
+ * of 28 May; the hour drawn, 13:00 UTC, is a choice). Rock is drawn piling on the ice from the
+ * first picture on.
+ */
+export const BLATTEN_AVALANCHE = {
+  runoutKm: s(
+    2.5,
+    BLATTEN,
+    'Rock and ice from the avalanche extended 2.5 kilometers (1.6 miles) down the valley',
+  ),
+  runUpKm: s(
+    0.24,
+    BLATTEN,
+    'debris continued as much as 240 meters (790 feet) up the opposite valley wall',
+  ),
+  breaksJd: s(at('May', 28, 13), BLATTEN, 'The afternoon of 28 May 2025; the hour is a choice.'),
+  pilingFromJd: s(at('May', 18, 10), WORLDVIEW, 'The first picture of the story, 18 May 2025.'),
+} as const;
+
 /** The picture up close, beside the globe looking straight down on the middle of its square. */
 const OVER = {
   lookAtId: 'earth',

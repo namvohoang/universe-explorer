@@ -10,7 +10,7 @@
  *   npx tsx tools/storms/fetchPicture.ts sam-2021-09-26 2021-09-26 NOAA20 -50 14
  *
  * The two numbers after the satellite are the middle of the square: longitude east and latitude
- * north, in whole degrees (in hundredths of a degree for L30 and S30). A last number, if given,
+ * north, in degrees, to a hundredth of a degree. A last number, if given,
  * is how far the square reaches from its middle, in degrees (15 if not given). `cwebp` must be
  * installed.
  *
@@ -33,6 +33,8 @@ const LAYERS = {
   NOAA20: 'VIIRS_NOAA20_CorrectedReflectance_TrueColor',
   TERRA: 'MODIS_Terra_CorrectedReflectance_TrueColor',
   AQUA: 'MODIS_Aqua_CorrectedReflectance_TrueColor',
+  TERRA721: 'MODIS_Terra_CorrectedReflectance_Bands721',
+  AQUA721: 'MODIS_Aqua_CorrectedReflectance_Bands721',
   L30: 'HLS_L30_Nadir_BRDF_Adjusted_Reflectance',
   S30: 'HLS_S30_Nadir_BRDF_Adjusted_Reflectance',
 } as const;
@@ -43,9 +45,8 @@ const lon = Number(lonText);
 const lat = Number(latText);
 const HALF_DEG = halfText === undefined ? DEFAULT_HALF_DEG : Number(halfText);
 const fine = satellite === 'L30' || satellite === 'S30';
-/** Whole degrees, or hundredths of a degree for a small place. */
-const onGrid = (value: number): boolean =>
-  fine ? Number.isInteger(Math.round(value * 100 * 1e6) / 1e6) : Number.isInteger(value);
+/** Edges in hundredths of a degree, so the ones written down are the ones asked for. */
+const onGrid = (value: number): boolean => Number.isInteger(Math.round(value * 100 * 1e6) / 1e6);
 if (
   !name ||
   !day ||
@@ -55,7 +56,7 @@ if (
   !(onGrid(HALF_DEG) && HALF_DEG > 0)
 ) {
   throw new Error(
-    'usage: fetchPicture <name> <yyyy-mm-dd> <SNPP|NOAA20|TERRA|AQUA|L30|S30> <lon east> <lat north> [half width]',
+    'usage: fetchPicture <name> <yyyy-mm-dd> <SNPP|NOAA20|TERRA|AQUA|TERRA721|AQUA721|L30|S30> <lon east> <lat north> [half width]',
   );
 }
 

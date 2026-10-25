@@ -200,7 +200,7 @@ test.describe('the Earth screen', () => {
     await expect(page.locator('.pane:visible')).toHaveCount(2);
   });
 
-  test('shows an avalanche in a valley up close, real and flat, beside where it is on the globe', async ({
+  test('shows an avalanche in a valley drawn in 3D up close, beside where it is on the globe', async ({
     page,
   }) => {
     const pictures: string[] = [];
@@ -214,9 +214,10 @@ test.describe('the Earth screen', () => {
     await expect(page.locator('.watch-date')).toContainText('18 May 2025');
     await expect.poll(() => pictures.length).toBe(3);
     await expect(page.locator('.pane:visible')).toHaveCount(2);
-    // A real picture is not called a drawing.
+    // Up close the valley is drawn in 3D, and says so; its button shows the real picture.
     const closeUp = page.locator('.pane:visible .pane-label').first();
-    await expect(closeUp).toHaveText('Close up');
+    await expect(closeUp).toHaveText('Close up (a drawing)');
+    await expect(page.getByRole('button', { name: 'See the real picture' })).toBeVisible();
     await expect(page.locator('.watch-row').getByText('Land and ice')).toBeVisible();
   });
 

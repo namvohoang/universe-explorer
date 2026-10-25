@@ -1328,10 +1328,12 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       30 May, 12 June); the sentences rest on NASA Earth Observatory's "Glacier Collapse Buries
       Swiss Village", which says people had left by 19 May. A valley is too small to see on the
       globe, and a few kilometres there are lost to the precision of the scene's numbers, so a
-      story can now show its pictures up close (`groundPictures.upClose`): the picture flat, at
-      its real shape on the ground, with a scale bar (`pictureSpanKm`, `scaleBarKm`), and a
-      button to see the first picture again; the globe beside it stands back, with a ring round
-      the place. A new kind of Earth story, "Land and ice". Left: lightning, the water cycle,
+      story can now be told up close (`groundPictures.upClose`): the close-up is a 3D drawing
+      of the valley (`avalancheSlice`, by the owner's word that every close-up is simulated in
+      3D), the avalanche reaching as far along it (2.5 km) and as high up the far side (240 m)
+      as the page says, and its button shows the real picture of the moment, flat at its real
+      shape on the ground with a scale bar (`pictureBoard`, `pictureSpanKm`, `scaleBarKm`); the
+      globe beside it stands back, with a ring round the place. A new kind of Earth story, "Land and ice". Left: lightning, the water cycle,
       the monsoon, a flood. As planned: Later, each its own story if wanted: lightning, the
       water cycle, the monsoon, a flood, an avalanche.
 

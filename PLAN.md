@@ -1386,7 +1386,37 @@ play it on. Three things make them honest all the same:
 Where a satellite has watched a place change for tens of years (a river moving its bends, a
 delta growing), that record is used in place of a drawing, as `tracked`.
 
-- [ ] 14.15 Research, no code, as 14.1: the heights of the land (NASA and USGS elevation
+- [x] 14.15 Done on 2026-10-25. Found (each opened and read unless said otherwise):
+      **Heights of the land as numbers**: NOAA's ETOPO 2022 at 15 arc-seconds (about 460 m),
+      already approved for the depth of the sea, answers a small square by OPeNDAP from NOAA's
+      THREDDS server (ngdc.noaa.gov/thredds/dodsC/global/ETOPO2022/15s/15s_surface_elev_netcdf/,
+      tiles of 15 degrees named by their north-west corner); the Everest square came back up
+      to 8,527 m, the summit smoothed by the 460 m cells. For the United States, the USGS 3D
+      Elevation Program answers any square as heights from its image service
+      (elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage,
+      "USGS National Map 3D Elevation Program (3DEP)"); the Grand Canyon came back from 690 m
+      at the river to 2,734 m. NOAA's other mosaic service (DEM_global_mosaic) answers too but
+      says nothing of what it holds, so it is not used. **Pictures year after year**: NASA's
+      Harmonized Landsat and Sentinel-2 pictures, from 2013, through Worldview (as for the
+      avalanche); older Landsat only as Earth Observatory's own pictures, which give no edges
+      to lay them on the globe. **Plate speeds and the past**: USGS "The Himalayas: Two
+      continents collide" (pubs.usgs.gov/gip/dynamic/himalaya.html): India "moving northward at
+      a rate of about 9 m a century", "When India rammed into Asia about 40 to 50 million years
+      ago" its advance "slowed by about half", and "The Himalayas continue to rise more than
+      1 cm a year". The same page says Everest has "risen to heights of more than 9 km", which
+      does not agree with the measured height; that sentence is not used. **The Grand
+      Canyon's age**: USGS's own publications disagree on how and when; the river began
+      cutting down after it reached the Gulf of California, after 5.24 million years ago
+      (USGS, "Redefining the age of the lower Colorado River"), and a 2026 USGS release ties
+      the canyon's start to an old lake spilling over: the story says scientists still argue.
+      **River bends**: USGS "Find-A-Feature: Meander" for how a bend moves and is cut off;
+      NASA "The Secret Lives of Migrating Rivers" for the Ucayali's 31 years of Landsat and 13
+      cut-offs. **Where the continents were (decision 12)**: no agency was found to give it as
+      data, only as pictures (USGS "This Dynamic Earth"); as recommended, two plates meet only
+      in a 3D close-up, as a drawing. **Chosen**: the Himalaya round Everest for the mountain
+      range (ETOPO 2022 heights); the Grand Canyon (3DEP heights); the Ucayali River in Peru
+      for the bends (HLS pictures from 2013). Not chosen: a delta, and dust from the Sahara,
+      already told. As planned: Research, no code, as 14.1: the heights of the land (NASA and USGS elevation
       data), the pictures taken year after year (NASA and USGS Landsat), measured plate
       speeds, and what the agencies say of each place's past and how sure they are. Choose
       the places. Candidates to weigh, none chosen: the Himalaya for a mountain range; the

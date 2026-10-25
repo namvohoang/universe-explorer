@@ -50,6 +50,8 @@ SAY: dict[str, str] = {
     "Blatten": "blˈɑtən",  # BLAH-tun
     "Gandak": "ɡˈʌndək",  # GUN-duck
     "Devghat": "dˈAvɡɑt",  # DAYV-gaht
+    "Ucayali": "ˌukəjˈɑli",  # oo-kuh-YAH-lee
+    "Pucallpa": "pukˈɑlpə",  # poo-KAHL-puh
     "Makemake": "mˌɑkimˈɑki",  # MAH-kee-MAH-kee
     "Proxima": "pɹˈɑksəmə",  # PROK-sih-muh
     "Centauri": "sɛntˈɔɹi",  # sen-TOR-ee

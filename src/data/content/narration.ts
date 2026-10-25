@@ -692,6 +692,11 @@ export const NARRATION: Readonly<
     fingerprint: '8e1275aa',
     starts: [0.0, 2.38, 9.97, 15.12, 21.85, 29.65, 38.52, 44.27, 54.85],
   },
+  'story-river-ucayali': {
+    file: 'public/voice/story-river-ucayali.mp3',
+    fingerprint: '07b101ed',
+    starts: [0.0, 2.0, 9.93, 16.35, 22.27, 29.0, 36.35, 48.4, 58.95],
+  },
   'story-flood-gandak': {
     file: 'public/voice/story-flood-gandak.mp3',
     fingerprint: 'a63ffdad',

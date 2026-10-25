@@ -745,6 +745,64 @@ export const JPL_HORIZONS_TURN_HIMALAYA_2025_EARTH: Source = {
   retrieved: '2026-10-25',
 };
 
+export const NASA_EARTH_OBSERVATORY_UCAYALI_ROAD: Source = {
+  id: 'nasa-earth-observatory-ucayali-road',
+  title: 'NASA Earth Observatory — Deforestation Follows a Road Through Ucayali',
+  url: 'https://science.nasa.gov/earth/earth-observatory/deforestation-follows-a-road-through-ucayali-150513/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_EARTH_OBSERVATORY_MUD_ANDES: Source = {
+  id: 'nasa-earth-observatory-mud-andes',
+  title: 'NASA Earth Observatory — Mud from the Andes Carried by the Amazon',
+  url: 'https://science.nasa.gov/earth/earth-observatory/mud-from-the-andes-carried-by-the-amazon-147327/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_EARTH_OBSERVATORY_CONGAREE: Source = {
+  id: 'nasa-earth-observatory-congaree',
+  title: 'NASA Earth Observatory — The Forested Floodplains of Congaree National Park',
+  url: 'https://science.nasa.gov/earth/earth-observatory/the-forested-floodplains-of-congaree-national-park/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_EARTH_OBSERVATORY_MEANDERING_AMAZON: Source = {
+  id: 'nasa-earth-observatory-meandering-amazon',
+  title: 'NASA Earth Observatory — Meandering in the Amazon',
+  url: 'https://science.nasa.gov/earth/earth-observatory/meandering-in-the-amazon-84833',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_JEZERO_CRATER: Source = {
+  id: 'nasa-jezero-crater',
+  title: 'NASA — Jezero Crater, Landing Site for the Mars Perseverance Rover',
+  url: 'https://www.nasa.gov/image-article/jezero-crater-landing-site-mars-perseverance-rover/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_TITAN_FACTS: Source = {
+  id: 'nasa-titan-facts',
+  title: 'NASA Science — Titan: Facts',
+  url: 'https://science.nasa.gov/saturn/moons/titan/facts/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_WORLDVIEW_UCAYALI: Source = {
+  id: 'nasa-worldview-ucayali',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — Harmonized Landsat and Sentinel-2 pictures (HLSS30 and HLSL30 v2.0, NASA LP DAAC) of the Ucayali River by Pucallpa, 15 July 2016, 28 July 2022 and 4 July 2025, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=-74.6,-8.75,-74.1,-8.25&l=HLS_L30_Nadir_BRDF_Adjusted_Reflectance&t=2025-07-04',
+  retrieved: '2026-10-25',
+};
+
+export const JPL_HORIZONS_TURN_UCAYALI_2016_EARTH: Source = {
+  id: 'jpl-horizons-turn-ucayali2016earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2016-07-15 15:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272457585.125789163%27',
+  retrieved: '2026-10-25',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

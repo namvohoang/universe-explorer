@@ -1468,7 +1468,18 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       Parts: plates move; they meet; the land folds and rises; rain and ice wear it down as
       it grows; the range today; how it stands beside the tallest mountain of the solar
       system, from the catalogue.
-- [ ] 14.19 **A river.** `tracked` where Landsat has watched it: the bends wandering, a loop
+- [x] 14.19 Done on 2026-10-25: **A river**, the Ucayali by Pucallpa in Peru, `tracked`,
+      in eight parts, in English and Vietnamese, recorded: NASA's Harmonized Landsat and
+      Sentinel-2 pictures of the dry seasons of 2016, 2022 and 2025, its bends seen moving and
+      a loop cut off; the sentences rest on NASA Earth Observatory's pages (the Ucayali and
+      Pucallpa, mud from the Andes, the outside and inside of a bend from the Congaree page,
+      meanders and oxbow lakes from "Meandering in the Amazon"), NASA's Jezero Crater page
+      for the rivers of Mars long ago, and NASA's Titan facts for its methane rivers. Its 3D
+      close-up (`riverSlice`) is a winding river on a plain: faster water on the outside of
+      each bend, sand on the inside, the bends sliding, a loop cut off into an oxbow lake, then
+      the plain as Mars (dry) and as Titan (methane). USGS's own meander page sits behind a
+      robot check and could not be read. Left out: rain running off into streams (no page
+      read) and a delta. As planned: **A river.** `tracked` where Landsat has watched it: the bends wandering, a loop
       cut off, the delta building out. `staged`: rain running off high ground into one
       stream, in a slice. Parts: rain and a slope; streams join; the bends move; the river
       meets the sea; dry river beds on Mars and rivers that are not water on Titan.

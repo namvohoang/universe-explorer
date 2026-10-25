@@ -50,6 +50,7 @@ const STORIES: readonly (readonly [id: string, title: string, screen?: 'earth'])
   ['volcano-raikoke', 'A volcano', 'earth'],
   ['avalanche-blatten', 'An avalanche', 'earth'],
   ['mountain-himalaya', 'A mountain range', 'earth'],
+  ['river-ucayali', 'A river', 'earth'],
   ['flood-gandak', 'A flood', 'earth'],
   ['monsoon-india', 'The monsoon', 'earth'],
   ['lightning-maracaibo', 'Lightning', 'earth'],

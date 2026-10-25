@@ -1206,6 +1206,25 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Sao Hỏa có một ngọn núi cao hơn nhiều. Núi lửa Olympus Mons cao 27 ki-lô-mét: hơn ba lần điểm cao nhất ở đây.',
   scaleLabelLandSlice:
     'Quá khứ nhìn gần là hình vẽ. Mặt đất hôm nay là thật, độ cao vẽ cao gấp {n} lần.',
+  storyRiverTitle: 'Một dòng sông',
+  storyRiverNote: 'Đây là ảnh thật, chụp từ vũ trụ cách nhau nhiều năm. Hình nhìn gần là hình vẽ.',
+  storyRiverPictureAlt:
+    'Rừng nhiệt đới xanh nhìn từ vũ trụ, với một dòng sông nâu uốn khúc thành những vòng lớn, và một thành phố bên bờ sông.',
+  storyRiverRiver:
+    'Đây là sông Ucayali, trong rừng nhiệt đới Amazon của Peru, uốn khúc qua thành phố Pucallpa.',
+  storyRiverMud: 'Nước sông màu nâu vì mang theo bùn, phần lớn trôi xuống từ dãy núi Andes.',
+  storyRiverOutside: 'Ở phía ngoài mỗi khúc quanh, nước chảy nhanh hơn. Nó khoét mòn bờ sông ở đó.',
+  storyRiverInside:
+    'Ở phía trong mỗi khúc quanh, nước chảy chậm. Nó thả cát xuống, và bờ sông lớn dần ra.',
+  storyRiverMove:
+    'Vì thế, năm này qua năm khác, các khúc quanh trượt dần trên mặt đất. Đây là chính dòng sông ấy sáu năm sau.',
+  storyRiverCutOff:
+    'Khi một vòng sông quá lớn, dòng sông phá qua cổ hẹp của nó và đi đường tắt. Vòng cũ bị bỏ lại thành một cái hồ hình trăng lưỡi liềm: hồ móng ngựa.',
+  storyRiverMars:
+    'Sao Hỏa bây giờ khô cạn, nhưng ngày xưa ở đó cũng có sông. Hơn 3,5 tỉ năm trước, sông chảy tràn vào một miệng hố và tạo thành một cái hồ.',
+  storyRiverTitan:
+    'Trên Titan, mặt trăng lớn nhất của Sao Thổ, sông cũng khoét đất, nhưng không phải là nước. Đó là khí mê-tan, lạnh đến mức hóa lỏng.',
+  scaleLabelRiverSlice: 'Hình nhìn gần là hình vẽ. Ảnh chụp từ vũ trụ là thật.',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
@@ -1322,6 +1341,14 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoHowHighName: 'Cao bao nhiêu',
   storyVolcanoDayLaterName: 'Một ngày sau',
   storyVolcanoPilotsName: 'Phi công',
+  storyRiverRiverName: 'Dòng sông',
+  storyRiverMudName: 'Bùn từ dãy Andes',
+  storyRiverOutsideName: 'Phía ngoài',
+  storyRiverInsideName: 'Phía trong',
+  storyRiverMoveName: 'Khúc quanh di chuyển',
+  storyRiverCutOffName: 'Bị cắt rời',
+  storyRiverMarsName: 'Sao Hỏa',
+  storyRiverTitanName: 'Titan',
   storyMountainFarApartName: 'Cách xa nhau',
   storyMountainMovingName: 'Trôi lên phía bắc',
   storyMountainMeetName: 'Va vào nhau',

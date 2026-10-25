@@ -1153,6 +1153,14 @@ export const en = {
   storyVolcanoHowHighName: 'How high',
   storyVolcanoDayLaterName: 'A day later',
   storyVolcanoPilotsName: 'Pilots',
+  storyRiverRiverName: 'The river',
+  storyRiverMudName: 'Mud from the Andes',
+  storyRiverOutsideName: 'The outside',
+  storyRiverInsideName: 'The inside',
+  storyRiverMoveName: 'The bends move',
+  storyRiverCutOffName: 'Cut off',
+  storyRiverMarsName: 'Mars',
+  storyRiverTitanName: 'Titan',
   storyMountainFarApartName: 'Far apart',
   storyMountainMovingName: 'Moving north',
   storyMountainMeetName: 'They meet',
@@ -1652,6 +1660,27 @@ export const en = {
     'Mars has a far taller one. The volcano Olympus Mons rises 27 kilometres: more than three times as high as the highest point here.',
   scaleLabelLandSlice:
     'The past up close is a drawing. Today’s land is real, its heights drawn {n} times taller.',
+  storyRiverTitle: 'A river',
+  storyRiverNote: 'These are real pictures, taken from space years apart. Up close is a drawing.',
+  storyRiverPictureAlt:
+    'Green rainforest seen from space, with a brown river winding through it in big loops, and a city on its bank.',
+  storyRiverRiver:
+    'This is the Ucayali River, in the Amazon rainforest of Peru, winding past the city of Pucallpa.',
+  storyRiverMud:
+    'The river is brown because it carries mud, much of it washed down from the Andes mountains.',
+  storyRiverOutside:
+    'On the outside of each bend, the water flows faster. It eats away the bank there.',
+  storyRiverInside:
+    'On the inside of each bend, the water flows slowly. It drops sand there, and the bank grows.',
+  storyRiverMove:
+    'So, year after year, the bends slide across the land. This is the same river six years later.',
+  storyRiverCutOff:
+    'When a loop grows too big, the river breaks through its narrow neck and takes the short way. The old loop is left behind as a lake shaped like a crescent moon: an oxbow lake.',
+  storyRiverMars:
+    'Mars is dry now, but long ago rivers ran there too. More than 3.5 billion years ago, rivers spilled into a crater and made a lake.',
+  storyRiverTitan:
+    'On Titan, Saturn’s biggest moon, rivers carve the land too, but they are not water. They are methane, so cold that it is a liquid.',
+  scaleLabelRiverSlice: 'Up close is a drawing. The pictures from space are real.',
   storyQuakeTitle: 'An earthquake',
   storyQuakeNote:
     'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',

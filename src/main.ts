@@ -36,6 +36,8 @@ import { createWaterCycleSlice } from './scene/waterCycleSlice';
 import type { UpCloseSlice } from './scene/diorama';
 import { HIMALAYA_DRAWING } from './data/stories/mountainHimalaya';
 import { createMountainSlice } from './scene/mountainSlice';
+import { UCAYALI_PARTS } from './data/stories/riverUcayali';
+import { createRiverSlice } from './scene/riverSlice';
 import { LAND_HEIGHTS_DRAWN_TIMES } from './sim/scale';
 import { yearsAgoAt } from './sim/years';
 import { createMonsoonSlice } from './scene/monsoonSlice';
@@ -2090,6 +2092,10 @@ function start(): void {
           pictures: real,
         });
         watchPictureSliceLabel = words.scaleLabelWaterCycleSlice;
+      }
+      if (story.id === 'river-ucayali') {
+        watchPictureSlice = createRiverSlice({ ...UCAYALI_PARTS, pictures: real });
+        watchPictureSliceLabel = words.scaleLabelRiverSlice;
       }
       if (story.id === 'mountain-himalaya' && story.land) {
         const heights = story.land;

@@ -26,6 +26,8 @@ import { createDustSlice, type DustSlice } from './scene/dustSlice';
 import { createAvalancheSlice, type AvalancheSlice } from './scene/avalancheSlice';
 import type { PictureBoardOptions } from './scene/pictureBoard';
 import { BLATTEN_AVALANCHE } from './data/stories/avalancheBlatten';
+import { GANDAK_FLOOD } from './data/stories/floodGandak';
+import { createFloodSlice, type FloodSlice } from './scene/floodSlice';
 import { pictureSpanKm, scaleBarKm } from './sim/pictureSpan';
 import { createTornadoScene, type TornadoScene } from './scene/tornadoScene';
 import { createFarSkyTrail, type FarSkyTrail } from './scene/farSkyTrail';
@@ -1953,7 +1955,9 @@ function start(): void {
    * The 3D close look of a story told in pictures of a place too small to see on the globe,
    * whose button swaps the drawing for the real picture of the moment.
    */
-  let watchPictureSlice: AvalancheSlice | null = null;
+  let watchPictureSlice: AvalancheSlice | FloodSlice | null = null;
+  /** What the screen says of that close look: what in it is real and what is drawn. */
+  let watchPictureSliceLabel = '';
   /** The share of a picture's width the scale bar under it may take. */
   const SCALE_BAR_SHARE = 0.45;
   /** Lays a story's real pictures of the ground, of its storm or of anything else, ready to show. */
@@ -2002,6 +2006,19 @@ function start(): void {
           runUpLabel: fill(words.watchScaleM, { m: number.format(runUpKm.value * 1000) }),
           pictures: real,
         });
+        watchPictureSliceLabel = words.scaleLabelAvalancheSlice;
+      }
+      if (story.id === 'flood-gandak') {
+        const { gaugePeakM, peakJd, rainFromJd, rainUntilJd } = GANDAK_FLOOD;
+        watchPictureSlice = createFloodSlice({
+          peakM: gaugePeakM.value,
+          peakJd: peakJd.value,
+          rainFromJd: rainFromJd.value,
+          rainUntilJd: rainUntilJd.value,
+          peakLabel: fill(words.watchScaleM, { m: number.format(gaugePeakM.value) }),
+          pictures: real,
+        });
+        watchPictureSliceLabel = words.scaleLabelFloodSlice;
       }
     }
     // A storm's real pictures from space lie on the world in the whole picture, as the story says.
@@ -2602,7 +2619,7 @@ function start(): void {
                             : chapter.slice === true && watchDustSlice
                               ? words.scaleLabelDustSlice
                               : chapter.slice === true && watchPictureSlice
-                                ? words.scaleLabelAvalancheSlice
+                                ? watchPictureSliceLabel
                                 : words[(diagramAlone ? DIAGRAM_SCALE : scale).labelKey];
               layPanes();
               watchFieldDeg =

@@ -48,6 +48,8 @@ SAY: dict[str, str] = {
     "Luzon": "luzˈɑn",  # loo-ZON
     "Raikoke": "ɹIkˈOkA",  # rye-KOH-kay
     "Blatten": "blˈɑtən",  # BLAH-tun
+    "Gandak": "ɡˈʌndək",  # GUN-duck
+    "Devghat": "dˈAvɡɑt",  # DAYV-gaht
     "Makemake": "mˌɑkimˈɑki",  # MAH-kee-MAH-kee
     "Proxima": "pɹˈɑksəmə",  # PROK-sih-muh
     "Centauri": "sɛntˈɔɹi",  # sen-TOR-ee

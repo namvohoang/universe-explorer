@@ -1333,8 +1333,15 @@ Found on 2026-10-11 (task 14.1, each page opened and read unless said otherwise)
       3D), the avalanche reaching as far along it (2.5 km) and as high up the far side (240 m)
       as the page says, and its button shows the real picture of the moment, flat at its real
       shape on the ground with a scale bar (`pictureBoard`, `pictureSpanKm`, `scaleBarKm`); the
-      globe beside it stands back, with a ring round the place. A new kind of Earth story, "Land and ice". Left: lightning, the water cycle,
-      the monsoon, a flood. As planned: Later, each its own story if wanted: lightning, the
+      globe beside it stands back, with a ring round the place. A new kind of Earth story, "Land and ice". Done on 2026-10-25: **A flood**, the Gandak
+      River out of Nepal into India at the end of September 2026, in seven parts, in English
+      and Vietnamese, recorded: five false-colour MODIS pictures (20 September to 12 October),
+      the sentences resting on NASA Earth Observatory's "Rains Swamp the Gandak River", and on
+      NOAA's pages for what a flood is and why no one should go into flood water. Its 3D
+      close-up (`floodSlice`) is the river between its banks, rain falling while it rained,
+      the water rising to the real highest mark on the post at Devghat (11.94 m on
+      27 September) and over the banks, then draining (`floodStageM`, `floodPlainM`, tested to
+      reach the real mark at the real time). Left: lightning, the water cycle, the monsoon. As planned: Later, each its own story if wanted: lightning, the
       water cycle, the monsoon, a flood, an avalanche.
 
 **Part two: how the land is shaped** (asked for on 2026-10-11: mountains, rivers, canyons, a

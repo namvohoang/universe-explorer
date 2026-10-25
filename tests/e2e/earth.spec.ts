@@ -145,7 +145,7 @@ test.describe('the Earth screen', () => {
       'The pictures and the line are real. The cloud between the days is a drawing.',
     );
     // Both of Earth's stories are there to pick from.
-    await expect(page.locator('.watch-row .chips button')).toHaveCount(9);
+    await expect(page.locator('.watch-row .chips button')).toHaveCount(10);
   });
 
   test('tells the tides from the Moon and the Sun, and says the swelling is a drawing', async ({
@@ -219,6 +219,26 @@ test.describe('the Earth screen', () => {
     await expect(closeUp).toHaveText('Close up (a drawing)');
     await expect(page.getByRole('button', { name: 'See the real picture' })).toBeVisible();
     await expect(page.locator('.watch-row').getByText('Land and ice')).toBeVisible();
+  });
+
+  test('shows a river in flood in 3D up close, its highest mark real, and says the colours are changed', async ({
+    page,
+  }) => {
+    const pictures: string[] = [];
+    page.on('response', (response) => {
+      if (/stories\/gandak-.*\.webp/.test(response.url()) && response.ok())
+        pictures.push(response.url());
+    });
+    await page.goto('/#earth/flood-gandak');
+    await expect(page.locator('.watch-caption h2')).toHaveText('A flood');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 7');
+    await expect(page.locator('.watch-date')).toContainText('20 September 2026');
+    await expect(page.locator('.watch-path')).toContainText('Their colours are changed');
+    await expect.poll(() => pictures.length).toBe(5);
+    await expect(page.locator('.pane:visible .pane-label').first()).toHaveText(
+      'Close up (a drawing)',
+    );
+    await expect(page.getByRole('button', { name: 'See the real picture' })).toBeVisible();
   });
 
   test('tells an earthquake to the second, and says what is recorded and what is worked out', async ({

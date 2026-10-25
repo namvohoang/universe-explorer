@@ -111,7 +111,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   grownUpsEarth1:
     'Mỗi câu chuyện là một sự kiện có thật, được chọn vì nó được đo đạc kỹ và gây ít hoặc không gây thiệt hại, và được kể qua những gì mặt đất, biển và không khí đã làm. Không câu chuyện nào nêu số người bị hại. Cơn bão vào Việt Nam là ngoại lệ của “không thiệt hại”: đã có người thiệt mạng ở Philippines và Việt Nam, và câu chuyện kể về cảnh báo và việc người dân đi sơ tán.',
   grownUpsEarth2:
-    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa và trận lở băng, là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
+    'Những gì là ghi nhận thật: đường đi và sức gió của bão (Trung tâm Bão Quốc gia Mỹ, Cơ quan Khí tượng Nhật Bản), thời điểm từng trạm ghi nhận đợt sóng đầu tiên của động đất (USGS), thời điểm từng trạm đo ghi nhận sóng thần (NOAA), đường đi, bề rộng và thời gian của lốc xoáy (Cơ quan Thời tiết Quốc gia Mỹ), và các bức ảnh bão, bụi, tro núi lửa, trận lở băng và trận lũ (màu giả, để nước hiện màu xanh dương), là những gì vệ tinh của NASA hoặc NOAA (riêng trận lở băng là vệ tinh Sentinel-2 của châu Âu, do NASA cung cấp) nhìn thấy hôm đó, được đặt lên quả địa cầu đúng nơi chụp; với một thung lũng quá nhỏ để thấy trên quả địa cầu, hình nhìn gần là hình vẽ 3D, và nút bấm của nó cho xem ảnh thật, phẳng và đúng hình dạng thật.',
   grownUpsEarth3:
     'Những gì ứng dụng tự tính ra: vòng sóng động đất giữa các trạm, thủy triều (từ sức hút của Mặt Trăng và Mặt Trời), và dải màu nhạt của sóng thần, tính từ độ sâu của biển. Dải này không khớp hoàn toàn với các trạm đo: ở một nửa số trạm nó lệch không quá 6 phần trăm so với thời gian đo được, ở chín phần mười số trạm không quá 18 phần trăm, và phần lớn là đến sớm hơn. Một lý do có thể đúng, mà ứng dụng chưa kiểm chứng, là các trạm đo nằm trong cảng, nơi sóng tới muộn hơn ngoài biển khơi.',
   grownUpsEarth4:
@@ -1105,6 +1105,26 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Đá và băng trải dài 2,5 ki-lô-mét dọc thung lũng. Chúng chặn dòng sông, nên nước dâng lên và làm ngập một phần thung lũng.',
   storyAvalancheLearning:
     'Ở dãy Alps, chuyện lớn như thế này rất hiếm. Các nhà khoa học vẫn đang tìm hiểu mọi nguyên nhân gây ra nó.',
+  storyFloodTitle: 'Một trận lũ',
+  storyFloodNote:
+    'Đây là ảnh thật, chụp từ vũ trụ vào từng ngày. Màu đã được đổi để nước hiện màu xanh dương.',
+  storyFloodPictureAlt:
+    'Vùng đất xanh nhìn từ vũ trụ, có một dòng sông xanh dương chảy ngang qua. Khi lũ, dòng sông xanh dương rộng ra rất nhiều và tràn lên đất.',
+  storyFloodRiver:
+    'Đây là sông Gandak, chảy từ vùng núi Nepal xuống Ấn Độ, nhìn từ vũ trụ. Màu đã được đổi để thấy nước: nước màu xanh dương, cây cối màu xanh lá tươi, còn mây màu xanh nhạt.',
+  storyFloodWhat: 'Lũ là khi nước tràn lên vùng đất bình thường vẫn khô ráo.',
+  storyFloodRain:
+    'Cuối tháng 9 năm 2026, những cơn bão trút mưa lớn xuống vùng núi Nepal, hết đợt này đến đợt khác. Mây che kín mặt đất.',
+  storyFloodRises:
+    'Tất cả nước mưa ấy chảy xuống sông. Ngày 27 tháng 9, nước trên cột đo ở Devghat, Nepal, lên tới 11,94 mét. Đó là mức cao nhất từ khi người ta bắt đầu đo ở đây, vào những năm 1960.',
+  storyFloodBanks:
+    'Nước tràn qua những con đê đắp để giữ nó, và lan khắp ruộng đồng, làng mạc. Hãy xem màu xanh dương giờ rộng hơn bao nhiêu.',
+  storyFloodGoes:
+    'Một trận lũ có thể kéo dài nhiều ngày, thậm chí nhiều tuần. Hai tuần sau, phần lớn nước đã rút, và dòng sông lại hẹp như cũ.',
+  storyFloodSafe:
+    'Nước lũ đang chảy mạnh hơn vẻ ngoài của nó rất nhiều. Nước chỉ sâu 15 xen-ti-mét cũng có thể làm ngã một người lớn. Vì vậy đừng bao giờ đi bộ, đạp xe hay chơi trong nước lũ.',
+  scaleLabelFloodSlice:
+    'Dòng sông nhìn gần là hình vẽ, độ sâu được vẽ cao hơn thật rất nhiều. Vạch cao nhất trên cột đo là thật.',
   storyQuakeTitle: 'Một trận động đất',
   storyQuakeNote:
     'Mỗi chấm là một trạm đo thật, sáng lên đúng lúc trạm ghi nhận được sóng. Vòng tròn được tính ra từ những thời điểm đó.',
@@ -1221,6 +1241,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyVolcanoHowHighName: 'Cao bao nhiêu',
   storyVolcanoDayLaterName: 'Một ngày sau',
   storyVolcanoPilotsName: 'Phi công',
+  storyFloodRiverName: 'Dòng sông',
+  storyFloodWhatName: 'Lũ là gì?',
+  storyFloodRainName: 'Mưa',
+  storyFloodRisesName: 'Nước sông dâng',
+  storyFloodBanksName: 'Tràn bờ',
+  storyFloodGoesName: 'Nước rút',
+  storyFloodSafeName: 'Giữ an toàn',
   storyAvalancheValleyName: 'Thung lũng',
   storyAvalancheRockName: 'Đá chất đống',
   storyAvalancheLeaveName: 'Mọi người rời đi',

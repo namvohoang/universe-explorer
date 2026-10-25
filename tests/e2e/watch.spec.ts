@@ -49,6 +49,7 @@ const STORIES: readonly (readonly [id: string, title: string, screen?: 'earth'])
   ['tornado-tescott', 'A tornado', 'earth'],
   ['volcano-raikoke', 'A volcano', 'earth'],
   ['avalanche-blatten', 'An avalanche', 'earth'],
+  ['flood-gandak', 'A flood', 'earth'],
 ];
 
 for (const screen of SCREENS) {

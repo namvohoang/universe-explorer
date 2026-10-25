@@ -687,6 +687,11 @@ export const NARRATION: Readonly<
     fingerprint: '8cbf17e3',
     starts: [0.0, 2.25, 15.93, 24.75, 31.23, 40.35, 53.38, 62.85],
   },
+  'story-flood-gandak': {
+    file: 'public/voice/story-flood-gandak.mp3',
+    fingerprint: 'a63ffdad',
+    starts: [0.0, 2.05, 15.95, 21.48, 31.32, 47.85, 56.1, 64.65],
+  },
   'story-hurricane-sam': {
     file: 'public/voice/story-hurricane-sam.mp3',
     fingerprint: '7c6dcbe5',

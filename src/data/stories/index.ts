@@ -20,6 +20,7 @@ import { shuttleDocking } from './shuttleDocking';
 import { solarEclipse } from './solarEclipse';
 import { supermoon } from './supermoon';
 import { avalancheBlatten } from './avalancheBlatten';
+import { floodGandak } from './floodGandak';
 import { tides } from './tides';
 import { tornadoTescott } from './tornadoTescott';
 import { volcanoRaikoke } from './volcanoRaikoke';
@@ -49,6 +50,7 @@ export const stories: readonly Story[] = [
   tsunamiKermadec,
   volcanoRaikoke,
   avalancheBlatten,
+  floodGandak,
   hurricaneSam,
   typhoonNoru,
   tornadoTescott,

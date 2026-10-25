@@ -99,7 +99,7 @@ export const en = {
   grownUpsEarth1:
     'Each story is one real event, picked because it was measured well and did little or no harm, and told as what the ground, the sea and the air did. No story gives a count of people hurt. The typhoon is the exception to “no harm”: people died in the Philippines and in Vietnam, and its story tells of the warnings and of people moving to safety.',
   grownUpsEarth2:
-    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms, of dust, of a volcano’s ash and of an avalanche, which are what a NASA or NOAA satellite (or, for the avalanche, the European Sentinel-2, as NASA serves it) saw that day, laid on the globe where they were taken; for a valley too small to see on the globe, the close-up is a 3D drawing whose button shows the real picture, flat and at its real shape.',
+    'What is recorded: a storm’s path and wind (the US National Hurricane Center, the Japan Meteorological Agency), the instant each station felt an earthquake’s first wave (USGS), the instant each gauge timed a tsunami (NOAA), a tornado’s path, width and times (the US National Weather Service), and the pictures of storms, of dust, of a volcano’s ash, of an avalanche and of a flood (in false colour, so water shows blue), which are what a NASA or NOAA satellite (or, for the avalanche, the European Sentinel-2, as NASA serves it) saw that day, laid on the globe where they were taken; for a valley too small to see on the globe, the close-up is a 3D drawing whose button shows the real picture, flat and at its real shape.',
   grownUpsEarth3:
     'What is worked out by the app: the ring of an earthquake’s wave between stations, the tides (from the pull of the Moon and the Sun), and the pale band of a tsunami, from the depth of the sea. The band does not match the gauges exactly: at half of them it is within 6 per cent of the time measured, at nine in ten within 18 per cent, and it is mostly too early. A likely reason, which the app has not tested, is that gauges stand in harbours, where the wave comes later than in the open sea.',
   grownUpsEarth4:
@@ -1152,6 +1152,13 @@ export const en = {
   storyVolcanoHowHighName: 'How high',
   storyVolcanoDayLaterName: 'A day later',
   storyVolcanoPilotsName: 'Pilots',
+  storyFloodRiverName: 'The river',
+  storyFloodWhatName: 'What is a flood?',
+  storyFloodRainName: 'The rain',
+  storyFloodRisesName: 'The river rises',
+  storyFloodBanksName: 'Over the banks',
+  storyFloodGoesName: 'The water goes',
+  storyFloodSafeName: 'Stay safe',
   storyAvalancheValleyName: 'The valley',
   storyAvalancheRockName: 'Rock piles up',
   storyAvalancheLeaveName: 'Everyone leaves',
@@ -1502,6 +1509,26 @@ export const en = {
     'The rock and ice stretch 2.5 kilometres along the valley. They block the river, so its water rose and flooded part of the valley.',
   storyAvalancheLearning:
     'Something this big is rare in the Alps. Scientists are still finding out everything that made it happen.',
+  storyFloodTitle: 'A flood',
+  storyFloodNote:
+    'These are real pictures, taken from space on each day. Their colours are changed so that water shows blue.',
+  storyFloodPictureAlt:
+    'Green land seen from space, with a blue river running across it. In the flood the blue river is much wider and spreads over the land.',
+  storyFloodRiver:
+    'This is the Gandak River, flowing out of the mountains of Nepal into India, seen from space. The colours are changed to show water: water is blue, plants are bright green and clouds are pale blue.',
+  storyFloodWhat: 'A flood is when water spills over onto land that is normally dry.',
+  storyFloodRain:
+    'In late September 2026, storms poured heavy rain on the mountains of Nepal, again and again. The clouds hide the ground.',
+  storyFloodRises:
+    'All that rain ran down into the river. On 27 September, the water on a measuring post at Devghat, in Nepal, reached 11.94 metres. That is the highest since people began measuring there, in the 1960s.',
+  storyFloodBanks:
+    'The water poured over the banks built to hold it, and spread across farms and villages. See how much wider the blue is now.',
+  storyFloodGoes:
+    'A flood can last for days or even weeks. Two weeks later, most of the water had gone, and the river was narrow again.',
+  storyFloodSafe:
+    'Moving flood water is much stronger than it looks. Water just 15 centimetres deep can knock a grown-up over. So never walk, ride or play in flood water.',
+  scaleLabelFloodSlice:
+    'The river up close is a drawing, its depth drawn far taller than life. The highest mark on the post is real.',
   storyQuakeTitle: 'An earthquake',
   storyQuakeNote:
     'Each dot is a real station, lit when it really felt the wave. The ring is worked out from those times.',

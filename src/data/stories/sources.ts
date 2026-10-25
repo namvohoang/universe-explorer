@@ -565,6 +565,43 @@ export const JPL_HORIZONS_TURN_BLATTEN_2025_EARTH: Source = {
   retrieved: '2026-10-25',
 };
 
+export const NASA_EARTH_OBSERVATORY_GANDAK: Source = {
+  id: 'nasa-earth-observatory-gandak-2026',
+  title: 'NASA Earth Observatory — Rains Swamp the Gandak River (image of the day, October 2026)',
+  url: 'https://science.nasa.gov/earth/earth-observatory/rains-swamp-the-gandak-river/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_WORLDVIEW_GANDAK: Source = {
+  id: 'nasa-worldview-gandak-2026',
+  title:
+    'NASA Worldview (NASA Earth Science Data and Information System) — false-colour pictures (bands 7, 2 and 1) from the MODIS cameras on the Terra and Aqua satellites, 20 September to 12 October 2026, from its snapshot service (wvs.earthdata.nasa.gov)',
+  url: 'https://worldview.earthdata.nasa.gov/?v=83.4,25.6,85.6,27.8&l=MODIS_Aqua_CorrectedReflectance_Bands721&t=2026-09-29',
+  retrieved: '2026-10-25',
+};
+
+export const NOAA_NSSL_FLOODS: Source = {
+  id: 'noaa-nssl-floods',
+  title: 'NOAA National Severe Storms Laboratory — Severe Weather 101: Floods',
+  url: 'https://www.nssl.noaa.gov/education/svrwx101/floods/',
+  retrieved: '2026-10-25',
+};
+
+export const NWS_TURN_AROUND_DONT_DROWN: Source = {
+  id: 'nws-turn-around-dont-drown',
+  title: 'NOAA National Weather Service — Turn Around Don’t Drown',
+  url: 'https://www.weather.gov/safety/flood-turn-around-dont-drown',
+  retrieved: '2026-10-25',
+};
+
+export const JPL_HORIZONS_TURN_GANDAK_2026_EARTH: Source = {
+  id: 'jpl-horizons-turn-gandak2026earthturn',
+  title:
+    'JPL Horizons — where the point at latitude 0, longitude 0 on Earth was, from Earth’s centre, at 2026-09-20 05:00:00 UTC, ecliptic of J2000',
+  url: 'https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27c%3A+0%2C+6378.13700%2C+0.00000+%40399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40399%27&REF_PLANE=%27ECLIPTIC%27&OUT_UNITS=%27KM-S%27&VEC_TABLE=%271%27&CSV_FORMAT=%27YES%27&TLIST=%272461303.709134056%27',
+  retrieved: '2026-10-25',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

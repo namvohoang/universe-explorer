@@ -290,7 +290,7 @@ test.describe('the Earth screen', () => {
   }) => {
     await page.goto('/#earth/mountain-himalaya');
     await expect(page.locator('.watch-caption h2')).toHaveText('A mountain range');
-    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 8');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 10');
     await expect(page.locator('.watch-date')).toContainText('million years ago');
     await expect(page.locator('.watch-date')).toContainText('One second here is about');
     await expect(page.locator('.watch-path')).toContainText('Nobody was there to see this.');
@@ -304,7 +304,7 @@ test.describe('the Earth screen', () => {
   }) => {
     await page.goto('/#earth/river-ucayali');
     await expect(page.locator('.watch-caption h2')).toHaveText('A river');
-    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 8');
+    await expect(page.locator('.watch-step')).toHaveText('Part 1 of 10');
     await expect(page.locator('.watch-date')).toContainText('15 July 2016');
     await expect(page.locator('.pane:visible .pane-label').first()).toHaveText(
       'Close up (a drawing)',

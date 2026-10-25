@@ -689,13 +689,13 @@ export const NARRATION: Readonly<
   },
   'story-mountain-himalaya': {
     file: 'public/voice/story-mountain-himalaya.mp3',
-    fingerprint: '8e1275aa',
-    starts: [0.0, 2.38, 9.97, 15.12, 21.85, 29.65, 38.52, 44.27, 54.85],
+    fingerprint: '6fbd324b',
+    starts: [0.0, 2.38, 9.97, 15.12, 21.85, 29.65, 38.52, 49.42, 55.17, 62.55, 73.12],
   },
   'story-river-ucayali': {
     file: 'public/voice/story-river-ucayali.mp3',
-    fingerprint: '07b101ed',
-    starts: [0.0, 2.0, 9.93, 16.35, 22.27, 29.0, 36.35, 48.4, 58.95],
+    fingerprint: 'b2f7d3fb',
+    starts: [0.0, 2.0, 9.93, 20.48, 26.9, 32.83, 39.55, 46.9, 58.95, 67.38, 77.92],
   },
   'story-canyon-grand-canyon': {
     file: 'public/voice/story-canyon-grand-canyon.mp3',

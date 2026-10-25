@@ -22,6 +22,8 @@ import {
   NASA_EARTH_OBSERVATORY_MEANDERING_AMAZON,
   NASA_EARTH_OBSERVATORY_MUD_ANDES,
   NASA_EARTH_OBSERVATORY_UCAYALI_ROAD,
+  NASA_EARTH_OBSERVATORY_WATER_CYCLE,
+  NASA_EARTH_OBSERVATORY_YELLOW_RIVER_DELTA,
   NASA_JEZERO_CRATER,
   NASA_TITAN_FACTS,
   NASA_WORLDVIEW_UCAYALI,
@@ -34,6 +36,8 @@ const AMAZON = 'nasa-earth-observatory-meandering-amazon';
 const JEZERO = 'nasa-jezero-crater';
 const TITAN = 'nasa-titan-facts';
 const WORLDVIEW = 'nasa-worldview-ucayali';
+const WATER_CYCLE = 'nasa-earth-observatory-water-cycle';
+const YELLOW = 'nasa-earth-observatory-yellow-river-delta';
 
 /** The square every picture covers: west, south, east, north. */
 const BOX = [-74.6, -8.75, -74.1, -8.25] as const;
@@ -81,12 +85,13 @@ const picture = (year: Year, camera: string, credit: string, untilJd: number): S
  * over (the first picture to the last), and the other worlds.
  */
 export const UCAYALI_PARTS = {
-  outsideJd: at(2016, 17),
-  insideJd: at(2016, 18),
+  outsideJd: at(2016, 18),
+  insideJd: at(2016, 19),
   fromJd: at(2016, 15),
   untilJd: at(2025, 15),
-  marsJd: at(2025, 16),
-  titanJd: at(2025, 17),
+  deltaJd: at(2025, 16),
+  marsJd: at(2025, 17),
+  titanJd: at(2025, 18),
 } as const;
 
 /** The river up close, beside the globe looking straight down on the middle of the square. */
@@ -116,7 +121,7 @@ export const riverUcayali: Story = {
     pictures: [
       picture(2016, 'Sentinel-2', SENTINEL_CREDIT, at(2022, 15)),
       picture(2022, 'Landsat', LANDSAT_CREDIT, at(2025, 15)),
-      picture(2025, 'Landsat', LANDSAT_CREDIT, at(2025, 18)),
+      picture(2025, 'Landsat', LANDSAT_CREDIT, at(2025, 19)),
     ],
   },
   chapters: [
@@ -132,8 +137,19 @@ export const riverUcayali: Story = {
       ...OVER,
     },
     {
-      id: 'mud-from-the-andes',
+      id: 'the-rain',
       ...hour(2016, 16),
+      text: {
+        key: 'storyRiverRain',
+        sourceId: WATER_CYCLE,
+        quote:
+          'Some of it evaporates, returning to the atmosphere; some seeps into the ground as soil moisture or groundwater; and some runs off into rivers and streams.',
+      },
+      ...OVER,
+    },
+    {
+      id: 'mud-from-the-andes',
+      ...hour(2016, 17),
       text: {
         key: 'storyRiverMud',
         sourceId: MUD,
@@ -143,7 +159,7 @@ export const riverUcayali: Story = {
     },
     {
       id: 'the-outside',
-      ...hour(2016, 17),
+      ...hour(2016, 18),
       text: {
         key: 'storyRiverOutside',
         sourceId: CONGAREE,
@@ -154,7 +170,7 @@ export const riverUcayali: Story = {
     },
     {
       id: 'the-inside',
-      ...hour(2016, 18),
+      ...hour(2016, 19),
       text: {
         key: 'storyRiverInside',
         sourceId: CONGAREE,
@@ -184,8 +200,18 @@ export const riverUcayali: Story = {
       ...OVER,
     },
     {
-      id: 'mars',
+      id: 'the-delta',
       ...hour(2025, 16),
+      text: {
+        key: 'storyRiverDelta',
+        sourceId: YELLOW,
+        quote: 'large amounts of sediment drop to the shallow bottom, building up new land',
+      },
+      ...OVER,
+    },
+    {
+      id: 'mars',
+      ...hour(2025, 17),
       text: {
         key: 'storyRiverMars',
         sourceId: JEZERO,
@@ -196,7 +222,7 @@ export const riverUcayali: Story = {
     },
     {
       id: 'titan',
-      ...hour(2025, 17),
+      ...hour(2025, 18),
       text: {
         key: 'storyRiverTitan',
         sourceId: TITAN,
@@ -206,12 +232,14 @@ export const riverUcayali: Story = {
       ...OVER,
     },
   ],
-  endJd: s(at(2025, 18), WORLDVIEW, `18:00 UTC on ${DAY[2025]}.`),
+  endJd: s(at(2025, 19), WORLDVIEW, `19:00 UTC on ${DAY[2025]}.`),
   sources: [
     NASA_EARTH_OBSERVATORY_UCAYALI_ROAD,
     NASA_EARTH_OBSERVATORY_MUD_ANDES,
     NASA_EARTH_OBSERVATORY_CONGAREE,
     NASA_EARTH_OBSERVATORY_MEANDERING_AMAZON,
+    NASA_EARTH_OBSERVATORY_WATER_CYCLE,
+    NASA_EARTH_OBSERVATORY_YELLOW_RIVER_DELTA,
     NASA_JEZERO_CRATER,
     NASA_TITAN_FACTS,
     NASA_WORLDVIEW_UCAYALI,

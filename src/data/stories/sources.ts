@@ -862,6 +862,35 @@ export const JPL_HORIZONS_TURN_GRAND_CANYON_2025_EARTH: Source = {
   retrieved: '2026-10-25',
 };
 
+export const NASA_EARTH_OBSERVATORY_8000_METER_PEAKS: Source = {
+  id: 'nasa-earth-observatory-8000-meter-peaks',
+  title: 'NASA Earth Observatory — 8,000-meter Peaks of the Himalaya and Karakoram',
+  url: 'https://science.nasa.gov/earth/earth-observatory/8000-meter-peaks-of-the-himalaya-and-karakoram-82581/',
+  retrieved: '2026-10-25',
+};
+
+export const USGS_EVENT_NEPAL_2015: Source = {
+  id: 'usgs-event-us20002926',
+  title:
+    'USGS Earthquake Hazards Program — M 7.8, 36 km E of Khudi, Nepal, 25 April 2015 (event us20002926): its tectonic summary, read through the event service',
+  url: 'https://earthquake.usgs.gov/earthquakes/eventpage/us20002926',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_EARTH_OBSERVATORY_WATER_CYCLE: Source = {
+  id: 'nasa-earth-observatory-water-cycle',
+  title: 'NASA Earth Observatory — The Water Cycle',
+  url: 'https://science.nasa.gov/earth/earth-observatory/the-water-cycle/',
+  retrieved: '2026-10-25',
+};
+
+export const NASA_EARTH_OBSERVATORY_YELLOW_RIVER_DELTA: Source = {
+  id: 'nasa-earth-observatory-yellow-river-delta',
+  title: 'NASA Earth Observatory — Building Up the Yellow River Delta',
+  url: 'https://science.nasa.gov/earth/earth-observatory/building-up-the-yellow-river-delta-148145/',
+  retrieved: '2026-10-25',
+};
+
 export const USGS_EVENT_FIJI_2018: Source = {
   id: 'usgs-event-us1000gcii',
   title:

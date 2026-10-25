@@ -11,7 +11,6 @@
 // is 3.1 times the highest cell, so the sentence says "more than three times".
 // The story's instants are 15 November 2025, the day of the picture, one hour to a part; they
 // only drive its clock, which counts the years.
-// Left out: rain wearing the mountains down, for which no page was read (glaciers are told).
 // The sentences are in src/ui/strings/en.ts under each `key`; each rests on the quote beside it.
 import type { Story } from '../types';
 import { HIMALAYA_2025_EARTH_TURN } from '../paths/himalaya2025EarthTurn';
@@ -22,7 +21,9 @@ import {
   JPL_HORIZONS_TURN_HIMALAYA_2025_EARTH,
   NASA_EARTH_OBSERVATORY_TALLEST_MOUNTAIN,
   NASA_WORLDVIEW_HIMALAYA_2025,
+  NASA_EARTH_OBSERVATORY_8000_METER_PEAKS,
   NOAA_ETOPO_2022,
+  USGS_EVENT_NEPAL_2015,
   USGS_HIMALAYAS_COLLIDE,
 } from './sources';
 
@@ -30,6 +31,8 @@ const USGS = 'usgs-himalayas-two-continents-collide';
 const TALLEST = 'nasa-earth-observatory-tallest-mountain';
 const JPL = 'jpl-mars-odyssey-olympus-mons-2024';
 const WORLDVIEW = 'nasa-worldview-himalaya-2025';
+const PEAKS = 'nasa-earth-observatory-8000-meter-peaks';
+const NEPAL = 'usgs-event-us20002926';
 
 /** Noon (UTC) of 15 November 2025, as a Julian date. */
 const NOON_15_NOVEMBER = 2460995;
@@ -53,8 +56,8 @@ const years = (fromYearsAgo: number, untilYearsAgo: number, sourceId: string, no
 export const HIMALAYA_DRAWING = {
   startYearsAgo: s(80e6, USGS, 'About 80 million years ago, India far to the south of Asia.'),
   meetYearsAgo: s(50e6, USGS, 'When India rammed into Asia about 40 to 50 million years ago'),
-  todayFromJd: s(at(9), WORLDVIEW, 'The first part that is today.'),
-  barsFromJd: s(at(11), WORLDVIEW, 'The part that sets the two heights side by side.'),
+  todayFromJd: s(at(10), WORLDVIEW, 'The first part that is today.'),
+  barsFromJd: s(at(13), WORLDVIEW, 'The part that sets the two heights side by side.'),
   tallestKm: s(
     27,
     JPL,
@@ -101,7 +104,7 @@ export const mountainHimalaya: Story = {
           'The square asked for: west, south, east, north; MODIS on Terra, 15 November 2025.',
         ),
         fromJd: s(at(4), WORLDVIEW, 'The first instant of the story.'),
-        untilJd: s(at(12), WORLDVIEW, 'The end of the story.'),
+        untilJd: s(at(14), WORLDVIEW, 'The end of the story.'),
       },
     ],
   },
@@ -159,7 +162,7 @@ export const mountainHimalaya: Story = {
     {
       id: 'carved-by-ice',
       ...hour(8),
-      ...years(10e6, 0, TALLEST, 'Up to today; the page gives no years for the glaciers.'),
+      ...years(10e6, 1e6, TALLEST, 'The page gives no years for the glaciers.'),
       text: {
         key: 'storyMountainIce',
         sourceId: TALLEST,
@@ -169,8 +172,20 @@ export const mountainHimalaya: Story = {
       ...OVER,
     },
     {
-      id: 'still-rising',
+      id: 'worn-down',
       ...hour(9),
+      ...years(1e6, 0, PEAKS, 'Up to today; the page gives no years.'),
+      text: {
+        key: 'storyMountainWorn',
+        sourceId: PEAKS,
+        quote:
+          'a constant fight between the rate of uplift and the erosive power of wind, rain, snow, and glacial ice.',
+      },
+      ...OVER,
+    },
+    {
+      id: 'still-rising',
+      ...hour(10),
       ...years(0, 0, USGS, 'Today.'),
       text: {
         key: 'storyMountainRising',
@@ -180,8 +195,20 @@ export const mountainHimalaya: Story = {
       ...OVER,
     },
     {
+      id: 'still-pushing',
+      ...hour(11),
+      ...years(0, 0, NEPAL, 'Today.'),
+      text: {
+        key: 'storyMountainPushing',
+        sourceId: NEPAL,
+        quote:
+          'the India plate is converging with Eurasia at a rate of 45 mm/yr towards the north-northeast',
+      },
+      ...OVER,
+    },
+    {
       id: 'the-real-range',
-      ...hour(10),
+      ...hour(12),
       ...years(0, 0, TALLEST, 'Today.'),
       text: {
         key: 'storyMountainReal',
@@ -193,7 +220,7 @@ export const mountainHimalaya: Story = {
     },
     {
       id: 'tallest-of-all',
-      ...hour(11),
+      ...hour(13),
       ...years(0, 0, JPL, 'Today.'),
       text: {
         key: 'storyMountainTallest',
@@ -204,10 +231,12 @@ export const mountainHimalaya: Story = {
       ...OVER,
     },
   ],
-  endJd: s(at(12), WORLDVIEW, '12:00 UTC on 15 November 2025.'),
+  endJd: s(at(14), WORLDVIEW, '14:00 UTC on 15 November 2025.'),
   sources: [
     USGS_HIMALAYAS_COLLIDE,
     NASA_EARTH_OBSERVATORY_TALLEST_MOUNTAIN,
+    NASA_EARTH_OBSERVATORY_8000_METER_PEAKS,
+    USGS_EVENT_NEPAL_2015,
     JPL_OLYMPUS_MONS_2024,
     NOAA_ETOPO_2022,
     NASA_WORLDVIEW_HIMALAYA_2025,

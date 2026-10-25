@@ -1462,8 +1462,10 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       between crumpling into ridges; from today, the real land round Everest from ETOPO 2022
       with MODIS's picture of 15 November 2025 laid over it, and two bars by the same factor:
       the block's highest cell (8.6 km, the summit smoothed by the 460 m cells) and Olympus
-      Mons. Left out: rain wearing the range down (no page read; glaciers are told), and
-      today's measured speed, for which no page was read. As planned: **A mountain range.** `rebuilt`: two plates meeting and the land between them
+      Mons. Two parts added the same day at the owner's asking: wind, rain, snow and ice wearing
+      the range down (NASA Earth Observatory, "8,000-meter Peaks of the Himalaya and
+      Karakoram") and India still pushing north at 45 mm a year (USGS, the tectonic summary of
+      the Nepal earthquake of 25 April 2015). As planned: **A mountain range.** `rebuilt`: two plates meeting and the land between them
       folding up, in a slice, ending on the real range. Today's measured speed is `tracked`.
       Parts: plates move; they meet; the land folds and rises; rain and ice wear it down as
       it grows; the range today; how it stands beside the tallest mountain of the solar
@@ -1478,8 +1480,10 @@ delta growing), that record is used in place of a drawing, as `tracked`.
       close-up (`riverSlice`) is a winding river on a plain: faster water on the outside of
       each bend, sand on the inside, the bends sliding, a loop cut off into an oxbow lake, then
       the plain as Mars (dry) and as Titan (methane). USGS's own meander page sits behind a
-      robot check and could not be read. Left out: rain running off into streams (no page
-      read) and a delta. As planned: **A river.** `tracked` where Landsat has watched it: the bends wandering, a loop
+      robot check and could not be read. Two parts added the same day at the owner's asking:
+      rain running off into streams and rivers (NASA Earth Observatory, "The Water Cycle"),
+      and a delta, drawn in the close-up as the sea at the river's mouth and a fan of new land
+      (NASA Earth Observatory, "Building Up the Yellow River Delta"). As planned: **A river.** `tracked` where Landsat has watched it: the bends wandering, a loop
       cut off, the delta building out. `staged`: rain running off high ground into one
       stream, in a slice. Parts: rain and a slope; streams join; the bends move; the river
       meets the sea; dry river beds on Mars and rivers that are not water on Titan.

@@ -1161,11 +1161,13 @@ export const en = {
   storyCanyonRealName: 'The real canyon',
   storyCanyonMarsName: 'On Mars',
   storyRiverRiverName: 'The river',
+  storyRiverRainName: 'The rain',
   storyRiverMudName: 'Mud from the Andes',
   storyRiverOutsideName: 'The outside',
   storyRiverInsideName: 'The inside',
   storyRiverMoveName: 'The bends move',
   storyRiverCutOffName: 'Cut off',
+  storyRiverDeltaName: 'The delta',
   storyRiverMarsName: 'Mars',
   storyRiverTitanName: 'Titan',
   storyMountainFarApartName: 'Far apart',
@@ -1173,6 +1175,8 @@ export const en = {
   storyMountainMeetName: 'They meet',
   storyMountainPushedName: 'Pushed up',
   storyMountainIceName: 'Carved by ice',
+  storyMountainWornName: 'Worn down',
+  storyMountainPushingName: 'Still pushing',
   storyMountainRisingName: 'Still rising',
   storyMountainRealName: 'The real range',
   storyMountainTallestName: 'Tallest of all',
@@ -1659,6 +1663,10 @@ export const en = {
     'The edges of the two lands jammed together and pushed the ground up into huge ridges. These are the Himalayas.',
   storyMountainIce:
     'All the while, glaciers, rivers of ice, wore the mountains down. They carved the top of Mount Everest into a huge pyramid.',
+  storyMountainWorn:
+    'Rain, snow, wind and ice wear the mountains down all the time. How high they stand is a tug of war between the land rising and the weather wearing it away.',
+  storyMountainPushing:
+    'India is still pushing into Asia today, about 45 millimetres every year, towards the north.',
   storyMountainRising:
     'The Himalayas are still rising today, by more than 1 centimetre every year.',
   storyMountainReal:
@@ -1673,6 +1681,8 @@ export const en = {
     'Green rainforest seen from space, with a brown river winding through it in big loops, and a city on its bank.',
   storyRiverRiver:
     'This is the Ucayali River, in the Amazon rainforest of Peru, winding past the city of Pucallpa.',
+  storyRiverRain:
+    'Where does a river’s water come from? When rain falls on land, some of it dries up, some soaks into the ground, and some runs off into streams and rivers.',
   storyRiverMud:
     'The river is brown because it carries mud, much of it washed down from the Andes mountains.',
   storyRiverOutside:
@@ -1683,6 +1693,8 @@ export const en = {
     'So, year after year, the bends slide across the land. This is the same river six years later.',
   storyRiverCutOff:
     'When a loop grows too big, the river breaks through its narrow neck and takes the short way. The old loop is left behind as a lake shaped like a crescent moon: an oxbow lake.',
+  storyRiverDelta:
+    'Where a river reaches the sea, it slows down. Its mud drops to the shallow sea floor and builds new land: a delta.',
   storyRiverMars:
     'Mars is dry now, but long ago rivers ran there too. More than 3.5 billion years ago, rivers spilled into a crater and made a lake.',
   storyRiverTitan:

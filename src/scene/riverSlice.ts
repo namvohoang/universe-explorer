@@ -1,4 +1,5 @@
 import {
+  CircleGeometry,
   AmbientLight,
   BufferAttribute,
   BufferGeometry,
@@ -26,7 +27,8 @@ import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
  * 2. Sand building on the inside of each bend.
  * 3. As the years go by, the bends growing and sliding down the valley; one loop growing until
  *    the river cuts through its narrow neck, leaving the loop behind as a crescent-shaped lake.
- * 4. Then the same plain as Mars, its river channel long dry, and as Titan, its river of methane
+ * 4. The river reaching the sea, its mud building new land at its mouth: a delta.
+ * 5. Then the same plain as Mars, its river channel long dry, and as Titan, its river of methane
  *    under an orange sky.
  * 5. With its button, the real picture from space of that moment in place of the drawing.
  *
@@ -50,6 +52,9 @@ const STEPS = 320;
 const HALF_WIDE = 0.18;
 const BED = 0.05;
 const DOTS = 90;
+/** Where the sea begins at the river's mouth, during the delta's part. */
+const SEA_X = 3.9;
+const SEA = 0x2f6fa8;
 
 export interface RiverSliceOptions {
   /** When the close-up stresses the bend's outside and inside, as Julian dates. */
@@ -59,6 +64,8 @@ export interface RiverSliceOptions {
   readonly fromJd: number;
   readonly untilJd: number;
   /** From when the plain is drawn as Mars, then as Titan. */
+  /** From when the river is drawn reaching the sea and building its delta. */
+  readonly deltaJd: number;
   readonly marsJd: number;
   readonly titanJd: number;
   /** The real pictures, for the button. */
@@ -180,6 +187,24 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
   );
   diorama.add(dots);
 
+  // The sea at the river's mouth, and the fan of new land its mud builds there.
+  const delta = new Group();
+  delta.visible = false;
+  diorama.add(delta);
+  const sea = new Mesh(
+    keep(new PlaneGeometry(HALF_X - SEA_X, 2 * HALF_Z)),
+    keep(new MeshStandardMaterial({ color: SEA, roughness: 0.25 })),
+  );
+  sea.rotation.x = -Math.PI / 2;
+  sea.position.set((HALF_X + SEA_X) / 2, 0.004, 0);
+  delta.add(sea);
+  const fan = new Mesh(
+    keep(new CircleGeometry(1, 32, -Math.PI / 2, Math.PI)),
+    keep(new MeshStandardMaterial({ color: SAND, roughness: 1 })),
+  );
+  fan.rotation.x = -Math.PI / 2;
+  delta.add(fan);
+
   // The real picture from space, in place of the drawing, with the button.
   const board = keep(createPictureBoard(options.pictures));
   board.group.visible = false;
@@ -294,6 +319,14 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
         material.color.copy(world === 'mars' ? DRY_BED : liquid);
       }
       bars.visible = world === 'earth';
+      // The delta, growing over its part: drawn new land, as big as a drawing allows.
+      delta.visible = jd >= options.deltaJd && jd < options.marsJd;
+      if (delta.visible) {
+        const built = 0.25 + 0.75 * smooth(options.deltaJd, options.marsJd, jd);
+        const mouth = riverZ(SEA_X, grown, cut);
+        fan.position.set(SEA_X, 0.008, mouth);
+        fan.scale.set(1.6 * built, 2.2 * built, 1);
+      }
       background.set(world === 'titan' ? '#6a4a20' : BACKGROUND);
       sun.color.set(world === 'titan' ? 0xffb060 : world === 'mars' ? 0xffe0c0 : 0xfff2dc);
       move();

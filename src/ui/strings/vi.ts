@@ -1199,6 +1199,10 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Rìa của hai vùng đất ép chặt vào nhau và đẩy mặt đất lên thành những dãy núi khổng lồ. Đó là dãy Himalaya.',
   storyMountainIce:
     'Suốt thời gian đó, sông băng, những dòng sông bằng băng, mài mòn núi. Chúng tạc đỉnh Everest thành một kim tự tháp khổng lồ.',
+  storyMountainWorn:
+    'Mưa, tuyết, gió và băng luôn mài mòn núi. Núi cao bao nhiêu là một cuộc kéo co giữa mặt đất nâng lên và thời tiết bào mòn nó.',
+  storyMountainPushing:
+    'Ngày nay Ấn Độ vẫn đang đẩy vào châu Á, khoảng 45 mi-li-mét mỗi năm, về phía bắc.',
   storyMountainRising: 'Ngày nay dãy Himalaya vẫn đang cao lên, hơn 1 xen-ti-mét mỗi năm.',
   storyMountainReal:
     'Đây là vùng đất quanh đỉnh Everest ngày nay, dựng từ số đo thật, với một ảnh chụp từ vũ trụ phủ lên trên. Everest là ngọn núi cao nhất Trái Đất.',
@@ -1212,6 +1216,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Rừng nhiệt đới xanh nhìn từ vũ trụ, với một dòng sông nâu uốn khúc thành những vòng lớn, và một thành phố bên bờ sông.',
   storyRiverRiver:
     'Đây là sông Ucayali, trong rừng nhiệt đới Amazon của Peru, uốn khúc qua thành phố Pucallpa.',
+  storyRiverRain:
+    'Nước sông từ đâu mà có? Khi mưa rơi xuống đất, một phần khô đi, một phần thấm vào lòng đất, và một phần chảy thành suối và sông.',
   storyRiverMud: 'Nước sông màu nâu vì mang theo bùn, phần lớn trôi xuống từ dãy núi Andes.',
   storyRiverOutside: 'Ở phía ngoài mỗi khúc quanh, nước chảy nhanh hơn. Nó khoét mòn bờ sông ở đó.',
   storyRiverInside:
@@ -1220,6 +1226,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
     'Vì thế, năm này qua năm khác, các khúc quanh trượt dần trên mặt đất. Đây là chính dòng sông ấy sáu năm sau.',
   storyRiverCutOff:
     'Khi một vòng sông quá lớn, dòng sông phá qua cổ hẹp của nó và đi đường tắt. Vòng cũ bị bỏ lại thành một cái hồ hình trăng lưỡi liềm: hồ móng ngựa.',
+  storyRiverDelta:
+    'Nơi dòng sông đổ ra biển, nước chảy chậm lại. Bùn của nó lắng xuống đáy biển nông và bồi thành đất mới: một châu thổ.',
   storyRiverMars:
     'Sao Hỏa bây giờ khô cạn, nhưng ngày xưa ở đó cũng có sông. Hơn 3,5 tỉ năm trước, sông chảy tràn vào một miệng hố và tạo thành một cái hồ.',
   storyRiverTitan:
@@ -1366,11 +1374,13 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyCanyonRealName: 'Hẻm núi thật',
   storyCanyonMarsName: 'Trên Sao Hỏa',
   storyRiverRiverName: 'Dòng sông',
+  storyRiverRainName: 'Mưa',
   storyRiverMudName: 'Bùn từ dãy Andes',
   storyRiverOutsideName: 'Phía ngoài',
   storyRiverInsideName: 'Phía trong',
   storyRiverMoveName: 'Khúc quanh di chuyển',
   storyRiverCutOffName: 'Bị cắt rời',
+  storyRiverDeltaName: 'Châu thổ',
   storyRiverMarsName: 'Sao Hỏa',
   storyRiverTitanName: 'Titan',
   storyMountainFarApartName: 'Cách xa nhau',
@@ -1378,6 +1388,8 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   storyMountainMeetName: 'Va vào nhau',
   storyMountainPushedName: 'Đẩy lên cao',
   storyMountainIceName: 'Băng tạc núi',
+  storyMountainWornName: 'Bị mài mòn',
+  storyMountainPushingName: 'Vẫn đang đẩy',
   storyMountainRisingName: 'Vẫn đang cao lên',
   storyMountainRealName: 'Dãy núi thật',
   storyMountainTallestName: 'Cao nhất',

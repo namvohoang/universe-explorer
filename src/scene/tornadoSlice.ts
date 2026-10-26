@@ -594,17 +594,18 @@ export function createTornadoSlice(
 
   // The two winds that set it rolling: slow near the ground, fast above it, both the same way,
   // across the roll.
+  // They stand just past the end of the roll, where the roll does not hide them.
   const windArrow = (y: number, length: number): ArrowHelper =>
     new ArrowHelper(
       new Vector3(0, 0, 1),
-      new Vector3(-ROLL_LENGTH * 0.32, y, -length / 2),
+      new Vector3(-ROLL_LENGTH / 2 - 0.7, y, -length / 2),
       length,
       0xfde68a,
-      0.45,
-      0.3,
+      0.7,
+      0.5,
     );
-  windShearGroup.add(windArrow(ROLL_HEIGHT - ROLL_RADIUS - 0.25, 1.4));
-  windShearGroup.add(windArrow(ROLL_HEIGHT + ROLL_RADIUS + 0.35, 3.4));
+  windShearGroup.add(windArrow(ROLL_HEIGHT - ROLL_RADIUS + 0.1, 2.2));
+  windShearGroup.add(windArrow(ROLL_HEIGHT + ROLL_RADIUS + 0.35, 4));
 
   // Air rising into the storm, up through the middle of the arch.
   const updraftCount = 300;

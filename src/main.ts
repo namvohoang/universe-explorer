@@ -3357,7 +3357,7 @@ function start(): void {
       moveTornado(jd);
       moveTsunami(jd);
       moveTide(jd);
-      if (!reducedMotion) stormSlice?.flow(dt);
+      stormSlice?.flow(reducedMotion ? 0 : dt);
       if (!reducedMotion) tornadoDrawing?.scene.flow(dt);
       if (!reducedMotion) watchQuake?.block?.flow(dt);
       watchTsunamiSlice?.flow(reducedMotion ? 0 : dt);

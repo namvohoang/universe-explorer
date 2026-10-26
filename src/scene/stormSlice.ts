@@ -1,3 +1,5 @@
+import { fadeGroup } from './diorama';
+import { settling } from './settle';
 import {
   AmbientLight,
   BufferAttribute,
@@ -629,17 +631,26 @@ export function createStormSlice(eyeRadiusShare = 0.12, wallReachShare = 0.45): 
   // ==========================================================================
   // 6. Phase State Controller
   // ==========================================================================
+  // Each phase's drawing fades in as the storm comes to it and out as it leaves.
+  const phases = [
+    ['formation', formationGroup],
+    ['tropical-storm', stormInflowGroup],
+    ['mature', matureGroup],
+    ['decay', decayGroup],
+  ] as const;
+  const phaseShown = new Map(phases.map(([phase]) => [phase, settling()] as const));
   function applyPhaseVisibility(phase: StormPhase): void {
-    formationGroup.visible = phase === 'formation';
-    stormInflowGroup.visible = phase === 'tropical-storm';
-    matureGroup.visible = phase === 'mature';
-    decayGroup.visible = phase === 'decay';
+    for (const [shown, shownTo] of phaseShown) shownTo.aim(shown === phase ? 1 : 0);
+  }
+  function showPhases(): void {
+    for (const [phase, group] of phases) fadeGroup(group, phaseShown.get(phase)?.value ?? 0);
   }
 
   // The second look (the arrows of how the air moves) is switched from the story card.
   let showScientificOverlay = false;
 
   applyPhaseVisibility('mature');
+  showPhases();
 
   // ==========================================================================
   // 8. Dynamic Animation Loop & Flow Execution
@@ -703,6 +714,11 @@ export function createStormSlice(eyeRadiusShare = 0.12, wallReachShare = 0.45): 
     },
 
     flow(seconds: number) {
+      let moved = false;
+      for (const shownTo of phaseShown.values()) moved = shownTo.step(seconds) || moved;
+      if (moved) showPhases();
+      // With no motion asked for, the storm stands still.
+      if (seconds === 0) return;
       totalTime += seconds;
 
       // 0. Dynamic Moving Ocean Water Waves, Swells & Surface Foam

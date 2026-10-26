@@ -1,5 +1,13 @@
 import type { BufferAttribute } from 'three';
-import { type Scene, type Group, type Material, Mesh, PlaneGeometry, Vector3 } from 'three';
+import {
+  type Scene,
+  type Group,
+  type Material,
+  type Object3D,
+  Mesh,
+  PlaneGeometry,
+  Vector3,
+} from 'three';
 import type { Bounds } from './flight';
 import type { PictureBoard } from './pictureBoard';
 import { FIELD_OF_VIEW_DEG } from './stage';
@@ -99,4 +107,40 @@ export function placeBoard(
   board.group.scale.setScalar(
     (0.85 * 2 * distance * Math.tan((FIELD_OF_VIEW_DEG * Math.PI) / 360)) / board.height,
   );
+}
+
+/** What a material looked like before any fading, kept to fade it back exactly. */
+interface Unfaded {
+  readonly opacity: number;
+  readonly transparent: boolean;
+  readonly depthWrite: boolean;
+}
+
+/**
+ * Fades everything drawn in `group` to `shown` (0 hidden, 1 as made), so one look of a
+ * close-up can give way to the next. Hidden altogether at 0; at 1 every material is back as
+ * it was made. Materials shared with something outside the group fade with it.
+ */
+export function fadeGroup(group: Object3D, shown: number): void {
+  group.visible = shown > 0.002;
+  if (!group.visible) return;
+  group.traverse((child) => {
+    const material = (child as Partial<Mesh>).material;
+    if (!material) return;
+    for (const one of Array.isArray(material) ? material : [material]) {
+      const unfaded = (one.userData.unfaded ??= {
+        opacity: one.opacity,
+        transparent: one.transparent,
+        depthWrite: one.depthWrite,
+      }) as Unfaded;
+      const fading = shown < 1;
+      one.opacity = unfaded.opacity * shown;
+      if (one.transparent !== (fading || unfaded.transparent)) {
+        one.transparent = fading || unfaded.transparent;
+        one.needsUpdate = true;
+      }
+      // While fading, what is behind shows through rather than being hidden by it.
+      one.depthWrite = fading ? shown > 0.6 && unfaded.depthWrite : unfaded.depthWrite;
+    }
+  });
 }

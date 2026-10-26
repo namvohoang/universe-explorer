@@ -1,6 +1,8 @@
 import {
   CircleGeometry,
   AmbientLight,
+  BoxGeometry,
+  ConeGeometry,
   BufferAttribute,
   BufferGeometry,
   Color,
@@ -21,8 +23,9 @@ import {
 } from 'three';
 import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
-import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
+import { addBlockSides, fadeGroup, placeBoard, scatter, smooth } from './diorama';
 import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
+import { settling } from './settle';
 
 /**
  * A 3D close-up of a winding river on a flat plain, cut open like a model:
@@ -40,7 +43,11 @@ import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
  *
  * Everything here is a drawing.
  */
-const BACKGROUND = '#0a1020';
+const EARTH_SKY = new Color('#0a1020');
+const TITAN_SKY = new Color('#6a4a20');
+const EARTH_SUN = new Color(0xfff2dc);
+const MARS_SUN = new Color(0xffe0c0);
+const TITAN_SUN = new Color(0xffb060);
 const FOREST = new Color('#3f7a3a');
 const MARS_GROUND = new Color('#b4643c');
 const TITAN_GROUND = new Color('#7a5a2a');
@@ -49,6 +56,12 @@ const TITAN_LIQUID = new Color('#2a2a30');
 const DRY_BED = new Color('#7a3c22');
 const SAND = 0xe2cf9c;
 const FAST = 0xffd8a8;
+/** The outside bank being worn away, and the glow on the sand while the inside is told. */
+const WORN_BANK = 0xc0753a;
+const INSIDE_GLOW = new Color(0x5a4a20);
+const BARS = 10;
+const TREES = 140;
+const TREE = 0x2f5e2c;
 
 const HALF_X = 6;
 const HALF_Z = 3.6;
@@ -61,6 +74,8 @@ const DOTS = 90;
 /** Where the sea begins at the river's mouth, during the delta's part. */
 const SEA_X = 3.9;
 const SEA = 0x2f6fa8;
+/** How high the sea stands: over the drawn water and sand it covers at the mouth. */
+const SEA_Y = 0.05;
 /** The rain: its cloud, how many drops fall, dry up and run off, and the soaked ground. */
 const CLOUD = 0x9aa4af;
 const RAIN = 0xb8d4f0;
@@ -127,7 +142,7 @@ const CUT_AT = 0.86;
 
 export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
   const scene = new Scene();
-  const background = new Color(BACKGROUND);
+  const background = EARTH_SKY.clone();
   scene.background = background;
   const disposables: { dispose: () => void }[] = [];
   const keep = <T extends { dispose: () => void }>(item: T): T => {
@@ -196,8 +211,23 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
 
   // Sand on the inside of each bend.
   const sandMaterial = keep(new MeshStandardMaterial({ color: SAND, roughness: 1 }));
-  const bars = new InstancedMesh(keep(new SphereGeometry(1, 16, 8)), sandMaterial, 8);
+  const bars = new InstancedMesh(keep(new SphereGeometry(1, 16, 8)), sandMaterial, BARS);
   diorama.add(bars);
+  // The outside bank, steep where the fast water wears it away.
+  const banks = new InstancedMesh(
+    keep(new BoxGeometry(1, 1, 1)),
+    keep(new MeshStandardMaterial({ color: WORN_BANK, roughness: 1 })),
+    BARS,
+  );
+  diorama.add(banks);
+  // Forest on the plain.
+  const treeSpots = scatter(TREES, 59);
+  const trees = new InstancedMesh(
+    keep(new ConeGeometry(0.07, 0.2, 6)),
+    keep(new MeshStandardMaterial({ color: TREE, roughness: 1 })),
+    TREES,
+  );
+  diorama.add(trees);
 
   // Water flowing down the river, faster along the outside of the bends.
   const dots = new InstancedMesh(
@@ -216,7 +246,7 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
     keep(new MeshStandardMaterial({ color: SEA, roughness: 0.25 })),
   );
   sea.rotation.x = -Math.PI / 2;
-  sea.position.set((HALF_X + SEA_X) / 2, 0.004, 0);
+  sea.position.set((HALF_X + SEA_X) / 2, SEA_Y, 0);
   delta.add(sea);
   const fan = new Mesh(
     keep(new CircleGeometry(1, 32, -Math.PI / 2, Math.PI)),
@@ -282,22 +312,56 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
   const distance = 9.5;
   placeBoard(board, target, direction, distance);
 
+  // Where the story is, each settling into place over a moment when it changes.
+  const grownTo = settling();
+  const marsTo = settling();
+  const titanTo = settling();
+  const rainTo = settling();
+  const soakedTo = settling();
+  const deltaTo = settling();
+  const builtTo = settling();
+  const outsideTo = settling();
+  const insideTo = settling();
+  const settlings = [
+    grownTo,
+    marsTo,
+    titanTo,
+    rainTo,
+    soakedTo,
+    deltaTo,
+    builtTo,
+    outsideTo,
+    insideTo,
+  ];
   let grown = -1;
   let cut = false;
   let time = 0;
-  let stress: 'outside' | 'inside' | null = null;
   const place = new Matrix4();
+  const groundNow = new Color();
+  const liquidNow = new Color();
 
-  /** Reshapes the plain, the river, the old loop and the sand for `grown`. */
+  /** Where each bend turns furthest, as x along the plain, and which way its inside lies. */
+  const bendTips = (line: (x: number) => number): (readonly [number, number])[] => {
+    const tips: (readonly [number, number])[] = [];
+    const step = 0.05;
+    let slope = line(-HALF_X + step) - line(-HALF_X);
+    for (let x = -HALF_X + step; x < HALF_X - step; x += step) {
+      const next = line(x + step) - line(x);
+      if (Math.sign(next) !== Math.sign(slope) && Math.abs(x) < HALF_X - 0.4) {
+        // At its furthest the bend curves back: its inside is the way it curves.
+        tips.push([x, next < slope ? -1 : 1]);
+      }
+      slope = next;
+    }
+    return tips;
+  };
+
+  /** Reshapes the plain, the river, the old loop, the sand and the trees for `grown`. */
   const shape = (): void => {
     const line = (x: number): number => riverZ(x, grown, cut);
-    groundHeight = (x, z) => {
-      const near = Math.min(
-        Math.abs(z - line(x)),
-        cut && x > 0 && x < 3.4 ? Math.abs(z - oxbowZ(x)) : Infinity,
-      );
-      return -BED * smooth(HALF_WIDE * 1.6, HALF_WIDE * 0.6, near);
-    };
+    const nearRiver = (x: number, z: number): number =>
+      Math.min(Math.abs(z - line(x)), cut && x > 0 && x < 3.4 ? Math.abs(z - oxbowZ(x)) : Infinity);
+    groundHeight = (x, z) => -BED * smooth(HALF_WIDE * 1.6, HALF_WIDE * 0.6, nearRiver(x, z));
     for (let index = 0; index < groundPositions.count; index++) {
       groundPositions.setY(
         index,
@@ -323,16 +387,36 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
     // The old loop, from one end of the neck to the other.
     oxbow.mesh.visible = cut;
     if (cut) lay(oxbow, oxbowZ, 0.35, 2.95, -BED * 0.4);
-    // Sand where each bend turns, on its inside.
-    for (let bar = 0; bar < 8; bar++) {
-      const x = -HALF_X + 0.7 + bar * 1.5;
-      const z = line(x);
-      const curve = line(x + 0.05) + line(x - 0.05) - 2 * z;
-      const inside = curve > 0 ? 1 : -1;
-      place.makeScale(0.45, 0.025, 0.2).setPosition(x, 0.005, z + inside * (HALF_WIDE + 0.12));
-      bars.setMatrixAt(bar, place);
+    // At the tip of each bend: sand on its inside, and its outside bank being worn away.
+    const tips = bendTips(line);
+    for (let bar = 0; bar < BARS; bar++) {
+      const tip = tips[bar];
+      if (tip) {
+        const [x, inside] = tip;
+        const z = line(x);
+        place.makeScale(0.55, 0.035, 0.14).setPosition(x, 0.005, z + inside * (HALF_WIDE + 0.2));
+        bars.setMatrixAt(bar, place);
+        place.makeScale(0.8, 0.09, 0.09).setPosition(x, 0.01, z - inside * (HALF_WIDE + 0.05));
+        banks.setMatrixAt(bar, place);
+      } else {
+        place.makeScale(0, 0, 0);
+        bars.setMatrixAt(bar, place);
+        banks.setMatrixAt(bar, place);
+      }
     }
     bars.instanceMatrix.needsUpdate = true;
+    banks.instanceMatrix.needsUpdate = true;
+    // Trees on the plain, wherever the river and its old loop are not.
+    for (const [index, [u, v]] of treeSpots.entries()) {
+      const x = (u - 0.5) * 2 * (HALF_X - 0.2);
+      const z = (v - 0.5) * 2 * (HALF_Z - 0.2);
+      // Clear of the river, and of where the sea comes in for the delta.
+      const clear = nearRiver(x, z) > HALF_WIDE + 0.35 && x < SEA_X - 0.2;
+      const tall = clear ? 0.7 + 0.6 * ((u * 7.3) % 1) : 0;
+      place.makeScale(tall, tall, tall).setPosition(x, 0.1 * tall, z);
+      trees.setMatrixAt(index, place);
+    }
+    trees.instanceMatrix.needsUpdate = true;
   };
 
   /** Places the flowing water, faster along the outside of the bends. */
@@ -386,6 +470,42 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
     runoff.instanceMatrix.needsUpdate = true;
   };
 
+  /** Draws the moment the settling values have reached. */
+  const draw = (): void => {
+    const nowCut = grownTo.value >= CUT_AT;
+    if (Math.abs(grownTo.value - grown) > 0.002 || nowCut !== cut) {
+      grown = grownTo.value;
+      cut = nowCut;
+      shape();
+    }
+    const mars = marsTo.value;
+    const titan = titanTo.value;
+    // The plain soaks up the rain, then turns to Mars, then to Titan.
+    groundNow.lerpColors(FOREST, SOAKED, soakedTo.value).lerp(MARS_GROUND, mars);
+    groundMaterial.color.copy(groundNow.lerp(TITAN_GROUND, titan));
+    liquidNow.lerpColors(WATER, DRY_BED, mars).lerp(TITAN_LIQUID, titan);
+    for (const mesh of [water.mesh, oxbow.mesh]) {
+      (mesh.material as MeshStandardMaterial).color.copy(liquidNow);
+    }
+    background.lerpColors(EARTH_SKY, TITAN_SKY, titan);
+    sun.color.lerpColors(EARTH_SUN, MARS_SUN, mars).lerp(TITAN_SUN, titan);
+    // Life and moving water belong to Earth.
+    fadeGroup(dots, 1 - mars);
+    fadeGroup(bars, 1 - mars);
+    fadeGroup(trees, 1 - mars);
+    sandMaterial.emissive.setScalar(0).lerp(INSIDE_GLOW, insideTo.value);
+    fadeGroup(banks, outsideTo.value * (1 - mars));
+    fadeGroup(rainfall, rainTo.value);
+    // The delta, growing over its part: drawn new land, as big as a drawing allows.
+    fadeGroup(delta, deltaTo.value);
+    if (delta.visible) {
+      const built = 0.25 + 0.75 * builtTo.value;
+      fan.position.set(SEA_X, SEA_Y + 0.004, riverZ(SEA_X, grown, cut));
+      fan.scale.set(1.6 * built, 2.2 * built, 1);
+    }
+    move();
+  };
+
   return {
     scene,
     target,
@@ -395,58 +515,29 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
 
     set(jd, picture) {
       board.set(picture);
-      const nowGrown = smooth(options.fromJd, options.untilJd, jd);
-      const nowCut = nowGrown >= CUT_AT;
-      if (Math.abs(nowGrown - grown) > 0.002 || nowCut !== cut) {
-        grown = nowGrown;
-        cut = nowCut;
-        shape();
-      }
-      stress =
-        jd >= options.insideJd && jd < options.fromJd + 1
-          ? 'inside'
-          : jd >= options.outsideJd && jd < options.insideJd
-            ? 'outside'
-            : null;
-      sandMaterial.emissive.set(stress === 'inside' ? 0x5a4a20 : 0);
-      dots.visible = jd < options.marsJd;
+      const first = Number.isNaN(grownTo.value);
+      grownTo.aim(smooth(options.fromJd, options.untilJd, jd));
+      insideTo.aim(jd >= options.insideJd && jd < options.fromJd + 1 ? 1 : 0);
+      outsideTo.aim(jd >= options.outsideJd && jd < options.insideJd ? 1 : 0);
       // The same plain on Mars, its channel dry, and on Titan, a river of methane.
-      const world = jd >= options.titanJd ? 'titan' : jd >= options.marsJd ? 'mars' : 'earth';
-      groundMaterial.color.copy(
-        world === 'titan' ? TITAN_GROUND : world === 'mars' ? MARS_GROUND : FOREST,
-      );
-      const liquid = world === 'titan' ? TITAN_LIQUID : WATER;
-      for (const mesh of [water.mesh, oxbow.mesh]) {
-        const material = mesh.material as MeshStandardMaterial;
-        material.color.copy(world === 'mars' ? DRY_BED : liquid);
-      }
-      bars.visible = world === 'earth';
-      // The rain on the plain, and the ground soaking it up.
-      rainfall.visible = jd >= options.rainJd && jd < options.rainUntilJd;
-      if (rainfall.visible) {
-        groundMaterial.color.lerpColors(
-          FOREST,
-          SOAKED,
-          0.3 + 0.7 * smooth(options.rainJd, options.rainUntilJd, jd),
-        );
-      }
-      // The delta, growing over its part: drawn new land, as big as a drawing allows.
-      delta.visible = jd >= options.deltaJd && jd < options.marsJd;
-      if (delta.visible) {
-        const built = 0.25 + 0.75 * smooth(options.deltaJd, options.marsJd, jd);
-        const mouth = riverZ(SEA_X, grown, cut);
-        fan.position.set(SEA_X, 0.008, mouth);
-        fan.scale.set(1.6 * built, 2.2 * built, 1);
-      }
-      background.set(world === 'titan' ? '#6a4a20' : BACKGROUND);
-      sun.color.set(world === 'titan' ? 0xffb060 : world === 'mars' ? 0xffe0c0 : 0xfff2dc);
-      move();
+      marsTo.aim(jd >= options.marsJd ? 1 : 0);
+      titanTo.aim(jd >= options.titanJd ? 1 : 0);
+      // The rain on the plain, and the ground soaking it up, drying once it stops.
+      const raining = jd >= options.rainJd && jd < options.rainUntilJd;
+      rainTo.aim(raining ? 1 : 0);
+      soakedTo.aim(raining ? 0.3 + 0.7 * smooth(options.rainJd, options.rainUntilJd, jd) : 0);
+      deltaTo.aim(jd >= options.deltaJd && jd < options.marsJd ? 1 : 0);
+      builtTo.aim(smooth(options.deltaJd, options.marsJd, jd));
+      if (first) draw();
     },
 
     flow(seconds) {
       // Faster still while the outside of the bend is being told.
-      time += seconds * (stress === 'outside' ? 2 : 1);
-      if (seconds > 0) move();
+      time += seconds * (1 + outsideTo.value);
+      let moved = false;
+      for (const one of settlings) moved = one.step(seconds) || moved;
+      if (moved) draw();
+      else if (seconds > 0) move();
     },
 
     viewToggled: () => board.group.visible,

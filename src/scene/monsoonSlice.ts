@@ -21,7 +21,8 @@ import {
 } from 'three';
 import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
-import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
+import { addBlockSides, fadeGroup, placeBoard, scatter, smooth } from './diorama';
+import { settling } from './settle';
 import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
 
 /**
@@ -50,7 +51,7 @@ const HEAT = 0xff8a4a;
 const WET_WIND = 0xbfe6ff;
 const DRY_WIND = 0xe0c08a;
 const CLOUD = 0xe6ebf0;
-const RAIN_CLOUD = 0x7d8794;
+const RAIN_CLOUD_COLOR = new Color(0x7d8794);
 const RAIN = 0xb8d4f0;
 
 /** The block, in drawing units: x east, z south (towards the eye); the sea lies to the south. */
@@ -300,26 +301,30 @@ export function createMonsoonSlice(options: MonsoonSliceOptions): MonsoonSlice {
   placeBoard(board, target, direction, distance);
 
   let time = 0;
-  let warmth = 0;
-  /** +1 for the wind blowing in from the sea, -1 for blowing off the land, 0 for none. */
-  let windWay = 0;
-  let raining = 0;
+  // Where the story is, each settling into place over a moment when it changes.
+  const warmthTo = settling();
+  const summerTo = settling();
+  const winterTo = settling();
+  const rainTo = settling();
+  const greenTo = settling();
+  const settlings = [warmthTo, summerTo, winterTo, rainTo, greenTo];
+  /** +1 for the wind blowing in from the sea, -1 for blowing off the land; it dies down to turn. */
+  const windWay = (): number => summerTo.value - winterTo.value;
+  const cloudNow = new Color();
 
   /** Places the moving parts for the time that has gone by. */
   const move = (): void => {
     for (const { arrow, x, z, phase } of heatArrows) {
       const rise = (time * 0.4 + phase) % 1;
       arrow.position.set(x, landHeight(x, z) + 0.05 + rise * 0.5, z);
-      arrow.visible = warmth > 0.05;
     }
     for (const { arrow, x, start, lift } of windArrows) {
       const across = (start + time * 0.12) % 1;
       // From the sea in towards the mountains, or the other way.
-      const z = windWay >= 0 ? 2.6 - across * 4 : -1.4 + across * 4;
+      const z = windWay() >= 0 ? 2.6 - across * 4 : -1.4 + across * 4;
       arrow.position.set(x, WIND_Y + lift + Math.max(0, landHeight(x, z)) * 0.3, z);
-      arrow.visible = windWay !== 0;
     }
-    if (raining > 0.05) {
+    if (rain.visible) {
       for (const [index, [u, v]] of drops.entries()) {
         const cloud = clouds[index % CLOUDS];
         if (!cloud) continue;
@@ -334,6 +339,28 @@ export function createMonsoonSlice(options: MonsoonSliceOptions): MonsoonSlice {
     }
   };
 
+  /** Draws the season the settling values have reached. */
+  const show = (): void => {
+    const way = windWay();
+    // The wind dies down and comes back the other way, wet from the sea or dry from the land.
+    fadeGroup(wind, Math.abs(way));
+    for (const { arrow } of windArrows) {
+      arrow.setDirection(new Vector3(0, 0, way >= 0 ? -1 : 1));
+      arrow.setColor(way >= 0 ? WET_WIND : DRY_WIND);
+    }
+    fadeGroup(heat, warmthTo.value);
+    paint(greenTo.value);
+    for (const lay of rivers) lay(0.05 + 0.07 * greenTo.value);
+    // Clouds build once the wind brings in the sea's water, and darken while it rains.
+    const raining = rainTo.value;
+    fadeGroup(weather, smooth(0, 0.3, summerTo.value));
+    fadeGroup(rain, weather.visible ? raining : 0);
+    cloudMaterial.color.copy(cloudNow.set(CLOUD).lerp(RAIN_CLOUD_COLOR, raining));
+    sun.intensity = 2.4 - 1.4 * raining;
+    ambient.intensity = 0.6 - 0.15 * raining;
+    move();
+  };
+
   return {
     scene,
     target,
@@ -343,28 +370,21 @@ export function createMonsoonSlice(options: MonsoonSliceOptions): MonsoonSlice {
 
     set(jd, picture) {
       board.set(picture);
+      const first = Number.isNaN(greenTo.value);
       const step = (at: number): number => smooth(at - 0.02, at, jd);
-      const summer = step(options.windTurnsJd) * (1 - step(options.winterJd));
-      warmth = step(options.warmsJd) * (1 - step(options.winterJd));
-      raining = step(options.rainJd) * (1 - step(options.greenJd));
-      const green = step(options.greenJd);
-      windWay = step(options.winterJd) > 0.5 ? -1 : summer > 0.5 ? 1 : 0;
-      for (const { arrow } of windArrows) {
-        arrow.setDirection(new Vector3(0, 0, windWay >= 0 ? -1 : 1));
-        arrow.setColor(windWay >= 0 ? WET_WIND : DRY_WIND);
-      }
-      paint(green);
-      for (const lay of rivers) lay(0.05 + 0.07 * green);
-      // Clouds build once the wind brings in the sea's water, and darken while it rains.
-      weather.visible = summer > 0.05;
-      cloudMaterial.color.set(raining > 0.5 ? RAIN_CLOUD : CLOUD);
-      rain.visible = raining > 0.05;
-      sun.intensity = raining > 0.5 ? 1 : 2.4;
-      ambient.intensity = raining > 0.5 ? 0.45 : 0.6;
-      move();
+      const winter = step(options.winterJd);
+      summerTo.aim(step(options.windTurnsJd) * (1 - winter));
+      winterTo.aim(winter);
+      warmthTo.aim(step(options.warmsJd) * (1 - winter));
+      rainTo.aim(step(options.rainJd) * (1 - step(options.greenJd)));
+      greenTo.aim(step(options.greenJd));
+      if (first) show();
     },
 
     flow(seconds) {
+      let moved = false;
+      for (const one of settlings) moved = one.step(seconds) || moved;
+      if (moved) show();
       time += seconds;
       ripples.offset.y = time * 0.03;
       if (seconds > 0) move();

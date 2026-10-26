@@ -27,7 +27,8 @@ import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
 import { floodPlainM, floodStageM, type FloodStage } from './floodStage';
 import { createLabel, createPictureBoard, type PictureBoardOptions } from './pictureBoard';
-import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
+import { addBlockSides, fadeGroup, placeBoard, scatter, smooth } from './diorama';
+import { settling } from './settle';
 
 /**
  * A 3D close-up of a river in flood, cut open like a model, seen from above one bank:
@@ -381,6 +382,21 @@ export function createFloodSlice(options: FloodSliceOptions): FloodSlice {
   board.group.visible = false;
   scene.add(board.group);
 
+  // Where the story is, each settling into place over a moment when it changes.
+  const riverTo = settling();
+  const plainTo = settling();
+  const rainTo = settling();
+  const settlings = [riverTo, plainTo, rainTo];
+  /** Draws the water and the weather the settling values have reached. */
+  const show = (): void => {
+    river.fill(riverTo.value);
+    plain.fill(plainTo.value);
+    // The sky darkens while it rains.
+    fadeGroup(weather, rainTo.value);
+    sun.intensity = 2 - 1.2 * rainTo.value;
+    ambient.intensity = 0.6 - 0.15 * rainTo.value;
+  };
+
   const target = { x: -0.6, y: 0.55, z: 0.2 };
   const direction = new Vector3(0.55, 0.75, 1).normalize();
   const distance = 7;
@@ -398,15 +414,17 @@ export function createFloodSlice(options: FloodSliceOptions): FloodSlice {
 
     set(jd, picture) {
       board.set(picture);
-      river.fill(floodStageM(stage, jd));
-      plain.fill(floodPlainM(stage, BANK_TOP_M, FIELD_M - 0.5, jd));
-      const raining = jd >= options.rainFromJd && jd < options.rainUntilJd;
-      weather.visible = raining;
-      sun.intensity = raining ? 0.8 : 2;
-      ambient.intensity = raining ? 0.45 : 0.6;
+      const first = Number.isNaN(rainTo.value);
+      riverTo.aim(floodStageM(stage, jd));
+      plainTo.aim(floodPlainM(stage, BANK_TOP_M, FIELD_M - 0.5, jd));
+      rainTo.aim(jd >= options.rainFromJd && jd < options.rainUntilJd ? 1 : 0);
+      if (first) show();
     },
 
     flow(seconds) {
+      let moved = false;
+      for (const one of settlings) moved = one.step(seconds) || moved;
+      if (moved) show();
       flowing += seconds;
       ripples.offset.x = -flowing * 0.05;
       if (weather.visible && seconds > 0) {

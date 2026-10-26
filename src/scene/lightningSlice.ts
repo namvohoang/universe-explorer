@@ -21,7 +21,8 @@ import {
 } from 'three';
 import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
-import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
+import { addBlockSides, fadeGroup, placeBoard, scatter, smooth } from './diorama';
+import { settling } from './settle';
 import { createLabel, createPictureBoard, type PictureBoardOptions } from './pictureBoard';
 
 /**
@@ -335,6 +336,20 @@ export function createLightningSlice(options: LightningSliceOptions): LightningS
   };
 
   let lastCount = Number.NaN;
+  // Where the story is, each settling into place over a moment when it changes.
+  const dayTo = settling();
+  const grownTo = settling();
+  const insideTo = settling();
+  const settlings = [dayTo, grownTo, insideTo];
+  /** Draws the light, the cloud's size and how far it is seen into. */
+  const show = (): void => {
+    sun.intensity = 0.15 + 1.9 * dayTo.value;
+    ambient.intensity = 0.25 + 0.4 * dayTo.value;
+    cloud.scale.setScalar(grownTo.value);
+    fadeGroup(inside, insideTo.value);
+    cloudMaterial.opacity = 0.75 - 0.35 * insideTo.value;
+  };
+
   return {
     scene,
     target,
@@ -349,14 +364,12 @@ export function createLightningSlice(options: LightningSliceOptions): LightningS
       board.set(picture);
       // The day going, by the lake's own clock.
       const localHour = (((((jd + 0.5) % 1) * 24 + LONGITUDE_EAST / 15) % 24) + 24) % 24;
-      const day = smooth(5.6, 7, localHour) * (1 - smooth(18, 19.3, localHour));
-      sun.intensity = 0.15 + 1.9 * day;
-      ambient.intensity = 0.25 + 0.4 * day;
+      const first = Number.isNaN(dayTo.value);
+      dayTo.aim(smooth(5.6, 7, localHour) * (1 - smooth(18, 19.3, localHour)));
       // The cloud grows through the afternoon (a drawing), and is seen inside once asked.
-      const grown = 0.45 + 0.55 * smooth(options.countFromJd, options.grownJd, jd);
-      cloud.scale.setScalar(grown);
-      inside.visible = jd >= options.insideFromJd;
-      cloudMaterial.opacity = inside.visible ? 0.4 : 0.75;
+      grownTo.aim(0.45 + 0.55 * smooth(options.countFromJd, options.grownJd, jd));
+      insideTo.aim(jd >= options.insideFromJd ? 1 : 0);
+      if (first) show();
       // Flashes counted at the real average rate since the story began.
       const count = Math.max(0, Math.floor((jd - options.countFromJd) * options.flashesPerDay));
       if (Number.isFinite(lastCount) && count > lastCount) {
@@ -369,6 +382,9 @@ export function createLightningSlice(options: LightningSliceOptions): LightningS
     },
 
     flow(seconds) {
+      let moved = false;
+      for (const one of settlings) moved = one.step(seconds) || moved;
+      if (moved) show();
       reduced = seconds === 0;
       time += seconds;
       sinceLast += seconds;

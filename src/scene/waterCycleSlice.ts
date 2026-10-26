@@ -24,7 +24,8 @@ import {
 } from 'three';
 import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
-import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
+import { addBlockSides, fadeGroup, placeBoard, scatter, smooth } from './diorama';
+import { settling } from './settle';
 import { createLabel, createPictureBoard, type PictureBoardOptions } from './pictureBoard';
 
 /**
@@ -50,7 +51,9 @@ const SEA = 0x2a6ca6;
 const RIVER = 0x3b8ad0;
 const VAPOUR = 0xeaf6ff;
 const CLOUD = 0xf0f3f6;
-const RAIN_CLOUD = 0x9aa4af;
+const RAIN_CLOUD_COLOR = new Color(0x9aa4af);
+/** The sea glowing a little while the Sun warms it. */
+const WARM_SEA = new Color(0x0a2a4a);
 const RAIN = 0xb8d4f0;
 const TREE = 0x3c6b33;
 const SUN = 0xffd85a;
@@ -319,10 +322,16 @@ export function createWaterCycleSlice(options: WaterCycleSliceOptions): WaterCyc
   for (const label of Object.values(steps)) label.mesh.quaternion.setFromRotationMatrix(facing);
 
   let time = 0;
-  let rising = false;
-  let fromPlants = false;
-  let raining = false;
-  let flowing = false;
+  // Where the story is, each settling into place over a moment when it changes.
+  const risingTo = settling();
+  const plantsTo = settling();
+  const cloudedTo = settling();
+  const rainTo = settling();
+  const flowingTo = settling();
+  const warmTo = settling();
+  const named = new Map(Object.values(steps).map((label) => [label, settling()] as const));
+  const settlings = [risingTo, plantsTo, cloudedTo, rainTo, flowingTo, warmTo, ...named.values()];
+  const cloudNow = new Color();
   const place = new Matrix4();
 
   /** Places everything that moves, for the time gone by. */
@@ -345,7 +354,7 @@ export function createWaterCycleSlice(options: WaterCycleSliceOptions): WaterCyc
       plantVapour.setMatrixAt(index, place);
     }
     plantVapour.instanceMatrix.needsUpdate = true;
-    if (raining) {
+    if (rain.visible) {
       for (const [index, [u, v]] of drops.entries()) {
         const x = CLOUD_AT.x + (u - 0.5) * 1.6;
         const z = CLOUD_AT.z + (v - 0.5) * 1.4;
@@ -365,10 +374,29 @@ export function createWaterCycleSlice(options: WaterCycleSliceOptions): WaterCyc
   };
 
   /** Shows a step's name once it has been told, brightest while it is being told. */
-  const name = (label: { readonly mesh: Mesh }, from: number, until: number, jd: number): void => {
-    label.mesh.visible = jd >= from - 1e-6;
-    const material = label.mesh.material as MeshBasicMaterial;
-    material.opacity = jd < until ? 1 : 0.4;
+  const name = (
+    label: (typeof steps)[keyof typeof steps],
+    from: number,
+    until: number,
+    jd: number,
+  ): void => {
+    named.get(label)?.aim(jd < from - 1e-6 ? 0 : jd < until ? 1 : 0.4);
+  };
+
+  /** Draws the cycle as far as the settling values have reached. */
+  const show = (): void => {
+    fadeGroup(vapour, risingTo.value);
+    fadeGroup(plantVapour, plantsTo.value);
+    cloud.scale.setScalar(0.35 + 0.65 * cloudedTo.value);
+    fadeGroup(cloud, smooth(0, 0.15, cloudedTo.value));
+    cloudMaterial.color.copy(cloudNow.set(CLOUD).lerp(RAIN_CLOUD_COLOR, rainTo.value));
+    fadeGroup(rain, rainTo.value);
+    fadeGroup(riverDots, flowingTo.value);
+    seaMaterial.emissive.setScalar(0).lerp(WARM_SEA, warmTo.value);
+    for (const [label, shown] of named) {
+      label.mesh.visible = shown.value > 0.002;
+      (label.mesh.material as MeshBasicMaterial).opacity = shown.value;
+    }
   };
 
   return {
@@ -383,28 +411,25 @@ export function createWaterCycleSlice(options: WaterCycleSliceOptions): WaterCyc
 
     set(jd, picture) {
       board.set(picture);
-      rising = jd >= options.evaporationJd;
-      fromPlants = jd >= options.plantsJd;
-      const clouded = smooth(options.evaporationJd, options.cloudsJd, jd);
-      raining = jd >= options.rainJd;
-      flowing = jd >= options.backJd;
-      vapour.visible = rising;
-      plantVapour.visible = fromPlants;
-      cloud.scale.setScalar(0.35 + 0.65 * clouded);
-      cloud.visible = clouded > 0;
-      cloudMaterial.color.set(raining ? RAIN_CLOUD : CLOUD);
-      rain.visible = raining;
-      riverDots.visible = flowing;
-      seaMaterial.emissive.set(jd >= options.oceanJd && jd < options.evaporationJd ? 0x0a2a4a : 0);
+      const first = Number.isNaN(risingTo.value);
+      risingTo.aim(jd >= options.evaporationJd ? 1 : 0);
+      plantsTo.aim(jd >= options.plantsJd ? 1 : 0);
+      cloudedTo.aim(smooth(options.evaporationJd, options.cloudsJd, jd));
+      rainTo.aim(jd >= options.rainJd ? 1 : 0);
+      flowingTo.aim(jd >= options.backJd ? 1 : 0);
+      warmTo.aim(jd >= options.oceanJd && jd < options.evaporationJd ? 1 : 0);
       name(steps.ocean, options.oceanJd, options.evaporationJd, jd);
       name(steps.evaporation, options.evaporationJd, options.cloudsJd, jd);
       name(steps.condensation, options.cloudsJd, options.rainJd, jd);
       name(steps.precipitation, options.rainJd, options.backJd, jd);
       name(steps.back, options.backJd, Infinity, jd);
-      move();
+      if (first) show();
     },
 
     flow(seconds) {
+      let moved = false;
+      for (const one of settlings) moved = one.step(seconds) || moved;
+      if (moved) show();
       time += seconds;
       if (seconds > 0) move();
     },

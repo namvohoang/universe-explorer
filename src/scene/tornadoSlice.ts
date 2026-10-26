@@ -1,5 +1,6 @@
 import {
   AmbientLight,
+  ArrowHelper,
   AdditiveBlending,
   BoxGeometry,
   BufferAttribute,
@@ -25,7 +26,10 @@ import {
   SphereGeometry,
   Vector3,
 } from 'three';
+import type { Object3D } from 'three';
 import type { Vec3 } from '../sim/vec3';
+import { fadeGroup } from './diorama';
+import { settling } from './settle';
 
 /**
  * 3D Simulation of Tornado Genesis and Lifecycle:
@@ -434,6 +438,11 @@ export function createTornadoSlice(
   scene.add(stormBaseGroup);
 
   const CLOUD_CEILING_Y = 6.8;
+  /** The rolling air, a drawing: how long, how high its middle, how thick, how far it is turned. */
+  const ROLL_LENGTH = 7;
+  const ROLL_HEIGHT = 1.5;
+  const ROLL_RADIUS = 0.9;
+  const ROLL_TURN = -0.75;
 
   // Dark overcast cloud deck
   const supercellDeckMat = keep(
@@ -495,97 +504,136 @@ export function createTornadoSlice(
 
   const funnelHeight = CLOUD_CEILING_Y - 0.4;
 
-  // --- Phase 1: Horizontal Wind Shear Rolling Cylinder ---
+  // --- Phases 1 and 2: one roll of spinning air, lying down, then tipped up ---
+  // Slow wind near the ground and faster wind above it set the air between rolling over, like
+  // a pencil rolled between two hands; then air rising into the storm lifts the middle of that
+  // roll, so its two ends stand up spinning. Drawn as specks of air going round, not as a tube.
+  const rollGroup = new Group();
+  // Turned so that both its length and its spin can be seen from down the road.
+  // It stands ahead on the road, where the storm is, before the funnel has a path to follow.
+  rollGroup.rotation.y = ROLL_TURN;
+  rollGroup.position.set(0, 0, -9);
+  scene.add(rollGroup);
   const windShearGroup = new Group();
-  tornadoGroup.add(windShearGroup);
+  const updraftGroup = new Group();
+  rollGroup.add(windShearGroup, updraftGroup);
 
-  const rollCylinderMat = keep(
-    new MeshBasicMaterial({
-      color: 0x38bdf8,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.28,
-    }),
-  );
-  const rollCylinder = new Mesh(keep(new CylinderGeometry(1.1, 1.1, 10, 24, 6)), rollCylinderMat);
-  rollCylinder.rotation.z = Math.PI / 2;
-  rollCylinder.position.set(0, 1.4, 0);
-  windShearGroup.add(rollCylinder);
-
-  const rollCount = 320;
+  /** Where the middle of the roll runs at `s` along it, lifted `tilt` of the way into an arch. */
+  const rollAxis = (s: number, tilt: number, into: Vector3): Vector3 => {
+    const arch = Math.exp(-((s / (ROLL_LENGTH * 0.28)) ** 2));
+    return into.set(s, ROLL_HEIGHT + tilt * (CLOUD_CEILING_Y - ROLL_HEIGHT - 0.6) * arch, 0);
+  };
+  // Rings of air along the roll, each a circle of specks going round together.
+  const ROLL_RINGS = 15;
+  const PER_RING = 44;
+  const rollCount = ROLL_RINGS * PER_RING;
   const rollGeo = keep(new BufferGeometry());
   const rollPos = new Float32Array(rollCount * 3);
+  const rollColors = new Float32Array(rollCount * 3);
+  const rollAlong = new Float32Array(rollCount);
   const rollAngles = new Float32Array(rollCount);
-  const rollSpeeds = new Float32Array(rollCount);
-  const rollOffsets = new Float32Array(rollCount);
+  const rollRadii = new Float32Array(rollCount);
+  const slowAir = new Color(0x7cc4f5);
+  const fastAir = new Color(0xffffff);
   for (let i = 0; i < rollCount; i++) {
-    rollAngles[i] = Math.random() * Math.PI * 2;
-    rollSpeeds[i] = 1.5 + Math.random() * 2.0;
-    rollOffsets[i] = (Math.random() - 0.5) * 9.5;
-    const r = 0.5 + Math.random() * 0.55;
-    rollPos[i * 3] = rollOffsets[i] ?? 0;
-    rollPos[i * 3 + 1] = 1.4 + Math.sin(rollAngles[i] ?? 0) * r;
-    rollPos[i * 3 + 2] = Math.cos(rollAngles[i] ?? 0) * r;
+    const ring = Math.floor(i / PER_RING);
+    const place = i % PER_RING;
+    rollAlong[i] = (ring / (ROLL_RINGS - 1) - 0.5) * ROLL_LENGTH;
+    // Every other ring a little inside, twisted round, so the roll looks solid.
+    rollAngles[i] = (place / PER_RING) * Math.PI * 2 + ring * 0.4;
+    rollRadii[i] = ROLL_RADIUS * (ring % 2 === 0 ? 1 : 0.7);
+    // Brighter on the top, where the fast wind above drives it.
+    const shade = slowAir.clone().lerp(fastAir, 0.5 + 0.5 * Math.sin(rollAngles[i] ?? 0));
+    rollColors.set([shade.r, shade.g, shade.b], i * 3);
   }
   rollGeo.setAttribute('position', new BufferAttribute(rollPos, 3));
+  rollGeo.setAttribute('color', new BufferAttribute(rollColors, 3));
   const rollParticles = new Points(
     rollGeo,
     keep(
       new PointsMaterial({
-        color: 0x7dd3fc,
-        size: 5,
+        size: 0.11,
+        vertexColors: true,
         transparent: true,
-        opacity: 0.85,
-        sizeAttenuation: false,
+        opacity: 0.9,
+        depthWrite: false,
       }),
     ),
   );
-  windShearGroup.add(rollParticles);
+  rollGroup.add(rollParticles);
+  let rollTilt = 0;
+  const axisAt = new Vector3();
+  const axisNext = new Vector3();
+  const along = new Vector3();
+  const side = new Vector3();
+  const lift = new Vector3();
+  const flat = new Vector3(0, 0, 1);
+  /** Places each speck of air on its ring round the roll, as it is tipped up. */
+  const placeRoll = (): void => {
+    const p = rollGeo.attributes.position as BufferAttribute;
+    for (let i = 0; i < rollCount; i++) {
+      const s = rollAlong[i] ?? 0;
+      rollAxis(s, rollTilt, axisAt);
+      rollAxis(s + 0.05, rollTilt, axisNext);
+      along.subVectors(axisNext, axisAt).normalize();
+      // Round the roll: across it, and at right angles to that.
+      side.copy(flat);
+      lift.crossVectors(side, along).normalize();
+      const angle = rollAngles[i] ?? 0;
+      const r = rollRadii[i] ?? 0;
+      p.setXYZ(
+        i,
+        axisAt.x + (Math.cos(angle) * side.x + Math.sin(angle) * lift.x) * r,
+        axisAt.y + (Math.cos(angle) * side.y + Math.sin(angle) * lift.y) * r,
+        axisAt.z + (Math.cos(angle) * side.z + Math.sin(angle) * lift.z) * r,
+      );
+    }
+    p.needsUpdate = true;
+  };
+  placeRoll();
 
-  // --- Phase 2: Updraft Tilting Streamlines ---
-  const updraftGroup = new Group();
-  tornadoGroup.add(updraftGroup);
+  // The two winds that set it rolling: slow near the ground, fast above it, both the same way,
+  // across the roll.
+  const windArrow = (y: number, length: number): ArrowHelper =>
+    new ArrowHelper(
+      new Vector3(0, 0, 1),
+      new Vector3(-ROLL_LENGTH * 0.32, y, -length / 2),
+      length,
+      0xfde68a,
+      0.45,
+      0.3,
+    );
+  windShearGroup.add(windArrow(ROLL_HEIGHT - ROLL_RADIUS - 0.25, 1.4));
+  windShearGroup.add(windArrow(ROLL_HEIGHT + ROLL_RADIUS + 0.35, 3.4));
 
-  const updraftCount = 450;
+  // Air rising into the storm, up through the middle of the arch.
+  const updraftCount = 300;
   const updraftGeo = keep(new BufferGeometry());
   const updraftPos = new Float32Array(updraftCount * 3);
   const updraftLifes = new Float32Array(updraftCount);
+  const updraftSpots = new Float32Array(updraftCount * 2);
   for (let i = 0; i < updraftCount; i++) {
     updraftLifes[i] = Math.random();
-    const ang = Math.random() * Math.PI * 2;
-    const r = Math.random() * 2.5;
-    updraftPos[i * 3] = Math.cos(ang) * r;
-    updraftPos[i * 3 + 1] = (updraftLifes[i] ?? 0) * CLOUD_CEILING_Y;
-    updraftPos[i * 3 + 2] = Math.sin(ang) * r;
+    updraftSpots[i * 2] = (Math.random() - 0.5) * 1.6;
+    updraftSpots[i * 2 + 1] = (Math.random() - 0.5) * 1.6;
   }
   updraftGeo.setAttribute('position', new BufferAttribute(updraftPos, 3));
   const updraftParticles = new Points(
     updraftGeo,
     keep(
       new PointsMaterial({
-        color: 0xf97316,
-        size: 4,
+        color: 0xfdba74,
+        size: 0.07,
         transparent: true,
         opacity: 0.8,
-        sizeAttenuation: false,
+        depthWrite: false,
       }),
     ),
   );
   updraftGroup.add(updraftParticles);
-
-  const arcPts = [
-    new Vector3(-4.0, 1.2, 0),
-    new Vector3(-2.2, 1.3, 0),
-    new Vector3(-0.8, 1.9, 0),
-    new Vector3(0, 3.4, 0),
-    new Vector3(0, CLOUD_CEILING_Y, 0),
-  ];
-  const arcGeo = keep(new BufferGeometry().setFromPoints(arcPts));
-  const arcLine = new LineSegments(
-    arcGeo,
-    keep(new LineBasicMaterial({ color: 0xfbbf24, linewidth: 3 })),
+  updraftGroup.add(
+    new ArrowHelper(new Vector3(0, 1, 0), new Vector3(0, 0.3, 0), 2.6, 0xfb923c, 0.55, 0.4),
   );
-  updraftGroup.add(arcLine);
 
   // --- Phase 3: Touchdown Funnel ---
   const touchdownGroup = new Group();
@@ -866,18 +914,30 @@ export function createTornadoSlice(
   let targetProgress = 0.5;
   let animProgress = 0.5;
 
+  // Each stage's drawing fades in as the tornado comes to it and out as it leaves.
+  const stages: readonly (readonly [Object3D, (phase: TornadoPhase) => boolean])[] = [
+    [windShearGroup, (phase) => phase === 'wind-shear'],
+    [updraftGroup, (phase) => phase === 'updraft-tilt'],
+    [rollParticles, (phase) => phase === 'wind-shear' || phase === 'updraft-tilt'],
+    [touchdownGroup, (phase) => phase === 'touches-down'],
+    [matureFunnelGroup, (phase) => phase === 'mature-wedge'],
+    [ropeGroup, (phase) => phase === 'rope-out'],
+    [debrisPoints, (phase) => phase !== 'wind-shear' && phase !== 'updraft-tilt'],
+    [inflowPoints, (phase) => phase === 'touches-down' || phase === 'mature-wedge'],
+  ];
+  const stageShown = stages.map(() => settling());
+  /** The roll lying down, or tipped up into an arch. */
+  const tiltTo = settling(0.5);
+  function showStages(): void {
+    for (const [index, [stage]] of stages.entries()) {
+      fadeGroup(stage, stageShown[index]?.value ?? 0);
+    }
+  }
+
   function applyPhaseVisibility(phase: TornadoPhase): void {
     currentPhase = phase;
-
-    windShearGroup.visible = phase === 'wind-shear';
-    updraftGroup.visible = phase === 'updraft-tilt';
-    touchdownGroup.visible = phase === 'touches-down';
-    matureFunnelGroup.visible = phase === 'mature-wedge';
-    ropeGroup.visible = phase === 'rope-out';
-
-    debrisPoints.visible =
-      phase === 'touches-down' || phase === 'mature-wedge' || phase === 'rope-out';
-    inflowPoints.visible = phase === 'touches-down' || phase === 'mature-wedge';
+    for (const [index, [, shows]] of stages.entries()) stageShown[index]?.aim(shows(phase) ? 1 : 0);
+    tiltTo.aim(phase === 'wind-shear' ? 0 : 1);
 
     if (phase === 'touches-down') {
       descendingFunnelMesh.scale.set(1, 0.78, 1);
@@ -889,6 +949,7 @@ export function createTornadoSlice(
   let showScientificOverlay = false;
 
   applyPhaseVisibility('mature-wedge');
+  showStages();
 
   // --------------------------------------------------------------------------
   // 13. Dynamic Animation Loop & Flow Execution
@@ -944,6 +1005,15 @@ export function createTornadoSlice(
     },
 
     flow(seconds: number) {
+      let moved = false;
+      for (const shown of stageShown) moved = shown.step(seconds) || moved;
+      if (moved) showStages();
+      if (tiltTo.step(seconds)) {
+        rollTilt = tiltTo.value;
+        placeRoll();
+      }
+      // With no motion asked for, the tornado stands still.
+      if (seconds === 0) return;
       totalTime += seconds;
 
       animProgress += (targetProgress - animProgress) * Math.min(seconds * 3.0, 1.0);
@@ -961,28 +1031,21 @@ export function createTornadoSlice(
       helicalBandsGroup.rotation.y = totalTime * 3.2;
       descendingFunnelMesh.rotation.y = totalTime * 3.2;
 
-      // 3. Phase 1: Rolling air cylinder & streamline particles
-      if (currentPhase === 'wind-shear') {
-        rollCylinder.rotation.x = totalTime * 2.5;
-        const p = rollGeo.attributes.position as BufferAttribute;
+      // 3. The roll of air turning: its top goes the way the fast wind above blows.
+      if (rollParticles.visible) {
         for (let i = 0; i < rollCount; i++) {
-          rollAngles[i] = ((rollAngles[i] ?? 0) + seconds * (rollSpeeds[i] ?? 0)) % (Math.PI * 2);
-          const r = 0.5 + (i % 5) * 0.08;
-          p.setY(i, 1.4 + Math.sin(rollAngles[i] ?? 0) * r);
-          p.setZ(i, Math.cos(rollAngles[i] ?? 0) * r);
+          rollAngles[i] = ((rollAngles[i] ?? 0) - seconds * 2.2) % (Math.PI * 2);
         }
-        p.needsUpdate = true;
+        placeRoll();
       }
 
-      // 4. Phase 2: Updraft convective rising particles
-      if (currentPhase === 'updraft-tilt') {
+      // 4. Air rising into the storm through the middle of the arch.
+      if (updraftGroup.visible) {
         const u = updraftGeo.attributes.position as BufferAttribute;
         for (let i = 0; i < updraftCount; i++) {
-          updraftLifes[i] = ((updraftLifes[i] ?? 0) + seconds * 0.45) % 1.0;
-          const y = (updraftLifes[i] ?? 0) * CLOUD_CEILING_Y;
-          const swirl = y * 1.5 + totalTime * 2.0;
-          const r = 0.5 + y * 0.25;
-          u.setXYZ(i, Math.cos(swirl) * r, y, Math.sin(swirl) * r);
+          updraftLifes[i] = ((updraftLifes[i] ?? 0) + seconds * 0.35) % 1.0;
+          const y = (updraftLifes[i] ?? 0) * (CLOUD_CEILING_Y - 0.4);
+          u.setXYZ(i, updraftSpots[i * 2] ?? 0, y, updraftSpots[i * 2 + 1] ?? 0);
         }
         u.needsUpdate = true;
       }

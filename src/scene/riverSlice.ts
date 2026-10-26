@@ -19,6 +19,7 @@ import {
   SphereGeometry,
   Vector3,
 } from 'three';
+import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
 import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
 import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
@@ -94,6 +95,8 @@ export interface RiverSlice {
   readonly target: Vec3;
   readonly distance: number;
   readonly direction: Vec3;
+  /** The box the look stands back far enough to show whole. */
+  readonly bounds: Bounds;
   set(jd: number, picture: number | null): void;
   flow(seconds: number): void;
   toggleView(): void;
@@ -388,6 +391,7 @@ export function createRiverSlice(options: RiverSliceOptions): RiverSlice {
     target,
     distance,
     direction: { x: direction.x, y: direction.y, z: direction.z },
+    bounds: { min: { x: -HALF_X, y: BASE, z: -HALF_Z }, max: { x: HALF_X, y: 0.3, z: HALF_Z } },
 
     set(jd, picture) {
       board.set(picture);

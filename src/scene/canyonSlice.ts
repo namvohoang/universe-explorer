@@ -210,6 +210,9 @@ export function createCanyonSlice(options: CanyonSliceOptions): UpCloseSlice {
   board.group.visible = false;
   scene.add(board.group);
 
+  // The block of the past, or the real land if it is the larger.
+  const halfWide = Math.max(WIDE, options.land.widthKm) / 2;
+  const halfDeep = Math.max(DEEP, options.land.depthKm) / 2;
   const target = { x: 0, y: 4, z: 0 };
   const direction = new Vector3(0.45, 0.8, 1).normalize();
   const distance = 64;
@@ -221,6 +224,10 @@ export function createCanyonSlice(options: CanyonSliceOptions): UpCloseSlice {
     target,
     distance,
     direction: { x: direction.x, y: direction.y, z: direction.z },
+    bounds: {
+      min: { x: -halfWide, y: up(0) - 0.6, z: -halfDeep },
+      max: { x: halfWide, y: up(STACK_KM + LIFT_KM), z: halfDeep },
+    },
 
     set(jd, picture) {
       board.set(picture);

@@ -50,6 +50,7 @@ import {
   ZOOM_SECONDS,
   distanceForAspect,
   distanceToFit,
+  distanceToShow,
   litSideBearing,
   zoomedDistance,
 } from './scene/flight';
@@ -633,7 +634,17 @@ function start(): void {
             main,
             side,
             target: () => cut.target,
-            distance: () => cut.distance * sideFit,
+            // A close-up that names the box it shows is stood back from to show all of it.
+            distance: () =>
+              'bounds' in cut
+                ? distanceToShow(
+                    cut.bounds,
+                    cut.target,
+                    cut.direction,
+                    sideAspect,
+                    FIELD_OF_VIEW_DEG,
+                  )
+                : cut.distance * sideFit,
             direction: () => cut.direction,
             scene: cut.scene,
             ...(diagram ? { mainScene: diagram.scene } : {}),

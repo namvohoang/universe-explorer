@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { dot, length, normalize, subtract, type Vec3 } from '../sim/vec3';
+import { add, cross, dot, length, normalize, scale, subtract, type Vec3 } from '../sim/vec3';
 import {
   FLIGHT_SECONDS,
   distanceForAspect,
   distanceToFit,
+  distanceToShow,
   easeInOutCubic,
   followTarget,
   heldAtDistance,
@@ -56,6 +57,53 @@ describe('distanceToFit', () => {
     expect(distanceToFit(1, 3, 2, 90)).toBeCloseTo(3, 12);
     expect(distanceToFit(8, 3, 2, 90)).toBeCloseTo(4, 12);
     expect(distanceToFit(2, 1, 0.5, 90)).toBeCloseTo(4, 12);
+  });
+});
+
+describe('distanceToShow', () => {
+  it('fits a flat square seen from straight in front as distanceToFit does', () => {
+    const square = { min: { x: -2, y: -1, z: 0 }, max: { x: 2, y: 1, z: 0 } };
+    const back = { x: 0, y: 0, z: 1 };
+    expect(distanceToShow(square, ORIGIN, back, 2, 90)).toBeCloseTo(distanceToFit(2, 1, 2, 90));
+    expect(distanceToShow(square, ORIGIN, back, 0.5, 90)).toBeCloseTo(distanceToFit(2, 1, 0.5, 90));
+  });
+
+  it('stands further back for a box whose near side comes towards the camera', () => {
+    const flat = { min: { x: -1, y: -1, z: 0 }, max: { x: 1, y: 1, z: 0 } };
+    const deep = { min: { x: -1, y: -1, z: -1 }, max: { x: 1, y: 1, z: 1 } };
+    const back = { x: 0, y: 0, z: 1 };
+    // The near face is 1 nearer, and must fit as the flat one did: 1 further back.
+    expect(distanceToShow(deep, ORIGIN, back, 1, 90)).toBeCloseTo(
+      distanceToShow(flat, ORIGIN, back, 1, 90) + 1,
+    );
+  });
+
+  it('looks straight down without failing', () => {
+    const box = { min: { x: -3, y: 0, z: -1 }, max: { x: 3, y: 0, z: 1 } };
+    expect(distanceToShow(box, ORIGIN, { x: 0, y: 1, z: 0 }, 1, 90)).toBeCloseTo(3);
+  });
+
+  it('every corner then lies inside the view', () => {
+    const box = { min: { x: -6, y: -0.4, z: -3.6 }, max: { x: 6, y: 3.4, z: 3.6 } };
+    const target = { x: 0.3, y: 0, z: 0.2 };
+    const back = normalize({ x: 0.1, y: 1.6, z: 1 });
+    for (const aspect of [0.6, 0.9, 1.8]) {
+      const distance = distanceToShow(box, target, back, aspect, 40);
+      const camera = add(target, scale(back, distance));
+      const right = normalize(cross({ x: 0, y: 1, z: 0 }, back));
+      const up = cross(back, right);
+      const half = Math.tan((40 * Math.PI) / 360);
+      for (const x of [box.min.x, box.max.x]) {
+        for (const z of [box.min.z, box.max.z]) {
+          for (const y of [box.min.y, box.max.y]) {
+            const seen = subtract({ x, y, z }, camera);
+            const depth = -dot(seen, back);
+            expect(Math.abs(dot(seen, right)) / depth).toBeLessThanOrEqual(half * aspect + 1e-9);
+            expect(Math.abs(dot(seen, up)) / depth).toBeLessThanOrEqual(half + 1e-9);
+          }
+        }
+      }
+    }
   });
 });
 

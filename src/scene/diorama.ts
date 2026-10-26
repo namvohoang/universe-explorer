@@ -1,5 +1,6 @@
 import type { BufferAttribute } from 'three';
 import { type Scene, type Group, type Material, Mesh, PlaneGeometry, Vector3 } from 'three';
+import type { Bounds } from './flight';
 import type { PictureBoard } from './pictureBoard';
 import { FIELD_OF_VIEW_DEG } from './stage';
 
@@ -18,6 +19,8 @@ export interface UpCloseSlice {
   readonly target: { readonly x: number; readonly y: number; readonly z: number };
   readonly distance: number;
   readonly direction: { readonly x: number; readonly y: number; readonly z: number };
+  /** The box the look stands back far enough to show whole, whatever the pane's shape. */
+  readonly bounds?: Bounds;
   set(jd: number, picture: number | null): void;
   flow(seconds: number): void;
   toggleView(): void;

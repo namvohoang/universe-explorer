@@ -23,6 +23,7 @@ import {
   SRGBColorSpace,
   Vector3,
 } from 'three';
+import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
 import { floodPlainM, floodStageM, type FloodStage } from './floodStage';
 import { createLabel, createPictureBoard, type PictureBoardOptions } from './pictureBoard';
@@ -101,6 +102,8 @@ export interface FloodSlice {
   readonly target: Vec3;
   readonly distance: number;
   readonly direction: Vec3;
+  /** The box the look stands back far enough to show whole. */
+  readonly bounds: Bounds;
   /** Draws the river as it was at a date, with the real picture of that moment ready. */
   set(jd: number, picture: number | null): void;
   /** Moves the water and the rain. */
@@ -391,6 +394,7 @@ export function createFloodSlice(options: FloodSliceOptions): FloodSlice {
     target,
     distance,
     direction: { x: direction.x, y: direction.y, z: direction.z },
+    bounds: { min: { x: -HALF_X, y: BASE, z: -HALF_Z }, max: { x: HALF_X, y: 0.8, z: HALF_Z } },
 
     set(jd, picture) {
       board.set(picture);

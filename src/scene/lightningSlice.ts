@@ -19,6 +19,7 @@ import {
   SphereGeometry,
   Vector3,
 } from 'three';
+import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
 import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
 import { createLabel, createPictureBoard, type PictureBoardOptions } from './pictureBoard';
@@ -94,6 +95,8 @@ export interface LightningSlice {
   readonly target: Vec3;
   readonly distance: number;
   readonly direction: Vec3;
+  /** The box the look stands back far enough to show whole. */
+  readonly bounds: Bounds;
   /** Draws the storm as it was at a date, with the real picture of that moment ready. */
   set(jd: number, picture: number | null): void;
   /** Moves the ice and the hail, and draws the flashes. */
@@ -337,6 +340,10 @@ export function createLightningSlice(options: LightningSliceOptions): LightningS
     target,
     distance,
     direction: { x: direction.x, y: direction.y, z: direction.z },
+    bounds: {
+      min: { x: -HALF_X, y: BASE, z: -HALF_Z },
+      max: { x: HALF_X, y: CLOUD_TOP, z: HALF_Z },
+    },
 
     set(jd, picture) {
       board.set(picture);

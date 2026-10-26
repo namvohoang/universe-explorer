@@ -30,6 +30,47 @@ export function distanceToFit(
   return Math.max(halfWide / (half * aspect), halfTall / half);
 }
 
+/** A box, given by its lowest and highest corner. */
+export interface Bounds {
+  readonly min: Vec3;
+  readonly max: Vec3;
+}
+
+/**
+ * How far back along `direction` from `target` a camera stands for every corner of a box to be
+ * inside its view, through a view of this shape and field of view, with up the y axis. A
+ * corner nearer the camera looks bigger, so this is worked out corner by corner.
+ */
+export function distanceToShow(
+  bounds: Bounds,
+  target: Vec3,
+  direction: Vec3,
+  aspect: number,
+  fieldOfViewDeg: number,
+): number {
+  const back = normalize(direction);
+  const sideways = cross({ x: 0, y: 1, z: 0 }, back);
+  // Looking straight down, any way across will do.
+  const right = length(sideways) > 1e-9 ? normalize(sideways) : { x: 1, y: 0, z: 0 };
+  const up = cross(back, right);
+  const half = Math.tan((fieldOfViewDeg * Math.PI) / 360);
+  let distance = 0;
+  for (const x of [bounds.min.x, bounds.max.x]) {
+    for (const y of [bounds.min.y, bounds.max.y]) {
+      for (const z of [bounds.min.z, bounds.max.z]) {
+        const offset = subtract({ x, y, z }, target);
+        const towards = dot(offset, back);
+        distance = Math.max(
+          distance,
+          Math.abs(dot(offset, right)) / (half * aspect) + towards,
+          Math.abs(dot(offset, up)) / half + towards,
+        );
+      }
+    }
+  }
+  return distance;
+}
+
 function lerp(a: Vec3, b: Vec3, t: number): Vec3 {
   return add(a, scale(subtract(b, a), t));
 }

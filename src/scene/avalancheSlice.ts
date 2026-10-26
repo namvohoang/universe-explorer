@@ -21,6 +21,7 @@ import {
   SRGBColorSpace,
   Vector3,
 } from 'three';
+import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
 import { createLabel, createPictureBoard, type PictureBoardOptions } from './pictureBoard';
 import { addBlockSides, placeBoard, scatter, smooth } from './diorama';
@@ -98,6 +99,8 @@ export interface AvalancheSlice {
   readonly target: Vec3;
   readonly distance: number;
   readonly direction: Vec3;
+  /** The box the look stands back far enough to show whole. */
+  readonly bounds: Bounds;
   /** Draws the valley as it was at a date, with the real picture of that moment ready. */
   set(jd: number, picture: number | null): void;
   /** Moves the ice and spreads the avalanche. */
@@ -443,6 +446,7 @@ export function createAvalancheSlice(options: AvalancheSliceOptions): AvalancheS
     target,
     distance,
     direction: { x: direction.x, y: direction.y, z: direction.z },
+    bounds: { min: { x: WEST, y: BASE, z: NORTH }, max: { x: EAST, y: 1, z: SOUTH } },
 
     set(jd, picture) {
       board.set(picture);

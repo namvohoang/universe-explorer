@@ -14,6 +14,7 @@ import {
   Vector3,
 } from 'three';
 import { landHeightKm } from '../sim/scale';
+import type { Bounds } from './flight';
 import type { Vec3 } from '../sim/vec3';
 import { addBlockSides, placeBoard, smooth } from './diorama';
 import { createLandBlock, type LandBlockOptions } from './landBlock';
@@ -77,6 +78,8 @@ export interface MountainSlice {
   readonly target: Vec3;
   readonly distance: number;
   readonly direction: Vec3;
+  /** The box the look stands back far enough to show whole. */
+  readonly bounds: Bounds;
   set(jd: number, picture: number | null): void;
   flow(seconds: number): void;
   toggleView(): void;
@@ -239,6 +242,10 @@ export function createMountainSlice(options: MountainSliceOptions): MountainSlic
     target,
     distance,
     direction: { x: direction.x, y: direction.y, z: direction.z },
+    bounds: {
+      min: { x: -PLATE_WIDE / 2, y: -PLATE_THICK, z: -PLATE_LONG / 2 },
+      max: { x: barX + 20, y: landHeightKm(options.tallestKm * 1000, times), z: PLATE_LONG / 2 },
+    },
 
     set(jd, picture) {
       board.set(picture);

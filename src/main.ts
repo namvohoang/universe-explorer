@@ -570,6 +570,11 @@ function start(): void {
     );
   };
   /** Draws the two looks in the two halves of the room, or one look in all of it. */
+  /** Whether a part's close-up shows the real land, measured, rather than a drawing. */
+  const showsRealLand = (chapter: Chapter): boolean => {
+    const realFromJd = watchPictureSlice?.realFromJd;
+    return chapter.slice === true && realFromJd !== undefined && chapter.atJd.value >= realFromJd;
+  };
   const layPanes = (): void => {
     sight.line.removeFromParent();
     sightOf = paired ? sightFor(paired.story, paired.chapter) : null;
@@ -688,7 +693,10 @@ function start(): void {
         label: cut
           ? cut === tornadoDrawing?.scene
             ? words.watchPaneTornado
-            : words.watchPaneQuakeBlock
+            : // Up close at the real land, measured, it says so.
+              showsRealLand(chapter)
+              ? words.watchPaneRealLand
+              : words.watchPaneQuakeBlock
           : modelled
             ? words.watchPaneWhole
             : close
@@ -2138,14 +2146,28 @@ function start(): void {
       if (story.id === 'mountain-himalaya' && story.land) {
         const heights = story.land;
         const land = pictureSpanKm(heights.box.value, worldKm);
-        const { startYearsAgo, meetYearsAgo, todayFromJd, barsFromJd, tallestKm } =
-          HIMALAYA_DRAWING;
+        const {
+          startYearsAgo,
+          meetYearsAgo,
+          todayFromJd,
+          pushingFromJd,
+          realFromJd,
+          barsFromJd,
+          tallestKm,
+        } = HIMALAYA_DRAWING;
+        // The ice and the rain are drawn over the years of their own parts.
+        const yearsOf = (id: string): number =>
+          story.chapters.find((chapter) => chapter.id === id)?.yearsAgo?.value[0] ?? 0;
         const highestKm = heights.highestM.value / 1000;
         watchPictureSlice = createMountainSlice({
           yearsAt: (jd) => storyYearsAgo(story, jd),
           startYearsAgo: startYearsAgo.value,
           meetYearsAgo: meetYearsAgo.value,
+          iceFromYearsAgo: yearsOf('carved-by-ice'),
+          wornFromYearsAgo: yearsOf('worn-down'),
           todayFromJd: todayFromJd.value,
+          pushingFromJd: pushingFromJd.value,
+          realFromJd: realFromJd.value,
           barsFromJd: barsFromJd.value,
           land: {
             heightsUrl: mediaUrl(heights.file),
@@ -2730,7 +2752,12 @@ function start(): void {
               const fromGround = aimedGround && !sameLook;
               if (!(sameLook && !again)) aimedGround = ground;
               if (sameLook && !again) {
-                if (paired) paired = { story, chapter };
+                if (paired) {
+                  const wasReal = showsRealLand(paired.chapter);
+                  paired = { story, chapter };
+                  // The drawing giving way to the real land is said on its frame.
+                  if (showsRealLand(chapter) !== wasReal) layPanes();
+                }
                 return;
               }
               // A part with a look of its own shows it beside the whole picture.

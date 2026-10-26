@@ -50,13 +50,15 @@ const years = (fromYearsAgo: number, untilYearsAgo: number, sourceId: string, no
 
 /**
  * What the 3D close-up draws from the pages: when the plates are drawn starting to close and
- * when they meet, from when the real range is shown and the bars beside it, and the two
- * heights of the bars.
+ * when they meet, from when the real range is shown (rising, then pushed north, then alone) and
+ * the bars beside it, and the two heights of the bars.
  */
 export const HIMALAYA_DRAWING = {
   startYearsAgo: s(80e6, USGS, 'About 80 million years ago, India far to the south of Asia.'),
   meetYearsAgo: s(50e6, USGS, 'When India rammed into Asia about 40 to 50 million years ago'),
   todayFromJd: s(at(10), WORLDVIEW, 'The first part that is today.'),
+  pushingFromJd: s(at(11), WORLDVIEW, 'The part on India still pushing north.'),
+  realFromJd: s(at(12), WORLDVIEW, 'The part that shows the real range alone.'),
   barsFromJd: s(at(13), WORLDVIEW, 'The part that sets the two heights side by side.'),
   tallestKm: s(
     27,

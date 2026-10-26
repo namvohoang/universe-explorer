@@ -29,6 +29,8 @@ export interface UpCloseSlice {
   readonly direction: { readonly x: number; readonly y: number; readonly z: number };
   /** The box the look stands back far enough to show whole, whatever the pane's shape. */
   readonly bounds?: Bounds;
+  /** From when it shows the real land, measured, and no longer a drawing, as a Julian date. */
+  readonly realFromJd?: number;
   set(jd: number, picture: number | null): void;
   flow(seconds: number): void;
   toggleView(): void;

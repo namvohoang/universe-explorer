@@ -1465,6 +1465,7 @@ export const vi: Readonly<Record<StringKey, string>> & Readonly<Record<string, s
   watchPaneSlice: 'Cắt đôi (hình vẽ)',
   watchPaneTornado: 'Lốc xoáy (hình vẽ)',
   watchPaneQuakeBlock: 'Cận cảnh (hình vẽ)',
+  watchPaneRealLand: 'Cận cảnh (mặt đất thật)',
   scaleLabelQuakeBlock: 'Khối đất cắt ra là hình vẽ. Độ sâu và thời điểm là thật.',
   scaleLabelTsunamiSlice: 'Hình cắt biển là hình vẽ, được kéo cao. Cách sóng chậm lại là thật.',
   scaleLabelVolcanoSlice: 'Núi lửa cắt ra là hình vẽ. Độ cao tro bụi bốc lên là thật.',

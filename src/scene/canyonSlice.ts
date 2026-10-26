@@ -1,5 +1,6 @@
 import {
   AmbientLight,
+  BoxGeometry,
   BufferAttribute,
   Color,
   DirectionalLight,
@@ -11,9 +12,10 @@ import {
   Vector3,
 } from 'three';
 import { landHeightKm } from '../sim/scale';
-import { addBlockSides, placeBoard, smooth, type UpCloseSlice } from './diorama';
+import { addBlockSides, fadeGroup, placeBoard, smooth, type UpCloseSlice } from './diorama';
 import { createLandBlock, type LandBlockOptions } from './landBlock';
 import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
+import { settling } from './settle';
 
 /**
  * A 3D close-up of how a canyon is made, over hundreds of millions of years, ending on the real
@@ -32,6 +34,9 @@ import { createPictureBoard, type PictureBoardOptions } from './pictureBoard';
  */
 const BACKGROUND = '#0a1020';
 const SEA = 0x2f86c9;
+const RIVER = 0x4aa0e0;
+/** Half the drawn river's width, in km. */
+const RIVER_HALF = 0.4;
 const LAYERS = [
   '#b4562e',
   '#d9a066',
@@ -52,6 +57,8 @@ const GRID_Z = 180;
 /** The drawn canyon at its deepest and widest, in km, before heights are stretched. */
 const CUT_KM = 1.8;
 const CUT_WIDE = 7;
+/** How far the drawn sea's top stands over the layers once all are laid, in km. */
+const SEA_OVER_KM = 0.3;
 
 export interface CanyonSliceOptions {
   /** How many years ago it is at a moment of the story. */
@@ -80,6 +87,7 @@ export function createCanyonSlice(options: CanyonSliceOptions): UpCloseSlice {
   };
   const times = options.land.drawnTimes;
   const up = (km: number): number => landHeightKm(km * 1000, times);
+  const seaLevel = up(STACK_KM + SEA_OVER_KM);
 
   scene.add(new AmbientLight(0xffffff, 0.6));
   const sun = new DirectionalLight(0xfff2dc, 2.2);
@@ -99,15 +107,23 @@ export function createCanyonSlice(options: CanyonSliceOptions): UpCloseSlice {
   );
   const sideMaterial = keep(new MeshStandardMaterial({ vertexColors: true, roughness: 1 }));
   let sides: PlaneGeometry[] = [];
+  // The sea: water over the layers, its top held at sea level while the land is lifted out of it.
   const sea = new Mesh(
-    keep(new PlaneGeometry(WIDE, DEEP)),
-    keep(new MeshStandardMaterial({ color: SEA, roughness: 0.3, transparent: true, opacity: 0.8 })),
+    keep(new BoxGeometry(WIDE, 1, DEEP)),
+    keep(
+      new MeshStandardMaterial({
+        color: SEA,
+        roughness: 0.2,
+        transparent: true,
+        opacity: 0.55,
+        depthWrite: false,
+      }),
+    ),
   );
-  sea.rotation.x = -Math.PI / 2;
   past.add(sea);
   const river = new Mesh(
     keep(new PlaneGeometry(WIDE, DEEP, GRID_X, GRID_Z)),
-    keep(new MeshStandardMaterial({ color: 0x3a7ab8, roughness: 0.3 })),
+    keep(new MeshStandardMaterial({ color: RIVER, roughness: 0.25 })),
   );
   river.geometry.rotateX(-Math.PI / 2);
   past.add(river);
@@ -183,15 +199,18 @@ export function createCanyonSlice(options: CanyonSliceOptions): UpCloseSlice {
       side.computeVertexNormals();
       banded.dispose();
     }
-    // The sea over the layers while they are laid, gone once the land is lifted.
-    sea.visible = lifted < 0.3;
-    sea.position.y = up(topKm) + 0.15;
+    // The sea over the layers while they are laid; the lifted land comes up out of it.
+    const seaFloor = up(topKm);
+    const seaDeep = Math.max(0, seaLevel - seaFloor);
+    sea.visible = seaDeep > 0.01;
+    sea.scale.y = Math.max(seaDeep, 0.01);
+    sea.position.y = seaFloor + seaDeep / 2;
     // The river at the bottom of its canyon.
     const riverPositions = river.geometry.getAttribute('position') as BufferAttribute;
     for (let index = 0; index < riverPositions.count; index++) {
       const x = riverPositions.getX(index);
       const z = riverPositions.getZ(index);
-      const inRiver = Math.abs(z - riverZ(x)) < 0.25 && cut > 0;
+      const inRiver = Math.abs(z - riverZ(x)) < RIVER_HALF && cut > 0;
       riverPositions.setY(index, inRiver ? up(heightKm(x, z)) + 0.05 : up(bottomKm) - 0.3);
     }
     riverPositions.needsUpdate = true;
@@ -218,12 +237,25 @@ export function createCanyonSlice(options: CanyonSliceOptions): UpCloseSlice {
   const distance = 64;
   placeBoard(board, target, direction, distance);
 
-  let lastJd = Number.NaN;
+  // Where the story is, each settling into place over a moment when it changes.
+  const builtTo = settling();
+  const liftedTo = settling();
+  const cutTo = settling();
+  const todayTo = settling();
+  const settlings = [builtTo, liftedTo, cutTo, todayTo];
+  /** Draws the moment the settling values have reached: the past fading into today. */
+  const show = (): void => {
+    if (board.group.visible) return;
+    draw(builtTo.value, liftedTo.value, cutTo.value);
+    fadeGroup(past, 1 - todayTo.value);
+    fadeGroup(today, todayTo.value);
+  };
   return {
     scene,
     target,
     distance,
     direction: { x: direction.x, y: direction.y, z: direction.z },
+    realFromJd: options.todayFromJd,
     bounds: {
       min: { x: -halfWide, y: up(0) - 0.6, z: -halfDeep },
       max: { x: halfWide, y: up(STACK_KM + LIFT_KM), z: halfDeep },
@@ -231,30 +263,37 @@ export function createCanyonSlice(options: CanyonSliceOptions): UpCloseSlice {
 
     set(jd, picture) {
       board.set(picture);
-      lastJd = jd;
+      const first = Number.isNaN(todayTo.value);
       const years = options.yearsAt(jd);
       const isToday = jd >= options.todayFromJd;
-      past.visible = !isToday && !board.group.visible;
-      today.visible = isToday && !board.group.visible;
-      if (isToday) return;
-      draw(
-        0.08 + 0.92 * smooth(options.layersFromYearsAgo, options.liftFromYearsAgo, years),
-        smooth(options.liftFromYearsAgo, options.cutFromYearsAgo, years),
-        smooth(options.cutFromYearsAgo, 0, years),
+      // Today the drawing is finished, and fades into the real canyon.
+      builtTo.aim(
+        isToday
+          ? 1
+          : 0.08 + 0.92 * smooth(options.layersFromYearsAgo, options.liftFromYearsAgo, years),
       );
+      liftedTo.aim(isToday ? 1 : smooth(options.liftFromYearsAgo, options.cutFromYearsAgo, years));
+      cutTo.aim(isToday ? 1 : smooth(options.cutFromYearsAgo, 0, years));
+      todayTo.aim(isToday ? 1 : 0);
+      if (first) show();
     },
 
-    flow() {
-      // The past moves with the story's clock alone.
+    flow(seconds) {
+      // The past moves with the story's clock, settling when the story jumps.
+      let moved = false;
+      for (const one of settlings) moved = one.step(seconds) || moved;
+      if (moved) show();
     },
 
     viewToggled: () => board.group.visible,
 
     toggleView() {
       board.group.visible = !board.group.visible;
-      if (Number.isFinite(lastJd)) {
-        past.visible = !board.group.visible && lastJd < options.todayFromJd;
-        today.visible = !board.group.visible && lastJd >= options.todayFromJd;
+      if (board.group.visible) {
+        past.visible = false;
+        today.visible = false;
+      } else if (!Number.isNaN(todayTo.value)) {
+        show();
       }
     },
 

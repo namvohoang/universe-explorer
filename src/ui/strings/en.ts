@@ -1252,6 +1252,7 @@ export const en = {
   watchPaneSlice: 'Cut in half (a drawing)',
   watchPaneTornado: 'The tornado (a drawing)',
   watchPaneQuakeBlock: 'Close up (a drawing)',
+  watchPaneRealLand: 'Close up (the real land)',
   scaleLabelQuakeBlock: 'The ground cut open is a drawing. How deep and when are real.',
   scaleLabelTsunamiSlice: 'The sea cut open is a drawing, made taller. How the wave slows is real.',
   scaleLabelVolcanoSlice: 'The volcano cut open is a drawing. How high the ash rose is real.',

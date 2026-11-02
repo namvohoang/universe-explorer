@@ -22,27 +22,29 @@
   </head>
   <body>
     <canvas id="stage" role="img" aria-label="3D view of space"></canvas>
-    <figure id="picture" hidden>
-      <img id="picture-image" alt="" />
-      <figcaption id="picture-credit"></figcaption>
-    </figure>
-    <header class="top">
-      <div class="brand">
-        <h1 id="title"></h1>
-        <p id="scale-label" aria-live="polite"></p>
-      </div>
-      <div id="main-tabs"></div>
-      <div class="tools" id="tools"></div>
-    </header>
-    <div id="settings-slot"></div>
-    <div id="card-slot"></div>
-    <div id="compare-slot"></div>
-    <div id="grownups-slot"></div>
-    <div class="view-controls" id="view-controls" role="group"></div>
-    <p class="first-hint" id="first-hint" hidden></p>
-    <nav class="tray" id="tray"></nav>
-    <!-- After the controls in reading order, so keyboard users reach the controls first. -->
-    <div id="markers"></div>
+    <div id="ui-shell">
+      <figure id="picture" hidden>
+        <img id="picture-image" alt="" />
+        <figcaption id="picture-credit"></figcaption>
+      </figure>
+      <header class="top">
+        <div class="brand">
+          <h1 id="title"></h1>
+          <p id="scale-label" aria-live="polite"></p>
+        </div>
+        <div id="main-tabs"></div>
+        <div class="tools" id="tools"></div>
+      </header>
+      <div id="settings-slot"></div>
+      <div id="card-slot"></div>
+      <div id="compare-slot"></div>
+      <div id="grownups-slot"></div>
+      <div class="view-controls" id="view-controls" role="group"></div>
+      <p class="first-hint" id="first-hint" hidden></p>
+      <nav class="tray" id="tray"></nav>
+      <!-- After the controls in reading order, so keyboard users reach the controls first. -->
+      <div id="markers"></div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

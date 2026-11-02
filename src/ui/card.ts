@@ -28,7 +28,7 @@ export interface Card {
 }
 
 /** The screens on which the card is a sheet at the bottom that peeks and opens. */
-const SHEET = window.matchMedia('(max-width: 700px)');
+const SHEET = window.matchMedia('(max-width: 700px), (horizontal-viewport-segments: 2)');
 
 /** The info card: who this is, a few numbers, a few facts, and what the globe really is. */
 export function createCard(

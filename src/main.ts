@@ -158,7 +158,9 @@ import { forget, recall, remember } from './ui/storage';
 import { LANGUAGES, LANGUAGE_KEY, language, words, type Language } from './ui/strings';
 
 /** The wide layout of app.css, where a story's words stand in a card at the left. */
-const WIDE_SCREEN = window.matchMedia('(min-width: 1000px) and (min-height: 501px)');
+const WIDE_SCREEN = window.matchMedia(
+  '(min-width: 1000px) and (min-height: 501px) and (not (horizontal-viewport-segments: 2))',
+);
 /** Room kept at the right of the screen when the zoom buttons stand inside a look. */
 const LOOKS_RIGHT_GAP_PX = 16;
 /** Whole-view camera: looking down on the system from the prototype's angle. */
@@ -3167,8 +3169,10 @@ function start(): void {
   settings.addSection(null, grownUpsRow);
 
   // On a small screen the clock is a pill under the title; otherwise it heads the bottom dock.
-  const smallScreen = window.matchMedia('(max-width: 700px), (max-height: 500px)');
-  const phoneScreen = window.matchMedia('(max-width: 700px)');
+  const smallScreen = window.matchMedia(
+    '(max-width: 700px), (max-height: 500px), (horizontal-viewport-segments: 2)',
+  );
+  const phoneScreen = window.matchMedia('(max-width: 700px), (horizontal-viewport-segments: 2)');
   const arrange = (): void => {
     if (smallScreen.matches) mustFind('.top').append(clockControl.element);
     else mustFind('#tray').prepend(clockControl.element);
